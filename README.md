@@ -19,6 +19,8 @@
 
  1. .Net Fundamentals
  2. SQL Incubator
+ 
+The approach that we want to follow to solve Comic Stock Ltd. business problems is to use the concept of a minimum viable product - MVP. By using MVP's it allows us to build on each MVP version and adding value, by adding features. A minimum viable product is a version of a product with just enough features to satisfy early customers and provide feedback for future product development. 
 
 # Stock Management
 
