@@ -8,16 +8,9 @@ With .NET, you can use multiple languages, editors, and libraries to build for w
 
 Watch intro video
 
-<table width="600px">
-	<tr>
-		<td width="50%">		
-			<video style="width:300px" poster="https://i.ibb.co/JsCTrYN/net-forum-fundamentals.jpg" controls="controls" x-webkit-airplay="allow" src="https://web.microsoftstream.com/video/0a53829b-6cfc-48a6-909c-226255f1344b"></video>
-		</td>
-		<td wifth="50%">
-			<video style="width:300px" poster="https://i.ytimg.com/vi_webp/eIHKZfgddLM/hqdefault.webp" controls="controls" x-webkit-airplay="allow" src="https://youtu.be/eIHKZfgddLM?list=PLdo4fOcmZ0oWoazjhXQzBKMrFuArxpW80"></video>
-		</td>
-	</tr>
-</table>
+| Internal | Public |
+| --- | --- |
+| [![.NET Forum FUndamentals?](https://i.ibb.co/JsCTrYN/net-forum-fundamentals.jpg)](https://web.microsoftstream.com/video/0a53829b-6cfc-48a6-909c-226255f1344b) | [![What is .NET?](https://i.ytimg.com/vi_webp/eIHKZfgddLM/hqdefault.webp)](https://youtu.be/eIHKZfgddLM?list=PLdo4fOcmZ0oWoazjhXQzBKMrFuArxpW80) |
 
 # History
 
@@ -38,4 +31,24 @@ Open source is also an important part of the .NET ecosystem, with multiple .NET 
 
 ## Future
 
+Basic
 
+ - Create a CRUD System in .Net MVC Project too manage stock.   
+ - Create a project to import bulk Stock from a File.
+
+Advanced
+
+# Customer Website
+
+In this section you will be building a customer facing project to allow customers to browse Comic Stock comic books.
+
+## Learning Outcomes
+
+Basic
+
+ - Create a Customer Facing Website in your choice of Front-End Library.
+ - Expose your Stock Management through an API using .Net Web API
+
+Advanced
+
+ - Track a online order through using .Net gPRC.
