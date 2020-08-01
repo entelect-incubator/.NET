@@ -8,7 +8,7 @@ With .NET, you can use multiple languages, editors, and libraries to build for w
 
 Watch intro video
 
-| Internal | Public |
+| Entelect | Public |
 | --- | --- |
 | [![.NET Forum FUndamentals?](https://i.ibb.co/JsCTrYN/net-forum-fundamentals.jpg)](https://web.microsoftstream.com/video/0a53829b-6cfc-48a6-909c-226255f1344b) | [![What is .NET?](https://i.ytimg.com/vi_webp/eIHKZfgddLM/hqdefault.webp)](https://youtu.be/eIHKZfgddLM?list=PLdo4fOcmZ0oWoazjhXQzBKMrFuArxpW80) |
 
