@@ -17,8 +17,8 @@
   - [ ] ```dotnet tool install --global EntityFrameworkCore.Generator```
   - [ ] ```efg generate -c "DB Connection String"```
   - [ ] Fix the generated namespaces and code cleanup
-  - [ ] or can copy it from 03. Phase 1\Data
+  - [ ] or can copy it from Phase 1\Data
 
-## **Step 1**
+## **Steps**
 
-- [ ] [Click here to start]()
+- [ ] [Step 1 - Data Access Layer, Core Layer and Unit Test](https://github.com/entelect-incubator/.NET/tree/master/Phase%201/Step%201)

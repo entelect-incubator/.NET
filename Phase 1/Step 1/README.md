@@ -4,8 +4,6 @@
 
 <br/><br/>
 
-## **Step 1**
-
 ### **Entitites**
 ![Entitites Setup](../Assets/phase1-setup-entities.png)
 

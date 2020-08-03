@@ -63,7 +63,7 @@ Admin should be able to manage the stock through a web application as well as ma
   
 ![Phase 1 High Level Design](./Assets/phase1-hld.svg)
 
-[Click here to get started](https://github.com/entelect-incubator/.Net/tree/master/01.%20Fundamentals)
+[Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%201)
 
 ### **Phase 2**
 
