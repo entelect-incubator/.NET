@@ -51,6 +51,10 @@ namespace Pezza.DataAccess.Mapping
                 .WithMany(t => t.Orders)
                 .HasForeignKey(d => d.RestaurantId)
                 .HasConstraintName("FK_Order_Restaurant");
+
+            builder.HasOne(t => t)
+                .WithMany(t => t.OrderItems)
+                .Has
         }
 
     }

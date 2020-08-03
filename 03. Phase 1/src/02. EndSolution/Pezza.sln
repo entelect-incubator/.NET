@@ -1,4 +1,3 @@
-
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29519.181
@@ -25,11 +24,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pezza.Core", "Pezza.Core\Pe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pezza.Common", "Pezza.Common\Pezza.Common.csproj", "{863C4B29-22B7-4029-81C9-76D109A9CB10}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pezza.Test", "Pezza.Test\Pezza.Test.csproj", "{0EECBAFB-4CE5-4FC7-A883-3CFE86F732C5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pezza.Test", "Pezza.Test\Pezza.Test.csproj", "{0EECBAFB-4CE5-4FC7-A883-3CFE86F732C5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "02 Infrastructure", "02 Infrastructure", "{8B8A4435-24CD-4747-A952-43527EF42D87}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pezza.Infrastructure", "Pezza.Infrastructure\Pezza.Infrastructure.csproj", "{CE7F965B-4842-45D8-9698-7ACCFF6EB135}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pezza.Infrastructure", "Pezza.Infrastructure\Pezza.Infrastructure.csproj", "{CE7F965B-4842-45D8-9698-7ACCFF6EB135}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

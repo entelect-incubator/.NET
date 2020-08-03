@@ -18,4 +18,12 @@
     <ProjectReference Include="..\Pezza.DataAccess\Pezza.DataAccess.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Restaurant\" />
+    <Folder Include="Product\" />
+    <Folder Include="Order\" />
+    <Folder Include="Notify\" />
+    <Folder Include="Stock\" />
+  </ItemGroup>
+
 </Project>
