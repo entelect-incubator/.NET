@@ -23,7 +23,6 @@
     <Folder Include="Product\" />
     <Folder Include="Order\" />
     <Folder Include="Notify\" />
-    <Folder Include="Stock\" />
   </ItemGroup>
 
 </Project>

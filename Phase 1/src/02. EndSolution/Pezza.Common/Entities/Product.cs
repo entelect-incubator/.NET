@@ -1,15 +1,9 @@
 namespace Pezza.Common.Entities
 {
     using System;
-    using System.Collections.Generic;
 
     public partial class Product
     {
-        public Product()
-        {
-            this.OrderItems = new HashSet<OrderItem>();
-        }
-
         public int Id { get; set; }
 
         public string Name { get; set; }
@@ -29,6 +23,5 @@ namespace Pezza.Common.Entities
         public bool IsActive { get; set; }
 
         public DateTime DateCreated { get; set; }
-        public virtual ICollection<OrderItem> OrderItems { get; set; }
     }
 }

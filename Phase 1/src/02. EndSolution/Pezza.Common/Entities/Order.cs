@@ -5,10 +5,7 @@ namespace Pezza.Common.Entities
 
     public partial class Order
     {
-        public Order()
-        {
-            this.OrderItems = new HashSet<OrderItem>();
-        }
+        public Order() => this.OrderItems = new HashSet<OrderItem>();
 
         public int Id { get; set; }
 

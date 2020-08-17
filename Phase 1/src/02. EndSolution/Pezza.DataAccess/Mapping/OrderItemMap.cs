@@ -35,17 +35,6 @@ namespace Pezza.DataAccess.Mapping
                 .IsRequired()
                 .HasColumnName("Quantity")
                 .HasColumnType("int");
-
-            // relationships
-            builder.HasOne(t => t.Order)
-                .WithMany(t => t.OrderItems)
-                .HasForeignKey(d => d.OrderId)
-                .HasConstraintName("FK_OrderItem_Order");
-
-            builder.HasOne(t => t.Product)
-                .WithMany(t => t.OrderItems)
-                .HasForeignKey(d => d.ProductId)
-                .HasConstraintName("FK_OrderItem_Product");
         }
 
     }

@@ -1,9 +1,14 @@
 ﻿namespace Pezza.DataAccess
 {
     using System.Collections.Generic;
+    using System.Linq;
+    using System.Linq.Dynamic.Core;
     using System.Threading.Tasks;
     using Microsoft.EntityFrameworkCore;
+    using Pezza.Common.Extensions;
+    using Pezza.Common.Models.SearchModels;
     using Pezza.DataAccess.Contracts;
+    using Pezza.DataAccess.Filter;
 
     public class StockDataAccess : IStockDataAccess
     {
@@ -16,9 +21,20 @@
             return await this.databaseContext.Stocks.FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<List<Common.Entities.Stock>> GetAllAsync(int id)
+        public async Task<List<Common.Entities.Stock>> GetAllAsync(StockSearchModel searchModel)
         {
-            return await this.databaseContext.Stocks.ToListAsync();
+            if (string.IsNullOrEmpty(searchModel.OrderBy))
+            {
+                searchModel.OrderBy = "DateSent desc";
+            }
+
+            var entities = this.databaseContext.Stocks.Select(x => x)
+                .FilterByName(searchModel.Name)
+                .AsNoTracking()
+                .OrderBy(searchModel.OrderBy);
+
+            var paged = await entities.ApplyPaging(searchModel.PagingArgs).ToListAsync();
+            return paged;
         }
 
         public async Task<Common.Entities.Stock> SaveAsync(Common.Entities.Stock entity)

@@ -1,9 +1,14 @@
 ﻿namespace Pezza.DataAccess
 {
     using System.Collections.Generic;
+    using System.Linq;
+    using System.Linq.Dynamic.Core;
     using System.Threading.Tasks;
     using Microsoft.EntityFrameworkCore;
+    using Pezza.Common.Extensions;
+    using Pezza.Common.Models.SearchModels;
     using Pezza.DataAccess.Contracts;
+    using Pezza.DataAccess.Filter;
 
     public class NotifyDataAccess : INotifyDataAccess
     {
@@ -16,9 +21,20 @@
             return await this.databaseContext.Notifies.FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<List<Common.Entities.Notify>> GetAllAsync(int id)
+        public async Task<List<Common.Entities.Notify>> GetAllAsync(NotifySearchModel searchModel)
         {
-            return await this.databaseContext.Notifies.ToListAsync();
+            if (string.IsNullOrEmpty(searchModel.OrderBy))
+            {
+                searchModel.OrderBy = "DateSent desc";
+            }
+
+            var entities = this.databaseContext.Notifies.Select(x => x)
+                .FilterByEmail(searchModel.Email)
+                .AsNoTracking()
+                .OrderBy(searchModel.OrderBy);
+
+            var paged = await entities.ApplyPaging(searchModel.PagingArgs).ToListAsync();
+            return paged;
         }
 
         public async Task<Common.Entities.Notify> SaveAsync(Common.Entities.Notify entity)

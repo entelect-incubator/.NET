@@ -67,4 +67,42 @@ namespace Pezza.Common.Models
 
         public static Result<T> Failure(List<string> errors) => new Result<T>(false, errors);
     }
+
+    public class ListResult<T>
+    {
+        internal ListResult(bool succeeded, string error)
+        {
+            this.Succeeded = succeeded;
+            this.Errors = new List<string>
+            {
+                error
+            };
+        }
+
+        internal ListResult(bool succeeded, List<string> errors)
+        {
+            this.Succeeded = succeeded;
+            this.Errors = errors;
+        }
+
+        internal ListResult(bool succeeded, List<T> data, List<string> errors)
+        {
+            this.Succeeded = succeeded;
+            this.Errors = errors;
+            this.Data = data;
+        }
+
+        public bool Succeeded { get; set; }
+
+        public List<T> Data { get; set; }
+
+        public List<string> Errors { get; set; }
+
+        public static ListResult<T> Success(List<T> data) => new ListResult<T>(true, data, new List<string> { });
+
+        public static ListResult<T> Failure(string error) => new ListResult<T>(false, error);
+
+        public static ListResult<T> Failure(List<string> errors) => new ListResult<T>(false, errors);
+    }
+
 }

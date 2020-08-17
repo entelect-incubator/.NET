@@ -6,7 +6,7 @@
     using System.Threading.Tasks;
     using Microsoft.EntityFrameworkCore;
     using Pezza.Common.Extensions;
-    using Pezza.Common.Models;
+    using Pezza.Common.Models.SearchModels;
     using Pezza.DataAccess.Contracts;
     using Pezza.DataAccess.Filter;
 

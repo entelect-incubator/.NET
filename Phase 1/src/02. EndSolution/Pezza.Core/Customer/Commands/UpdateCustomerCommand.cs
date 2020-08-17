@@ -5,6 +5,7 @@
     using System.Threading.Tasks;
     using MediatR;
     using Pezza.Common.Models;
+    using Pezza.Common.Models.SearchModels;
     using Pezza.DataAccess.Contracts;
 
     public partial class UpdateCustomerCommand : IRequest<Result<Common.Entities.Customer>>
