@@ -5,45 +5,28 @@
     using System.Threading.Tasks;
     using Common.Entities;
     using MediatR;
+    using Pezza.Common.Models;
     using Pezza.DataAccess.Contracts;
 
-    public partial class CreateRestaurantCommand : IRequest<Restaurant>
+    public partial class CreateRestaurantCommand : IRequest<Result<Restaurant>>
     {
-        public string Name { get; set; }
+        public string ImageData { get; set; }
 
-        public string Description { get; set; }
-
-        public string PictureData { get; set; }
-
-        public string Address { get; set; }
-
-        public string City { get; set; }
-
-        public string Province { get; set; }
-
-        public string PostalCode { get; set; }
-
-        public bool IsActive { get; set; }
+        public Restaurant Restaurant { get; set; }
     }
 
-    public class CreateRestaurantCommandHandler : IRequestHandler<CreateRestaurantCommand, Restaurant>
+    public class CreateRestaurantCommandHandler : IRequestHandler<CreateRestaurantCommand, Result<Restaurant>>
     {
         private readonly IRestaurantDataAccess dataAcess;
 
-        public CreateRestaurantCommandHandler(IRestaurantDataAccess dataAcess) 
-            => this.dataAcess = dataAcess;
+        public CreateRestaurantCommandHandler(IRestaurantDataAccess dataAcess) => this.dataAcess = dataAcess;
 
-        public async Task<Restaurant> Handle(CreateRestaurantCommand request, CancellationToken cancellationToken)
-            => await this.dataAcess.SaveAsync(new Restaurant
-            {
-                Name = request.Name,
-                Description = request.Description,
-                Address = request.Address,
-                City = request.City,
-                Province = request.Province,
-                PostalCode = request.PostalCode,
-                IsActive = request.IsActive,
-                DateCreated = DateTime.Now
-            });
+        public async Task<Result<Restaurant>> Handle(CreateRestaurantCommand request, CancellationToken cancellationToken)
+        {
+            request.Restaurant.DateCreated = DateTime.Now;
+            var outcome = await this.dataAcess.SaveAsync(request.Restaurant);
+
+            return (outcome != null) ? Result<Restaurant>.Success(outcome) : Result<Restaurant>.Failure("Error adding a Restaurant");
+        }
     }
 }

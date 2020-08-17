@@ -10,6 +10,8 @@
 
     public partial class UpdateCustomerCommand : IRequest<Result<Common.Entities.Customer>>
     {
+        public int Id { get; set; }
+
         public string Name { get; set; }
 
         public string Address { get; set; }
@@ -36,11 +38,7 @@
 
         public async Task<Result<Common.Entities.Customer>> Handle(UpdateCustomerCommand request, CancellationToken cancellationToken)
         {
-            var search = await this.dataAcess.GetAllAsync(new CustomerSearchModel
-            {
-                Email = request.Email
-            });
-            var findEntity = search.FirstOrDefault();
+            var findEntity = await this.dataAcess.GetAsync(request.Id);
 
             if (!string.IsNullOrEmpty(request.Name))
             {

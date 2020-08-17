@@ -1,20 +1,22 @@
 ﻿namespace Pezza.Core.Restaurant.Commands
 {
-    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using MediatR;
     using Pezza.Common.Models;
-    using Pezza.Common.Models.SearchModels;
     using Pezza.DataAccess.Contracts;
 
     public partial class UpdateRestaurantCommand : IRequest<Result<Common.Entities.Restaurant>>
     {
+        public int Id { get; set; }
+
         public string Name { get; set; }
 
         public string Description { get; set; }
 
-        public string PictureData { get; set; }
+        public string ImageData { get; set; }
+
+        public string PictureUrl { get; set; }
 
         public string Address { get; set; }
 
@@ -36,11 +38,7 @@
 
         public async Task<Result<Common.Entities.Restaurant>> Handle(UpdateRestaurantCommand request, CancellationToken cancellationToken)
         {
-            var search = await this.dataAcess.GetAllAsync(new RestaurantSearchModel
-            {
-                Name = request.Name
-            });
-            var findEntity = search.FirstOrDefault();
+            var findEntity = await this.dataAcess.GetAsync(request.Id);
 
             if (!string.IsNullOrEmpty(request.Name))
             {
@@ -70,6 +68,11 @@
             if (!string.IsNullOrEmpty(request.PostalCode))
             {
                 findEntity.PostalCode = request.PostalCode;
+            }
+
+            if (!string.IsNullOrEmpty(request.PictureUrl))
+            {
+                findEntity.PictureUrl = request.PictureUrl;
             }
 
             if (request.IsActive.HasValue)

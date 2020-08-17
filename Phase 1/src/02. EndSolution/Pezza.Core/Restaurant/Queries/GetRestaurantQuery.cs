@@ -4,25 +4,24 @@
     using System.Threading.Tasks;
     using MediatR;
     using Pezza.Common.Models;
-    using Pezza.Common.Models.SearchModels;
     using Pezza.DataAccess.Contracts;
 
-    public class GetRestaurantQuery : IRequest<ListResult<Common.Entities.Restaurant>>
+    public class GetRestaurantQuery : IRequest<Result<Common.Entities.Restaurant>>
     {
-        public RestaurantSearchModel RestaurantSearchModel { get; set; }
+        public int Id { get; set; }
     }
 
-    public class GetRestaurantsQueryHandler : IRequestHandler<GetRestaurantQuery, ListResult<Common.Entities.Restaurant>>
+    public class GetRestaurantQueryHandler : IRequestHandler<GetRestaurantQuery, Result<Common.Entities.Restaurant>>
     {
         private readonly IRestaurantDataAccess dataAcess;
 
-        public GetRestaurantsQueryHandler(IRestaurantDataAccess dataAcess) => this.dataAcess = dataAcess;
+        public GetRestaurantQueryHandler(IRestaurantDataAccess dataAcess) => this.dataAcess = dataAcess;
 
-        public async Task<ListResult<Common.Entities.Restaurant>> Handle(GetRestaurantQuery request, CancellationToken cancellationToken)
+        public async Task<Result<Common.Entities.Restaurant>> Handle(GetRestaurantQuery request, CancellationToken cancellationToken)
         {
-            var search = await this.dataAcess.GetAllAsync(request.RestaurantSearchModel);
+            var search = await this.dataAcess.GetAsync(request.Id);
 
-            return ListResult<Common.Entities.Restaurant>.Success(search);
+            return Result<Common.Entities.Restaurant>.Success(search);
         }
     }
 }

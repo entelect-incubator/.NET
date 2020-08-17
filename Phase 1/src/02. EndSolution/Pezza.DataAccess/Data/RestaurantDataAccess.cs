@@ -1,4 +1,4 @@
-﻿namespace Pezza.DataAccess
+﻿namespace Pezza.DataAccess.Data
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -8,13 +8,13 @@
     using Pezza.Common.Extensions;
     using Pezza.Common.Models.SearchModels;
     using Pezza.DataAccess.Contracts;
-    using Pezza.DataAccess.Filter;
 
     public class RestaurantDataAccess : IRestaurantDataAccess
     {
         private readonly IDatabaseContext databaseContext;
 
-        public RestaurantDataAccess(IDatabaseContext databaseContext) => this.databaseContext = databaseContext;
+        public RestaurantDataAccess(IDatabaseContext databaseContext) 
+            => this.databaseContext = databaseContext;
 
         public async Task<Common.Entities.Restaurant> GetAsync(int id)
         {
@@ -25,15 +25,15 @@
         {
             if (string.IsNullOrEmpty(searchModel.OrderBy))
             {
-                searchModel.OrderBy = "DateSent desc";
+                searchModel.OrderBy = "DateCreated desc";
             }
 
             var entities = this.databaseContext.Restaurants.Select(x => x)
-                .FilterByName(searchModel.Name)
                 .AsNoTracking()
                 .OrderBy(searchModel.OrderBy);
 
             var paged = await entities.ApplyPaging(searchModel.PagingArgs).ToListAsync();
+
             return paged;
         }
 
@@ -41,6 +41,7 @@
         {
             this.databaseContext.Restaurants.Add(entity);
             await this.databaseContext.SaveChangesAsync();
+
             return entity;
         }
 
@@ -48,6 +49,7 @@
         {
             this.databaseContext.Restaurants.Update(entity);
             await this.databaseContext.SaveChangesAsync();
+
             return entity;
         }
 

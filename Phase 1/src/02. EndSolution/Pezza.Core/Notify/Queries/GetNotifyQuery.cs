@@ -4,25 +4,24 @@
     using System.Threading.Tasks;
     using MediatR;
     using Pezza.Common.Models;
-    using Pezza.Common.Models.SearchModels;
     using Pezza.DataAccess.Contracts;
 
-    public class GetNotifyQuery : IRequest<ListResult<Common.Entities.Notify>>
+    public class GetNotifyQuery : IRequest<Result<Common.Entities.Notify>>
     {
-        public NotifySearchModel NotifySearchModel { get; set; }
+        public int Id { get; set; }
     }
 
-    public class GetNotifysQueryHandler : IRequestHandler<GetNotifyQuery, ListResult<Common.Entities.Notify>>
+    public class GetNotifysQueryHandler : IRequestHandler<GetNotifyQuery, Result<Common.Entities.Notify>>
     {
         private readonly INotifyDataAccess dataAcess;
 
         public GetNotifysQueryHandler(INotifyDataAccess dataAcess) => this.dataAcess = dataAcess;
 
-        public async Task<ListResult<Common.Entities.Notify>> Handle(GetNotifyQuery request, CancellationToken cancellationToken)
+        public async Task<Result<Common.Entities.Notify>> Handle(GetNotifyQuery request, CancellationToken cancellationToken)
         {
-            var search = await this.dataAcess.GetAllAsync(request.NotifySearchModel);
+            var search = await this.dataAcess.GetAsync(request.Id);
 
-            return ListResult<Common.Entities.Notify>.Success(search);
+            return Result<Common.Entities.Notify>.Success(search);
         }
     }
 }

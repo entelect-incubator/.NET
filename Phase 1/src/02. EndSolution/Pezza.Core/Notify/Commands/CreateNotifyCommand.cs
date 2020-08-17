@@ -1,38 +1,28 @@
 ﻿namespace Pezza.Core.Notify.Commands
 {
-    using System;
     using System.Threading;
     using System.Threading.Tasks;
     using Common.Entities;
     using MediatR;
+    using Pezza.Common.Models;
     using Pezza.DataAccess.Contracts;
 
-    public partial class CreateNotifyCommand : IRequest<Notify>
+    public partial class CreateNotifyCommand : IRequest<Result<Notify>>
     {
-        public int CustomerId { get; set; }
-
-        public string Email { get; set; }
-
-        public bool Sent { get; set; }
-
-        public int Retry { get; set; }
+        public Notify Notify { get; set; }
     }
 
-    public class CreateNotifyCommandHandler : IRequestHandler<CreateNotifyCommand, Notify>
+    public class CreateNotifyCommandHandler : IRequestHandler<CreateNotifyCommand, Result<Notify>>
     {
         private readonly INotifyDataAccess dataAcess;
 
-        public CreateNotifyCommandHandler(INotifyDataAccess dataAcess) 
-            => this.dataAcess = dataAcess;
+        public CreateNotifyCommandHandler(INotifyDataAccess dataAcess) => this.dataAcess = dataAcess;
 
-        public async Task<Notify> Handle(CreateNotifyCommand request, CancellationToken cancellationToken)
-            => await this.dataAcess.SaveAsync(new Notify
-            {
-                CustomerId = request.CustomerId,
-                Email = request.Email,
-                Sent = request.Sent,
-                Retry = request.Retry,
-                DateSent = DateTime.Now
-            });
+        public async Task<Result<Notify>> Handle(CreateNotifyCommand request, CancellationToken cancellationToken)
+        {
+            var outcome = await this.dataAcess.SaveAsync(request.Notify);
+
+            return (outcome != null) ? Result<Notify>.Success(outcome) : Result<Notify>.Failure("Error creating a Notification");
+        }
     }
 }

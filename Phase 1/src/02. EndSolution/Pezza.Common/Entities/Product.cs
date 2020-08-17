@@ -2,7 +2,7 @@ namespace Pezza.Common.Entities
 {
     using System;
 
-    public partial class Product
+    public class Product
     {
         public int Id { get; set; }
 

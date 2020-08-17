@@ -6,7 +6,7 @@ namespace Pezza.Core
     using FluentValidation;
     using MediatR;
     using Microsoft.Extensions.DependencyInjection;
-    using Pezza.DataAccess;
+    using Pezza.DataAccess.Data;
     using Pezza.DataAccess.Contracts;
 
     public static class DependencyInjection

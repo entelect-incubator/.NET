@@ -2,7 +2,7 @@ namespace Pezza.Common.Entities
 {
     using System;
 
-    public partial class Notify
+    public class Notify
     {
         public int Id { get; set; }
 
@@ -15,5 +15,7 @@ namespace Pezza.Common.Entities
         public int Retry { get; set; }
 
         public DateTime DateSent { get; set; }
+
+        public virtual Customer Customer { get; set; }
     }
 }

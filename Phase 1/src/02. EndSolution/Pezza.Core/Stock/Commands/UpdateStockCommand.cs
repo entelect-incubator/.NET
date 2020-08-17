@@ -1,21 +1,21 @@
 ﻿namespace Pezza.Core.Stock.Commands
 {
     using System;
-    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using MediatR;
     using Pezza.Common.Models;
-    using Pezza.Common.Models.SearchModels;
     using Pezza.DataAccess.Contracts;
 
     public partial class UpdateStockCommand : IRequest<Result<Common.Entities.Stock>>
     {
+        public int Id { get; set; }
+
         public string Name { get; set; }
 
         public string UnitOfMeasure { get; set; }
 
-        public decimal? ValueOfMeasure { get; set; }
+        public double? ValueOfMeasure { get; set; }
 
         public int? Quantity { get; set; }
 
@@ -33,11 +33,7 @@
 
         public async Task<Result<Common.Entities.Stock>> Handle(UpdateStockCommand request, CancellationToken cancellationToken)
         {
-            var search = await this.dataAcess.GetAllAsync(new StockSearchModel
-            {
-                Name = request.Name
-            });
-            var findEntity = search.FirstOrDefault();
+            var findEntity = await this.dataAcess.GetAsync(request.Id);
 
             if (!string.IsNullOrEmpty(request.Name))
             {

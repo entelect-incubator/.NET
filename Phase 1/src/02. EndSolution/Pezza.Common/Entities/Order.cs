@@ -3,7 +3,7 @@ namespace Pezza.Common.Entities
 	using System;
 	using System.Collections.Generic;
 
-    public partial class Order
+    public class Order
     {
         public Order() => this.OrderItems = new HashSet<OrderItem>();
 

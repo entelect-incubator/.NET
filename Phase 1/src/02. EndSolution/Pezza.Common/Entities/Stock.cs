@@ -2,7 +2,7 @@ namespace Pezza.Common.Entities
 {
     using System;
 
-    public partial class Stock
+    public class Stock
     {
         public int Id { get; set; }
 
@@ -10,7 +10,7 @@ namespace Pezza.Common.Entities
 
         public string UnitOfMeasure { get; set; }
 
-        public decimal? ValueOfMeasure { get; set; }
+        public double? ValueOfMeasure { get; set; }
 
         public int Quantity { get; set; }
 

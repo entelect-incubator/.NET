@@ -40,12 +40,6 @@ namespace Pezza.DataAccess.Mapping
                 .HasColumnName("DateCreated")
                 .HasColumnType("datetime")
                 .HasDefaultValueSql("(getdate())");
-
-            // relationships
-            builder.HasOne(t => t.Customer)
-                .WithMany(t => t.Orders)
-                .HasForeignKey(d => d.CustomerId)
-                .HasConstraintName("FK_Order_Customer");
         }
 
     }

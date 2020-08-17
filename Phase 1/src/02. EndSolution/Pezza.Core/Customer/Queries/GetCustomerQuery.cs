@@ -4,25 +4,24 @@
     using System.Threading.Tasks;
     using MediatR;
     using Pezza.Common.Models;
-    using Pezza.Common.Models.SearchModels;
     using Pezza.DataAccess.Contracts;
 
-    public class GetCustomerQuery : IRequest<ListResult<Common.Entities.Customer>>
+    public class GetCustomerQuery : IRequest<Result<Common.Entities.Customer>>
     {
-        public CustomerSearchModel CustomerSearchModel { get; set; }
+        public int Id { get; set; }
     }
 
-    public class GetCustomersQueryHandler : IRequestHandler<GetCustomerQuery, ListResult<Common.Entities.Customer>>
+    public class GetCustomerQueryHandler : IRequestHandler<GetCustomerQuery, Result<Common.Entities.Customer>>
     {
         private readonly ICustomerDataAccess dataAcess;
 
-        public GetCustomersQueryHandler(ICustomerDataAccess dataAcess) => this.dataAcess = dataAcess;
+        public GetCustomerQueryHandler(ICustomerDataAccess dataAcess) => this.dataAcess = dataAcess;
 
-        public async Task<ListResult<Common.Entities.Customer>> Handle(GetCustomerQuery request, CancellationToken cancellationToken)
+        public async Task<Result<Common.Entities.Customer>> Handle(GetCustomerQuery request, CancellationToken cancellationToken)
         {
-            var search = await this.dataAcess.GetAllAsync(request.CustomerSearchModel);
+            var search = await this.dataAcess.GetAsync(request.Id);
 
-            return ListResult<Common.Entities.Customer>.Success(search);
+            return Result<Common.Entities.Customer>.Success(search);
         }
     }
 }

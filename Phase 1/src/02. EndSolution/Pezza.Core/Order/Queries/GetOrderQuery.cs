@@ -1,28 +1,27 @@
-﻿namespace Pezza.Core.Product.Queries
+﻿namespace Pezza.Core.Order.Queries
 {
     using System.Threading;
     using System.Threading.Tasks;
     using MediatR;
     using Pezza.Common.Models;
-    using Pezza.Common.Models.SearchModels;
     using Pezza.DataAccess.Contracts;
 
-    public class GetProductQuery : IRequest<ListResult<Common.Entities.Product>>
+    public class GetOrderQuery : IRequest<Result<Common.Entities.Order>>
     {
-        public ProductSearchModel ProductSearchModel { get; set; }
+        public int Id { get; set; }
     }
 
-    public class GetProductsQueryHandler : IRequestHandler<GetProductQuery, ListResult<Common.Entities.Product>>
+    public class GetOrderQueryHandler : IRequestHandler<GetOrderQuery, Result<Common.Entities.Order>>
     {
-        private readonly IProductDataAccess dataAcess;
+        private readonly IOrderDataAccess dataAcess;
 
-        public GetProductsQueryHandler(IProductDataAccess dataAcess) => this.dataAcess = dataAcess;
+        public GetOrderQueryHandler(IOrderDataAccess dataAcess) => this.dataAcess = dataAcess;
 
-        public async Task<ListResult<Common.Entities.Product>> Handle(GetProductQuery request, CancellationToken cancellationToken)
+        public async Task<Result<Common.Entities.Order>> Handle(GetOrderQuery request, CancellationToken cancellationToken)
         {
-            var search = await this.dataAcess.GetAllAsync(request.ProductSearchModel);
+            var search = await this.dataAcess.GetAsync(request.Id);
 
-            return ListResult<Common.Entities.Product>.Success(search);
+            return Result<Common.Entities.Order>.Success(search);
         }
     }
 }

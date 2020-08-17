@@ -4,8 +4,6 @@
 
 <br/><br/>
 
-This Phase might feel a bit tedious, but it puts down a strong foundation to build of from for the entire incubator.
-
 ### **Entitites**
 ![Entitites Setup](../Assets/phase1-setup-entities.png)
 
@@ -16,7 +14,7 @@ This Phase might feel a bit tedious, but it puts down a strong foundation to bui
 ![Database Context Interface Setup](../Assets/phase1-setup-db-context-interface.png)
 
 
-### Create Basic Filtering classes for every entity that will be used. Using customer filter as an example, add basic filtering to each filter where applicable i.e filterByName
+### Create Basic Filtering classes for every entity that will be used in Phase 2.
 
 05 Database > Pezza.DataAccess > Filter
 
@@ -31,27 +29,64 @@ namespace Pezza.DataAccess.Filter
 }
 ```
 
-Customer Filter class
+It should look like this when you are done
+![Data Access Filters](../Assets/phase1-setup-filters.png)
+
+In 04 Common > Pezza.Common > Models > SearchModels
+
+Create a **Search Model** for each Entity
+
+Search Models is DTO that contains properties to search for an entity by. We also use the PagingArgs class provided in the Clean Code Architecture to standarise and make it easy to apply pagination or sorting for all queries.
+
+Include all the properties that you might need to use to search for an entity with. All fields that is not a string should be made nullable. We will expand on this in Phase 2.
+
+Make sure all Search Models includes the following. We will be covering this in more detail in Phase 2
 
 ```
-namespace Pezza.DataAccess.Filter
+    public string OrderBy { get; set; }
+
+    public PagingArgs PagingArgs { get; set; }
+```
+
+For the Filter Class you will need Nuget
+
+```
+Package System.Linq.Dynamic.Core
+```
+
+```
+namespace Pezza.Common.Models
 {
-    using System.Linq;
-    using Pezza.Common.Entities;
+    using System;
 
-    public static class CustomerFilter
+    public class CustomerSearchModel
     {
-        public static IQueryable<Customer> FilterByName(this IQueryable<Customer> query, string name)
-            => string.IsNullOrEmpty(name) ? query : query.Where(x => x.Name.ToLower().Contains(name.ToLower()));
+        public string Name { get; set; }
 
-        public static IQueryable<Customer> FilterByEmail(this IQueryable<Customer> query, string email)
-            => string.IsNullOrEmpty(email) ? query : query.Where(x => x.Email.ToLower().Contains(email.ToLower()));
+        public string Address { get; set; }
+
+        public string City { get; set; }
+
+        public string Province { get; set; }
+
+        public string ZipCode { get; set; }
+
+        public string Phone { get; set; }
+
+        public string Email { get; set; }
+
+        public string ContactPerson { get; set; }
+
+        public DateTime? DateCreated { get; set; }
+
+        public string OrderBy { get; set; }
+
+        public PagingArgs PagingArgs { get; set; }
     }
 }
 ```
 
-It should look like this when you are done
-![Data Access Filters](../Assets/phase1-setup-filters.png)
+![Customer Search Model](../Assets/phase1-setup-customer-search-model.png)
 
 ### Create a DataAccess class and interface for every Entity
 
@@ -197,101 +232,6 @@ public async Task<List<Common.Entities.Order>> GetAllAsync(OrderSearchModel sear
 ### **05 Database > Pezza.DataAccess > DatabaseContext.cs**
 ![Database Context Setup](../Assets/phase1-setup-db-context.png)
 
-## Create Search Models for all entities
-
-Search Models is DTO that contains properties to search for an entity by. We also use the PagingArgs class provided in the Clean Code Architecture to standarise and make it easy to apply pagination or sorting for all queries.
-
-```
-namespace Pezza.Common.Models
-{
-    public class PagingArgs
-    {
-        private int limit = 20;
-
-        public static PagingArgs NoPaging => new PagingArgs { UsePaging = false };
-
-        public static PagingArgs Default => new PagingArgs { UsePaging = true, Limit = 20, Offset = 0 };
-
-        public static PagingArgs FirstItem => new PagingArgs { UsePaging = true, Limit = 1, Offset = 0 };
-
-        public int Offset { get; set; }
-
-        public int Limit
-        {
-            get => this.limit;
-
-            set
-            {
-                if (value == 0)
-                {
-                    value = 20;
-                }
-
-                this.limit = value;
-            }
-        }
-
-        public bool UsePaging { get; set; }
-    }
-}
-
-```
-
-In 04 Common > Pezza.Common > Models > SearchModels
-
-Create a **Search Model** for each Entity
-
-Include all the properties that you might need to use to search for an entity with. All fields that is not a string should be made nullable.
-
-Make sure all Search Models includes the following. We will be covering this in more detail in Phase 2
-
-```
-    public string OrderBy { get; set; }
-
-    public PagingArgs PagingArgs { get; set; }
-```
-
-For the Filter Class you will need Nuget
-
-```
-Package System.Linq.Dynamic.Core
-```
-
-```
-namespace Pezza.Common.Models
-{
-    using System;
-
-    public class CustomerSearchModel
-    {
-        public string Name { get; set; }
-
-        public string Address { get; set; }
-
-        public string City { get; set; }
-
-        public string Province { get; set; }
-
-        public string ZipCode { get; set; }
-
-        public string Phone { get; set; }
-
-        public string Email { get; set; }
-
-        public string ContactPerson { get; set; }
-
-        public DateTime? DateCreated { get; set; }
-
-        public string OrderBy { get; set; }
-
-        public PagingArgs PagingArgs { get; set; }
-    }
-}
-```
-
-![Customer Search Model](../Assets/phase1-setup-customer-search-model.png)
-
-
 ### 03 Core > Pezza.Core > Create Command and Queries
 
 Update DependencyInjection.cs to include data access layer
@@ -321,30 +261,36 @@ public static IServiceCollection AddApplication(this IServiceCollection services
 Sample Create Command - CreateCustomerCommand
 
 ```
-namespace Pezza.Core.Customer
+namespace Pezza.Core.Customer.Commands
 {
     using System.Threading;
     using System.Threading.Tasks;
     using Common.Entities;
     using MediatR;
+    using Pezza.Common.Models;
     using Pezza.DataAccess.Contracts;
 
-    public partial class CreateCustomerCommand : IRequest<Customer>
+    public partial class CreateCustomerCommand : IRequest<Result<Customer>>
     {
         public Customer Customer { get; set; }
     }
 
-    public class CreateCustomerCommandHandler : IRequestHandler<CreateCustomerCommand, Customer>
+    public class CreateCustomerCommandHandler : IRequestHandler<CreateCustomerCommand, Result<Customer>>
     {
         private readonly ICustomerDataAccess dataAcess;
 
-        public CreateCustomerCommandHandler(ICustomerDataAccess dataAcess) 
+        public CreateCustomerCommandHandler(ICustomerDataAccess dataAcess)
             => this.dataAcess = dataAcess;
 
-        public async Task<Customer> Handle(CreateCustomerCommand request, CancellationToken cancellationToken)
-            => await this.dataAcess.SaveAsync(request.Customer);
+        public async Task<Result<Customer>> Handle(CreateCustomerCommand request, CancellationToken cancellationToken)
+        {
+            var outcome = await this.dataAcess.SaveAsync(request.Customer);
+
+            return (outcome != null) ? Result<Customer>.Success(outcome) : Result<Customer>.Failure("Error creating a Customer");
+        }
     }
 }
+
 ```
 
 Sample Delete Command - DeleteCustomerCommand
@@ -383,35 +329,6 @@ namespace Pezza.Core.Customer.Commands
 
 Sample Update Command - UpdateCustomerCommand
 
-When updating a customer we might not know what the customer id is. To solve this we are going to use the customer search model class in the common project.
-
-Update Customer Data Access Interface and Customer Data Access
-
-```
-Task<List<Customer>> GetAllAsync(CustomerSearchModel searchModel);
-```
-
-```
-public async Task<List<Common.Entities.Customer>> GetAllAsync(CustomerSearchModel searchModel)
-        {
-            if (string.IsNullOrEmpty(searchModel.OrderBy))
-            {
-                searchModel.OrderBy = "DateCreated desc";
-            }
-
-            var entities = this.databaseContext.Customers.Select(x => x)
-                .FilterByName(searchModel.Name)
-                .FilterByEmail(searchModel.Email)
-                .AsNoTracking()
-                .OrderBy(searchModel.OrderBy);
-
-            var paged = await entities.ApplyPaging(searchModel.PagingArgs).ToListAsync();
-            return paged;
-        }
-```
-
-Update Command Sample
-
 ```
 namespace Pezza.Core.Customer.Commands
 {
@@ -420,10 +337,13 @@ namespace Pezza.Core.Customer.Commands
     using System.Threading.Tasks;
     using MediatR;
     using Pezza.Common.Models;
+    using Pezza.Common.Models.SearchModels;
     using Pezza.DataAccess.Contracts;
 
     public partial class UpdateCustomerCommand : IRequest<Result<Common.Entities.Customer>>
     {
+        public int Id { get; set; }
+
         public string Name { get; set; }
 
         public string Address { get; set; }
@@ -450,11 +370,7 @@ namespace Pezza.Core.Customer.Commands
 
         public async Task<Result<Common.Entities.Customer>> Handle(UpdateCustomerCommand request, CancellationToken cancellationToken)
         {
-            var search = await this.dataAcess.GetAllAsync(new CustomerSearchModel
-            {
-                Email = request.Email
-            });
-            var findEntity = search.FirstOrDefault();
+            var findEntity = await this.dataAcess.GetAsync(request.Id);
 
             if (!string.IsNullOrEmpty(request.Name))
             {
@@ -501,6 +417,8 @@ namespace Pezza.Core.Customer.Commands
 
 ### Query Sample
 
+How to get a single Customer
+
 ```
 namespace Pezza.Core.Customer.Queries
 {
@@ -510,18 +428,52 @@ namespace Pezza.Core.Customer.Queries
     using Pezza.Common.Models;
     using Pezza.DataAccess.Contracts;
 
-    public class GetCustomerQuery : IRequest<ListResult<Common.Entities.Customer>>
+    public class GetCustomerQuery : IRequest<Result<Common.Entities.Customer>>
+    {
+        public int Id { get; set; }
+    }
+
+    public class GetCustomerQueryHandler : IRequestHandler<GetCustomerQuery, Result<Common.Entities.Customer>>
+    {
+        private readonly ICustomerDataAccess dataAcess;
+
+        public GetCustomerQueryHandler(ICustomerDataAccess dataAcess) => this.dataAcess = dataAcess;
+
+        public async Task<Result<Common.Entities.Customer>> Handle(GetCustomerQuery request, CancellationToken cancellationToken)
+        {
+            var search = await this.dataAcess.GetAsync(request.Id);
+
+            return Result<Common.Entities.Customer>.Success(search);
+        }
+    }
+}
+
+```
+
+How to retrieve a list of Customers
+
+```
+namespace Pezza.Core.Customer.Queries
+{
+    using System.Threading;
+    using System.Threading.Tasks;
+    using MediatR;
+    using Pezza.Common.Models;
+    using Pezza.Common.Models.SearchModels;
+    using Pezza.DataAccess.Contracts;
+
+    public class GetCustomersQuery : IRequest<ListResult<Common.Entities.Customer>>
     {
         public CustomerSearchModel CustomerSearchModel { get; set; }
     }
 
-    public class GetTodosQueryHandler : IRequestHandler<GetCustomerQuery, ListResult<Common.Entities.Customer>>
+    public class GetCustomersQueryHandler : IRequestHandler<GetCustomersQuery, ListResult<Common.Entities.Customer>>
     {
         private readonly ICustomerDataAccess dataAcess;
 
-        public GetTodosQueryHandler(ICustomerDataAccess dataAcess) => this.dataAcess = dataAcess;
+        public GetCustomersQueryHandler(ICustomerDataAccess dataAcess) => this.dataAcess = dataAcess;
 
-        public async Task<ListResult<Common.Entities.Customer>> Handle(GetCustomerQuery request, CancellationToken cancellationToken)
+        public async Task<ListResult<Common.Entities.Customer>> Handle(GetCustomersQuery request, CancellationToken cancellationToken)
         {
             var search = await this.dataAcess.GetAllAsync(request.CustomerSearchModel);
 
@@ -529,4 +481,16 @@ namespace Pezza.Core.Customer.Queries
         }
     }
 }
+
 ```
+
+The only addition change that needs to be made is to handle images for **Product** and **Restaurant**.
+
+**Create Command** for the 2 entities add the following property, the calling application will use this to send the image through. The ImageData property will be send to MediaHelper class to save the image on the server and return a Url back to the command to save.
+
+```
+    public string ImageData { get; set; }
+```
+
+Should look like this when you are done
+![Commands and Queries](../Assets/phase1-core-commands-queries.png)

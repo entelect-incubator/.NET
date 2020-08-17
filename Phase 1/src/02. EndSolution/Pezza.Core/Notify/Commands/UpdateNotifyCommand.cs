@@ -1,16 +1,16 @@
 ﻿namespace Pezza.Core.Notify.Commands
 {
     using System;
-    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using MediatR;
     using Pezza.Common.Models;
-    using Pezza.Common.Models.SearchModels;
     using Pezza.DataAccess.Contracts;
 
     public partial class UpdateNotifyCommand : IRequest<Result<Common.Entities.Notify>>
     {
+        public int Id { get; set; }
+
         public int? CustomerId { get; set; }
 
         public string Email { get; set; }
@@ -31,11 +31,7 @@
 
         public async Task<Result<Common.Entities.Notify>> Handle(UpdateNotifyCommand request, CancellationToken cancellationToken)
         {
-            var search = await this.dataAcess.GetAllAsync(new NotifySearchModel
-            {
-                Email = request.Email
-            });
-            var findEntity = search.FirstOrDefault();
+            var findEntity = await this.dataAcess.GetAsync(request.Id);
 
             if (request.CustomerId.HasValue)
             {

@@ -1,4 +1,4 @@
-﻿namespace Pezza.DataAccess
+﻿namespace Pezza.DataAccess.Data
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -8,13 +8,13 @@
     using Pezza.Common.Extensions;
     using Pezza.Common.Models.SearchModels;
     using Pezza.DataAccess.Contracts;
-    using Pezza.DataAccess.Filter;
 
     public class CustomerDataAccess : ICustomerDataAccess
     {
         private readonly IDatabaseContext databaseContext;
 
-        public CustomerDataAccess(IDatabaseContext databaseContext) => this.databaseContext = databaseContext;
+        public CustomerDataAccess(IDatabaseContext databaseContext)
+            => this.databaseContext = databaseContext;
 
         public async Task<Common.Entities.Customer> GetAsync(int id)
         {
@@ -29,12 +29,11 @@
             }
 
             var entities = this.databaseContext.Customers.Select(x => x)
-                .FilterByName(searchModel.Name)
-                .FilterByEmail(searchModel.Email)
                 .AsNoTracking()
                 .OrderBy(searchModel.OrderBy);
 
             var paged = await entities.ApplyPaging(searchModel.PagingArgs).ToListAsync();
+
             return paged;
         }
 
@@ -42,6 +41,7 @@
         {
             this.databaseContext.Customers.Add(entity);
             await this.databaseContext.SaveChangesAsync();
+
             return entity;
         }
 
@@ -49,6 +49,7 @@
         {
             this.databaseContext.Customers.Update(entity);
             await this.databaseContext.SaveChangesAsync();
+
             return entity;
         }
 
@@ -56,6 +57,7 @@
         {
             this.databaseContext.Customers.Remove(entity);
             var result = await this.databaseContext.SaveChangesAsync();
+
             return (result == 1);
         }
     }

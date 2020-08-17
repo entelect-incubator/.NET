@@ -1,4 +1,4 @@
-﻿namespace Pezza.DataAccess
+﻿namespace Pezza.DataAccess.Data
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -8,13 +8,13 @@
     using Pezza.Common.Extensions;
     using Pezza.Common.Models.SearchModels;
     using Pezza.DataAccess.Contracts;
-    using Pezza.DataAccess.Filter;
 
     public class ProductDataAccess : IProductDataAccess
     {
         private readonly IDatabaseContext databaseContext;
 
-        public ProductDataAccess(IDatabaseContext databaseContext) => this.databaseContext = databaseContext;
+        public ProductDataAccess(IDatabaseContext databaseContext)
+            => this.databaseContext = databaseContext;
 
         public async Task<Common.Entities.Product> GetAsync(int id)
         {
@@ -25,15 +25,15 @@
         {
             if (string.IsNullOrEmpty(searchModel.OrderBy))
             {
-                searchModel.OrderBy = "DateSent desc";
+                searchModel.OrderBy = "DateCreated desc";
             }
 
             var entities = this.databaseContext.Products.Select(x => x)
-                .FilterByName(searchModel.Name)
                 .AsNoTracking()
                 .OrderBy(searchModel.OrderBy);
 
             var paged = await entities.ApplyPaging(searchModel.PagingArgs).ToListAsync();
+
             return paged;
         }
 
@@ -41,6 +41,7 @@
         {
             this.databaseContext.Products.Add(entity);
             await this.databaseContext.SaveChangesAsync();
+
             return entity;
         }
 
@@ -48,6 +49,7 @@
         {
             this.databaseContext.Products.Update(entity);
             await this.databaseContext.SaveChangesAsync();
+
             return entity;
         }
 
@@ -55,6 +57,7 @@
         {
             this.databaseContext.Products.Remove(entity);
             var result = await this.databaseContext.SaveChangesAsync();
+
             return (result == 1);
         }
     }

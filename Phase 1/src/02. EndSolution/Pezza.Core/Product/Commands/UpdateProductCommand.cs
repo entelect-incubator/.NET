@@ -1,21 +1,23 @@
 ﻿namespace Pezza.Core.Product.Commands
 {
     using System;
-    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using MediatR;
     using Pezza.Common.Models;
-    using Pezza.Common.Models.SearchModels;
     using Pezza.DataAccess.Contracts;
 
     public partial class UpdateProductCommand : IRequest<Result<Common.Entities.Product>>
     {
+        public int Id { get; set; }
+
         public string Name { get; set; }
 
         public string Description { get; set; }
 
-        public string PictureData { get; set; }
+        public string ImageData { get; set; }
+        
+        public string PictureUrl { get; set; }
 
         public decimal? Price { get; set; }
 
@@ -37,11 +39,7 @@
 
         public async Task<Result<Common.Entities.Product>> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
         {
-            var search = await this.dataAcess.GetAllAsync(new ProductSearchModel
-            {
-                Name = request.Name
-            });
-            var findEntity = search.FirstOrDefault();
+            var findEntity = await this.dataAcess.GetAsync(request.Id);
 
             if (!string.IsNullOrEmpty(request.Name))
             {
@@ -51,6 +49,11 @@
             if (!string.IsNullOrEmpty(request.Description))
             {
                 findEntity.Description = request.Description;
+            }
+
+            if (!string.IsNullOrEmpty(request.PictureUrl))
+            {
+                findEntity.PictureUrl = request.PictureUrl;
             }
 
             if (request.Price.HasValue)

@@ -1,9 +1,6 @@
 namespace Pezza.Common.Entities
 {
-	using System;
-	using System.Collections.Generic;
-
-    public partial class OrderItem
+    public class OrderItem
     {
         public int Id { get; set; }
 

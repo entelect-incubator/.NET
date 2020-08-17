@@ -1,38 +1,30 @@
 ﻿namespace Pezza.Core.Order.Commands
 {
     using System;
-    using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
     using Common.Entities;
     using MediatR;
+    using Pezza.Common.Models;
     using Pezza.DataAccess.Contracts;
 
-    public partial class CreateOrderCommand : IRequest<Order>
+    public partial class CreateOrderCommand : IRequest<Result<Order>>
     {
-        public decimal Amount { get; set; }
-
-        public virtual Customer Customer { get; set; }
-
-        public virtual Restaurant Restaurant { get; set; }
-
-        public virtual ICollection<OrderItem> OrderItems { get; set; }
+        public Order Order { get; set; }
     }
 
-    public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Order>
+    public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Result<Order>>
     {
         private readonly IOrderDataAccess dataAcess;
 
         public CreateOrderCommandHandler(IOrderDataAccess orderDataAcess) => this.dataAcess = orderDataAcess;
 
-        public async Task<Order> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
-            => await this.dataAcess.SaveAsync(new Order
-            {
-                Amount = request.Amount,
-                Customer = request.Customer,
-                Restaurant = request.Restaurant,
-                OrderItems = request.OrderItems,
-                DateCreated = DateTime.Now
-            });
+        public async Task<Result<Order>> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
+        {
+            request.Order.DateCreated = DateTime.Now;
+            var outcome = await this.dataAcess.SaveAsync(request.Order);
+
+            return (outcome != null) ? Result<Order>.Success(outcome) : Result<Order>.Failure("Error adding a Order");
+        }
     }
 }
