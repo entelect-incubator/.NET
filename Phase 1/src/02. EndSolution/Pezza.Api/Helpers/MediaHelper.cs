@@ -14,7 +14,7 @@
         {
             if (string.IsNullOrEmpty(fileData))
             {
-                var folderName = string.IsNullOrEmpty(uploadFolder) ? "" : uploadFolder;
+                var folderName = string.IsNullOrEmpty( uploadFolder) ? "" : uploadFolder;
 
                 var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), Path.Combine("Media", folderName));
                 if (!Directory.Exists(pathToSave))
