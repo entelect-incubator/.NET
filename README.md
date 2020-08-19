@@ -1,8 +1,12 @@
-# **Welcome to the .NET Incubator**
+<img align="left" width="116" height="116" src="net-logo.svg" />
+
+# &nbsp;**Welcome to the .NET Incubator**
+
+<br/><br/>
 
 ### **Learning Overview?**
 
-- [ ] What is .Net?
+- [ ] What is .NET?
 - [ ] Where can I ask for help?
 - [ ] Solving the most common problems found to solve
   - [ ] CRUD System
@@ -16,7 +20,7 @@
 
 ## **Prerequirements**
 
-- [ ] .NET Fundamentals - [Read more...](https://github.com/entelect-incubator/.Net/tree/master/01.%20Fundamentals)
+- [ ] .NET Fundamentals - [Read more...](https://github.com/entelect-incubator/.Net/tree/master/Fundamentals)
 - [ ] .NET Overview - [Read more...](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/?view=aspnetcore-3.1&tabs=windows)
 
 For this Incubator we will be using [.NET Core 3.1](https://dotnet.microsoft.com/download) - Scan through the basic concepts.
@@ -34,6 +38,10 @@ For this Incubator we will be using [.NET Core 3.1](https://dotnet.microsoft.com
     11. Make HTTP requests
     12. Static files
 
+- [ ] Principles, Frameworks and Architectures
+
+In this Incubator we will build a solution based on the Single Responsibility Principle. To help us achieve this we will be making use of the CQRS pattern alongside a Clean Code Architecture. If you have never heard about these terms, don't worry we will be discussing them in detail.
+
 ### **Setup**
 
 - [ ] Setup your enviroment - [How to video](https://www.youtube.com/watch?v=G1-Zfr9-3zs&list=PLLWMQd6PeGY2GVsQZ-u3DPXqwwKW8MkiP)
@@ -45,13 +53,11 @@ For this Incubator we will be using [.NET Core 3.1](https://dotnet.microsoft.com
 
 # **Pezza Digital Solutions**
 
-In this section you will start building projects to allow Pezza too manage there stock and a front-end website where customers can order pizza online.
+In this section we will start building projects to allow Pezza to manage there stock and a front-end website where customers can order their favorite pizza online.
 
-## **Learning Outcomes**
+## **Intro**
 
-### **Phase 1**
-
-Admin should be able to manage the stock through a web application as well as manage different restaurants. Customers should be able to order a pizza online, this order should be visible to the restaurant. The customer should also be notified that their pizza is on its way. We will start solving these business requirements by doing the following:
+Restaurant staff should be able to manage the stock through a web application as well as manage their different restaurants. Customers should be able to order a pizza online, this order should be visible to the selected restaurant. The customer should also be notified that their pizza is on its way. We will start solving these business requirements by doing the following:
 
 - Create a CRUD System in .Net MVC Project to manage stock and restaurants. Allow restaurants to place a request stock from head-office.
 - Expose your Stock Management through an API using .Net Web API that will be used by the front-end application.
@@ -63,9 +69,21 @@ Admin should be able to manage the stock through a web application as well as ma
   
 ![Phase 1 High Level Design](./Assets/phase1-hld.svg)
 
+## **Learning Outcomes**
+
+### **Phase 1** Getting started
+
+We will be starting of with how to take a basic project and refactoring it into a solution following the single responsibility principle and how to setup a basic clean code architecture. This setup format will be used throughout the incubator.
+
 [Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%201)
 
-### **Phase 2**
+### **Phase 2** Scaffolding
+
+We will be putting down the necessary foundation that will help standardize CRUD operations, creating the necessary logic that lets your application interact with the database layer.
+
+[Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%201)
+
+### **Phase 3**
 
 Now that we have deployed phase 1, we can make a few enhancements. Also it will be easier for the customer and admin to search and filter through the stock, so we will add that in as well.
 
@@ -76,13 +94,13 @@ Improve how data is displayed and validated
 - [ ] Searching
 - [ ] Pagination
 
-### **Phase 3**
+### **Phase 4**
 
  When we work as part of a team, we usually need to adhere to coding standards. Let's have a look at how we can enforce some of the most basic standards.
   
  Coding Standards
   
-### **Phase 4**
+### **Phase 5**
 
 The sites has been running for a while now and we are getting a lot more customers on the site ordering pizza. Pezza has also expanded to more areas and realised the importance of memory and performance.
 
@@ -91,7 +109,7 @@ Increasing Performance
 - [ ] Caching
 - [ ] Compression
   
-### **Phase 5**
+### **Phase 6**
 
 Now that we have increased the performance lets and a increase of customers we need to secure our website.
 
@@ -99,7 +117,7 @@ Add Security
 - [ ] API Oauth / JWT Token
 - [ ] MVC Antiforgy Tokens
 
-### **Phase 6**
+### **Phase 7**
 
 We want customers to have the ability to track their orders.
 - [ ] SignalR
