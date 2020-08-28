@@ -1,15 +1,9 @@
 namespace Pezza.Common.Entities
 {
 	using System;
-	using System.Collections.Generic;
 
-    public partial class Customer
-    {
-        public Customer()
-        {
-            Orders = new HashSet<Order>();
-        }
-		
+    public class Customer
+    {		
         public int Id { get; set; }
 
         public string Name { get; set; }
@@ -29,7 +23,5 @@ namespace Pezza.Common.Entities
         public string ContactPerson { get; set; }
 
         public DateTime DateCreated { get; set; }
-		
-        public virtual ICollection<Order> Orders { get; set; }
     }
 }

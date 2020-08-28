@@ -4,11 +4,7 @@
 
 <br/><br/>
 
-### **Single Responsibility Principle**
-
-In this Incubator we atry to follow the Single Responsibility Principle as far as possible. This why we will be using a clean approach to CQRS. Don't worry to much about what CQRS, but it helps us in applying Single Responsibility Principle. 
-
-[CQRS Overview](https://docs.microsoft.com/en-us/azure/architecture/patterns/cqrs)
+We will be looking at creating a solution for Pezza's customers only. We will be start off with how a solution shouldn't look like and refactoring it into a clean architecture that can be used through out the rest of the incubator. 
 
 ## **Setup**
 
