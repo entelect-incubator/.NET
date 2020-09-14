@@ -27,7 +27,7 @@ namespace Pezza.Test
             var stock = StockTestData.Stock;
             await handler.SaveAsync(stock);
 
-            var response = await handler.GetAllAsync(new Common.Models.SearchModels.StockSearchModel());
+            var response = await handler.GetAllAsync();
             var outcome = response.Any();
 
             Assert.IsTrue(outcome);

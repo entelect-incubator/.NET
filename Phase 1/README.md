@@ -61,16 +61,21 @@ namespace Pezza.Api.Entities
 ```
 namespace Pezza.DataAccess.Contracts
 {
+    using System.Threading;
+    using System.Threading.Tasks;
     using Microsoft.EntityFrameworkCore;
     using Pezza.Common.Entities;
 
     public interface IDatabaseContext
     {
         DbSet<Stock> Stocks { get; set; }
+
+        Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }
 }
 ```
-DbSet will act as a Repository to the Database
+DbSet will act as a Repository to the Database. You will see we have added SaveChangesAsync into the interface, this is to expose DbContext Entity Framework Core methods in your interface.
+
 - [ ] To be able to map the Database Table to the Entity we use Mappings from EntityFrameworkCore. We also prefer using Mappings for Single Responsibility instead of using Attributes inside of an Entity. This allows the code to stay clean. Create a new folder inside Pezza.DataAccess *Mapping* with a class StockMap.cs <br/> ![](2020-09-11-10-19-06.png)
 
 ```
@@ -170,9 +175,9 @@ namespace Pezza.DataAccess
 
 ```
 
-## **Create Data Access class that will interact with DbContext**
+## **Create the Data Access layer that will interact with the database**
 
-To keep the calls to the database as clean as possible and single responsibility we will be creating Data Access classes for each entity.
+To keep the calls to the database as clean as possible and single responsibility we will be creating Data Access interfaces and classes for each entity.
 
 - [ ] Create a intreface in DataAccess.Contracts called IStockDataAccess.cs <br/> ![](2020-09-11-10-27-53.png)
 
@@ -197,3 +202,238 @@ namespace Pezza.DataAccess.Contracts
     }
 }
 ```
+
+Create a new folder in *Pezza.DataAccess* called Data, add a new Data Access called StockDataAccess.cs. <br/> ![](2020-09-14-05-35-34.png)
+
+```
+namespace Pezza.DataAccess.Data
+{
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Linq.Dynamic.Core;
+    using System.Threading.Tasks;
+    using Microsoft.EntityFrameworkCore;
+    using Pezza.DataAccess.Contracts;
+
+    public class StockDataAccess : IStockDataAccess
+    {
+        private readonly IDatabaseContext databaseContext;
+
+        public StockDataAccess(IDatabaseContext databaseContext) 
+            => this.databaseContext = databaseContext;
+
+        public async Task<Common.Entities.Stock> GetAsync(int id)
+        {
+            return await this.databaseContext.Stocks.FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+        public async Task<List<Common.Entities.Stock>> GetAllAsync()
+        {
+            var entities = await this.databaseContext.Stocks.Select(x => x).AsNoTracking().ToListAsync();
+
+            return entities;
+        }
+
+        public async Task<Common.Entities.Stock> SaveAsync(Common.Entities.Stock entity)
+        {
+            this.databaseContext.Stocks.Add(entity);
+            await this.databaseContext.SaveChangesAsync();
+
+            return entity;
+        }
+
+        public async Task<Common.Entities.Stock> UpdateAsync(Common.Entities.Stock entity)
+        {
+            this.databaseContext.Stocks.Update(entity);
+            await this.databaseContext.SaveChangesAsync();
+
+            return entity;
+        }
+
+        public async Task<bool> DeleteAsync(Common.Entities.Stock entity)
+        {
+            this.databaseContext.Stocks.Remove(entity);
+            var result = await this.databaseContext.SaveChangesAsync();
+
+            return (result == 1);
+        }
+    }
+}
+```
+The intrestingg part here is, when you call SaveChangesAsync it will return the number of changed records in the database. If you save a new record it will return the result of 1.
+
+## **Create Unit Test for testing the Data Access layer**
+
+As we add value with the different layers, we need to make sure it is testable and create unit tests. This helps later on if code changes that Unit Tests will pick up any bugs.
+
+There are a variety of ways we can setup Unit Tests, this is one way to do it.
+
+- [ ] Next create a new Solution Folder *04 Tests*
+- [ ] Create a new NUnit Test Project <br/> ![](2020-09-14-05-50-19.png)
+- [ ] Create a Setup folder, create QueryTestBase.cs class this will be inherited by by different Entity Data Acess Test classes to expose Create() function.
+
+```
+namespace Pezza.Test
+{
+    using System;
+    using Pezza.DataAccess;
+    using static DatabaseContextFactory;
+
+    public class QueryTestBase : IDisposable
+    {
+        public DatabaseContext Context => Create();
+
+        public void Dispose() => Destroy(this.Context);
+    }
+}
+```
+
+- [ ] Create DatabaseContextFactory.cs class that will be used to create a new DbContext class, but it will create a database session in memory.
+
+```
+namespace Pezza.Test
+{
+    using System;
+    using Microsoft.EntityFrameworkCore;
+    using Pezza.DataAccess;
+
+    public class DatabaseContextFactory
+    {
+        protected DatabaseContextFactory()
+        {
+        }
+
+        public static DatabaseContext DBContext()
+        {
+            var options = new DbContextOptionsBuilder<DbContext>().UseInMemoryDatabase(Guid.NewGuid().ToString()).Options;
+            return new DatabaseContext(options);
+        }
+
+        public static DatabaseContext Create()
+        {
+            var context = DBContext();
+
+            context.Database.EnsureCreated();
+
+            return context;
+        }
+
+        public static void Destroy(DatabaseContext context)
+        {
+            context.Database.EnsureDeleted();
+
+            context.Dispose();
+        }
+    }
+}
+```
+
+- [ ] Install Bogus NuGet Package to your *Pezza.Test* Project.
+- [ ] For clean code we will create Test Data for each Entity. Create a folder TestData, then create a folder Stock. Create a StockTestData.cs class. This will create a fake Stock Entity for testing. <br/> ![](2020-09-14-05-58-42.png)
+
+```
+namespace Pezza.Test
+{
+    using System;
+    using Bogus;
+    using Pezza.Common.Entities;
+
+    public static class StockTestData
+    {
+        public static Faker faker = new Faker();
+
+        public static Stock Stock = new Stock()
+        {
+            Comment = faker.Lorem.Sentence(),
+            DateCreated = DateTime.Now,
+            ExpiryDate = DateTime.Now.AddMonths(1),
+            Name = faker.Commerce.Product(),
+            Quantity = 1,
+            UnitOfMeasure = "kg",
+            ValueOfMeasure = 10.5
+        };
+    }
+
+}
+```
+- [ ] Create a new folder DataAcess, that will be used to test Stock Data Access. Create TestStockDataAccess.cs class. <br/> ![](2020-09-14-06-01-45.png)
+
+```
+namespace Pezza.Test
+{
+    using System.Linq;
+    using System.Threading.Tasks;
+    using Bogus;
+    using NUnit.Framework;
+    using Pezza.DataAccess.Data;
+
+    public class TestStockDataAccess : QueryTestBase
+    {
+        [Test]
+        public async Task GetAsync()
+        {
+            var handler = new StockDataAccess(this.Context);
+            var stock = StockTestData.Stock;
+            await handler.SaveAsync(stock);
+
+            var response = await handler.GetAsync(stock.Id);
+
+            Assert.IsTrue(response != null);
+        }
+
+        [Test]
+        public async Task GetAllAsync()
+        {
+            var handler = new StockDataAccess(this.Context);
+            var stock = StockTestData.Stock;
+            await handler.SaveAsync(stock);
+
+            var response = await handler.GetAllAsync();
+            var outcome = response.Any();
+
+            Assert.IsTrue(outcome);
+        }
+
+        [Test]
+        public async Task SaveAsync()
+        {
+            var handler = new StockDataAccess(this.Context);
+            var stock = StockTestData.Stock;
+            var result = await handler.SaveAsync(stock);
+            var outcome = result.Id != 0;
+
+            Assert.IsTrue(outcome);
+        }
+
+        [Test]
+        public async Task UpdateAsync()
+        {
+            var handler = new StockDataAccess(this.Context);
+            var stock = StockTestData.Stock;
+            var originalStock = stock;
+            await handler.SaveAsync(stock);
+
+            stock.Name = new Faker().Commerce.Product();
+            var response = await handler.UpdateAsync(stock);
+            var outcome = response.Name.Equals(originalStock.Name);
+
+            Assert.IsTrue(outcome);
+        }
+
+        [Test]
+        public async Task DeleteAsync()
+        {
+            var handler = new StockDataAccess(this.Context);
+            var stock = StockTestData.Stock;
+            await handler.SaveAsync(stock);
+            
+            var response = await handler.DeleteAsync(stock);
+
+            Assert.IsTrue(response);
+        }
+    }
+}
+```
+
+Lets break this down. 
+- GetAsync 
