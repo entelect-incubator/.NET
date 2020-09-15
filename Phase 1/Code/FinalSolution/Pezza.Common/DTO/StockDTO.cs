@@ -1,8 +1,8 @@
-namespace Pezza.Api.Entities
+﻿namespace Pezza.Common.DTO
 {
     using System;
 
-    public class Stock
+    public class StockDTO
     {
         public int Id { get; set; }
 
@@ -12,11 +12,9 @@ namespace Pezza.Api.Entities
 
         public double? ValueOfMeasure { get; set; }
 
-        public int Quantity { get; set; }
+        public int? Quantity { get; set; }
 
         public DateTime? ExpiryDate { get; set; }
-
-        public DateTime DateCreated { get; set; }
 
         public string Comment { get; set; }
     }

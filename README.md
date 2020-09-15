@@ -18,6 +18,9 @@
     - [ ] React or
     - [ ] Angular
 
+## **Resources**
+- [Entelect Stream](https://web.microsoftstream.com/channel/fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
+
 ## **Prerequirements**
 
 - [ ] .NET Fundamentals - [Read more...](https://github.com/entelect-incubator/.Net/tree/master/Fundamentals)
@@ -60,6 +63,7 @@ In this section we will start building projects to allow Pezza to manage there s
 Restaurant staff should be able to manage the stock through a web application as well as manage their different restaurants. Customers should be able to order a pizza online, this order should be visible to the selected restaurant. The customer should also be notified that their pizza is on its way. We will start solving these business requirements by doing the following:
 
 - Create a CRUD System in .Net MVC Project to manage stock and restaurants. Allow restaurants to place a request stock from head-office.
+
 - Expose your Stock Management through an API using .Net Web API that will be used by the front-end application.
 - Allow for customer notifications to be send out.
 - Create a Customer Facing Website in your choice of Front-End Library.
@@ -75,17 +79,29 @@ Restaurant staff should be able to manage the stock through a web application as
 
 We will be starting of with how to take a basic project and refactoring it into a solution following the single responsibility principle and how to setup a basic clean code architecture. This setup format will be used throughout the incubator.
 
+Overview
+- [ ] [TDDD and Unit Testing](https://web.microsoftstream.com/video/ffd65354-c7b0-49c2-a9f7-2d90a7fbb565?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
+- [ ] [Data Access](https://web.microsoftstream.com/video/198f0339-10e0-4b09-9bb0-b9c3f092c9c4?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
+
 [Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%201)
 
 ### **Phase 2** Scaffolding
 
-We will be putting down the necessary foundation that will help standardize CRUD operations, creating the necessary logic that lets your application interact with the database layer.
+We will extending the foundation from Phase 1 to all Entities CRUD operations, we will also be moving to using CQRS Pattern and Mediatr NuGet Package.
+
+Overview
+- [ ] [MVC Part 1](https://web.microsoftstream.com/video/61e64cfa-c3ba-45c3-9811-e5bc25968a2a?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
+- [ ] [MVC Part 2](https://web.microsoftstream.com/video/315b2034-0aa5-43ee-b030-562f4a597cfd?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
+
 
 [Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%201)
 
 ### **Phase 3**
 
 Now that we have deployed phase 1, we can make a few enhancements. Also it will be easier for the customer and admin to search and filter through the stock, so we will add that in as well.
+
+Overview
+- [ ] [Concurrency](https://web.microsoftstream.com/video/56e7e456-69e6-4f2b-8eec-ddb118c3aa5f?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
 
 Improve how data is displayed and validated
 
@@ -96,13 +112,19 @@ Improve how data is displayed and validated
 
 ### **Phase 4**
 
- When we work as part of a team, we usually need to adhere to coding standards. Let's have a look at how we can enforce some of the most basic standards.
+ When we work as part of a team, we usually need to adhere to coding standards. Let's have a look at how we can enforce some of the most basic standards and adding error handling.
   
- Coding Standards
+Overview
+- [ ] [Error Handling](https://web.microsoftstream.com/video/5fcd4c8a-4e7b-41ac-9836-d1366da97c82?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
+
+- [ ] Coding Standards
   
 ### **Phase 5**
 
 The sites has been running for a while now and we are getting a lot more customers on the site ordering pizza. Pezza has also expanded to more areas and realised the importance of memory and performance.
+
+Overview
+- [ ] [Performance and Memory Management](https://web.microsoftstream.com/video/64098be8-6979-4c10-85f4-efa91d0cb1f1?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
 
 Increasing Performance
 
@@ -112,6 +134,9 @@ Increasing Performance
 ### **Phase 6**
 
 Now that we have increased the performance lets and a increase of customers we need to secure our website.
+
+Overview
+- [ ] [Security](https://web.microsoftstream.com/video/2a2b5226-34cb-49ac-b8fe-880cb9ac893c?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
 
 Add Security
 - [ ] API Oauth / JWT Token

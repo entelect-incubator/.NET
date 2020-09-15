@@ -11,8 +11,7 @@ namespace Pezza.DataAccess
         {
         }
 
-        public DatabaseContext(DbContextOptions<DbContext> options)
-            : base(options)
+        public DatabaseContext(DbContextOptions options) : base(options)
         {
         }
 

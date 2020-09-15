@@ -4,7 +4,7 @@ namespace Pezza.DataAccess.Contracts
     using System.Threading.Tasks;
     using Pezza.Common.Entities;
 
-    public interface IStockDataAccess
+    public interface IStockDataAccess 
     {
         Task<Stock> GetAsync(int id);
 
@@ -14,6 +14,6 @@ namespace Pezza.DataAccess.Contracts
 
         Task<Stock> SaveAsync(Stock entity);
 
-        Task<bool> DeleteAsync(Stock entity);
+        Task<bool> DeleteAsync(int id);
     }
 }

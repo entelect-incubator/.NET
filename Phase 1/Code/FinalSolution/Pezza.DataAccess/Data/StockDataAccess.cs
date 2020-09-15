@@ -42,8 +42,9 @@
             return entity;
         }
 
-        public async Task<bool> DeleteAsync(Common.Entities.Stock entity)
+        public async Task<bool> DeleteAsync(int id)
         {
+            var entity = await this.GetAsync(id);
             this.databaseContext.Stocks.Remove(entity);
             var result = await this.databaseContext.SaveChangesAsync();
 

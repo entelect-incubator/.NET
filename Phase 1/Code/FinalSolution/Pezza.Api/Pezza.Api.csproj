@@ -4,10 +4,13 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <NoWarn>1701;1702;1591</NoWarn>
+    <DocumentationFile>F:\Dev\.Net\Phase 1\Code\FinalSolution\Pezza.Api\Pezza.Api.xml</DocumentationFile>
+  </PropertyGroup>
+
   <ItemGroup>
-    <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="7.21.1" />
-    <PackageReference Include="MediatR" Version="8.1.0" />
-    <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.0" />
   </ItemGroup>
 
   <ItemGroup>
