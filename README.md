@@ -94,7 +94,7 @@ Overview
 - [ ] [MVC Part 2](https://web.microsoftstream.com/video/315b2034-0aa5-43ee-b030-562f4a597cfd?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
 
 
-[Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%201)
+[Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%202)
 
 ### **Phase 3**
 
