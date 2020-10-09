@@ -129,8 +129,9 @@ namespace Pezza.Test
         [Test]
         public async Task DeleteAsync()
         {
+            var dataAccess = new StockDataAccess(this.Context);
             //Act
-            var sutCreate = new CreateStockCommandHandler(new StockDataAccess(this.Context));
+            var sutCreate = new CreateStockCommandHandler(dataAccess);
             var resultCreate = await sutCreate.Handle(new CreateStockCommand
             {
                 Stock = StockTestData.Stock
@@ -138,7 +139,7 @@ namespace Pezza.Test
 
 
             //Act
-            var sutDelete = new DeleteStockCommandHandler(new StockDataAccess(this.Context));
+            var sutDelete = new DeleteStockCommandHandler(dataAccess);
             var outcomeDelete = await sutDelete.Handle(new DeleteStockCommand
             {
                 Id = resultCreate.Data.Id
