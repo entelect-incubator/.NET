@@ -4,7 +4,7 @@
 
 <br/><br/>
 
-We will be looking at creating a solution for Pezza's customers only. We will start off with how a typical solution might look like and refactoring it into a clean architecture that can be used through out the rest of the incubator. We will only be focussing on the Pezza Stock for the Phase. This is to show scaffold a new Solution and Projects for a Clean Architecture.
+We will be looking at creating a solution for Pezza's customers only. We will start with how a typical solution might look like and refactoring it into a clean architecture that can be used throughout the rest of the incubator. We will only be focussing on the Pezza Stock for the Phase. This is to show scaffold a new Solution and Projects for a Clean Architecture.
 
 ## **Setup**
 
@@ -19,7 +19,7 @@ We will be looking at creating a solution for Pezza's customers only. We will st
   - [ ] Next we want to create a Common project that can be used between all Projects
     - [ ] Create a new Solution Folder *02 Common*
     - [ ] Create a new Class Library Pezza.Common <br/> ![](Assets/2020-09-11-10-01-34.png) <br/> ![](Assets/2020-09-11-10-02-26.png)
-    - [ ] Createa folder *Entities* where all database models will go into <br/> ![](Assets/2020-09-11-10-02-54.png)
+    - [ ] Create a folder *Entities* where all database models will go into <br/> ![](Assets/2020-09-11-10-02-54.png)
     - [ ] Create a Entity Stock.cs in a folder Entities <br/>![](Assets/2020-09-11-10-03-20.png)
 ``` 
 namespace Pezza.Api.Entities
@@ -47,13 +47,13 @@ namespace Pezza.Api.Entities
 }
 ```
 
-### **Connecting to the Database**
+## **Database Layer**
 
 - [ ] Next create a new Solution Folder *03 Database*
 - [ ] Create a new Class Library Pezza.DataAccess and Pezza.DataAccess.Contracts (This will used for Dependency Injection and Unit Tests) <br/> ![](Assets/2020-09-11-10-06-58.png)
-- [ ] For interacting with the Database we will be using Entity Framework Core. Right click on the Pezza.DataAccess and Pezza.DataAccessContracts project *Manage NuGet Packages...*. Search for EFCore Nuget Package, Install the following Packages
+- [ ] For interacting with the Database we will be using Entity Framework Core. Right-click on the Pezza.DataAccess and Pezza.DataAccessContracts project *Manage NuGet Packages...*. Search for EFCore Nuget Package, Install the following Packages
   - [ ] Microsoft.EntityFrameworkCore
-- [ ] Create a intreface in DataAccess.Contracts called IDatabaseContext.cs <br/> ![](Assets/2020-09-11-10-14-32.png)
+- [ ] Create an interface in DataAccess.Contracts called IDatabaseContext.cs <br/> ![](Assets/2020-09-11-10-14-32.png)
 
 ```
 namespace Pezza.DataAccess.Contracts
@@ -140,7 +140,7 @@ namespace Pezza.DataAccess.Mapping
 ```
 This will map the table name and all the fields as well as indicate what the primary key will be.
 
-- [ ] Now we need to create a DbContext.cs inside of Pezza.DataAccess that handles the ession with the database or can be seen as a unit of work. <br/> ![](Assets/2020-09-11-10-22-16.png)
+- [ ] Now we need to create a DbContext.cs inside of Pezza.DataAccess that handles the session with the database or can be seen as a unit of work. <br/> ![](Assets/2020-09-11-10-22-16.png)
 
 
 
@@ -259,7 +259,7 @@ namespace Pezza.DataAccess.Data
     }
 }
 ```
-The intresting part here is, when you call SaveChangesAsync it will return the number of changed records in the database. If you save a new record it will return the result of 1.
+The interesting part here is, when you call SaveChangesAsync it will return the number of changed records in the database. If you save a new record it will return the result of 1.
 
 ## **Data Access Unit Test**
 
@@ -439,15 +439,15 @@ Lets break this down.
 For every test we will create a new stock data access that will create a test session in memory to the database. We will then mock new stock using the stock test data. THen we will persist the new stock to the in-memory database.
 
 - GetAsync (Tests the get stock by id) - We retrieve the newly created stock from the in-memory database using the stock id. If the data that gets return is found, your unit test is successful.
-- GetAllAsync (Tests list of stock) - We retrieve a list of all the stock from the in-memory database. If the count of data returned is equals to 1, your unit test is successful.
-- SaveAsync (Tests creating new stock) - We verify the result of records changed from the save changes should equals to 1, meaning your unit test is successful.
-- UpdateAsync (Tests updating existing stock) - We generate a new name for the stock item to be updated. We verify the updated stock's name with the updated stock, if they are the same; your unit test is successful.
+- GetAllAsync (Tests list of stock) - We retrieve a list of all the stock from the in-memory database. If the count of data returned is equalled to 1, your unit test is successful.
+- SaveAsync (Tests creating new stock) - We verify the result of records changed from the save changes should equal to 1, meaning your unit test is successful.
+- UpdateAsync (Tests updating existing stock) - We generate a new name for the stock item to be updated. We verify the updated stock's name with the updated stock if they are the same; your unit test is successful.
 - DeleteAsync (Tests removing stock) - We verify the result of deleting the stock from the in-memory database. Depending on the result being returned will determine the outcome of the unit test.
 
 ## **Core Layer**
 
 - [ ] Create a new Solution Folder *02 Core*, this where all of your business logic will be found. Imagine the "core" of the business lives here.
-- [ ] Lets put all the Solution Folders in the correct order of use. Think of it as a vertical slice down to the database. Start with the API call, through to the Business Layer, through to the Data Access layer.
+- [ ] Let us put all the Solution Folders in the correct order of use. Think of it as a vertical slice down to the database. Start with the API call, through to the Business Layer, through to the Data Access layer.
   - [ ] 01 Apis
   - [ ] 02 Core
   - [ ] 03 Database
@@ -455,8 +455,8 @@ For every test we will create a new stock data access that will create a test se
   - [ ] 05 Tests <br/> ![](Assets/2020-09-15-04-24-39.png)
 - [ ] We don't always want to expose the entities properties back to API, we want to send back DTO (Data Transfer Objects).
   - Remove circular references.
-  - Hide particular properties that clients are not supposed to view.
-  - Omit some properties in order to reduce payload size.
+  - Hide the particular properties that clients are not supposed to view.
+  - Omit some properties to reduce the payload size.
   - Flatten object graphs that contain nested objects, to make them more convenient for clients.
   - Avoid "over-posting" vulnerabilities.
   - Decouple your service layer from your database layer
@@ -535,8 +535,8 @@ namespace Pezza.Common.Mapping
 }
 ```
 
-Add this before input parameter allows you to create extension methods on certain type. i.e. new Stock().Map();
-- [ ] Create 2 new Class Libraries inside of *02 Core* - Pezza.Core and Pezza.Core.Contracts. We will start by using a very basic Stock Core.
+Add this before the input parameter allows you to create extension methods on a certain type. i.e. new Stock().Map();
+- [ ] Create 2 new Class Libraries inside of *02 Core* - Pezza.Core and Pezza.Core.Contracts. We will start by using very basic Stock Core.
   - [ ] Create a new IStockCore Interface in *Pezza.Core.Contracts* 
 
 ```
@@ -675,7 +675,7 @@ namespace Pezza.Core
 
 ## **Core Layer Unit Test**
 
-Next we will create unit tests for our Core Layer.
+Next, we will create unit tests for our Core Layer.
 
 - [ ] Create a new folder Core inside *Pezza.Test* with a class TestStockCore.cs. Also, add new StockDTO to StockTestData.cs <br/> ![](Assets/2020-09-15-05-13-20.png)
 
@@ -768,7 +768,7 @@ namespace Pezza.Test
     }
 }
 ```
-Currently the Unit test will be very similar to that of Data Access. When new Business Logic gets added to the Core layer, you will then add Unit Test for that specific criteria. We are currently focussing on putting down foundations.
+Currently, the Unit test will be very similar to that of Data Access. When new Business Logic gets added to the Core layer, you will then add Unit Test for that specific criteria. We are currently focussing on putting down foundations.
 
 ## **API Layer**
 
@@ -833,14 +833,14 @@ services.AddDbContext<IDatabaseContext, DatabaseContext>(options =>
 - [ ] Remove all refrences to WeatherForecast
 - [ ] Create new StockController.cs. We will create a restfull endpoint fo each Core method. <br/> ![](Assets/2020-09-15-05-31-22.png)
 
-First add the dependency injection to Stock Core
+First, add the dependency injection to Stock Core
 ```
 private readonly IStockCore StockCore;
 
 public StockController(IStockCore StockCore) => this.StockCore = StockCore;
 ```
 
-Then all the enpoints.
+Then all the endpoints.
 ```
 namespace Pezza.Api.Controllers
 {
@@ -928,7 +928,7 @@ namespace Pezza.Api.Controllers
 }
 ```
 
-- [ ] Lets enable XML Documentation on the *Pezza.Api* project. Right click on the API go to Properties. <br/> ![](Assets/2020-09-15-05-59-50.png)
+- [ ] Let us enable XML Documentation on the *Pezza.Api* project. Right-click on the API goes to Properties. <br/> ![](Assets/2020-09-15-05-59-50.png)
 - [ ] In the ConfigureServices() method, configure Swagger to use the XML file that’s generated in the above step.
 
 ```
@@ -971,7 +971,7 @@ namespace Pezza.Api.Controllers
         /// <summary>
         /// Get Stock by Id.
         /// </summary>
-        /// <param name="id"></param> 
+        /// <param name="id"></param>
         [HttpGet("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
@@ -1003,16 +1003,16 @@ namespace Pezza.Api.Controllers
         /// </summary>
         /// <remarks>
         /// Sample request:
-        /// 
+        ///
         ///     POST api/Stock
-        ///     {        
+        ///     {
         ///       "name": "Tomatoes",
         ///       "UnitOfMeasure": "Kg",
         ///       "ValueOfMeasure": "1",
         ///       "Quantity": "50"
         ///     }
         /// </remarks>
-        /// <param name="stock"></param> 
+        /// <param name="stock"></param>
         [HttpPost]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
@@ -1032,9 +1032,9 @@ namespace Pezza.Api.Controllers
         /// </summary>
         /// <remarks>
         /// Sample request:
-        /// 
+        ///
         ///     PUT api/Stock/1
-        ///     {        
+        ///     {
         ///       "Quantity": "30"
         ///     }
         /// </remarks>
@@ -1057,7 +1057,7 @@ namespace Pezza.Api.Controllers
         /// <summary>
         /// Remove Stock by Id.
         /// </summary>
-        /// <param name="id"></param> 
+        /// <param name="id"></param>
         [HttpDelete("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]

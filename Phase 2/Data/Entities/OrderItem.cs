@@ -1,9 +1,6 @@
 namespace Pezza.Common.Entities
 {
-	using System;
-	using System.Collections.Generic;
-
-    public partial class OrderItem
+    public class OrderItem
     {
         public int Id { get; set; }
 
@@ -11,6 +8,8 @@ namespace Pezza.Common.Entities
 
         public int ProductId { get; set; }
 
-        public int Quantity { get; set; }
+        public virtual Restaurant Restaurant { get; set; }
+
+        public Product Product { get; set; }
     }
 }

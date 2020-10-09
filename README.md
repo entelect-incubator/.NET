@@ -43,11 +43,11 @@ For this Incubator we will be using [.NET Core 3.1](https://dotnet.microsoft.com
 
 - [ ] Principles, Frameworks and Architectures
 
-In this Incubator we will build a solution based on the Single Responsibility Principle. To help us achieve this we will be making use of the CQRS pattern alongside a Clean Code Architecture. If you have never heard about these terms, don't worry we will be discussing them in detail.
+In this Incubator, we will build a solution based on the Single Responsibility Principle. To help us achieve this we will be making use of the CQRS pattern alongside a Clean Code Architecture. If you have never heard about these terms, don't worry we will be discussing them in detail.
 
-### **Setup**
+## **Setup**
 
-- [ ] Setup your enviroment - [How to video](https://www.youtube.com/watch?v=G1-Zfr9-3zs&list=PLLWMQd6PeGY2GVsQZ-u3DPXqwwKW8MkiP)
+- [ ] Setup your environment - [How to video](https://www.youtube.com/watch?v=G1-Zfr9-3zs&list=PLLWMQd6PeGY2GVsQZ-u3DPXqwwKW8MkiP)
   - [ ] [Visual Studio 2019 Community](https://visualstudio.microsoft.com/downloads/) Installed
   - [ ] [.NET Core 3.1](https://dotnet.microsoft.com/download) Installed
   - [ ] [SQL Server Developer](https://www.microsoft.com/en-us/sql-server/sql-server-downloads) Installed
@@ -56,7 +56,7 @@ In this Incubator we will build a solution based on the Single Responsibility Pr
 
 # **Pezza Digital Solutions**
 
-In this section we will start building projects to allow Pezza to manage there stock and a front-end website where customers can order their favorite pizza online.
+In this section, we will start building projects to allow Pezza to manage their stock and a front-end website where customers can order their favourite pizza online.
 
 ## **Intro**
 
@@ -65,11 +65,12 @@ Restaurant staff should be able to manage the stock through a web application as
 - Create a CRUD System in .Net MVC Project to manage stock and restaurants. Allow restaurants to place a request stock from head-office.
 
 - Expose your Stock Management through an API using .Net Web API that will be used by the front-end application.
-- Allow for customer notifications to be send out.
+- Allow for customer notifications to be sent out.
 - Create a Customer Facing Website in your choice of Front-End Library.
-  - AngularJS
-  - ReactJS
-  - Blazor
+  - MVC - Coming Soon
+  - AngularJS - Coming Soon
+  - ReactJS - Coming Soon
+  - Blazor - Coming Soon
   
 ![Phase 1 High Level Design](./Assets/phase1-hld.svg)
 
@@ -77,7 +78,7 @@ Restaurant staff should be able to manage the stock through a web application as
 
 ### **Phase 1** Getting started
 
-We will be starting of with how to take a basic project and refactoring it into a solution following the single responsibility principle and how to setup a basic clean code architecture. This setup format will be used throughout the incubator.
+We will be starting off with how to make a basic project and refactoring it into a solution following the single responsibility principle and how to set up a basic clean code architecture. This setup format will be used throughout the incubator.
 
 Overview
 - [ ] [TDDD and Unit Testing](https://web.microsoftstream.com/video/ffd65354-c7b0-49c2-a9f7-2d90a7fbb565?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
@@ -87,7 +88,7 @@ Overview
 
 ### **Phase 2** Scaffolding
 
-We will extending the foundation from Phase 1 to all Entities CRUD operations, we will also be moving to using CQRS Pattern and Mediatr NuGet Package.
+We will be extending the foundation from Phase 1 to all Entities CRUD operations, we will also be moving to use CQRS Pattern and Mediatr NuGet Package.
 
 Overview
 - [ ] [MVC Part 1](https://web.microsoftstream.com/video/61e64cfa-c3ba-45c3-9811-e5bc25968a2a?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
@@ -98,7 +99,7 @@ Overview
 
 ### **Phase 3**
 
-Now that we have deployed phase 1, we can make a few enhancements. Also it will be easier for the customer and admin to search and filter through the stock, so we will add that in as well.
+Now that we have deployed phase 1, we can make a few enhancements. Also, it will be easier for the customer and admin to search and filter through the stock, so we will add that in as well.
 
 Overview
 - [ ] [Concurrency](https://web.microsoftstream.com/video/56e7e456-69e6-4f2b-8eec-ddb118c3aa5f?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
@@ -110,7 +111,7 @@ Improve how data is displayed and validated
 - [ ] Searching
 - [ ] Pagination
 
-### **Phase 4**
+### **Phase 4** - Coming soon
 
  When we work as part of a team, we usually need to adhere to coding standards. Let's have a look at how we can enforce some of the most basic standards and adding error handling.
   
@@ -119,9 +120,9 @@ Overview
 
 - [ ] Coding Standards
   
-### **Phase 5**
+### **Phase 5** - Coming soon
 
-The sites has been running for a while now and we are getting a lot more customers on the site ordering pizza. Pezza has also expanded to more areas and realised the importance of memory and performance.
+The sites have been running for a while now and we are getting a lot more customers on the site ordering pizza. Pezza has also expanded to more areas and realised the importance of memory and performance.
 
 Overview
 - [ ] [Performance and Memory Management](https://web.microsoftstream.com/video/64098be8-6979-4c10-85f4-efa91d0cb1f1?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
@@ -131,9 +132,9 @@ Increasing Performance
 - [ ] Caching
 - [ ] Compression
   
-### **Phase 6**
+### **Phase 6** - Coming soon
 
-Now that we have increased the performance lets and a increase of customers we need to secure our website.
+Now that we have increased the performance lets and an increase of customers we need to secure our website.
 
 Overview
 - [ ] [Security](https://web.microsoftstream.com/video/2a2b5226-34cb-49ac-b8fe-880cb9ac893c?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
@@ -142,7 +143,7 @@ Add Security
 - [ ] API Oauth / JWT Token
 - [ ] MVC Antiforgy Tokens
 
-### **Phase 7**
+### **Phase 7** - Coming soon
 
 We want customers to have the ability to track their orders.
 - [ ] SignalR

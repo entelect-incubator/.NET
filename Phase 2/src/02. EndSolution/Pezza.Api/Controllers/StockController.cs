@@ -6,16 +6,11 @@
     using Pezza.Common.DTO;
     using Pezza.Common.Entities;
     using Pezza.Core;
-    using Pezza.Core.Contracts;
 
     [ApiController]
     [Route("api/[controller]")]
     public class StockController : ControllerBase
     {
-        private readonly IStockCore StockCore;
-
-        public StockController(IStockCore StockCore) => this.StockCore = StockCore;
-
         /// <summary>
         /// Get Stock by Id.
         /// </summary>
@@ -25,13 +20,13 @@
         [ProducesResponseType(404)]
         public async Task<ActionResult> Get(int id)
         {
-            var search = await this.StockCore.GetAsync(id);
+            /*var search = await this.StockCore.GetAsync(id);
             if (search == null)
             {
                 return this.NotFound();
-            }
+            }*/
 
-            return this.Ok(search);
+            return this.Ok();
         }
 
         /// <summary>
@@ -41,9 +36,9 @@
         [ProducesResponseType(200)]
         public async Task<ActionResult> Search()
         {
-            var result = await this.StockCore.GetAllAsync();
+            /*var result = await this.StockCore.GetAllAsync();*/
 
-            return this.Ok(result);
+            return this.Ok();
         }
 
         /// <summary>
@@ -66,13 +61,8 @@
         [ProducesResponseType(400)]
         public async Task<ActionResult<Stock>> Create([FromBody] StockDTO stock)
         {
-            var result = await this.StockCore.SaveAsync(stock);
-            if (result == null)
-            {
-                return this.BadRequest();
-            }
-
-            return this.Ok(result);
+            
+            return this.Ok();
         }
 
         /// <summary>
@@ -93,13 +83,9 @@
         [ProducesResponseType(400)]
         public async Task<ActionResult> Update(int id, [FromBody] StockDTO stock)
         {
-            var result = await this.StockCore.UpdateAsync(stock);
-            if (result == null)
-            {
-                return this.BadRequest();
-            }
+            
 
-            return this.Ok(result);
+            return this.Ok();
         }
 
         /// <summary>
@@ -111,13 +97,8 @@
         [ProducesResponseType(400)]
         public async Task<ActionResult> Delete(int id)
         {
-            var result = await this.StockCore.DeleteAsync(id);
-            if (!result)
-            {
-                return this.BadRequest();
-            }
-
-            return this.Ok(result);
+            
+            return this.Ok();
         }
     }
 }

@@ -1,10 +1,17 @@
 namespace Pezza.Test
 {
     using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
     using Bogus;
+    using MediatR;
+    using Moq;
     using NUnit.Framework;
+    using Pezza.Common.Entities;
+    using Pezza.Common.Models;
     using Pezza.Core;
+    using Pezza.Core.Stock.Commands;
+    using Pezza.Core.Stock.Queries;
     using Pezza.DataAccess.Data;
 
     public class TestStockCore : QueryTestBase
@@ -12,64 +19,133 @@ namespace Pezza.Test
         [Test]
         public async Task GetAsync()
         {
-            var handler = new StockCore(new StockDataAccess(this.Context));
-            var stock = StockTestData.StockDTO;
-            await handler.SaveAsync(stock);
+            //Arrange
+            var mediator = new Mock<IMediator>();
+            mediator.Setup(m => m.Send(It.IsAny<Result<Stock>>(), It.IsAny<CancellationToken>())).ReturnsAsync(It.IsAny<Result<Stock>>());
 
-            var response = await handler.GetAsync(stock.Id);
+            //Act
+            var result = await mediator.Object.Send(new CreateStockCommand
+            {
+                Stock = StockTestData.Stock
+            });
 
-            Assert.IsTrue(response != null);
+            //Assert
+            mediator.Verify(x => x.Send(It.IsAny<CreateStockCommand>(), It.IsAny<CancellationToken>()));
+
+            //Find stock added
+            mediator.Setup(m => m.Send(It.IsAny<Result<Stock>>(), It.IsAny<CancellationToken>())).ReturnsAsync(It.IsAny<Result<Stock>>());
+
+            //Act
+            var outcome = await mediator.Object.Send(new GetStockQuery
+            {
+                Id = result.Data.Id
+            });
+
+            //Assert
+            mediator.Verify(x => x.Send(It.IsAny<CreateStockCommand>(), It.IsAny<CancellationToken>()));
+            Assert.IsTrue(outcome?.Succeeded);
         }
 
         [Test]
         public async Task GetAllAsync()
         {
-            var handler = new StockCore(new StockDataAccess(this.Context));
-            var stock = StockTestData.StockDTO;
-            await handler.SaveAsync(stock);
+            //Arrange
+            var mediator = new Mock<IMediator>();
+            mediator.Setup(m => m.Send(It.IsAny<Result<Stock>>(), It.IsAny<CancellationToken>())).ReturnsAsync(It.IsAny<Result<Stock>>());
 
-            var response = await handler.GetAllAsync();
-            var outcome = response.Count();
+            //Act
+            var result = await mediator.Object.Send(new CreateStockCommand
+            {
+                Stock = StockTestData.Stock
+            });
 
-            Assert.IsTrue(outcome == 1);
+            //Assert
+            mediator.Verify(x => x.Send(It.IsAny<CreateStockCommand>(), It.IsAny<CancellationToken>()));
+
+            //Find stock added
+            mediator.Setup(m => m.Send(It.IsAny<Result<Stock>>(), It.IsAny<CancellationToken>())).ReturnsAsync(It.IsAny<Result<Stock>>());
+
+            //Act
+            var outcome = await mediator.Object.Send(new GetStocksQuery());
+
+            //Assert
+            mediator.Verify(x => x.Send(It.IsAny<CreateStockCommand>(), It.IsAny<CancellationToken>()));
+            Assert.IsTrue(outcome?.Data.Count == 1);
         }
 
         [Test]
         public async Task SaveAsync()
         {
-            var handler = new StockCore(new StockDataAccess(this.Context));
-            var stock = StockTestData.StockDTO;
-            var result = await handler.SaveAsync(stock);
-            var outcome = result.Id != 0;
+            //Arrange
+            var mediator = new Mock<IMediator>();
+            mediator.Setup(m => m.Send(It.IsAny<Result<Stock>>(), It.IsAny<CancellationToken>())).ReturnsAsync(It.IsAny<Result<Stock>>());
 
-            Assert.IsTrue(outcome);
+            //Act
+            var result = await mediator.Object.Send(new CreateStockCommand
+            {
+                Stock = StockTestData.Stock
+            });
+
+            //Assert
+            mediator.Verify(x => x.Send(It.IsAny<CreateStockCommand>(), It.IsAny<CancellationToken>()));
+            Assert.IsTrue(result.Succeeded);
         }
 
         [Test]
         public async Task UpdateAsync()
         {
-            var handler = new StockCore(new StockDataAccess(this.Context));
-            var stock = StockTestData.StockDTO;
-            var originalStock = stock;
-            await handler.SaveAsync(stock);
+            //Arrange
+            var mediator = new Mock<IMediator>();
+            mediator.Setup(m => m.Send(It.IsAny<Result<Stock>>(), It.IsAny<CancellationToken>())).ReturnsAsync(It.IsAny<Result<Stock>>());
 
-            stock.Name = new Faker().Commerce.Product();
-            var response = await handler.UpdateAsync(stock);
-            var outcome = response.Name.Equals(originalStock.Name);
+            //Act
+            var result = await mediator.Object.Send(new CreateStockCommand
+            {
+                Stock = StockTestData.Stock
+            });
 
-            Assert.IsTrue(outcome);
+            //Assert
+            mediator.Verify(x => x.Send(It.IsAny<CreateStockCommand>(), It.IsAny<CancellationToken>()));
+
+            var updateStock = result.Data;
+            updateStock.Quantity = 20;
+
+            //Arrange
+            mediator.Setup(m => m.Send(It.IsAny<Result<Stock>>(), It.IsAny<CancellationToken>())).ReturnsAsync(It.IsAny<Result<Stock>>());
+
+            //Act
+            var outcome = await mediator.Object.Send(new UpdateStockCommand
+            {
+                Id = updateStock.Id,
+                Quantity = 20
+            });
+
+            //Assert
+            mediator.Verify(x => x.Send(It.IsAny<CreateStockCommand>(), It.IsAny<CancellationToken>()));
+
+            Assert.IsTrue(outcome.Succeeded && outcome.Data.Quantity == updateStock.Quantity);
         }
 
         [Test]
         public async Task DeleteAsync()
         {
-            var handler = new StockCore(new StockDataAccess(this.Context));
-            var stock = StockTestData.StockDTO;
-            await handler.SaveAsync(stock);
-            
-            var response = await handler.DeleteAsync(stock.Id);
+            //Act
+            var sutCreate = new CreateStockCommandHandler(new StockDataAccess(this.Context));
+            var resultCreate = await sutCreate.Handle(new CreateStockCommand
+            {
+                Stock = StockTestData.Stock
+            }, CancellationToken.None);
 
-            Assert.IsTrue(response);
+
+            //Act
+            var sutDelete = new DeleteStockCommandHandler(new StockDataAccess(this.Context));
+            var outcomeDelete = await sutDelete.Handle(new DeleteStockCommand
+            {
+                Id = resultCreate.Data.Id
+            }, CancellationToken.None);
+
+            //Assert
+            Assert.IsTrue(outcomeDelete.Succeeded);
         }
     }
 }

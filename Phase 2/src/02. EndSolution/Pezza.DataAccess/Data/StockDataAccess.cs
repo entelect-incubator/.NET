@@ -5,13 +5,14 @@
     using System.Linq.Dynamic.Core;
     using System.Threading.Tasks;
     using Microsoft.EntityFrameworkCore;
+    using Pezza.Common.Entities;
     using Pezza.DataAccess.Contracts;
 
-    public class StockDataAccess : IStockDataAccess
+    public class StockDataAccess : IDataAccess<Stock>
     {
         private readonly IDatabaseContext databaseContext;
 
-        public StockDataAccess(IDatabaseContext databaseContext) 
+        public StockDataAccess(IDatabaseContext databaseContext)
             => this.databaseContext = databaseContext;
 
         public async Task<Common.Entities.Stock> GetAsync(int id)
@@ -19,14 +20,14 @@
             return await this.databaseContext.Stocks.FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<List<Common.Entities.Stock>> GetAllAsync()
+        public async Task<List<Stock>> GetAllAsync()
         {
             var entities = await this.databaseContext.Stocks.Select(x => x).AsNoTracking().ToListAsync();
 
             return entities;
         }
 
-        public async Task<Common.Entities.Stock> SaveAsync(Common.Entities.Stock entity)
+        public async Task<Stock> SaveAsync(Stock entity)
         {
             this.databaseContext.Stocks.Add(entity);
             await this.databaseContext.SaveChangesAsync();
@@ -34,7 +35,7 @@
             return entity;
         }
 
-        public async Task<Common.Entities.Stock> UpdateAsync(Common.Entities.Stock entity)
+        public async Task<Stock> UpdateAsync(Stock entity)
         {
             this.databaseContext.Stocks.Update(entity);
             await this.databaseContext.SaveChangesAsync();

@@ -1,353 +1,291 @@
 <img align="left" width="116" height="116" src="../pezza-logo.png" />
 
-# &nbsp;**Pezza - Phase 1 - Step 1**
+# &nbsp;**Pezza - Phase 2 - Step 1**
 
 <br/><br/>
 
-This Phase might feel a bit tedious, but it puts down a strong foundation to build of from for the entire incubator.
+This Phase might feel a bit tedious, but it puts down a strong foundation to build off from for the entire incubator.
+
+## **Create the other database entities and update database context**
+
+- [ ] To speed up entity generation you can use a CLI tool or create it manually
+  - [ ] Open Command Line
+  - [ ] Create a new folder where entities and mapping be generated in
+  - [ ] ```dotnet tool install --global EntityFrameworkCore.Generator```
+  - [ ] ```efg generate -c "DB Connection String"```
+  - [ ] Fix the generated namespaces and code cleanup
+  - [ ] or can copy it from Phase 2\Data
 
 ### **Entitites**
-![Entitites Setup](../Assets/phase1-setup-entities.png)
+![](2020-09-16-08-24-37.png)
+
+### **DTO**
+![](2020-09-16-08-24-51.png)
 
 ### **Mapping**
-![Mapping Setup](../Assets/phase1-setup-mapping.png)
+![](2020-09-16-08-25-03.png)
 
-### **05 Database > Pezza.DataAccess.Contracts > IDatabaseContext.cs**
-![Database Context Interface Setup](../Assets/phase1-setup-db-context-interface.png)
+### **Unit Tests Test Data**
 
+![](2020-10-04-19-37-53.png)
 
-### Create Basic Filtering classes for every entity that will be used. Using customer filter as an example, add basic filtering to each filter where applicable i.e filterByName
+### **Base Entity**
 
-05 Database > Pezza.DataAccess > Filter
-
-The basic sample Filter class
+![](![Database%20Context%20Interface%20Setup](../Assets/phase1-setup-db-context-interface.png).png)
 
 ```
-namespace Pezza.DataAccess.Filter
+namespace Pezza.Common.Entities
 {
-    public static class NotifyFilter
+    public interface IEntity
     {
+        int Id { get; set; }
+    }
+}
+
+namespace Pezza.Common.Entities
+{
+    public abstract class Entity : IEntity
+    {
+        public int Id { get; set; }
     }
 }
 ```
 
-Customer Filter class
+Add Entity Inheritance to all entities and DTO's
+
+![](2020-10-04-20-31-00.png)
+
+Remove 
 
 ```
-namespace Pezza.DataAccess.Filter
-{
-    using System.Linq;
-    using Pezza.Common.Entities;
-
-    public static class CustomerFilter
-    {
-        public static IQueryable<Customer> FilterByName(this IQueryable<Customer> query, string name)
-            => string.IsNullOrEmpty(name) ? query : query.Where(x => x.Name.ToLower().Contains(name.ToLower()));
-
-        public static IQueryable<Customer> FilterByEmail(this IQueryable<Customer> query, string email)
-            => string.IsNullOrEmpty(email) ? query : query.Where(x => x.Email.ToLower().Contains(email.ToLower()));
-    }
-}
+public int Id { get; set; }
 ```
 
-It should look like this when you are done
-![Data Access Filters](../Assets/phase1-setup-filters.png)
-
-### Create a DataAccess class and interface for every Entity
-
-Sample Interface
+### **Base DataAccess**
 
 ```
 namespace Pezza.DataAccess.Contracts
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using Pezza.Common.Entities;
 
-    public interface ICustomerDataAccess
+    public interface IDataAccess<T>
     {
-        Task<Customer> GetAsync(int id);
+        Task<T> GetAsync(int id);
 
-        Task<List<Customer>> GetAllAsync(CustomerSearchModel searchModel);
+        Task<List<T>> GetAllAsync();
 
-        Task<Customer> UpdateAsync(Customer entity);
+        Task<T> UpdateAsync(T entity);
 
-        Task<Customer> SaveAsync(Customer entity);
+        Task<T> SaveAsync(T entity);
 
-        Task<bool> DeleteAsync(Customer entity);
+        Task<bool> DeleteAsync(int id);
     }
 }
 ```
 
-Sample Data Access Class
+Remove IStockDataAcess.cs
+
+![](2020-10-04-20-36-09.png)
+
+Convert StockDataAccess to inherit from IDataAccess.cs
+
+public class StockDataAccess : IDataAccess<Stock>
+
+Create DataAccess for the all the Entities
+
+![](2020-10-04-20-46-27.png)
+
+### **Unit Test DataAccess**
+
+Make sure all the DataAccess classes methods have a test.
+
+![](2020-10-04-22-17-29.png)
+
+![](2020-10-04-22-18-00.png)
+
+### **Business Logic - Core**
+
+We will be moving to CQRS pattern for the Core Layer. This helps Single Responsibility.
+
+[CQRS Overview](https://docs.microsoft.com/en-us/azure/architecture/patterns/cqrs)
+
+To help us out achieving this we will be using a Nuget Package - Mediatr
+
+[Mediatr](https://github.com/jbogard/MediatR)
+
+To create consistency with the result we send back from the Core layer we will utilize a Result.cs class. This helps to create unity between all Commands and Queries.
+
+![](2020-10-04-23-52-01.png)
+
 ```
-namespace Pezza.DataAccess
+namespace Pezza.Common.Models
 {
     using System.Collections.Generic;
     using System.Linq;
-    using System.Linq.Dynamic.Core;
-    using System.Threading.Tasks;
-    using Microsoft.EntityFrameworkCore;
-    using Pezza.Common.Extensions;
-    using Pezza.Common.Models.SearchModels;
-    using Pezza.DataAccess.Contracts;
 
-    public class NotifyDataAccess : INotifyDataAccess
+    public class Result
     {
-        private readonly IDatabaseContext databaseContext;
-
-        public NotifyDataAccess(IDatabaseContext databaseContext) => this.databaseContext = databaseContext;
-
-        public async Task<Common.Entities.Notify> GetAsync(int id)
+        internal Result(bool succeeded, string error)
         {
-            return await this.databaseContext.Notifies.FirstOrDefaultAsync(x => x.Id == id);
-        }
+            this.Succeeded = succeeded;
 
-        public async Task<List<Common.Entities.Notify>> GetAllAsync(NotifySearchModel searchModel)
-        {
-            if (string.IsNullOrEmpty(searchModel.OrderBy))
+            this.Errors = new List<string>
             {
-                searchModel.OrderBy = "DateSent desc";
-            }
-
-            var entities = this.databaseContext.Notifies.Select(x => x)
-                .AsNoTracking()
-                .OrderBy(searchModel.OrderBy);
-
-            var paged = await entities.ApplyPaging(searchModel.PagingArgs).ToListAsync();
-            return paged;
+                error
+            };
         }
 
-        public async Task<Common.Entities.Notify> SaveAsync(Common.Entities.Notify entity)
+        internal Result(bool succeeded, List<string> errors)
         {
-            this.databaseContext.Notifies.Add(entity);
-            await this.databaseContext.SaveChangesAsync();
-            return entity;
+            this.Succeeded = succeeded;
+            this.Errors = errors;
         }
 
-        public async Task<Common.Entities.Notify> UpdateAsync(Common.Entities.Notify entity)
-        {
-            this.databaseContext.Notifies.Update(entity);
-            await this.databaseContext.SaveChangesAsync();
-            return entity;
-        }
+        public bool Succeeded { get; set; }
 
-        public async Task<bool> DeleteAsync(Common.Entities.Notify entity)
-        {
-            this.databaseContext.Notifies.Remove(entity);
-            var result = await this.databaseContext.SaveChangesAsync();
-            return (result == 1);
-        }
+        public List<string> Errors { get; set; }
+
+        public static Result Success() => new Result(true, new List<string> { });
+
+        public static Result Failure(List<string> errors) => new Result(false, errors);
+
+        public static Result Failure(string error) => new Result(false, error);
     }
-}
-```
 
-Customer Data Access Class add the Filter Class function
-
-```
-public async Task<Common.Entities.Order> GetAsync(int id) => await this.databaseContext.Orders
-            .Include(i => i.OrderItems)
-            .FirstOrDefaultAsync(x => x.Id == id); 
-
-public async Task<List<Common.Entities.Customer>> GetAllAsync(CustomerSearchModel searchModel)
-{
-    if (string.IsNullOrEmpty(searchModel.OrderBy))
+    public class Result<T>
     {
-        searchModel.OrderBy = "DateCreated desc";
-    }
-
-    var entities = this.databaseContext.Customers.Select(x => x)
-        .FilterByName(searchModel.Name)
-        .FilterByEmail(searchModel.Email)
-        .AsNoTracking()
-        .OrderBy(searchModel.OrderBy);
-
-    var paged = await entities.ApplyPaging(searchModel.PagingArgs).ToListAsync();
-    return paged;
-}
-```
-
-For Foreign Keys dependencies remember to use .Include i.e. an Order should return the Order Items with as well. Rememebr you can only create a Order not removeUpdate and Delete should 
-
-```
-public async Task<List<Common.Entities.Order>> GetAllAsync(OrderSearchModel searchModel)
+        internal Result(bool succeeded, string error)
         {
-            if (string.IsNullOrEmpty(searchModel.OrderBy))
+            this.Succeeded = succeeded;
+            this.Errors = new List<string>
             {
-                searchModel.OrderBy = "DateSent desc";
-            }
-
-            var entities = this.databaseContext.Orders.Select(x => x)
-                .FilterByCustomerId(searchModel.CustomerId)
-                .AsNoTracking()
-                .OrderBy(searchModel.OrderBy)
-                .Include(i => i.OrderItems);
-
-            var paged = await entities.ApplyPaging(searchModel.PagingArgs).ToListAsync();
-            return paged;        
+                error
+            };
         }
-```
 
-### When you are done it should look like this
-
-![Data Access Contracts](../Assets/phase1-setup-data-access-contracts.png)
-
-![Data Access](../Assets/phase1-setup-data-access.png)
-
-### **05 Database > Pezza.DataAccess > DatabaseContext.cs**
-![Database Context Setup](../Assets/phase1-setup-db-context.png)
-
-## Create Search Models for all entities
-
-Search Models is DTO that contains properties to search for an entity by. We also use the PagingArgs class provided in the Clean Code Architecture to standarise and make it easy to apply pagination or sorting for all queries.
-
-```
-namespace Pezza.Common.Models
-{
-    public class PagingArgs
-    {
-        private int limit = 20;
-
-        public static PagingArgs NoPaging => new PagingArgs { UsePaging = false };
-
-        public static PagingArgs Default => new PagingArgs { UsePaging = true, Limit = 20, Offset = 0 };
-
-        public static PagingArgs FirstItem => new PagingArgs { UsePaging = true, Limit = 1, Offset = 0 };
-
-        public int Offset { get; set; }
-
-        public int Limit
+        internal Result(bool succeeded, List<string> errors)
         {
-            get => this.limit;
-
-            set
-            {
-                if (value == 0)
-                {
-                    value = 20;
-                }
-
-                this.limit = value;
-            }
+            this.Succeeded = succeeded;
+            this.Errors = errors;
         }
 
-        public bool UsePaging { get; set; }
+        internal Result(bool succeeded, T data, List<string> errors)
+        {
+            this.Succeeded = succeeded;
+            this.Errors = errors;
+            this.Data = data;
+        }
+
+        public bool Succeeded { get; set; }
+
+        public T Data { get; set; }
+
+        public List<string> Errors { get; set; }
+
+        public static Result<T> Success(T data) => new Result<T>(true, data, new List<string> { });
+
+        public static Result<T> Failure(string error) => new Result<T>(false, error);
+
+        public static Result<T> Failure(List<string> errors) => new Result<T>(false, errors);
     }
-}
 
-```
-
-In 04 Common > Pezza.Common > Models > SearchModels
-
-Create a **Search Model** for each Entity
-
-Include all the properties that you might need to use to search for an entity with. All fields that is not a string should be made nullable.
-
-Make sure all Search Models includes the following. We will be covering this in more detail in Phase 2
-
-```
-    public string OrderBy { get; set; }
-
-    public PagingArgs PagingArgs { get; set; }
-```
-
-For the Filter Class you will need Nuget
-
-```
-Package System.Linq.Dynamic.Core
-```
-
-```
-namespace Pezza.Common.Models
-{
-    using System;
-
-    public class CustomerSearchModel
+    public class ListResult<T>
     {
-        public string Name { get; set; }
+        internal ListResult(bool succeeded, string error)
+        {
+            this.Succeeded = succeeded;
+            this.Errors = new List<string>
+            {
+                error
+            };
+        }
 
-        public string Address { get; set; }
+        internal ListResult(bool succeeded, List<string> errors)
+        {
+            this.Succeeded = succeeded;
+            this.Errors = errors;
+        }
 
-        public string City { get; set; }
+        internal ListResult(bool succeeded, List<T> data, List<string> errors)
+        {
+            this.Succeeded = succeeded;
+            this.Errors = errors;
+            this.Data = data;
+        }
 
-        public string Province { get; set; }
+        internal ListResult(bool succeeded, IEnumerable<T> data, List<string> errors)
+        {
+            this.Succeeded = succeeded;
+            this.Errors = errors;
+            this.Data = data.ToList();
+        }
 
-        public string ZipCode { get; set; }
+        public bool Succeeded { get; set; }
 
-        public string Phone { get; set; }
+        public List<T> Data { get; set; }
 
-        public string Email { get; set; }
+        public List<string> Errors { get; set; }
 
-        public string ContactPerson { get; set; }
+        public static ListResult<T> Success(List<T> data) => new ListResult<T>(true, data, new List<string> { });
+        
+        public static ListResult<T> Success(IEnumerable<T> data) => new ListResult<T>(true, data, new List<string> { });
 
-        public DateTime? DateCreated { get; set; }
+        public static ListResult<T> Failure(string error) => new ListResult<T>(false, error);
 
-        public string OrderBy { get; set; }
-
-        public PagingArgs PagingArgs { get; set; }
+        public static ListResult<T> Failure(List<string> errors) => new ListResult<T>(false, errors);
     }
+
 }
-```
-
-![Customer Search Model](../Assets/phase1-setup-customer-search-model.png)
-
-
-### 03 Core > Pezza.Core > Create Command and Queries
-
-Update DependencyInjection.cs to include data access layer
-```
-public static IServiceCollection AddApplication(this IServiceCollection services)
-{
-    services.AddMediatR(Assembly.GetExecutingAssembly());
-    services.AddAutoMapper(Assembly.GetExecutingAssembly());
-    services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-    services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
-    services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));
-    services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnhandledExceptionBehaviour<,>));
-
-    services.AddTransient(typeof(IOrderDataAccess), typeof(OrderDataAccess));
-    services.AddTransient(typeof(IStockDataAccess), typeof(StockDataAccess));
-    services.AddTransient(typeof(INotifyDataAccess), typeof(NotifyDataAccess));
-    services.AddTransient(typeof(IProductDataAccess), typeof(ProductDataAccess));
-    services.AddTransient(typeof(ICustomerDataAccess), typeof(CustomerDataAccess));
-    services.AddTransient(typeof(IRestaurantDataAccess), typeof(RestaurantDataAccess));
-
-    return services;
-}
-```
-
-### Create commands for every Entity
-
-Sample Create Command - CreateCustomerCommand
 
 ```
-namespace Pezza.Core.Customer
+
+Remove Project - Pezza.Core.Contracts
+
+Make sure you have Mapping for each Entity to and from its DTO
+
+![](2020-10-04-23-15-33.png)
+
+![](2020-10-04-22-21-37.png)
+
+Create the following COmmands for each Entity
+- Create
+
+```
+namespace Pezza.Core.Customer.Commands
 {
     using System.Threading;
     using System.Threading.Tasks;
     using Common.Entities;
     using MediatR;
+    using Pezza.Common.DTO;
+    using Pezza.Common.Mapping;
+    using Pezza.Common.Models;
     using Pezza.DataAccess.Contracts;
 
-    public partial class CreateCustomerCommand : IRequest<Customer>
+    public partial class CreateCustomerCommand : IRequest<Result<CustomerDTO>>
     {
         public Customer Customer { get; set; }
     }
 
-    public class CreateCustomerCommandHandler : IRequestHandler<CreateCustomerCommand, Customer>
+    public class CreateCustomerCommandHandler : IRequestHandler<CreateCustomerCommand, Result<CustomerDTO>>
     {
-        private readonly ICustomerDataAccess dataAcess;
+        private readonly IDataAccess<Customer> dataAcess;
 
-        public CreateCustomerCommandHandler(ICustomerDataAccess dataAcess) 
+        public CreateCustomerCommandHandler(IDataAccess<Customer> dataAcess)
             => this.dataAcess = dataAcess;
 
-        public async Task<Customer> Handle(CreateCustomerCommand request, CancellationToken cancellationToken)
-            => await this.dataAcess.SaveAsync(request.Customer);
+        public async Task<Result<CustomerDTO>> Handle(CreateCustomerCommand request, CancellationToken cancellationToken)
+        {
+            var outcome = await this.dataAcess.SaveAsync(request.Customer);
+
+            return (outcome != null) ? Result<CustomerDTO>.Success(outcome.Map()) : Result<CustomerDTO>.Failure("Error creating a Customer");
+        }
     }
 }
 ```
 
-Sample Delete Command - DeleteCustomerCommand
+- Delete
 
 ```
 namespace Pezza.Core.Customer.Commands
@@ -365,15 +303,14 @@ namespace Pezza.Core.Customer.Commands
 
     public class DeleteCustomerCommandHandler : IRequestHandler<DeleteCustomerCommand, Result>
     {
-        private readonly ICustomerDataAccess dataAcess;
+        private readonly IDataAccess<Common.Entities.Customer> dataAcess;
 
-        public DeleteCustomerCommandHandler(ICustomerDataAccess dataAcess)
+        public DeleteCustomerCommandHandler(IDataAccess<Common.Entities.Customer> dataAcess)
             => this.dataAcess = dataAcess;
 
         public async Task<Result> Handle(DeleteCustomerCommand request, CancellationToken cancellationToken)
         {
-            var findEntity = await this.dataAcess.GetAsync(request.Id);
-            var outcome = await this.dataAcess.DeleteAsync(findEntity);
+            var outcome = await this.dataAcess.DeleteAsync(request.Id);
 
             return (outcome) ? Result.Success() : Result.Failure("Error deleting a Customer");
         }
@@ -381,49 +318,23 @@ namespace Pezza.Core.Customer.Commands
 }
 ```
 
-Sample Update Command - UpdateCustomerCommand
-
-When updating a customer we might not know what the customer id is. To solve this we are going to use the customer search model class in the common project.
-
-Update Customer Data Access Interface and Customer Data Access
-
-```
-Task<List<Customer>> GetAllAsync(CustomerSearchModel searchModel);
-```
-
-```
-public async Task<List<Common.Entities.Customer>> GetAllAsync(CustomerSearchModel searchModel)
-        {
-            if (string.IsNullOrEmpty(searchModel.OrderBy))
-            {
-                searchModel.OrderBy = "DateCreated desc";
-            }
-
-            var entities = this.databaseContext.Customers.Select(x => x)
-                .FilterByName(searchModel.Name)
-                .FilterByEmail(searchModel.Email)
-                .AsNoTracking()
-                .OrderBy(searchModel.OrderBy);
-
-            var paged = await entities.ApplyPaging(searchModel.PagingArgs).ToListAsync();
-            return paged;
-        }
-```
-
-Update Command Sample
+- Update
 
 ```
 namespace Pezza.Core.Customer.Commands
 {
-    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using MediatR;
+    using Pezza.Common.DTO;
+    using Pezza.Common.Mapping;
     using Pezza.Common.Models;
     using Pezza.DataAccess.Contracts;
 
-    public partial class UpdateCustomerCommand : IRequest<Result<Common.Entities.Customer>>
+    public partial class UpdateCustomerCommand : IRequest<Result<CustomerDTO>>
     {
+        public int Id { get; set; }
+
         public string Name { get; set; }
 
         public string Address { get; set; }
@@ -441,20 +352,16 @@ namespace Pezza.Core.Customer.Commands
         public string ContactPerson { get; set; }
     }
 
-    public class UpdateCustomerCommandHandler : IRequestHandler<UpdateCustomerCommand, Result<Common.Entities.Customer>>
+    public class UpdateCustomerCommandHandler : IRequestHandler<UpdateCustomerCommand, Result<CustomerDTO>>
     {
-        private readonly ICustomerDataAccess dataAcess;
+        private readonly IDataAccess<Common.Entities.Customer> dataAcess;
 
-        public UpdateCustomerCommandHandler(ICustomerDataAccess dataAcess)
+        public UpdateCustomerCommandHandler(IDataAccess<Common.Entities.Customer> dataAcess)
             => this.dataAcess = dataAcess;
 
-        public async Task<Result<Common.Entities.Customer>> Handle(UpdateCustomerCommand request, CancellationToken cancellationToken)
+        public async Task<Result<CustomerDTO>> Handle(UpdateCustomerCommand request, CancellationToken cancellationToken)
         {
-            var search = await this.dataAcess.GetAllAsync(new CustomerSearchModel
-            {
-                Email = request.Email
-            });
-            var findEntity = search.FirstOrDefault();
+            var findEntity = await this.dataAcess.GetAsync(request.Id);
 
             if (!string.IsNullOrEmpty(request.Name))
             {
@@ -493,13 +400,15 @@ namespace Pezza.Core.Customer.Commands
 
             var outcome = await this.dataAcess.UpdateAsync(findEntity);
 
-            return (outcome != null) ? Result<Common.Entities.Customer>.Success(outcome) : Result<Common.Entities.Customer>.Failure("Error updating a Customer");
+            return (outcome != null) ? Result<CustomerDTO>.Success(outcome.Map()) : Result<CustomerDTO>.Failure("Error updating a Customer");
         }
     }
 }
-``` 
+```
 
-### Query Sample
+Create the following Queries
+
+-Get Single
 
 ```
 namespace Pezza.Core.Customer.Queries
@@ -507,26 +416,249 @@ namespace Pezza.Core.Customer.Queries
     using System.Threading;
     using System.Threading.Tasks;
     using MediatR;
+    using Pezza.Common.DTO;
+    using Pezza.Common.Mapping;
     using Pezza.Common.Models;
     using Pezza.DataAccess.Contracts;
 
-    public class GetCustomerQuery : IRequest<ListResult<Common.Entities.Customer>>
+    public class GetCustomerQuery : IRequest<Result<CustomerDTO>>
     {
-        public CustomerSearchModel CustomerSearchModel { get; set; }
+        public int Id { get; set; }
     }
 
-    public class GetTodosQueryHandler : IRequestHandler<GetCustomerQuery, ListResult<Common.Entities.Customer>>
+    public class GetCustomerQueryHandler : IRequestHandler<GetCustomerQuery, Result<CustomerDTO>>
     {
-        private readonly ICustomerDataAccess dataAcess;
+        private readonly IDataAccess<Common.Entities.Customer> dataAcess;
 
-        public GetTodosQueryHandler(ICustomerDataAccess dataAcess) => this.dataAcess = dataAcess;
+        public GetCustomerQueryHandler(IDataAccess<Common.Entities.Customer> dataAcess) => this.dataAcess = dataAcess;
 
-        public async Task<ListResult<Common.Entities.Customer>> Handle(GetCustomerQuery request, CancellationToken cancellationToken)
+        public async Task<Result<CustomerDTO>> Handle(GetCustomerQuery request, CancellationToken cancellationToken)
         {
-            var search = await this.dataAcess.GetAllAsync(request.CustomerSearchModel);
+            var search = await this.dataAcess.GetAsync(request.Id);
 
-            return ListResult<Common.Entities.Customer>.Success(search);
+            return Result<CustomerDTO>.Success(search.Map());
         }
     }
 }
 ```
+
+- Get All
+
+```
+namespace Pezza.Core.Customer.Queries
+{
+    using System.Threading;
+    using System.Threading.Tasks;
+    using MediatR;
+    using Pezza.Common.DTO;
+    using Pezza.Common.Mapping;
+    using Pezza.Common.Models;
+    using Pezza.DataAccess.Contracts;
+
+    public class GetCustomersQuery : IRequest<ListResult<CustomerDTO>>
+    {
+    }
+
+    public class GetCustomersQueryHandler : IRequestHandler<GetCustomersQuery, ListResult<CustomerDTO>>
+    {
+        private readonly IDataAccess<Common.Entities.Customer> dataAcess;
+
+        public GetCustomersQueryHandler(IDataAccess<Common.Entities.Customer> dataAcess) => this.dataAcess = dataAcess;
+
+        public async Task<ListResult<CustomerDTO>> Handle(GetCustomersQuery request, CancellationToken cancellationToken)
+        {
+            var search = await this.dataAcess.GetAllAsync();
+
+            return ListResult<CustomerDTO>.Success(search.Map());
+        }
+    }
+}
+```
+
+Core Project should look this when you are done.
+
+![](2020-10-04-23-57-57.png)
+
+Update DependencyInjection.cs - to include the new DataAccess and CQRS Classes
+
+For MediatR Dependency Injection we need to create 3 Behaviour Classes inside Common
+
+- PerformanceBehaviour.cs
+
+```
+namespace Pezza.Common.Behaviours
+{
+    using System.Diagnostics;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using Pezza.Common.Interfaces;
+    using MediatR;
+    using Microsoft.Extensions.Logging;
+
+    public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+    {
+        private readonly Stopwatch timer;
+        private readonly ILogger<TRequest> logger;
+        private readonly ICurrentUserService currentUserService;
+        private readonly IIdentityService identityService;
+
+        public PerformanceBehaviour(
+            ILogger<TRequest> logger,
+            ICurrentUserService currentUserService,
+            IIdentityService identityService)
+        {
+            this.timer = new Stopwatch();
+
+            this.logger = logger;
+            this.currentUserService = currentUserService;
+            this.identityService = identityService;
+        }
+
+        public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
+        {
+            this.timer.Start();
+
+            var response = await next();
+
+            this.timer.Stop();
+
+            var elapsedMilliseconds = this.timer.ElapsedMilliseconds;
+
+            if (elapsedMilliseconds > 500)
+            {
+                var requestName = typeof(TRequest).Name;
+                var userId = this.currentUserService.UserId ?? string.Empty;
+                var userName = string.Empty;
+
+                if (!string.IsNullOrEmpty(userId))
+                {
+                    userName = await this.identityService.GetUserNameAsync(userId);
+                }
+
+                this.logger.LogWarning("Pezza Long Running Request: {Name} ({ElapsedMilliseconds} milliseconds) {@UserId} {@UserName} {@Request}",
+                    requestName, elapsedMilliseconds, userId, userName, request);
+            }
+
+            return response;
+        }
+    }
+}
+```
+
+- UnhandledExceptionBehaviour.cs
+
+```
+namespace Pezza.Common.Behaviours
+{
+    using System;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using MediatR;
+    using Microsoft.Extensions.Logging;
+
+    public class UnhandledExceptionBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+    {
+        private readonly ILogger<TRequest> logger;
+
+        public UnhandledExceptionBehaviour(ILogger<TRequest> logger) => this.logger = logger;
+
+        public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
+        {
+            try
+            {
+                return await next();
+            }
+            catch (Exception ex)
+            {
+                var requestName = typeof(TRequest).Name;
+
+                this.logger.LogError(ex, "Pezza Request: Unhandled Exception for Request {Name} {@Request}", requestName, request);
+
+                throw;
+            }
+        }
+    }
+}
+```
+
+- ValidationBehavior.cs
+
+```
+namespace Pezza.Common.Behaviours
+{
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using FluentValidation;
+    using MediatR;
+
+    public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+        where TRequest : IRequest<TResponse>
+    {
+        private readonly IEnumerable<IValidator<TRequest>> validators;
+
+        public ValidationBehavior(IEnumerable<IValidator<TRequest>> validators) => this.validators = validators;
+
+        public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
+        {
+            if (this.validators.Any())
+            {
+                var context = new ValidationContext<TRequest>(request);
+
+                var validationResults = await Task.WhenAll(this.validators.Select(v => v.ValidateAsync(context, cancellationToken)));
+                var failures = validationResults.SelectMany(r => r.Errors).Where(f => f != null);
+
+                if (!failures.Any())
+                {
+                    throw new ValidationException(failures);
+                }
+            }
+            return await next();
+        }
+    }
+}
+```
+
+DependencyInjection.cs in Pezza.Core
+
+```
+namespace Pezza.Core
+{
+    using System.Reflection;
+    using AutoMapper;
+    using FluentValidation;
+    using MediatR;
+    using Microsoft.Extensions.DependencyInjection;
+    using Pezza.Common.Behaviours;
+    using Pezza.DataAccess.Contracts;
+    using Pezza.DataAccess.Data;
+
+    public static class DependencyInjection
+    {
+        public static IServiceCollection AddApplication(this IServiceCollection services)
+        {
+            services.AddMediatR(Assembly.GetExecutingAssembly());
+            services.AddAutoMapper(Assembly.GetExecutingAssembly());
+            services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnhandledExceptionBehaviour<,>));
+
+            services.AddTransient(typeof(IDataAccess<Common.Entities.Order>), typeof(OrderDataAccess));
+            services.AddTransient(typeof(IDataAccess<Common.Entities.Stock>), typeof(StockDataAccess));
+            services.AddTransient(typeof(IDataAccess<Common.Entities.Notify>), typeof(NotifyDataAccess));
+            services.AddTransient(typeof(IDataAccess<Common.Entities.Product>), typeof(ProductDataAccess));
+            services.AddTransient(typeof(IDataAccess<Common.Entities.Customer>), typeof(CustomerDataAccess));
+            services.AddTransient(typeof(IDataAccess<Common.Entities.Restaurant>), typeof(RestaurantDataAccess));
+
+            return services;
+        }
+    }
+}
+```
+
+### **Create Unit Test for Core Layer**
+
+Move to Step 2
+[Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%202/Step%202) 
