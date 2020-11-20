@@ -17,5 +17,5 @@ In this Incubator, we try to follow the Single Responsibility Principle as far a
 ## **Steps**
 
 - [ ] [Step 1 - Scaffolding](https://github.com/entelect-incubator/.NET/tree/master/Phase%202/Step%201)
-- [ ] [Step 2 - API](https://github.com/entelect-incubator/.NET/tree/master/Phase%202/Step%202) 
-- [ ] [Step 3 - Service](https://github.com/entelect-incubator/.NET/tree/master/Phase%202/Step%203) 
+- [ ] [Step 2 - Unit Tests](https://github.com/entelect-incubator/.NET/tree/master/Phase%202/Step%202)
+- [ ] [Step 3 - API](https://github.com/entelect-incubator/.NET/tree/master/Phase%202/Step%203)

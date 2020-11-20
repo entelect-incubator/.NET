@@ -97,7 +97,16 @@ Overview
 
 [Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%202)
 
-### **Phase 3**
+### **Phase 3** UI
+
+We will be building a basic Pizza website for Customers and a basic Admin Back-End.
+
+Overview
+- [ ] 
+
+[Click here to get started]()
+
+### **Phase 4**
 
 Now that we have deployed phase 1, we can make a few enhancements. Also, it will be easier for the customer and admin to search and filter through the stock, so we will add that in as well.
 
@@ -111,7 +120,7 @@ Improve how data is displayed and validated
 - [ ] Searching
 - [ ] Pagination
 
-### **Phase 4** - Coming soon
+### **Phase 5** - Coming soon
 
  When we work as part of a team, we usually need to adhere to coding standards. Let's have a look at how we can enforce some of the most basic standards and adding error handling.
   
