@@ -179,13 +179,13 @@ MimeTypes.cs copy from Phase2\Data is a Helper Class handling file mime types.
 
 Helpers should like this when you are.
 
-![Helpers Structure](2020-11-20-11-14-12.png)
+![Helpers Structure!](Assets/2020-11-20-11-14-12.png)
 
 ## **STEP 3 - Finishing the API Controller**
 
 ### **Base Api Controller** Will be used to inject Mediatr into all other Controllers
 
-![Api Controller](2020-11-20-11-16-51.png)
+![Api Controller!](Assets/2020-11-20-11-16-51.png)
 
 ApiController.cs
 
@@ -267,9 +267,9 @@ namespace Pezza.Api.Controllers
         /// </summary>
         /// <remarks>
         /// Sample request:
-        /// 
+        ///
         ///     POST api/Stock
-        ///     {        
+        ///     {
         ///       "name": "Tomatoes",
         ///       "unitOfMeasure": "Kg",
         ///       "valueOfMeasure": "1",
@@ -296,9 +296,9 @@ namespace Pezza.Api.Controllers
         /// </summary>
         /// <remarks>
         /// Sample request:
-        /// 
+        ///
         ///     PUT api/Stock/1
-        ///     {        
+        ///     {
         ///       "quantity": "30"
         ///     }
         /// </remarks>
@@ -347,7 +347,7 @@ if (imageResult != null)
 
 Complete all the other Controllers
 
-![Controllers Structure](2020-11-20-11-24-38.png)
+![Controllers Structure!](Assets/2020-11-20-11-24-38.png)
 
 Move to Step 3
 [Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%202/Step%203)
