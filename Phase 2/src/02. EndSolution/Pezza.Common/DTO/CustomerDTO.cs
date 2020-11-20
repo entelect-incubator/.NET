@@ -24,7 +24,7 @@
 
         public string ContactPerson { get; set; }
 
-        public DateTime DateCreated { get; set; }
+        public DateTime? DateCreated { get; set; }
 
         public virtual ICollection<OrderDTO> Orders { get; set; }
     }

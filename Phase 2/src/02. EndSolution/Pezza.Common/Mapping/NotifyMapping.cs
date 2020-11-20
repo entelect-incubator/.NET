@@ -1,5 +1,6 @@
 ﻿namespace Pezza.Common.Mapping
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using Pezza.Common.DTO;
@@ -33,6 +34,19 @@
            } : null;
 
         public static IEnumerable<Notify> Map(this IEnumerable<NotifyDTO> dto) =>
+           dto.Select(x => x.Map());
+
+        public static Notify Map(this NotifyDataDTO dto) =>
+           (dto != null) ? new Notify
+           {
+               CustomerId = dto.CustomerId ?? dto.CustomerId.Value,
+               DateSent = DateTime.Now,
+               Email = dto.Email,
+               Retry = dto.Retry ?? dto.Retry.Value,
+               Sent = dto.Sent ?? dto.Sent.Value,
+           } : null;
+
+        public static IEnumerable<Notify> Map(this IEnumerable<NotifyDataDTO> dto) =>
            dto.Select(x => x.Map());
     }
 }

@@ -1,15 +1,8 @@
 namespace Pezza.Test
 {
-    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
-    using Bogus;
-    using MediatR;
-    using Moq;
     using NUnit.Framework;
-    using Pezza.Common.Entities;
-    using Pezza.Common.Models;
-    using Pezza.Core;
     using Pezza.Core.Stock.Commands;
     using Pezza.Core.Stock.Queries;
     using Pezza.DataAccess.Data;
@@ -19,111 +12,81 @@ namespace Pezza.Test
         [Test]
         public async Task GetAsync()
         {
-            //Arrange
-            var mediator = new Mock<IMediator>();
-            mediator.Setup(m => m.Send(It.IsAny<Result<Stock>>(), It.IsAny<CancellationToken>())).ReturnsAsync(It.IsAny<Result<Stock>>());
+            var dataAccess = new StockDataAccess(this.Context);
 
             //Act
-            var result = await mediator.Object.Send(new CreateStockCommand
+            var sutCreate = new CreateStockCommandHandler(dataAccess);
+            var resultCreate = await sutCreate.Handle(new CreateStockCommand
             {
                 Stock = StockTestData.Stock
-            });
-
-            //Assert
-            mediator.Verify(x => x.Send(It.IsAny<CreateStockCommand>(), It.IsAny<CancellationToken>()));
-
-            //Find stock added
-            mediator.Setup(m => m.Send(It.IsAny<Result<Stock>>(), It.IsAny<CancellationToken>())).ReturnsAsync(It.IsAny<Result<Stock>>());
+            }, CancellationToken.None);
 
             //Act
-            var outcome = await mediator.Object.Send(new GetStockQuery
+            var sutGet = new GetStockQueryHandler(dataAccess);
+            var resultGet = await sutGet.Handle(new GetStockQuery
             {
-                Id = result.Data.Id
-            });
+                Id = resultCreate.Data.Id
+            }, CancellationToken.None);
 
-            //Assert
-            mediator.Verify(x => x.Send(It.IsAny<CreateStockCommand>(), It.IsAny<CancellationToken>()));
-            Assert.IsTrue(outcome?.Succeeded);
+            Assert.IsTrue(resultGet?.Data != null);
         }
 
         [Test]
         public async Task GetAllAsync()
         {
-            //Arrange
-            var mediator = new Mock<IMediator>();
-            mediator.Setup(m => m.Send(It.IsAny<Result<Stock>>(), It.IsAny<CancellationToken>())).ReturnsAsync(It.IsAny<Result<Stock>>());
+            var dataAccess = new StockDataAccess(this.Context);
 
             //Act
-            var result = await mediator.Object.Send(new CreateStockCommand
+            var sutCreate = new CreateStockCommandHandler(dataAccess);
+            var resultCreate = await sutCreate.Handle(new CreateStockCommand
             {
                 Stock = StockTestData.Stock
-            });
-
-            //Assert
-            mediator.Verify(x => x.Send(It.IsAny<CreateStockCommand>(), It.IsAny<CancellationToken>()));
-
-            //Find stock added
-            mediator.Setup(m => m.Send(It.IsAny<Result<Stock>>(), It.IsAny<CancellationToken>())).ReturnsAsync(It.IsAny<Result<Stock>>());
+            }, CancellationToken.None);
 
             //Act
-            var outcome = await mediator.Object.Send(new GetStocksQuery());
+            var sutGetAll = new GetStocksQueryHandler(dataAccess);
+            var resultGetAll = await sutGetAll.Handle(new GetStocksQuery(), CancellationToken.None);
 
-            //Assert
-            mediator.Verify(x => x.Send(It.IsAny<CreateStockCommand>(), It.IsAny<CancellationToken>()));
-            Assert.IsTrue(outcome?.Data.Count == 1);
+            Assert.IsTrue(resultGetAll?.Data.Count == 1);
         }
 
         [Test]
         public async Task SaveAsync()
         {
-            //Arrange
-            var mediator = new Mock<IMediator>();
-            mediator.Setup(m => m.Send(It.IsAny<Result<Stock>>(), It.IsAny<CancellationToken>())).ReturnsAsync(It.IsAny<Result<Stock>>());
+            var dataAccess = new StockDataAccess(this.Context);
 
             //Act
-            var result = await mediator.Object.Send(new CreateStockCommand
+            var sutCreate = new CreateStockCommandHandler(dataAccess);
+            var resultCreate = await sutCreate.Handle(new CreateStockCommand
             {
                 Stock = StockTestData.Stock
-            });
+            }, CancellationToken.None);
 
-            //Assert
-            mediator.Verify(x => x.Send(It.IsAny<CreateStockCommand>(), It.IsAny<CancellationToken>()));
-            Assert.IsTrue(result.Succeeded);
+            Assert.IsTrue(resultCreate.Succeeded);
         }
 
         [Test]
         public async Task UpdateAsync()
         {
-            //Arrange
-            var mediator = new Mock<IMediator>();
-            mediator.Setup(m => m.Send(It.IsAny<Result<Stock>>(), It.IsAny<CancellationToken>())).ReturnsAsync(It.IsAny<Result<Stock>>());
+            var dataAccess = new StockDataAccess(this.Context);
 
             //Act
-            var result = await mediator.Object.Send(new CreateStockCommand
+            var sutCreate = new CreateStockCommandHandler(dataAccess);
+            var resultCreate = await sutCreate.Handle(new CreateStockCommand
             {
                 Stock = StockTestData.Stock
-            });
-
-            //Assert
-            mediator.Verify(x => x.Send(It.IsAny<CreateStockCommand>(), It.IsAny<CancellationToken>()));
-
-            var updateStock = result.Data;
-            updateStock.Quantity = 20;
-
-            //Arrange
-            mediator.Setup(m => m.Send(It.IsAny<Result<Stock>>(), It.IsAny<CancellationToken>())).ReturnsAsync(It.IsAny<Result<Stock>>());
+            }, CancellationToken.None);
 
             //Act
-            var outcome = await mediator.Object.Send(new UpdateStockCommand
+            var sutUpdate = new UpdateStockCommandHandler(dataAccess);
+            var resultUpdate = await sutUpdate.Handle(new UpdateStockCommand
             {
-                Id = updateStock.Id,
-                Quantity = 20
-            });
+                Id = resultCreate.Data.Id,
+                Quantity = 50
+            }, CancellationToken.None);
 
             //Assert
-            mediator.Verify(x => x.Send(It.IsAny<CreateStockCommand>(), It.IsAny<CancellationToken>()));
-
-            Assert.IsTrue(outcome.Succeeded && outcome.Data.Quantity == updateStock.Quantity);
+            Assert.IsTrue(resultUpdate.Succeeded);
         }
 
         [Test]

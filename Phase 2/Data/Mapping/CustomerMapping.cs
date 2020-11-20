@@ -34,7 +34,7 @@
                Address = dto.Address,
                City = dto.Address,
                ContactPerson = dto.ContactPerson,
-               DateCreated = dto.DateCreated,
+               DateCreated = dto.DateCreated ?? DateTime.Now,
                Email = dto.Email,
                Name = dto.Name,
                Orders = dto.Orders.Map(),
@@ -44,6 +44,23 @@
            } : null;
 
         public static IEnumerable<Customer> Map(this IEnumerable<CustomerDTO> dto) =>
+           dto.Select(x => x.Map());
+
+        public static Customer Map(this CustomerDataDTO dto) =>
+           (dto != null) ? new Customer
+           {
+               Address = dto.AddressBase.Address,
+               City = dto.AddressBase.Address,
+               ContactPerson = dto.ContactPerson,
+               DateCreated = DateTime.Now,
+               Email = dto.Email,
+               Name = dto.Name,
+               Phone = dto.Phone,
+               Province = dto.AddressBase.Province,
+               ZipCode = dto.AddressBase.ZipCode
+           } : null;
+
+        public static IEnumerable<Customer> Map(this IEnumerable<CustomerDataDTO> dto) =>
            dto.Select(x => x.Map());
     }
 }

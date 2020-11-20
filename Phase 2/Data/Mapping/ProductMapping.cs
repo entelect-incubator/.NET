@@ -1,5 +1,6 @@
 ﻿namespace Pezza.Common.Mapping
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using Pezza.Common.DTO;
@@ -32,16 +33,33 @@
                Id = dto.Id,
                DateCreated = dto.DateCreated,
                Description = dto.Description,
-               IsActive = dto.IsActive,
+               IsActive = dto.IsActive ?? dto.IsActive.Value,
                Name = dto.Name,
                OfferEndDate = dto.OfferEndDate,
                OfferPrice = dto.OfferPrice,
                PictureUrl = dto.PictureUrl,
-               Price = dto.Price,
-               Special = dto.Special
+               Price = dto.Price ?? dto.Price.Value,
+               Special = dto.Special ?? dto.Special.Value
            } : null;
 
         public static IEnumerable<Product> Map(this IEnumerable<ProductDTO> dto) =>
+           dto.Select(x => x.Map());
+
+        public static Product Map(this ProductDataDTO dto) =>
+           (dto != null) ? new Product
+           {
+               DateCreated = DateTime.Now,
+               Description = dto.Description,
+               IsActive = dto.IsActive ?? dto.IsActive.Value,
+               Name = dto.Name,
+               OfferEndDate = dto.OfferEndDate,
+               OfferPrice = dto.OfferPrice,
+               PictureUrl = dto.PictureUrl,
+               Price = dto.Price ?? dto.Price.Value,
+               Special = dto.Special ?? dto.Special.Value
+           } : null;
+
+        public static IEnumerable<Product> Map(this IEnumerable<ProductDataDTO> dto) =>
            dto.Select(x => x.Map());
     }
 }

@@ -1,12 +1,9 @@
 namespace Pezza.Common.Entities
 {
     using System;
-    using System.Collections.Generic;
 
     public class Restaurant : Entity
     {
-        public Restaurant() => this.Orders = new HashSet<Order>();
-
         public string Name { get; set; }
 
         public string Description { get; set; }
@@ -24,7 +21,5 @@ namespace Pezza.Common.Entities
         public bool IsActive { get; set; }
 
         public DateTime DateCreated { get; set; }
-
-        public virtual ICollection<Order> Orders { get; set; }
     }
 }

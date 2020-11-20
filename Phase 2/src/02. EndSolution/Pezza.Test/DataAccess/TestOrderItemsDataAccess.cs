@@ -11,7 +11,7 @@ namespace Pezza.Test
         public async Task GetAsync()
         {
             var handler = new OrderItemDataAccess(this.Context);
-            var entity = OrderTestData.OrderItem;
+            var entity = OrderTestData.OrderItem(1);
             await handler.SaveAsync(entity);
 
             var response = await handler.GetAsync(entity.Id);
@@ -23,7 +23,7 @@ namespace Pezza.Test
         public async Task GetAllAsync()
         {
             var handler = new OrderItemDataAccess(this.Context);
-            var entity = OrderTestData.OrderItem;
+            var entity = OrderTestData.OrderItem(1);
             await handler.SaveAsync(entity);
 
             var response = await handler.GetAllAsync();
@@ -36,7 +36,7 @@ namespace Pezza.Test
         public async Task SaveAsync()
         {
             var handler = new OrderItemDataAccess(this.Context);
-            var entity = OrderTestData.OrderItem;
+            var entity = OrderTestData.OrderItem(1);
             var result = await handler.SaveAsync(entity);
             var outcome = result.Id != 0;
 
@@ -47,7 +47,7 @@ namespace Pezza.Test
         public async Task UpdateAsync()
         {
             var handler = new OrderItemDataAccess(this.Context);
-            var entity = OrderTestData.OrderItem;
+            var entity = OrderTestData.OrderItem(1);
             var originalOrderItem = entity;
             await handler.SaveAsync(entity);
 
@@ -66,7 +66,7 @@ namespace Pezza.Test
         public async Task DeleteAsync()
         {
             var handler = new OrderItemDataAccess(this.Context);
-            var entity = OrderTestData.OrderItem;
+            var entity = OrderTestData.OrderItem(1);
             await handler.SaveAsync(entity);
 
             var response = await handler.DeleteAsync(entity.Id);

@@ -36,5 +36,19 @@
 
         public static ICollection<OrderItem> Map(this ICollection<OrderItemDTO> dto) =>
            dto.Select(x => x.Map()).ToList();
+
+        public static OrderItem Map(this OrderItemDataDTO dto) =>
+          (dto != null) ? new OrderItem
+          {
+              ProductId = dto.ProductId ?? dto.ProductId.Value,
+              Product = dto.Product.Map(),
+              Quantity = dto.Quantity
+          } : null;
+
+        public static IEnumerable<OrderItem> Map(this IEnumerable<OrderItemDataDTO> dto) =>
+           dto.Select(x => x.Map());
+
+        public static ICollection<OrderItem> Map(this ICollection<OrderItemDataDTO> dto) =>
+           dto.Select(x => x.Map()).ToList();
     }
 }

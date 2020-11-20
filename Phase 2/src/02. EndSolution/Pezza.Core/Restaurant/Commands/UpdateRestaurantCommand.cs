@@ -3,6 +3,7 @@
     using System.Threading;
     using System.Threading.Tasks;
     using MediatR;
+    using Pezza.Common.DTO;
     using Pezza.Common.Models;
     using Pezza.DataAccess.Contracts;
 
@@ -10,23 +11,7 @@
     {
         public int Id { get; set; }
 
-        public string Name { get; set; }
-
-        public string Description { get; set; }
-
-        public string ImageData { get; set; }
-
-        public string PictureUrl { get; set; }
-
-        public string Address { get; set; }
-
-        public string City { get; set; }
-
-        public string Province { get; set; }
-
-        public string PostalCode { get; set; }
-
-        public bool? IsActive { get; set; }
+        public RestaurantDataDTO Data { get; set; }
     }
 
     public class UpdateRestaurantCommandHandler : IRequestHandler<UpdateRestaurantCommand, Result<Common.Entities.Restaurant>>
@@ -40,44 +25,44 @@
         {
             var findEntity = await this.dataAcess.GetAsync(request.Id);
 
-            if (!string.IsNullOrEmpty(request.Name))
+            if (!string.IsNullOrEmpty(request.Data?.Name))
             {
-                findEntity.Name = request.Name;
+                findEntity.Name = request.Data?.Name;
             }
 
-            if (!string.IsNullOrEmpty(request.Description))
+            if (!string.IsNullOrEmpty(request.Data?.Description))
             {
-                findEntity.Description = request.Description;
+                findEntity.Description = request.Data?.Description;
             }
 
-            if (!string.IsNullOrEmpty(request.Address))
+            if (!string.IsNullOrEmpty(request.Data?.Address?.Address))
             {
-                findEntity.Address = request.Address;
+                findEntity.Address = request.Data?.Address?.Address;
             }
 
-            if (!string.IsNullOrEmpty(request.City))
+            if (!string.IsNullOrEmpty(request.Data?.Address?.City))
             {
-                findEntity.City = request.City;
+                findEntity.City = request.Data?.Address?.City;
             }
 
-            if (!string.IsNullOrEmpty(request.Province))
+            if (!string.IsNullOrEmpty(request.Data?.Address?.Province))
             {
-                findEntity.Province = request.Province;
+                findEntity.Province = request.Data?.Address?.Province;
             }
 
-            if (!string.IsNullOrEmpty(request.PostalCode))
+            if (!string.IsNullOrEmpty(request.Data?.Address?.ZipCode))
             {
-                findEntity.PostalCode = request.PostalCode;
+                findEntity.PostalCode = request.Data?.Address?.ZipCode;
             }
 
-            if (!string.IsNullOrEmpty(request.PictureUrl))
+            if (!string.IsNullOrEmpty(request.Data?.PictureUrl))
             {
-                findEntity.PictureUrl = request.PictureUrl;
+                findEntity.PictureUrl = request.Data?.PictureUrl;
             }
 
-            if (request.IsActive.HasValue)
+            if (request.Data.IsActive.HasValue)
             {
-                findEntity.IsActive = request.IsActive.Value;
+                findEntity.IsActive = request.Data.IsActive.Value;
             }
 
             var outcome = await this.dataAcess.UpdateAsync(findEntity);

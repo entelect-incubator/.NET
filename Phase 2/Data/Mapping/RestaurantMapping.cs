@@ -1,5 +1,6 @@
 ﻿namespace Pezza.Common.Mapping
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using Pezza.Common.DTO;
@@ -17,7 +18,6 @@
                DateCreated = entity.DateCreated,
                IsActive = entity.IsActive,
                Name = entity.Name,
-               Orders = entity.Orders.Map(),
                PictureUrl = entity.PictureUrl,
                PostalCode = entity.PostalCode,
                Province = entity.Province
@@ -35,15 +35,31 @@
                City = dto.Address,
                Description = dto.Description,
                DateCreated = dto.DateCreated,
-               IsActive = dto.IsActive,
+               IsActive = dto.IsActive ?? dto.IsActive.Value,
                Name = dto.Name,
-               Orders = dto.Orders.Map(),
                PictureUrl = dto.PictureUrl,
                PostalCode = dto.PostalCode,
                Province = dto.Province
            } : null;
 
         public static IEnumerable<Restaurant> Map(this IEnumerable<RestaurantDTO> dto) =>
+           dto.Select(x => x.Map());
+
+        public static Restaurant Map(this RestaurantDataDTO dto) =>
+           (dto != null) ? new Restaurant
+           {
+               Address = dto.Address.Address,
+               City = dto.Address.City,
+               Description = dto.Description,
+               DateCreated = DateTime.Now,
+               Name = dto.Name,
+               PictureUrl = dto.PictureUrl,
+               PostalCode = dto.Address.ZipCode,
+               Province = dto.Address.Province,
+               IsActive = dto.IsActive ?? dto.IsActive.Value,
+           } : null;
+
+        public static IEnumerable<Restaurant> Map(this IEnumerable<RestaurantDataDTO> dto) =>
            dto.Select(x => x.Map());
     }
 }

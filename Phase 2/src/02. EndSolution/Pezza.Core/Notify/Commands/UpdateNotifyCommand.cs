@@ -4,6 +4,7 @@
     using System.Threading;
     using System.Threading.Tasks;
     using MediatR;
+    using Pezza.Common.DTO;
     using Pezza.Common.Models;
     using Pezza.DataAccess.Contracts;
 
@@ -11,15 +12,7 @@
     {
         public int Id { get; set; }
 
-        public int? CustomerId { get; set; }
-
-        public string Email { get; set; }
-
-        public bool? Sent { get; set; }
-
-        public int? Retry { get; set; }
-
-        public DateTime? DateSent { get; set; }
+        public NotifyDataDTO Data { get; set; }
     }
 
     public class UpdateNotifyCommandHandler : IRequestHandler<UpdateNotifyCommand, Result<Common.Entities.Notify>>
@@ -33,30 +26,27 @@
         {
             var findEntity = await this.dataAcess.GetAsync(request.Id);
 
-            if (request.CustomerId.HasValue)
+            if (request.Data.CustomerId.HasValue)
             {
-                findEntity.CustomerId = request.CustomerId.Value;
+                findEntity.CustomerId = request.Data.CustomerId.Value;
             }
 
-            if (!string.IsNullOrEmpty(request.Email))
+            if (!string.IsNullOrEmpty(request.Data?.Email))
             {
-                findEntity.Email = request.Email;
+                findEntity.Email = request.Data?.Email;
             }
 
-            if (request.Sent.HasValue)
+            if (request.Data.Sent.HasValue)
             {
-                findEntity.Sent = request.Sent.Value;
+                findEntity.Sent = request.Data.Sent.Value;
             }
 
-            if (request.Retry.HasValue)
+            if (request.Data.Retry.HasValue)
             {
-                findEntity.Retry = request.Retry.Value;
+                findEntity.Retry = request.Data.Retry.Value;
             }
 
-            if (request.DateSent.HasValue)
-            {
-                findEntity.DateSent = request.DateSent.Value;
-            }
+            findEntity.DateSent = DateTime.Now;
 
             var outcome = await this.dataAcess.UpdateAsync(findEntity);
 

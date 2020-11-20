@@ -12,21 +12,7 @@
     {
         public int Id { get; set; }
 
-        public string Name { get; set; }
-
-        public string Address { get; set; }
-
-        public string City { get; set; }
-
-        public string Province { get; set; }
-
-        public string ZipCode { get; set; }
-
-        public string Phone { get; set; }
-
-        public string Email { get; set; }
-
-        public string ContactPerson { get; set; }
+        public CustomerDataDTO Data { get; set; }
     }
 
     public class UpdateCustomerCommandHandler : IRequestHandler<UpdateCustomerCommand, Result<CustomerDTO>>
@@ -40,39 +26,39 @@
         {
             var findEntity = await this.dataAcess.GetAsync(request.Id);
 
-            if (!string.IsNullOrEmpty(request.Name))
+            if (!string.IsNullOrEmpty(request.Data?.Name))
             {
-                findEntity.Name = request.Name;
+                findEntity.Name = request.Data?.Name;
             }
 
-            if (!string.IsNullOrEmpty(request.Address))
+            if (!string.IsNullOrEmpty(request.Data?.AddressBase?.Address))
             {
-                findEntity.Address = request.Address;
+                findEntity.Address = request.Data?.AddressBase?.Address;
             }
 
-            if (!string.IsNullOrEmpty(request.City))
+            if (!string.IsNullOrEmpty(request.Data?.AddressBase?.City))
             {
-                findEntity.City = request.City;
+                findEntity.City = request.Data?.AddressBase?.City;
             }
 
-            if (!string.IsNullOrEmpty(request.Province))
+            if (!string.IsNullOrEmpty(request.Data?.AddressBase?.Province))
             {
-                findEntity.Province = request.Province;
+                findEntity.Province = request.Data?.AddressBase?.Province;
             }
 
-            if (!string.IsNullOrEmpty(request.ZipCode))
+            if (!string.IsNullOrEmpty(request.Data?.AddressBase?.ZipCode))
             {
-                findEntity.ZipCode = request.ZipCode;
+                findEntity.ZipCode = request.Data?.AddressBase?.ZipCode;
             }
 
-            if (!string.IsNullOrEmpty(request.Phone))
+            if (!string.IsNullOrEmpty(request.Data?.Phone))
             {
-                findEntity.Phone = request.Phone;
+                findEntity.Phone = request.Data?.Phone;
             }
 
-            if (!string.IsNullOrEmpty(request.ContactPerson))
+            if (!string.IsNullOrEmpty(request.Data?.ContactPerson))
             {
-                findEntity.ContactPerson = request.ContactPerson;
+                findEntity.ContactPerson = request.Data?.ContactPerson;
             }
 
             var outcome = await this.dataAcess.UpdateAsync(findEntity);

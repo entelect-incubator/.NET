@@ -38,5 +38,20 @@
 
         public static IEnumerable<Stock> Map(this IEnumerable<StockDTO> stock) =>
            stock.Select(x => x.Map());
+
+        public static Stock Map(this StockDataDTO stock) =>
+          (stock != null) ? new Stock
+          {
+              ExpiryDate = stock.ExpiryDate,
+              Name = stock.Name,
+              Quantity = stock.Quantity ?? 0,
+              UnitOfMeasure = stock.UnitOfMeasure,
+              ValueOfMeasure = stock.ValueOfMeasure,
+              Comment = stock.Comment,
+              DateCreated = DateTime.Now
+          } : null;
+
+        public static IEnumerable<Stock> Map(this IEnumerable<StockDataDTO> stock) =>
+           stock.Select(x => x.Map());
     }
 }

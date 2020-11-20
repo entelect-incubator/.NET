@@ -11,11 +11,11 @@
         public int Id { get; set; }
     }
 
-    public class GetNotifysQueryHandler : IRequestHandler<GetNotifyQuery, Result<Common.Entities.Notify>>
+    public class GetNotifyQueryHandler : IRequestHandler<GetNotifyQuery, Result<Common.Entities.Notify>>
     {
         private readonly IDataAccess<Common.Entities.Notify> dataAcess;
 
-        public GetNotifysQueryHandler(IDataAccess<Common.Entities.Notify> dataAcess) => this.dataAcess = dataAcess;
+        public GetNotifyQueryHandler(IDataAccess<Common.Entities.Notify> dataAcess) => this.dataAcess = dataAcess;
 
         public async Task<Result<Common.Entities.Notify>> Handle(GetNotifyQuery request, CancellationToken cancellationToken)
         {

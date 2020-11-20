@@ -1,9 +1,9 @@
 ﻿namespace Pezza.Core.Product.Commands
 {
-    using System;
     using System.Threading;
     using System.Threading.Tasks;
     using MediatR;
+    using Pezza.Common.DTO;
     using Pezza.Common.Models;
     using Pezza.DataAccess.Contracts;
 
@@ -11,23 +11,7 @@
     {
         public int Id { get; set; }
 
-        public string Name { get; set; }
-
-        public string Description { get; set; }
-
-        public string ImageData { get; set; }
-        
-        public string PictureUrl { get; set; }
-
-        public decimal? Price { get; set; }
-
-        public bool? Special { get; set; }
-
-        public DateTime? OfferEndDate { get; set; }
-
-        public decimal? OfferPrice { get; set; }
-
-        public bool? IsActive { get; set; }
+        public ProductDataDTO Data { get; set; }
     }
 
     public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand, Result<Common.Entities.Product>>
@@ -41,44 +25,44 @@
         {
             var findEntity = await this.dataAcess.GetAsync(request.Id);
 
-            if (!string.IsNullOrEmpty(request.Name))
+            if (!string.IsNullOrEmpty(request.Data?.Name))
             {
-                findEntity.Name = request.Name;
+                findEntity.Name = request.Data?.Name;
             }
 
-            if (!string.IsNullOrEmpty(request.Description))
+            if (!string.IsNullOrEmpty(request.Data?.Description))
             {
-                findEntity.Description = request.Description;
+                findEntity.Description = request.Data?.Description;
             }
 
-            if (!string.IsNullOrEmpty(request.PictureUrl))
+            if (!string.IsNullOrEmpty(request.Data?.PictureUrl))
             {
-                findEntity.PictureUrl = request.PictureUrl;
+                findEntity.PictureUrl = request.Data?.PictureUrl;
             }
 
-            if (request.Price.HasValue)
+            if (request.Data.Price.HasValue)
             {
-                findEntity.Price = request.Price.Value;
+                findEntity.Price = request.Data.Price.Value;
             }
 
-            if (request.Special.HasValue)
+            if (request.Data.Special.HasValue)
             {
-                findEntity.Special = request.Special.Value;
+                findEntity.Special = request.Data.Special.Value;
             }
 
-            if (request.OfferEndDate.HasValue)
+            if (request.Data.OfferEndDate.HasValue)
             {
-                findEntity.OfferEndDate = request.OfferEndDate;
+                findEntity.OfferEndDate = request.Data.OfferEndDate;
             }
 
-            if (request.OfferPrice.HasValue)
+            if (request.Data.OfferPrice.HasValue)
             {
-                findEntity.OfferPrice = request.OfferPrice;
+                findEntity.OfferPrice = request.Data.OfferPrice;
             }
 
-            if (request.IsActive.HasValue)
+            if (request.Data.IsActive.HasValue)
             {
-                findEntity.IsActive = request.IsActive.Value;
+                findEntity.IsActive = request.Data.IsActive.Value;
             }
 
             var outcome = await this.dataAcess.UpdateAsync(findEntity);

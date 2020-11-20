@@ -14,15 +14,67 @@ This Phase might feel a bit tedious, but it puts down a strong foundation to bui
   - [ ] ```dotnet tool install --global EntityFrameworkCore.Generator```
   - [ ] ```efg generate -c "DB Connection String"```
   - [ ] Fix the generated namespaces and code cleanup
-  - [ ] or can copy it from Phase 2\Data
+  - [ ] or can copy it from Phase2\Data
+
+### **Create Base Address**
+
+This is for any DTO or Entity that has an address.
+
+![](2020-11-20-08-30-10.png)
+```
+namespace Pezza.Common.Entities
+{
+    public class AddressBase
+    {
+        public string Address { get; set; }
+
+        public string City { get; set; }
+
+        public string Province { get; set; }
+
+        public string ZipCode { get; set; }
+    }
+}
+```
+
+### **Create Image Data Base**
+
+This is for any DTO or Entity that has an Image that needs to be created.
+
+![](2020-11-20-09-09-20.png)
+
+```
+namespace Pezza.Common.Entities
+{
+    public class ImageDataBase
+    {
+        public string ImageData { get; set; }
+    }
+}
+```
 
 ### **Entitites**
+
+Representing Database Tables Entities
+
 ![](2020-09-16-08-24-37.png)
 
 ### **DTO**
+
+Create a Data Transfer Object with only the information the consumer of the data will need. This allows you to hide any sensitive data.
+
 ![](2020-09-16-08-24-51.png)
 
+### **DTO Data**
+
+Create a Data Transfer Object with only the information the consumer of the data will need when creating a new object of that entity. This allows you to hide any sensitive data.
+
+![](2020-11-20-08-38-31.png)
+
 ### **Mapping**
+
+Create a mapping class to map between Entities to a DTO or vice versa.
+
 ![](2020-09-16-08-25-03.png)
 
 ### **Unit Tests Test Data**
@@ -30,6 +82,8 @@ This Phase might feel a bit tedious, but it puts down a strong foundation to bui
 ![](2020-10-04-19-37-53.png)
 
 ### **Base Entity**
+
+All of our Database Tables has a Primary Key of Id and type of Int.
 
 ![](![Database%20Context%20Interface%20Setup](../Assets/phase1-setup-db-context-interface.png).png)
 
@@ -248,7 +302,7 @@ Make sure you have Mapping for each Entity to and from its DTO
 
 ![](2020-10-04-22-21-37.png)
 
-Create the following COmmands for each Entity
+Create the following Commands for each Entity
 - Create
 
 ```
@@ -265,7 +319,7 @@ namespace Pezza.Core.Customer.Commands
 
     public partial class CreateCustomerCommand : IRequest<Result<CustomerDTO>>
     {
-        public Customer Customer { get; set; }
+        public CustomerDataDTO Data { get; set; }
     }
 
     public class CreateCustomerCommandHandler : IRequestHandler<CreateCustomerCommand, Result<CustomerDTO>>
@@ -277,7 +331,7 @@ namespace Pezza.Core.Customer.Commands
 
         public async Task<Result<CustomerDTO>> Handle(CreateCustomerCommand request, CancellationToken cancellationToken)
         {
-            var outcome = await this.dataAcess.SaveAsync(request.Customer);
+            var outcome = await this.dataAcess.SaveAsync(request.Data.Map());
 
             return (outcome != null) ? Result<CustomerDTO>.Success(outcome.Map()) : Result<CustomerDTO>.Failure("Error creating a Customer");
         }
@@ -335,21 +389,7 @@ namespace Pezza.Core.Customer.Commands
     {
         public int Id { get; set; }
 
-        public string Name { get; set; }
-
-        public string Address { get; set; }
-
-        public string City { get; set; }
-
-        public string Province { get; set; }
-
-        public string ZipCode { get; set; }
-
-        public string Phone { get; set; }
-
-        public string Email { get; set; }
-
-        public string ContactPerson { get; set; }
+        public CustomerDataDTO Data { get; set; }
     }
 
     public class UpdateCustomerCommandHandler : IRequestHandler<UpdateCustomerCommand, Result<CustomerDTO>>
@@ -363,39 +403,39 @@ namespace Pezza.Core.Customer.Commands
         {
             var findEntity = await this.dataAcess.GetAsync(request.Id);
 
-            if (!string.IsNullOrEmpty(request.Name))
+            if (!string.IsNullOrEmpty(request.Data?.Name))
             {
-                findEntity.Name = request.Name;
+                findEntity.Name = request.Data?.Name;
             }
 
-            if (!string.IsNullOrEmpty(request.Address))
+            if (!string.IsNullOrEmpty(request.Data?.AddressBase?.Address))
             {
-                findEntity.Address = request.Address;
+                findEntity.Address = request.Data?.AddressBase?.Address;
             }
 
-            if (!string.IsNullOrEmpty(request.City))
+            if (!string.IsNullOrEmpty(request.Data?.AddressBase?.City))
             {
-                findEntity.City = request.City;
+                findEntity.City = request.Data?.AddressBase?.City;
             }
 
-            if (!string.IsNullOrEmpty(request.Province))
+            if (!string.IsNullOrEmpty(request.Data?.AddressBase?.Province))
             {
-                findEntity.Province = request.Province;
+                findEntity.Province = request.Data?.AddressBase?.Province;
             }
 
-            if (!string.IsNullOrEmpty(request.ZipCode))
+            if (!string.IsNullOrEmpty(request.Data?.AddressBase?.ZipCode))
             {
-                findEntity.ZipCode = request.ZipCode;
+                findEntity.ZipCode = request.Data?.AddressBase?.ZipCode;
             }
 
-            if (!string.IsNullOrEmpty(request.Phone))
+            if (!string.IsNullOrEmpty(request.Data?.Phone))
             {
-                findEntity.Phone = request.Phone;
+                findEntity.Phone = request.Data?.Phone;
             }
 
-            if (!string.IsNullOrEmpty(request.ContactPerson))
+            if (!string.IsNullOrEmpty(request.Data?.ContactPerson))
             {
-                findEntity.ContactPerson = request.ContactPerson;
+                findEntity.ContactPerson = request.Data?.ContactPerson;
             }
 
             var outcome = await this.dataAcess.UpdateAsync(findEntity);
@@ -658,7 +698,7 @@ namespace Pezza.Core
 }
 ```
 
-### **Create Unit Test for Core Layer**
+## **STEP 2 - Unit Tests**
 
 Move to Step 2
 [Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%202/Step%202) 

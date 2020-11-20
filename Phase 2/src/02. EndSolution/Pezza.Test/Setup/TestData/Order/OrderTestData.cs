@@ -29,6 +29,8 @@
             Amount = faker.Finance.Amount(),
             Customer = CustomerTestData.Customer,
             CustomerId = 1,
+            Restaurant = RestaurantTestData.Restaurant,
+            RestaurantId = 1,
             DateCreated = DateTime.Now,
             OrderItems = OrderItems()
         };
@@ -37,19 +39,19 @@
         {
             var orderItems = new List<OrderItem>
             {
-                OrderItem,
-                OrderItem,
-                OrderItem,
-                OrderItem,
-                OrderItem
+                OrderItem(1),
+                OrderItem(2),
+                OrderItem(3),
+                OrderItem(4),
+                OrderItem(5)
             };
 
             return orderItems;
         }
 
-        public static OrderItem OrderItem = new OrderItem()
+        public static OrderItem OrderItem(int id) => new OrderItem
         {
-            OrderId = 1,
+            OrderId = id,
             Product = ProductTestData.Product
         };
 
