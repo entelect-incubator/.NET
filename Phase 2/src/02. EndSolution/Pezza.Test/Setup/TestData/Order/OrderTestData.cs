@@ -97,6 +97,33 @@
             OrderId = 1,
             Product = ProductTestData.ProductDTO
         };
+
+        public static OrderDataDTO OrderDataDTO = new OrderDataDTO()
+        {
+            Amount = faker.Finance.Amount(),
+            Customer = CustomerTestData.CustomerDataDTO,
+            CustomerId = 1,
+            OrderItems = OrderItemsDataDTO()
+        };
+
+        public static List<OrderItemDataDTO> OrderItemsDataDTO()
+        {
+            var orderItems = new List<OrderItemDataDTO>
+            {
+                OrderItemDataDTO,
+                OrderItemDataDTO,
+                OrderItemDataDTO,
+                OrderItemDataDTO,
+                OrderItemDataDTO
+            };
+
+            return orderItems;
+        }
+
+        public static OrderItemDataDTO OrderItemDataDTO = new OrderItemDataDTO()
+        {
+            Product = ProductTestData.ProductDataDTO
+        };
     }
 
 }

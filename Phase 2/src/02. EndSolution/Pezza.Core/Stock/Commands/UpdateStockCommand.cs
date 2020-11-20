@@ -1,9 +1,9 @@
 ﻿namespace Pezza.Core.Stock.Commands
 {
-    using System;
     using System.Threading;
     using System.Threading.Tasks;
     using MediatR;
+    using Pezza.Common.DTO;
     using Pezza.Common.Models;
     using Pezza.DataAccess.Contracts;
 
@@ -11,17 +11,7 @@
     {
         public int Id { get; set; }
 
-        public string Name { get; set; }
-
-        public string UnitOfMeasure { get; set; }
-
-        public double? ValueOfMeasure { get; set; }
-
-        public int? Quantity { get; set; }
-
-        public DateTime? ExpiryDate { get; set; }
-
-        public string Comment { get; set; }
+        public StockDataDTO Data { get; set; }
     }
 
     public class UpdateStockCommandHandler : IRequestHandler<UpdateStockCommand, Result<Common.Entities.Stock>>
@@ -35,34 +25,34 @@
         {
             var findEntity = await this.dataAcess.GetAsync(request.Id);
 
-            if (!string.IsNullOrEmpty(request.Name))
+            if (!string.IsNullOrEmpty(request.Data?.Name))
             {
-                findEntity.Name = request.Name;
+                findEntity.Name = request.Data?.Name;
             }
 
-            if (!string.IsNullOrEmpty(request.UnitOfMeasure))
+            if (!string.IsNullOrEmpty(request.Data?.UnitOfMeasure))
             {
-                findEntity.UnitOfMeasure = request.UnitOfMeasure;
+                findEntity.UnitOfMeasure = request.Data?.UnitOfMeasure;
             }
 
-            if (request.ValueOfMeasure.HasValue)
+            if (request.Data.ValueOfMeasure.HasValue)
             {
-                findEntity.ValueOfMeasure = request.ValueOfMeasure;
+                findEntity.ValueOfMeasure = request.Data?.ValueOfMeasure;
             }
 
-            if (request.Quantity.HasValue)
+            if (request.Data.Quantity.HasValue)
             {
-                findEntity.Quantity = request.Quantity.Value;
+                findEntity.Quantity = request.Data.Quantity.Value;
             }
 
-            if (request.ExpiryDate.HasValue)
+            if (request.Data.ExpiryDate.HasValue)
             {
-                findEntity.ExpiryDate = request.ExpiryDate;
+                findEntity.ExpiryDate = request.Data?.ExpiryDate;
             }
 
-            if (!string.IsNullOrEmpty(request.Comment))
+            if (!string.IsNullOrEmpty(request.Data?.Comment))
             {
-                findEntity.Comment = request.Comment;
+                findEntity.Comment = request.Data?.Comment;
             }
 
             var outcome = await this.dataAcess.UpdateAsync(findEntity);

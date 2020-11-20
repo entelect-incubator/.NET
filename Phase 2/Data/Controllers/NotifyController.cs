@@ -4,15 +4,16 @@
     using Microsoft.AspNetCore.Mvc;
     using Pezza.Api.Controllers.CleanArchitecture.WebUI.Controllers;
     using Pezza.Api.Helpers;
-    using Pezza.Common.DTO;
-    using Pezza.Core.Customer.Commands;
-    using Pezza.Core.Customer.Queries;
+    using Pezza.Common.Entities;
+    using Pezza.Core.Notify.Commands;
+    using Pezza.Core.Notify.Queries;
 
     [ApiController]
-    public class CustomerController : ApiController
+    [Route("[controller]")]
+    public class NotifyController : ApiController
     {
         /// <summary>
-        /// Get Customer by Id.
+        /// Get Notify by Id.
         /// </summary>
         /// <param name="id"></param> 
         [HttpGet("{id}")]
@@ -20,30 +21,30 @@
         [ProducesResponseType(404)]
         public async Task<ActionResult> Get(int id)
         {
-            var result = await this.Mediator.Send(new GetCustomerQuery { Id = id });
+            var result = await this.Mediator.Send(new GetNotifyQuery { Id = id });
 
-            return ResponseHelper.ResponseOutcome<CustomerDTO>(result, this);
+            return ResponseHelper.ResponseOutcome<Notify>(result, this);
         }
 
         /// <summary>
-        /// Get all Customers.
+        /// Get all Notifys.
         /// </summary>
         [HttpGet()]
         [ProducesResponseType(200)]
         public async Task<ActionResult> Search()
         {
-            var result = await this.Mediator.Send(new GetCustomersQuery());
+            var result = await this.Mediator.Send(new GetNotifiesQuery());
 
-            return ResponseHelper.ResponseOutcome<CustomerDTO>(result, this);
+            return ResponseHelper.ResponseOutcome<Notify>(result, this);
         }
 
         /// <summary>
-        /// Create Customer.
+        /// Create Notify.
         /// </summary>
         /// <remarks>
         /// Sample request:
         /// 
-        ///     POST api/Customer
+        ///     POST api/Notify
         ///     {        
         ///       "name": "Person A",
         ///       "address": "1 Tree Street",
@@ -55,51 +56,48 @@
         ///       "contactPerson": "Person B 0723210000"
         ///     }
         /// </remarks>
-        /// <param name="customer"></param> 
+        /// <param name="Notify"></param> 
         [HttpPost]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public async Task<ActionResult<CustomerDTO>> Create(CreateCustomerCommand customer)
+        public async Task<ActionResult<Notify>> Create(CreateNotifyCommand command)
         {
-            var result = await this.Mediator.Send(customer);
+            var result = await this.Mediator.Send(command);
 
-            return ResponseHelper.ResponseOutcome<CustomerDTO>(result, this);
+            return ResponseHelper.ResponseOutcome<Notify>(result, this);
         }
 
         /// <summary>
-        /// Update Customer.
+        /// Update Notify.
         /// </summary>
         /// <remarks>
         /// Sample request:
         /// 
-        ///     PUT api/Customer/1
+        ///     PUT api/Notify/1
         ///     {        
-        ///       "name": "Person A",
-        ///       "address": "1 Tree Street",
-        ///       "city": "Pretoria",
-        ///       "province": "Gautenf",
-        ///       "zipCode": "0181",
-        ///       "phone": "0721230000",
+        ///       "customerId": "1",
         ///       "email": "person.a@gmail.com"
-        ///       "contactPerson": "Person B 0723210000"
         ///     }
         /// </remarks>
         /// <param name="id"></param>
-        /// <param name="customer"></param>
+        /// <param name="notify"></param>
         [HttpPut("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public async Task<ActionResult> Update(int id, UpdateCustomerCommand customer)
+        public async Task<ActionResult> Update(int id, UpdateNotifyCommand notify)
         {
-            customer.Id = id;
+            if (id != notify.Id)
+            {
+                return this.ValidationProblem();
+            }
 
-            var result = await this.Mediator.Send(customer);
+            var result = await this.Mediator.Send(notify);
 
-            return ResponseHelper.ResponseOutcome<CustomerDTO>(result, this);
+            return ResponseHelper.ResponseOutcome<Notify>(result, this);
         }
 
         /// <summary>
-        /// Remove Customer by Id.
+        /// Remove Notify by Id.
         /// </summary>
         /// <param name="id"></param> 
         [HttpDelete("{id}")]
@@ -107,7 +105,7 @@
         [ProducesResponseType(400)]
         public async Task<ActionResult> Delete(int id)
         {
-            var result = await this.Mediator.Send(new DeleteCustomerCommand { Id = id });
+            var result = await this.Mediator.Send(new DeleteNotifyCommand { Id = id });
 
             return ResponseHelper.ResponseOutcome(result, this);
         }

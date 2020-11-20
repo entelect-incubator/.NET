@@ -10,6 +10,7 @@
     using Pezza.Core.Product.Queries;
 
     [ApiController]
+    [Route("[controller]")]
     public class ProductController : ApiController
     {
         /// <summary>

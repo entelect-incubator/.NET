@@ -3,6 +3,7 @@ namespace Pezza.Test
     using System.Threading;
     using System.Threading.Tasks;
     using NUnit.Framework;
+    using Pezza.Common.DTO;
     using Pezza.Core.Stock.Commands;
     using Pezza.Core.Stock.Queries;
     using Pezza.DataAccess.Data;
@@ -18,7 +19,7 @@ namespace Pezza.Test
             var sutCreate = new CreateStockCommandHandler(dataAccess);
             var resultCreate = await sutCreate.Handle(new CreateStockCommand
             {
-                Stock = StockTestData.Stock
+                Data = StockTestData.StockDataDTO
             }, CancellationToken.None);
 
             //Act
@@ -40,7 +41,7 @@ namespace Pezza.Test
             var sutCreate = new CreateStockCommandHandler(dataAccess);
             var resultCreate = await sutCreate.Handle(new CreateStockCommand
             {
-                Stock = StockTestData.Stock
+                Data = StockTestData.StockDataDTO
             }, CancellationToken.None);
 
             //Act
@@ -59,7 +60,7 @@ namespace Pezza.Test
             var sutCreate = new CreateStockCommandHandler(dataAccess);
             var resultCreate = await sutCreate.Handle(new CreateStockCommand
             {
-                Stock = StockTestData.Stock
+                Data = StockTestData.StockDataDTO
             }, CancellationToken.None);
 
             Assert.IsTrue(resultCreate.Succeeded);
@@ -74,7 +75,7 @@ namespace Pezza.Test
             var sutCreate = new CreateStockCommandHandler(dataAccess);
             var resultCreate = await sutCreate.Handle(new CreateStockCommand
             {
-                Stock = StockTestData.Stock
+                Data = StockTestData.StockDataDTO
             }, CancellationToken.None);
 
             //Act
@@ -82,7 +83,10 @@ namespace Pezza.Test
             var resultUpdate = await sutUpdate.Handle(new UpdateStockCommand
             {
                 Id = resultCreate.Data.Id,
-                Quantity = 50
+                Data = new StockDataDTO
+                {
+                    Quantity = 50
+                }
             }, CancellationToken.None);
 
             //Assert
@@ -97,7 +101,7 @@ namespace Pezza.Test
             var sutCreate = new CreateStockCommandHandler(dataAccess);
             var resultCreate = await sutCreate.Handle(new CreateStockCommand
             {
-                Stock = StockTestData.Stock
+                Data = StockTestData.StockDataDTO
             }, CancellationToken.None);
 
 

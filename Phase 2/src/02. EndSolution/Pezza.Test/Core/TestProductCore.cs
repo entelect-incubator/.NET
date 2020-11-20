@@ -18,7 +18,7 @@ namespace Pezza.Test
             var sutCreate = new CreateProductCommandHandler(dataAccess);
             var resultCreate = await sutCreate.Handle(new CreateProductCommand
             {
-                Product = ProductTestData.Product
+                Data = ProductTestData.ProductDataDTO
             }, CancellationToken.None);
 
             //Act
@@ -40,7 +40,7 @@ namespace Pezza.Test
             var sutCreate = new CreateProductCommandHandler(dataAccess);
             var resultCreate = await sutCreate.Handle(new CreateProductCommand
             {
-                Product = ProductTestData.Product
+                Data = ProductTestData.ProductDataDTO
             }, CancellationToken.None);
 
             //Act
@@ -59,7 +59,7 @@ namespace Pezza.Test
             var sutCreate = new CreateProductCommandHandler(dataAccess);
             var resultCreate = await sutCreate.Handle(new CreateProductCommand
             {
-                Product = ProductTestData.Product
+                Data = ProductTestData.ProductDataDTO
             }, CancellationToken.None);
 
             Assert.IsTrue(resultCreate.Succeeded);
@@ -74,7 +74,7 @@ namespace Pezza.Test
             var sutCreate = new CreateProductCommandHandler(dataAccess);
             var resultCreate = await sutCreate.Handle(new CreateProductCommand
             {
-                Product = ProductTestData.Product
+                Data = ProductTestData.ProductDataDTO
             }, CancellationToken.None);
 
             //Act
@@ -82,7 +82,10 @@ namespace Pezza.Test
             var resultUpdate = await sutUpdate.Handle(new UpdateProductCommand
             {
                 Id = resultCreate.Data.Id,
-                Name = "New pizza"
+                Data = new Common.DTO.ProductDataDTO
+                {
+                    Name = "New pizza"
+                }
             }, CancellationToken.None);
 
             //Assert
@@ -97,7 +100,7 @@ namespace Pezza.Test
             var sutCreate = new CreateProductCommandHandler(dataAccess);
             var resultCreate = await sutCreate.Handle(new CreateProductCommand
             {
-                Product = ProductTestData.Product
+                Data = ProductTestData.ProductDataDTO
             }, CancellationToken.None);
 
 

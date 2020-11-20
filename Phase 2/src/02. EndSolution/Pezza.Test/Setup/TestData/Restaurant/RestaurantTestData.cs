@@ -36,6 +36,21 @@
             Id = 1,
             IsActive = true
         };
+
+        public static RestaurantDataDTO RestaurantDataDTO = new RestaurantDataDTO()
+        {
+            Name = faker.Company.CompanyName(),
+            Description = string.Empty,
+            PictureUrl = string.Empty,
+            Address = new AddressBase
+            {
+                Address = faker.Address.FullAddress(),
+                City = faker.Address.City(),
+                ZipCode = faker.Address.ZipCode(),
+                Province = faker.Address.State(),
+            },
+            IsActive = true
+        };
     }
 
 }

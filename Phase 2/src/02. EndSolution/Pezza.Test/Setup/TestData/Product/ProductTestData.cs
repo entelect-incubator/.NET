@@ -34,6 +34,20 @@
             DateCreated = DateTime.Now,
             IsActive = true
         };
+
+
+
+        public static ProductDataDTO ProductDataDTO = new ProductDataDTO()
+        {
+            Name = faker.Commerce.Product(),
+            Description = string.Empty,
+            Price = faker.Finance.Amount(),
+            PictureUrl = string.Empty,
+            OfferEndDate = null,
+            OfferPrice = null,
+            Special = false,
+            IsActive = true
+        };
     }
 
 }

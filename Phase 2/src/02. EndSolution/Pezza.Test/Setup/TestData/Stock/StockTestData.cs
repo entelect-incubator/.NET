@@ -29,6 +29,16 @@
             UnitOfMeasure = "kg",
             ValueOfMeasure = 10.5
         };
+
+        public static StockDataDTO StockDataDTO = new StockDataDTO()
+        {
+            Comment = faker.Lorem.Sentence(),
+            ExpiryDate = DateTime.Now.AddMonths(1),
+            Name = faker.Commerce.Product(),
+            Quantity = 1,
+            UnitOfMeasure = "kg",
+            ValueOfMeasure = 10.5
+        };
     }
 
 }

@@ -6,6 +6,21 @@
 
 This Phase might feel a bit tedious, but it puts down a strong foundation to build off from for the entire incubator.
 
+## **Install Mediatr**
+
+To help us with CQRS we will be using the Mediatr Nuget package. 
+
+What is Mediatr?
+In-process messaging with no dependencies.
+
+Supports request/response, commands, queries, notifications and events, synchronous and async with intelligent dispatching via C# generic variance.
+
+Install Mediatr on the Core Project and your Common Project
+
+![](Assets/2020-11-20-10-57-45.png)
+
+Install MediatR.Extensions.Microsoft.DependencyInjection on the Core Project.
+
 ## **Create the other database entities and update database context**
 
 - [ ] To speed up entity generation you can use a CLI tool or create it manually
@@ -20,8 +35,9 @@ This Phase might feel a bit tedious, but it puts down a strong foundation to bui
 
 This is for any DTO or Entity that has an address.
 
-![](2020-11-20-08-30-10.png)
-```
+![](Assets/2020-11-20-08-30-10.png)
+
+```cs
 namespace Pezza.Common.Entities
 {
     public class AddressBase
@@ -41,9 +57,9 @@ namespace Pezza.Common.Entities
 
 This is for any DTO or Entity that has an Image that needs to be created.
 
-![](2020-11-20-09-09-20.png)
+![](Assets/2020-11-20-09-09-20.png)
 
-```
+```cs
 namespace Pezza.Common.Entities
 {
     public class ImageDataBase
@@ -57,37 +73,37 @@ namespace Pezza.Common.Entities
 
 Representing Database Tables Entities
 
-![](2020-09-16-08-24-37.png)
+![](Assets/2020-09-16-08-24-37.png)
 
 ### **DTO**
 
 Create a Data Transfer Object with only the information the consumer of the data will need. This allows you to hide any sensitive data.
 
-![](2020-09-16-08-24-51.png)
+![](Assets/2020-09-16-08-24-51.png)
 
 ### **DTO Data**
 
 Create a Data Transfer Object with only the information the consumer of the data will need when creating a new object of that entity. This allows you to hide any sensitive data.
 
-![](2020-11-20-08-38-31.png)
+![](Assets/2020-11-20-08-38-31.png)
 
 ### **Mapping**
 
 Create a mapping class to map between Entities to a DTO or vice versa.
 
-![](2020-09-16-08-25-03.png)
+![](Assets/2020-09-16-08-25-03.png)
 
 ### **Unit Tests Test Data**
 
-![](2020-10-04-19-37-53.png)
+![](Assets/2020-10-04-19-37-53.png)
 
 ### **Base Entity**
 
 All of our Database Tables has a Primary Key of Id and type of Int.
 
-![](![Database%20Context%20Interface%20Setup](../Assets/phase1-setup-db-context-interface.png).png)
+![](Assets/![Database%20Context%20Interface%20Setup](../Assets/phase1-setup-db-context-interface.png).png)
 
-```
+```cs
 namespace Pezza.Common.Entities
 {
     public interface IEntity
@@ -107,17 +123,17 @@ namespace Pezza.Common.Entities
 
 Add Entity Inheritance to all entities and DTO's
 
-![](2020-10-04-20-31-00.png)
+![](Assets/2020-10-04-20-31-00.png)
 
-Remove 
+Remove
 
-```
+```cs
 public int Id { get; set; }
 ```
 
 ### **Base DataAccess**
 
-```
+```cs
 namespace Pezza.DataAccess.Contracts
 {
     using System.Collections.Generic;
@@ -140,7 +156,7 @@ namespace Pezza.DataAccess.Contracts
 
 Remove IStockDataAcess.cs
 
-![](2020-10-04-20-36-09.png)
+!DataAccess Contracts Structure[](Assets/2020-10-04-20-36-09.png)
 
 Convert StockDataAccess to inherit from IDataAccess.cs
 
@@ -148,16 +164,7 @@ public class StockDataAccess : IDataAccess<Stock>
 
 Create DataAccess for the all the Entities
 
-![](2020-10-04-20-46-27.png)
-
-### **Unit Test DataAccess**
-
-Make sure all the DataAccess classes methods have a test.
-
-![](2020-10-04-22-17-29.png)
-
-![](2020-10-04-22-18-00.png)
-
+![DataAccess Structure](Assets/2020-10-04-20-46-27.png)
 ### **Business Logic - Core**
 
 We will be moving to CQRS pattern for the Core Layer. This helps Single Responsibility.
@@ -170,9 +177,9 @@ To help us out achieving this we will be using a Nuget Package - Mediatr
 
 To create consistency with the result we send back from the Core layer we will utilize a Result.cs class. This helps to create unity between all Commands and Queries.
 
-![](2020-10-04-23-52-01.png)
+![DataAccess Structure](Assets/2020-10-04-23-52-01.png)
 
-```
+```cs
 namespace Pezza.Common.Models
 {
     using System.Collections.Generic;
@@ -298,14 +305,15 @@ Remove Project - Pezza.Core.Contracts
 
 Make sure you have Mapping for each Entity to and from its DTO
 
-![](2020-10-04-23-15-33.png)
+![Mapping Structure](Assets/2020-10-04-23-15-33.png)
 
-![](2020-10-04-22-21-37.png)
+![Core COntract Structure](Assets/2020-10-04-22-21-37.png)
 
 Create the following Commands for each Entity
+
 - Create
 
-```
+```cs
 namespace Pezza.Core.Customer.Commands
 {
     using System.Threading;
@@ -341,7 +349,7 @@ namespace Pezza.Core.Customer.Commands
 
 - Delete
 
-```
+```cs
 namespace Pezza.Core.Customer.Commands
 {
     using System.Threading;
@@ -374,7 +382,7 @@ namespace Pezza.Core.Customer.Commands
 
 - Update
 
-```
+```cs
 namespace Pezza.Core.Customer.Commands
 {
     using System.Threading;
@@ -450,7 +458,7 @@ Create the following Queries
 
 -Get Single
 
-```
+```cs
 namespace Pezza.Core.Customer.Queries
 {
     using System.Threading;
@@ -484,7 +492,7 @@ namespace Pezza.Core.Customer.Queries
 
 - Get All
 
-```
+```cs
 namespace Pezza.Core.Customer.Queries
 {
     using System.Threading;
@@ -517,7 +525,7 @@ namespace Pezza.Core.Customer.Queries
 
 Core Project should look this when you are done.
 
-![](2020-10-04-23-57-57.png)
+![Core Project Structure](Assets/2020-10-04-23-57-57.png)
 
 Update DependencyInjection.cs - to include the new DataAccess and CQRS Classes
 
@@ -525,7 +533,7 @@ For MediatR Dependency Injection we need to create 3 Behaviour Classes inside Co
 
 - PerformanceBehaviour.cs
 
-```
+```cs
 namespace Pezza.Common.Behaviours
 {
     using System.Diagnostics;
@@ -587,7 +595,7 @@ namespace Pezza.Common.Behaviours
 
 - UnhandledExceptionBehaviour.cs
 
-```
+```cs
 namespace Pezza.Common.Behaviours
 {
     using System;
@@ -662,7 +670,7 @@ namespace Pezza.Common.Behaviours
 
 DependencyInjection.cs in Pezza.Core
 
-```
+```cs
 namespace Pezza.Core
 {
     using System.Reflection;

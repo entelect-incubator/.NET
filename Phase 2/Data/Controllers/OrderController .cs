@@ -10,6 +10,7 @@
     using Pezza.Core.Order.Queries;
 
     [ApiController]
+    [Route("[controller]")]
     public class OrderController : ApiController
     {
         /// <summary>

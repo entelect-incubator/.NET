@@ -9,7 +9,6 @@
     using Pezza.Core.Notify.Queries;
 
     [ApiController]
-    [Route("[controller]")]
     public class NotifyController : ApiController
     {
         /// <summary>
@@ -31,7 +30,7 @@
         /// </summary>
         [HttpGet()]
         [ProducesResponseType(200)]
-        public async Task<ActionResult> GetAll()
+        public async Task<ActionResult> Search()
         {
             var result = await this.Mediator.Send(new GetNotifiesQuery());
 

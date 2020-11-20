@@ -9,6 +9,7 @@
     using Pezza.Core.Customer.Queries;
 
     [ApiController]
+    [Route("[controller]")]
     public class CustomerController : ApiController
     {
         /// <summary>

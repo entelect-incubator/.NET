@@ -13,13 +13,13 @@
         {
             Name = faker.Company.CompanyName(),
             Description = string.Empty,
-            Orders = OrderTestData.Orders(),
             PictureUrl = string.Empty,
             Address = faker.Address.FullAddress(),
             City = faker.Address.City(),
             PostalCode = faker.Address.ZipCode(),
             Province = faker.Address.State(),
             DateCreated = DateTime.Now,
+            Id = 1,
             IsActive = true
         };
 
@@ -27,13 +27,28 @@
         {
             Name = faker.Company.CompanyName(),
             Description = string.Empty,
-            Orders = OrderTestData.OrdersDTO(),
             PictureUrl = string.Empty,
             Address = faker.Address.FullAddress(),
             City = faker.Address.City(),
             PostalCode = faker.Address.ZipCode(),
             Province = faker.Address.State(),
             DateCreated = DateTime.Now,
+            Id = 1,
+            IsActive = true
+        };
+
+        public static RestaurantDataDTO RestaurantDataDTO = new RestaurantDataDTO()
+        {
+            Name = faker.Company.CompanyName(),
+            Description = string.Empty,
+            PictureUrl = string.Empty,
+            Address = new AddressBase
+            {
+                Address = faker.Address.FullAddress(),
+                City = faker.Address.City(),
+                ZipCode = faker.Address.ZipCode(),
+                Province = faker.Address.State(),
+            },
             IsActive = true
         };
     }

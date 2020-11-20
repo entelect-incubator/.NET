@@ -18,7 +18,7 @@ namespace Pezza.Test
             var sutCreate = new CreateNotifyCommandHandler(dataAccess);
             var resultCreate = await sutCreate.Handle(new CreateNotifyCommand
             {
-                Notify = NotifyTestData.Notify
+                Data = NotifyTestData.NotifyDataDTO
             }, CancellationToken.None);
 
             //Act
@@ -40,7 +40,7 @@ namespace Pezza.Test
             var sutCreate = new CreateNotifyCommandHandler(dataAccess);
             var resultCreate = await sutCreate.Handle(new CreateNotifyCommand
             {
-                Notify = NotifyTestData.Notify
+                Data = NotifyTestData.NotifyDataDTO
             }, CancellationToken.None);
 
             //Act
@@ -59,7 +59,7 @@ namespace Pezza.Test
             var sutCreate = new CreateNotifyCommandHandler(dataAccess);
             var resultCreate = await sutCreate.Handle(new CreateNotifyCommand
             {
-                Notify = NotifyTestData.Notify
+                Data = NotifyTestData.NotifyDataDTO
             }, CancellationToken.None);
 
             Assert.IsTrue(resultCreate.Succeeded);
@@ -74,7 +74,7 @@ namespace Pezza.Test
             var sutCreate = new CreateNotifyCommandHandler(dataAccess);
             var resultCreate = await sutCreate.Handle(new CreateNotifyCommand
             {
-                Notify = NotifyTestData.Notify
+                Data = NotifyTestData.NotifyDataDTO
             }, CancellationToken.None);
 
             //Act
@@ -82,7 +82,10 @@ namespace Pezza.Test
             var resultUpdate = await sutUpdate.Handle(new UpdateNotifyCommand
             {
                 Id = resultCreate.Data.Id,
-                Email = "test@pezza.co.za"
+                Data = new Common.DTO.NotifyDataDTO
+                {
+                    Email = "test@pezza.co.za"
+                }
             }, CancellationToken.None);
 
             //Assert
@@ -97,7 +100,7 @@ namespace Pezza.Test
             var sutCreate = new CreateNotifyCommandHandler(dataAccess);
             var resultCreate = await sutCreate.Handle(new CreateNotifyCommand
             {
-                Notify = NotifyTestData.Notify
+                Data = NotifyTestData.NotifyDataDTO
             }, CancellationToken.None);
 
 

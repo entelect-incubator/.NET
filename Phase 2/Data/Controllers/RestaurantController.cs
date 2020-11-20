@@ -6,14 +6,15 @@
     using Pezza.Api.Helpers;
     using Pezza.Common.DTO;
     using Pezza.Common.Entities;
-    using Pezza.Core.Product.Commands;
-    using Pezza.Core.Product.Queries;
+    using Pezza.Core.Restaurant.Commands;
+    using Pezza.Core.Restaurant.Queries;
 
     [ApiController]
-    public class ProductController : ApiController
+    [Route("[controller]")]
+    public class RestaurantController : ApiController
     {
         /// <summary>
-        /// Get Product by Id.
+        /// Get Restaurant by Id.
         /// </summary>
         /// <param name="id"></param> 
         [HttpGet("{id}")]
@@ -21,68 +22,71 @@
         [ProducesResponseType(404)]
         public async Task<ActionResult> Get(int id)
         {
-            var result = await this.Mediator.Send(new GetProductQuery { Id = id });
+            var result = await this.Mediator.Send(new GetRestaurantQuery { Id = id });
 
-            return ResponseHelper.ResponseOutcome<Product>(result, this);
+            return ResponseHelper.ResponseOutcome<Restaurant>(result, this);
         }
 
         /// <summary>
-        /// Get all Products.
+        /// Get all Restaurants.
         /// </summary>
         [HttpGet()]
         [ProducesResponseType(200)]
         public async Task<ActionResult> Search()
         {
-            var result = await this.Mediator.Send(new GetProductsQuery());
+            var result = await this.Mediator.Send(new GetRestaurantsQuery());
 
-            return ResponseHelper.ResponseOutcome<Product>(result, this);
+            return ResponseHelper.ResponseOutcome<Restaurant>(result, this);
         }
 
         /// <summary>
-        /// Create Product.
+        /// Create Stock.
         /// </summary>
         /// <remarks>
         /// Sample request:
         /// 
-        ///     POST api/Product
+        ///     POST api/Restaurant
         ///     {        
-        ///       "name": "Tomatoes",
+        ///       "name": "Restaurant 1",
         ///       "description": "",
-        ///       "pictureUrl": "Base64",
-        ///       "price": "50.00",
-        ///       "special": false,
+        ///       "pictureUrl": "base64",
         ///       "isActive": true
+        ///       "Address": {
+        ///         "city": "Pretoria",
+        ///         "province": "Gauteng",
+        ///         "ZipCode": "0000"
+        ///       }
         ///     }
         /// </remarks>
         /// <param name="data"></param> 
         [HttpPost]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public async Task<ActionResult<Product>> Create(ProductDataDTO data)
+        public async Task<ActionResult<Restaurant>> Create(RestaurantDataDTO data)
         {
-            var imageResult = await MediaHelper.UploadMediaAsync("product", data.ImageData);
+            var imageResult = await MediaHelper.UploadMediaAsync("restaurant", data.ImageData);
             if (imageResult != null)
             {
                 data.PictureUrl = imageResult.Data.RelativePath;
             }
 
-            var result = await this.Mediator.Send(new CreateProductCommand
+            var result = await this.Mediator.Send(new CreateRestaurantCommand
             {
                 Data = data
             });
 
-            return ResponseHelper.ResponseOutcome<Product>(result, this);
+            return ResponseHelper.ResponseOutcome<Restaurant>(result, this);
         }
 
         /// <summary>
-        /// Update Product.
+        /// Update Restaurant.
         /// </summary>
         /// <remarks>
         /// Sample request:
         /// 
-        ///     PUT api/Product/1
+        ///     PUT api/Restaurant/1
         ///     {        
-        ///       "special": true
+        ///       "name": "New Restaurant"
         ///     }
         /// </remarks>
         /// <param name="id"></param>
@@ -90,31 +94,33 @@
         [HttpPut("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public async Task<ActionResult> Update(int id, ProductDataDTO data)
+        public async Task<ActionResult> Update(int id, RestaurantDataDTO data)
         {
-            var imageResult = await MediaHelper.UploadMediaAsync("product", data.ImageData);
+            var imageResult = await MediaHelper.UploadMediaAsync("restaurant", data.ImageData);
             if (imageResult != null)
             {
                 data.PictureUrl = imageResult.Data.RelativePath;
             }
 
-            var result = await this.Mediator.Send(new UpdateProductCommand
+            var result = await this.Mediator.Send(new UpdateRestaurantCommand
             {
                 Id = id,
-                Data = data 
+                Data = data
             });
 
-            return ResponseHelper.ResponseOutcome<Product>(result, this);
+            return ResponseHelper.ResponseOutcome<Restaurant>(result, this);
         }
 
-        // <summary>
-        /// Remove Product by Id.
+        /// <summary>
+        /// Remove Restaurant by Id.
         /// </summary>
         /// <param name="id"></param> 
         [HttpDelete("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
         public async Task<ActionResult> Delete(int id)
         {
-            var result = await this.Mediator.Send(new DeleteProductCommand { Id = id });
+            var result = await this.Mediator.Send(new DeleteRestaurantCommand { Id = id });
 
             return ResponseHelper.ResponseOutcome(result, this);
         }

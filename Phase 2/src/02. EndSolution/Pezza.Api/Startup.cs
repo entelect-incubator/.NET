@@ -2,6 +2,7 @@ namespace Pezza.Api
 {
     using System;
     using System.IO;
+    using System.Linq;
     using System.Reflection;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
@@ -34,6 +35,8 @@ namespace Pezza.Api
                     Title = "Pezza API",
                     Version = "v1"
                 });
+
+                c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
 
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);

@@ -10,11 +10,11 @@ Unit testing
 
 Create a New Solution Folder `05 Tests` inside create a new project NUnit Test Project.
 
-![](2020-11-20-09-26-03.png)
+![](Assets/2020-11-20-09-26-03.png)
 
 The project at the end will look like this
 
-![](2020-11-20-09-27-07.png)
+![](Assets/2020-11-20-09-27-07.png)
 
 First, we need to install some Nuget Packages to help us out.
 
@@ -299,7 +299,7 @@ namespace Pezza.Test
 
 Create a DataAccess test for every Entity
 
-![](2020-11-20-09-48-51.png)
+![](Assets/2020-11-20-09-48-51.png)
 
 ### **Testing Core Layer**
 
@@ -446,16 +446,16 @@ namespace Pezza.Test
 
 Create the Core Unit Test classes now
 
-![](2020-11-20-09-55-09.png)
+![](Assets/2020-11-20-09-55-09.png)
 
 To run the test go to the top Menu bar -> Test -> Run All Tests. This will open the Test Explorer.
 
-![](2020-11-20-09-56-21.png)
+![](Assets/2020-11-20-09-56-21.png)
 
 You should now have 64 Passed Unit Tests
-![](2020-11-20-09-57-00.png)
+![](Assets/2020-11-20-09-57-00.png)
 
 ## **STEP 3 - Create the API**
 
 Move to Step 3
-[Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%202/Step%203) 
+[Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%202/Step%203)

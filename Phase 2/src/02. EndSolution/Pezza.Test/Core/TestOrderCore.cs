@@ -18,7 +18,7 @@ namespace Pezza.Test
             var sutCreate = new CreateOrderCommandHandler(dataAccess);
             var resultCreate = await sutCreate.Handle(new CreateOrderCommand
             {
-                Order = OrderTestData.Order
+                Data = OrderTestData.OrderDataDTO
             }, CancellationToken.None);
 
             //Act
@@ -40,7 +40,7 @@ namespace Pezza.Test
             var sutCreate = new CreateOrderCommandHandler(dataAccess);
             var resultCreate = await sutCreate.Handle(new CreateOrderCommand
             {
-                Order = OrderTestData.Order
+                Data = OrderTestData.OrderDataDTO
             }, CancellationToken.None);
 
             //Act
@@ -59,7 +59,7 @@ namespace Pezza.Test
             var sutCreate = new CreateOrderCommandHandler(dataAccess);
             var resultCreate = await sutCreate.Handle(new CreateOrderCommand
             {
-                Order = OrderTestData.Order
+                Data = OrderTestData.OrderDataDTO
             }, CancellationToken.None);
 
             Assert.IsTrue(resultCreate.Succeeded);
@@ -73,7 +73,7 @@ namespace Pezza.Test
             var sutCreate = new CreateOrderCommandHandler(dataAccess);
             var resultCreate = await sutCreate.Handle(new CreateOrderCommand
             {
-                Order = OrderTestData.Order
+                Data = OrderTestData.OrderDataDTO
             }, CancellationToken.None);
 
 
