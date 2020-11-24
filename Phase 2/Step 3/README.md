@@ -228,106 +228,118 @@ namespace Pezza.Api.Controllers
     using Pezza.Api.Controllers.CleanArchitecture.WebUI.Controllers;
     using Pezza.Api.Helpers;
     using Pezza.Common.DTO;
-    using Pezza.Common.Entities;
-    using Pezza.Core.Stock.Commands;
-    using Pezza.Core.Stock.Queries;
+    using Pezza.Core.Customer.Commands;
+    using Pezza.Core.Customer.Queries;
 
     [ApiController]
-    [Route("[controller]")]
-    public class StockController : ApiController
+    public class CustomerController : ApiController
     {
-        // <summary>
-        /// Get Stock by Id.
+        /// <summary>
+        /// Get Customer by Id.
         /// </summary>
         /// <param name="id"></param> 
         [HttpGet("{id}")]
         [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
         [ProducesResponseType(404)]
-        public async Task<ActionResult> Get(int id)
+        public async Task<ActionResult> GetCustomer(int id)
         {
-            var result = await this.Mediator.Send(new GetStockQuery { Id = id });
+            var result = await this.Mediator.Send(new GetCustomerQuery { Id = id });
 
-            return ResponseHelper.ResponseOutcome<Stock>(result, this);
+            return ResponseHelper.ResponseOutcome<CustomerDTO>(result, this);
         }
 
         /// <summary>
-        /// Get all Stock.
+        /// Get all Customers.
         /// </summary>
-        [HttpGet()]
-        [ProducesResponseType(200)]
-        public async Task<ActionResult> Search()
-        {
-            var result = await this.Mediator.Send(new GetStocksQuery());
-
-            return ResponseHelper.ResponseOutcome<Stock>(result, this);
-        }
-
-        /// <summary>
-        /// Create Stock.
-        /// </summary>
-        /// <remarks>
-        /// Sample request:
-        ///
-        ///     POST api/Stock
-        ///     {
-        ///       "name": "Tomatoes",
-        ///       "unitOfMeasure": "Kg",
-        ///       "valueOfMeasure": "1",
-        ///       "quantity": "50"
-        ///       "comment": ""
-        ///     }
-        /// </remarks>
-        /// <param name="data"></param> 
         [HttpPost]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public async Task<ActionResult<Stock>> Create(StockDataDTO data)
+        [Route("Search")]
+        public async Task<ActionResult> Search()
         {
-            var result = await this.Mediator.Send(new CreateStockCommand
-            {
-                Data = data
-            });
+            var result = await this.Mediator.Send(new GetCustomersQuery());
 
-            return ResponseHelper.ResponseOutcome<Stock>(result, this);
+            return ResponseHelper.ResponseOutcome<CustomerDTO>(result, this);
         }
 
         /// <summary>
-        /// Update Stock.
+        /// Create Customer.
         /// </summary>
         /// <remarks>
         /// Sample request:
-        ///
-        ///     PUT api/Stock/1
-        ///     {
-        ///       "quantity": "30"
+        /// 
+        ///     POST api/Customer
+        ///     {        
+        ///       "name": "Person A",
+        ///       "address": "1 Tree Street",
+        ///       "city": "Pretoria",
+        ///       "province": "Gautenf",
+        ///       "zipCode": "0181",
+        ///       "phone": "0721230000",
+        ///       "email": "person.a@gmail.com"
+        ///       "contactPerson": "Person B 0723210000"
         ///     }
         /// </remarks>
-        /// <param name="id"></param>
-        /// <param name="data"></param>
-        [HttpPut("{id}")]
+        /// <param name="customer"></param> 
+        [HttpPost]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public async Task<ActionResult> Update(int id, StockDataDTO data)
+        public async Task<ActionResult<CustomerDTO>> Create(CustomerDataDTO customer)
         {
-            var result = await this.Mediator.Send(new UpdateStockCommand
+            var result = await this.Mediator.Send(new CreateCustomerCommand
             {
-                Id = id,
-                Data = data
+                Data = customer
             });
 
-            return ResponseHelper.ResponseOutcome<Stock>(result, this);
+            return ResponseHelper.ResponseOutcome<CustomerDTO>(result, this);
         }
 
         /// <summary>
-        /// Remove Stock by Id.
+        /// Update Customer.
         /// </summary>
-        /// <param name="id"></param> 
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     PUT api/Customer/1
+        ///     {        
+        ///       "name": "Person A",
+        ///       "address": "1 Tree Street",
+        ///       "city": "Pretoria",
+        ///       "province": "Gautenf",
+        ///       "zipCode": "0181",
+        ///       "phone": "0721230000",
+        ///       "email": "person.a@gmail.com"
+        ///       "contactPerson": "Person B 0723210000"
+        ///     }
+        /// </remarks>
+        /// <param name="id"></param>
+        /// <param name="customer"></param>
+        [HttpPut("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public async Task<ActionResult> Update(int id, CustomerDataDTO customer)
+        {
+            var result = await this.Mediator.Send(new UpdateCustomerCommand
+            {
+                Id = id,
+                Data = customer
+            });
+
+            return ResponseHelper.ResponseOutcome<CustomerDTO>(result, this);
+        }
+
+        /// <summary>
+        /// Remove Customer by Id.
+        /// </summary>
+        /// <param name="id"></param>
         [HttpDelete("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         public async Task<ActionResult> Delete(int id)
         {
-            var result = await this.Mediator.Send(new DeleteStockCommand { Id = id });
+            var result = await this.Mediator.Send(new DeleteCustomerCommand { Id = id });
 
             return ResponseHelper.ResponseOutcome(result, this);
         }
@@ -349,5 +361,114 @@ Complete all the other Controllers
 
 ![Controllers Structure!](Assets/2020-11-20-11-24-38.png)
 
-Move to Step 3
+Right-Click on you Pezza.Api project -> Debug.
+
+CHnage Launch Browser to Open "swagger"
+
+![](Assets/2020-11-25-00-39-15.png)
+
+Startup.cs should look like this when you are done.
+
+```cs
+namespace Pezza.Api
+{
+    using System;
+    using System.IO;
+    using System.Reflection;
+    using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.ResponseCompression;
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Hosting;
+    using Microsoft.OpenApi.Models;
+    using Pezza.Core;
+    using Pezza.DataAccess;
+    using Pezza.DataAccess.Contracts;
+
+    public class Startup
+    {
+        public Startup(IConfiguration configuration)
+        {
+            this.Configuration = configuration;
+        }
+
+        public IConfiguration Configuration { get; }
+
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddResponseCompression(options =>
+            {
+                options.Providers.Add<BrotliCompressionProvider>();
+                options.Providers.Add<GzipCompressionProvider>();
+            });
+            services.AddResponseCompression();
+
+            services.AddControllers();
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerGeneratorOptions.IgnoreObsoleteActions = true;
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "Pezza API",
+                    Version = "v1"
+                });
+
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
+            });
+
+            // Add DbContext using SQL Server Provider
+            services.AddDbContext<IDatabaseContext, DatabaseContext>(options =>
+                options.UseSqlServer(this.Configuration.GetConnectionString("PezzaDatabase"))
+            );
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy",
+                    builder => builder.AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader());
+            });
+
+            DependencyInjection.AddApplication(services);
+        }
+
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Pezza API V1");
+            });
+
+            app.UseHttpsRedirection();
+
+            app.UseRouting();
+
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
+        }
+    }
+}
+```
+
+Press F5 and Run your API. You should see something like this. 
+
+![](Assets/2020-11-25-00-42-24.png)
+
+## Move to Step 3
 [Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%202/Step%203)

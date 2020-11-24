@@ -17,8 +17,9 @@
         /// <param name="id"></param> 
         [HttpGet("{id}")]
         [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
         [ProducesResponseType(404)]
-        public async Task<ActionResult> Get(int id)
+        public async Task<ActionResult> GetCustomer(int id)
         {
             var result = await this.Mediator.Send(new GetCustomerQuery { Id = id });
 
@@ -28,8 +29,10 @@
         /// <summary>
         /// Get all Customers.
         /// </summary>
-        [HttpGet()]
+        [HttpPost]
         [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [Route("Search")]
         public async Task<ActionResult> Search()
         {
             var result = await this.Mediator.Send(new GetCustomersQuery());
@@ -59,9 +62,12 @@
         [HttpPost]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public async Task<ActionResult<CustomerDTO>> Create(CreateCustomerCommand customer)
+        public async Task<ActionResult<CustomerDTO>> Create(CustomerDataDTO customer)
         {
-            var result = await this.Mediator.Send(customer);
+            var result = await this.Mediator.Send(new CreateCustomerCommand
+            {
+                Data = customer
+            });
 
             return ResponseHelper.ResponseOutcome<CustomerDTO>(result, this);
         }
@@ -89,11 +95,14 @@
         [HttpPut("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public async Task<ActionResult> Update(int id, UpdateCustomerCommand customer)
+        [ProducesResponseType(404)]
+        public async Task<ActionResult> Update(int id, CustomerDataDTO customer)
         {
-            customer.Id = id;
-
-            var result = await this.Mediator.Send(customer);
+            var result = await this.Mediator.Send(new UpdateCustomerCommand
+            {
+                Id = id,
+                Data = customer
+            });
 
             return ResponseHelper.ResponseOutcome<CustomerDTO>(result, this);
         }

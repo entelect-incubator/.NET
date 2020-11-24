@@ -7,7 +7,7 @@
     namespace CleanArchitecture.WebUI.Controllers
     {
         [ApiController]
-        [Route("api/[controller]")]
+        [Route("[controller]")]
         public abstract class ApiController : ControllerBase
         {
             private IMediator mediator;

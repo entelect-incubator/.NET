@@ -4,6 +4,7 @@
     using Microsoft.AspNetCore.Mvc;
     using Pezza.Api.Controllers.CleanArchitecture.WebUI.Controllers;
     using Pezza.Api.Helpers;
+    using Pezza.Common.DTO;
     using Pezza.Common.Entities;
     using Pezza.Core.Notify.Commands;
     using Pezza.Core.Notify.Queries;
@@ -17,6 +18,7 @@
         /// <param name="id"></param> 
         [HttpGet("{id}")]
         [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         public async Task<ActionResult> Get(int id)
         {
@@ -28,8 +30,10 @@
         /// <summary>
         /// Get all Notifys.
         /// </summary>
-        [HttpGet()]
+        [HttpPost]
         [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [Route("Search")]
         public async Task<ActionResult> Search()
         {
             var result = await this.Mediator.Send(new GetNotifiesQuery());
@@ -55,13 +59,17 @@
         ///       "contactPerson": "Person B 0723210000"
         ///     }
         /// </remarks>
-        /// <param name="Notify"></param> 
+        /// <param name="notify"></param> 
         [HttpPost]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public async Task<ActionResult<Notify>> Create(CreateNotifyCommand command)
+        [Route("Notify")]
+        public async Task<ActionResult<Notify>> Create(NotifyDataDTO notify)
         {
-            var result = await this.Mediator.Send(command);
+            var result = await this.Mediator.Send(new CreateNotifyCommand
+            {
+                Data = notify
+            });
 
             return ResponseHelper.ResponseOutcome<Notify>(result, this);
         }
@@ -83,14 +91,14 @@
         [HttpPut("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public async Task<ActionResult> Update(int id, UpdateNotifyCommand notify)
+        [ProducesResponseType(404)]
+        public async Task<ActionResult> Update(int id, NotifyDataDTO notify)
         {
-            if (id != notify.Id)
+            var result = await this.Mediator.Send(new UpdateNotifyCommand
             {
-                return this.ValidationProblem();
-            }
-
-            var result = await this.Mediator.Send(notify);
+                Id = id,
+                Data = notify
+            });
 
             return ResponseHelper.ResponseOutcome<Notify>(result, this);
         }

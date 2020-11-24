@@ -4,7 +4,7 @@
         <name>Pezza.Api</name>
     </assembly>
     <members>
-        <member name="M:Pezza.Api.Controllers.CustomerController.Get(System.Int32)">
+        <member name="M:Pezza.Api.Controllers.CustomerController.GetCustomer(System.Int32)">
             <summary>
             Get Customer by Id.
             </summary>
@@ -15,7 +15,7 @@
             Get all Customers.
             </summary>
         </member>
-        <member name="M:Pezza.Api.Controllers.CustomerController.Create(Pezza.Core.Customer.Commands.CreateCustomerCommand)">
+        <member name="M:Pezza.Api.Controllers.CustomerController.Create(Pezza.Common.DTO.CustomerDataDTO)">
             <summary>
             Create Customer.
             </summary>
@@ -36,7 +36,7 @@
             </remarks>
             <param name="customer"></param> 
         </member>
-        <member name="M:Pezza.Api.Controllers.CustomerController.Update(System.Int32,Pezza.Core.Customer.Commands.UpdateCustomerCommand)">
+        <member name="M:Pezza.Api.Controllers.CustomerController.Update(System.Int32,Pezza.Common.DTO.CustomerDataDTO)">
             <summary>
             Update Customer.
             </summary>
@@ -75,7 +75,7 @@
             Get all Notifys.
             </summary>
         </member>
-        <member name="M:Pezza.Api.Controllers.NotifyController.Create(Pezza.Core.Notify.Commands.CreateNotifyCommand)">
+        <member name="M:Pezza.Api.Controllers.NotifyController.Create(Pezza.Common.DTO.NotifyDataDTO)">
             <summary>
             Create Notify.
             </summary>
@@ -94,9 +94,9 @@
                   "contactPerson": "Person B 0723210000"
                 }
             </remarks>
-            <param name="Notify"></param> 
+            <param name="notify"></param> 
         </member>
-        <member name="M:Pezza.Api.Controllers.NotifyController.Update(System.Int32,Pezza.Core.Notify.Commands.UpdateNotifyCommand)">
+        <member name="M:Pezza.Api.Controllers.NotifyController.Update(System.Int32,Pezza.Common.DTO.NotifyDataDTO)">
             <summary>
             Update Notify.
             </summary>
@@ -145,7 +145,12 @@
             </remarks>
             <param name="data"></param>
         </member>
-        <!-- Badly formed XML comment ignored for member "M:Pezza.Api.Controllers.OrderController.Delete(System.Int32)" -->
+        <member name="M:Pezza.Api.Controllers.OrderController.Delete(System.Int32)">
+            <summary>
+             Remove Order by Id.
+            </summary>
+             <param name="id"></param> 
+        </member>
         <member name="M:Pezza.Api.Controllers.ProductController.Get(System.Int32)">
             <summary>
             Get Product by Id.

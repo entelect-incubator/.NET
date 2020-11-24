@@ -18,6 +18,7 @@
         /// <param name="id"></param> 
         [HttpGet("{id}")]
         [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         public async Task<ActionResult> Get(int id)
         {
@@ -29,8 +30,10 @@
         /// <summary>
         /// Get all Stock.
         /// </summary>
-        [HttpGet()]
+        [HttpPost]
         [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [Route("Search")]
         public async Task<ActionResult> Search()
         {
             var result = await this.Mediator.Send(new GetStocksQuery());
@@ -83,6 +86,7 @@
         [HttpPut("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
         public async Task<ActionResult> Update(int id, StockDataDTO data)
         {
             var result = await this.Mediator.Send(new UpdateStockCommand

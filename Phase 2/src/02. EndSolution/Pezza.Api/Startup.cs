@@ -2,10 +2,10 @@ namespace Pezza.Api
 {
     using System;
     using System.IO;
-    using System.Linq;
     using System.Reflection;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.ResponseCompression;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
@@ -26,17 +26,23 @@ namespace Pezza.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddResponseCompression(options =>
+            {
+                options.Providers.Add<BrotliCompressionProvider>();
+                options.Providers.Add<GzipCompressionProvider>();
+            });
+            services.AddResponseCompression();
+
             services.AddControllers();
 
             services.AddSwaggerGen(c =>
             {
+                c.SwaggerGeneratorOptions.IgnoreObsoleteActions = true;
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Title = "Pezza API",
                     Version = "v1"
                 });
-
-                c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
 
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
@@ -48,6 +54,14 @@ namespace Pezza.Api
                 options.UseSqlServer(this.Configuration.GetConnectionString("PezzaDatabase"))
             );
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy",
+                    builder => builder.AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader());
+            });
+
             DependencyInjection.AddApplication(services);
         }
 
@@ -58,13 +72,11 @@ namespace Pezza.Api
                 app.UseDeveloperExceptionPage();
             }
 
-            // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
-            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
-            // specifying the Swagger JSON endpoint.
+
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Stock API V1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Pezza API V1");
             });
 
             app.UseHttpsRedirection();

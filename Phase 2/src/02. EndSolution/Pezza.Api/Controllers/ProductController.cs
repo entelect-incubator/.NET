@@ -18,6 +18,7 @@
         /// <param name="id"></param> 
         [HttpGet("{id}")]
         [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         public async Task<ActionResult> Get(int id)
         {
@@ -29,8 +30,10 @@
         /// <summary>
         /// Get all Products.
         /// </summary>
-        [HttpGet()]
+        [HttpPost]
         [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [Route("Search")]
         public async Task<ActionResult> Search()
         {
             var result = await this.Mediator.Send(new GetProductsQuery());
@@ -90,6 +93,7 @@
         [HttpPut("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
         public async Task<ActionResult> Update(int id, ProductDataDTO data)
         {
             var imageResult = await MediaHelper.UploadMediaAsync("product", data.ImageData);
@@ -112,6 +116,8 @@
         /// </summary>
         /// <param name="id"></param> 
         [HttpDelete("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
         public async Task<ActionResult> Delete(int id)
         {
             var result = await this.Mediator.Send(new DeleteProductCommand { Id = id });
