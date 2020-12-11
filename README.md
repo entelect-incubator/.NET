@@ -67,10 +67,6 @@ Restaurant staff should be able to manage the stock through a web application as
 - Expose your Stock Management through an API using .Net Web API that will be used by the front-end application.
 - Allow for customer notifications to be sent out.
 - Create a Customer Facing Website in your choice of Front-End Library.
-  - MVC - Coming Soon
-  - AngularJS - Coming Soon
-  - ReactJS - Coming Soon
-  - Blazor - Coming Soon
   
 ![Phase 1 High Level Design](./Assets/phase1-hld.svg)
 
@@ -91,19 +87,35 @@ Overview
 We will be extending the foundation from Phase 1 to all Entities CRUD operations, we will also be moving to use CQRS Pattern and Mediatr NuGet Package.
 
 Overview
-- [ ] [MVC Part 1](https://web.microsoftstream.com/video/61e64cfa-c3ba-45c3-9811-e5bc25968a2a?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
-- [ ] [MVC Part 2](https://web.microsoftstream.com/video/315b2034-0aa5-43ee-b030-562f4a597cfd?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
+- [ ] [Working with Data in C#](https://web.microsoftstream.com/channel/fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
 
 
 [Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%202)
 
 ### **Phase 3** UI
 
-We will be building a basic Pizza website for Customers and a basic Admin Back-End.
-
 Overview
-- [ ] 
+- [ ] [MVC Part 1](https://web.microsoftstream.com/video/61e64cfa-c3ba-45c3-9811-e5bc25968a2a?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
+- [ ] [MVC Part 2](https://web.microsoftstream.com/video/315b2034-0aa5-43ee-b030-562f4a597cfd?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
 
+We will be building a basic Pizza website for Customers and a basic Admin Back-End. To help us doing this we will using the Pezza Branding Guide & Design System.
+
+[Documentation](https://web.microsoftstream.com/video/315b2034-0aa5-43ee-b030-562f4a597cfd?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
+
+**Pezza Website**
+
+- 
+- AngularJS - Coming Soon
+- ReactJS - Coming Soon
+- Blazor - Coming Soon
+
+**Pezza Admin Back-End**
+
+- MVC - [Click here to get started](https://web.microsoftstream.com/video/315b2034-0aa5-43ee-b030-562f4a597cfd?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
+- AngularJS - Coming Soon
+- ReactJS - Coming Soon
+- Blazor - Coming Soon
+ 
 [Click here to get started]()
 
 ### **Phase 4**

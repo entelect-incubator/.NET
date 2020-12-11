@@ -363,7 +363,7 @@ Complete all the other Controllers
 
 Right-Click on you Pezza.Api project -> Debug.
 
-CHnage Launch Browser to Open "swagger"
+Change Launch Browser to Open "swagger"
 
 ![](Assets/2020-11-25-00-39-15.png)
 
