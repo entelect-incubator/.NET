@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Pezza.Common;
+using Pezza.Common.DTO;
 using Pezza.Common.Entities;
 
 namespace Pezza.BackEnd.Controllers
@@ -42,21 +43,31 @@ namespace Pezza.BackEnd.Controllers
         // GET: StockController/Create
         public ActionResult Create()
         {
-            return this.View();
+            return this.View(new StockDataDTO());
         }
 
         // POST: StockController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<ActionResult> Create(StockDataDTO stock)
         {
-            try
+            if (this.ModelState.IsValid)
             {
-                return this.RedirectToAction(nameof(Index));
+                var json = JsonConvert.SerializeObject(stock);
+                var data = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var responseMessage = await this.client.PostAsync(@$"{AppSettings.ApiUrl}Stock", data);
+                if (responseMessage.IsSuccessStatusCode)
+                {
+                    var responseData = await responseMessage.Content.ReadAsStringAsync();
+                    var response = JsonConvert.DeserializeObject<StockDataDTO>(responseData);
+                }
+
+                return this.RedirectToAction("Index");
             }
-            catch
+            else
             {
-                return this.View();
+                return this.View(stock);
             }
         }
 

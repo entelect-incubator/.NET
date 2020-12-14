@@ -253,16 +253,6 @@ namespace Pezza.BackEnd.Controllers
 }
 ```
 
-Add a Constructor to Result.cs for ListResult. *TIP - Type in ctor*
-
-```cs
-public ListResult()
-{
-    this.Succeeded = false;
-    this.Errors = new List<string>();
-}
-```
-
 Create a new StockController
 
 ![Stock Controller](2020-12-10-23-56-56.png)

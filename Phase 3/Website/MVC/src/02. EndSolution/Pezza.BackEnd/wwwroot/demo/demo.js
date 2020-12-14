@@ -60,7 +60,7 @@ demo = {
     ctx = document.getElementById('lineChartExample').getContext("2d");
 
     gradientStroke = ctx.createLinearGradient(500, 0, 100, 0);
-    gradientStroke.addColorStop(0, '#80b6f4');
+    gradientStroke.addColorStop(0, '#bf2437');
     gradientStroke.addColorStop(1, chartColor);
 
     gradientFill = ctx.createLinearGradient(0, 170, 0, 50);

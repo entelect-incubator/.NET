@@ -1,0 +1,66 @@
+﻿@model Pezza.Common.DTO.StockDataDTO
+
+@{
+    ViewBag.Title = "Add Stock";
+}
+
+@using (Html.BeginForm()) { 
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>Stock</legend>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Name)
+        </div>
+        <div class="editor-field">
+            @Html.TextBoxFor(model => model.Name)
+            @Html.ValidationMessageFor(model => model.Name)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.UnitOfMeasure)
+        </div>
+        <div class="editor-field">
+            @Html.TextBoxFor(model => model.UnitOfMeasure)
+            @Html.ValidationMessageFor(model => model.UnitOfMeasure)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ValueOfMeasure)
+        </div>
+        <div class="editor-field">
+            @Html.TextBoxFor(model => model.ValueOfMeasure)
+            @Html.ValidationMessageFor(model => model.ValueOfMeasure)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Quantity)
+        </div>
+        <div class="editor-field">
+            @Html.TextBoxFor(model => model.Quantity)
+            @Html.ValidationMessageFor(model => model.Quantity)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ExpiryDate)
+        </div>
+        <div class="editor-field">
+            @Html.TextBoxFor(model => model.ExpiryDate)
+            @Html.ValidationMessageFor(model => model.ExpiryDate)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Comment)
+        </div>
+        <div class="editor-field">
+            @Html.TextBoxFor(model => model.Comment)
+            @Html.ValidationMessageFor(model => model.Comment)
+        </div>
+
+        <p>
+            <input type="submit" value="Create" />
+        </p>
+    </fieldset>
+
+} 
