@@ -1,0 +1,39 @@
+﻿@model Pezza.Common.Entities.AddressBase
+
+<fieldset>
+    <legend>Address</legend>
+    <div class="row">
+        <div class="col">
+            <label class="label-control">Street Address</label>
+            @Html.TextBoxFor(model => model.Address, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.Address)
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <label class="label-control">City</label>
+            <select name="Address.City" id="City" class="form-control"></select>
+            @Html.ValidationMessageFor(model => model.City)
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <label class="label-control">Province</label>
+            <select name="Address.Province" id="Province" class="form-control"></select>
+            @Html.ValidationMessageFor(model => model.Province)
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12 col-lg-4">
+            <label class="label-control">ZipCode</label>
+            @Html.TextBoxFor(model => model.ZipCode, new { @class = "form-control", type = "number" })
+            @Html.ValidationMessageFor(model => model.ZipCode)
+        </div>
+    </div>
+    <br />
+</fieldset>
+
+<script src="~/js/address.js" defer></script>

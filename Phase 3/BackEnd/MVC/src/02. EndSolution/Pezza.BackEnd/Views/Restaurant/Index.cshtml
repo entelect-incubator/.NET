@@ -1,0 +1,87 @@
+﻿@model IEnumerable<Pezza.Common.Entities.Restaurant>
+
+@{
+    ViewBag.Title = "Restaurant";
+    ViewBag.ActiveMenu = "Restaurants";
+}
+
+<div>
+    <a class="btn btn-primary" href="/Restaurant/Create">
+        <i class="fa fa-plus" aria-hidden="true"></i>
+        Add
+    </a>
+</div>
+<br />
+@if (Model.Any())
+{
+    @foreach (var restaurant in Model)
+    {
+        <div class="card" style="width: 18rem;">
+            <img src="@restaurant.PictureUrl" class="card-img-top" alt="@restaurant.Name Store Front">
+            <div class="card-body">
+                <h3 class="card-title">@restaurant.Name - <small>@(restaurant.IsActive ? "Open" : "Close")</small></h3>
+                <p class="card-text">
+                    @restaurant.Address,
+                    @restaurant.City,
+                    @restaurant.Province,
+                    @restaurant.PostalCode
+                </p>
+                <p class="card-text">@restaurant.Description</p>
+                <p>Since | @restaurant.DateCreated.ToShortDateString()</p>
+                <div class="btn-group" role="group">
+                    <a rel="tooltip" class="btn btn-info btn-sm edit" href="/Restaurant/Edit/@restaurant.Id">
+                        <i class="fa fa-wrench" aria-hidden="true"></i> Edit
+                    </a>
+                    <button onclick="remove(@restaurant.Id, '@restaurant.Name')" type="button" rel="tooltip" class="btn btn-danger btn-sm remove">
+                        <i class="fa fa-times" aria-hidden="true"></i> Remove
+                    </button>
+                </div>
+            </div>
+        </div>
+    }
+
+    @await Html.PartialAsync("_Modals")
+}
+else
+{
+    <div class="alert alert-info">No Restaurant Data</div>
+}
+
+@section Scripts
+{
+    <script>
+        "use strict";
+        function remove(id, name) {
+            $('.remove-entity').html('Restaurant');
+            $('.remove-name').html(name);
+            $('#removeId').val(id);
+            $('#confirmationModal').modal('show');
+        }
+
+        function confirmRemove() {
+            $(".alert").hide();
+
+            $('#confirmationModal').modal('hide');
+            var data = { Id: parseInt($('#removeId').val()) };
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Delete", "Stock")/' + $('#removeId').val(),
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    if (data == true) {
+                        $.alertInfo('Stock has been removed', function () {
+                            setTimeout(function () { window.location.reload() }, 1500);
+                        });
+                    }
+                    else {
+                        $.alertWarning('Error removing stock');
+                    }
+                },
+                error: function (error) {
+                    console.log(error);
+                    $.alertWarning('Error removing stock');
+                }
+            });
+        }
+    </script>
+}

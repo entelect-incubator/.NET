@@ -74,22 +74,23 @@ namespace Pezza.Api.Helpers
     using System.Threading.Tasks;
     using ImageMagick;
     using Pezza.Common;
+    using Pezza.Common.Helpers;
     using Pezza.Common.Models;
 
     public static class MediaHelper
     {
-        public static async Task<Result<UploadMediaResult>> UploadMediaAsync(string uploadFolder, string fileData)
+        public static async Task<Result<UploadMediaResult>> UploadMediaAsync(string uploadFolder, string base64FileData, bool thumbnail = false)
         {
-            if (string.IsNullOrEmpty(fileData))
+            if (!string.IsNullOrEmpty(base64FileData))
             {
-                var folderName = string.IsNullOrEmpty( uploadFolder) ? "" : uploadFolder;
+                var folderName = string.IsNullOrEmpty(uploadFolder) ? "" : uploadFolder;
 
                 var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), Path.Combine("Media", folderName));
                 if (!Directory.Exists(pathToSave))
                 {
                     Directory.CreateDirectory(pathToSave);
                 }
-                var extension = fileData.GetMimeFromBase64().GetExtensionFromMimeType();
+                var extension = base64FileData.GetMimeFromBase64().GetExtensionFromMimeType();
                 var timestamp = $"{ DateTime.Now:yyyy-MM-dd_HH-mm-ss-fff}";
                 var imageFileName = $"{timestamp}{extension}";
                 var thumbnailFileName = $"{timestamp}_Thumbnail{extension}";
@@ -104,7 +105,7 @@ namespace Pezza.Api.Helpers
 
                 try
                 {
-                    var base64Data = Regex.Match(fileData, @"data:image/(?<type>.+?),(?<data>.+)").Groups["data"].Value;
+                    var base64Data = Regex.Match(base64FileData, @"data:image/(?<type>.+?),(?<data>.+)").Groups["data"].Value;
                     var binData = Convert.FromBase64String(base64Data);
 
                     await File.WriteAllBytesAsync(fullPath, binData);
@@ -114,38 +115,29 @@ namespace Pezza.Api.Helpers
                     return Result<UploadMediaResult>.Failure(ex.Message);
                 }
 
-                CompressImage(fullPath);
-                CreateThumbnail(fullPath, thumbnailFullPath);
-
-                var relativeName = Path.Combine(folderName, imageFileName);
-                var relativeThumnailName = Path.Combine(folderName, thumbnailFileName);
+                if (thumbnail)
+                {
+                    using var stream = File.Open(fullPath, FileMode.Open);
+                    CreateThumbnail(stream, thumbnailFullPath);
+                }
 
                 return Result<UploadMediaResult>.Success(new UploadMediaResult
                 {
                     FullPath = fullPath,
-                    RelativePath = relativeName,
-                    Thumbnail = relativeThumnailName
+                    Path = imageFileName,
+                    Thumbnail = thumbnailFileName
                 });
             }
 
             return Result<UploadMediaResult>.Failure("No image to upload");
         }
 
-        private static void CompressImage(string path)
+        private static void CreateThumbnail(Stream stream, string thumbnailPath)
         {
-            var newImage = new FileInfo(path);
-            var optimizer = new ImageOptimizer();
-            optimizer.LosslessCompress(newImage);
-            optimizer.Compress(newImage);
-            newImage.Refresh();
-        }
-
-        private static void CreateThumbnail(string originalPath, string thumbnailPath)
-        {
-            using var mImage = new MagickImage(originalPath);
+            using var mImage = new MagickImage(stream);
             mImage.Sample(new Percentage(10.0));
-            mImage.Quality = 82;
-            mImage.Density = new Density(72);
+            mImage.Quality = 60;
+            mImage.Density = new Density(60);
 
             mImage.Write(thumbnailPath);
         }
@@ -155,11 +147,23 @@ namespace Pezza.Api.Helpers
             var match = Regex.Match(value, @"data:(?<type>.+?);base64,(?<data>.+)");
             return match.Groups["type"].Value;
         }
+
+        public static Stream GetStreamFromUrl(string url)
+        {
+            byte[] imageData = null;
+
+            using (var wc = new System.Net.WebClient())
+            {
+                imageData = wc.DownloadData(url);
+            }
+
+            return new MemoryStream(imageData);
+        }
     }
 }
 ```
 
-UploadMediaResult.cs is a model used by MediaHelper.cs
+UploadMediaResult.cs is a model used by MediaHelper.cs add it in the 04 Common\Models
 
 ```cs
 namespace Pezza.Api.Helpers
@@ -168,7 +172,7 @@ namespace Pezza.Api.Helpers
     {
         public string FullPath { get; set; }
 
-        public string RelativePath { get; set; }
+        public string Path { get; set; }
 
         public string Thumbnail { get; set; }
     }
@@ -195,17 +199,14 @@ namespace Pezza.Api.Controllers
     using MediatR;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.DependencyInjection;
-
-    namespace CleanArchitecture.WebUI.Controllers
+    
+    [ApiController]
+    [Route("api/[controller]")]
+    public abstract class ApiController : ControllerBase
     {
-        [ApiController]
-        [Route("api/[controller]")]
-        public abstract class ApiController : ControllerBase
-        {
-            private IMediator mediator;
+        private IMediator mediator;
 
-            protected IMediator Mediator => this.mediator ??= this.HttpContext.RequestServices.GetService<IMediator>();
-        }
+        protected IMediator Mediator => this.mediator ??= this.HttpContext.RequestServices.GetService<IMediator>();
     }
 }
 ```
@@ -347,19 +348,104 @@ namespace Pezza.Api.Controllers
 }
 ```
 
-To upload images add the following snippet. ImageData will be a Base64 String from the front end calling application.
+To upload images add the following snippet. ImageData will be a Base64 String from the front end calling application. 
 
 ```cs
-var imageResult = await MediaHelper.UploadMediaAsync("restaurant", data.ImageData);
-if (imageResult != null)
+if (!string.IsNullOrEmpty(data.ImageData))
 {
-    data.PictureUrl = imageResult.Data.RelativePath;
+    var imageResult = await MediaHelper.UploadMediaAsync("restaurant", data.ImageData);
+    if (imageResult != null)
+    {
+        data.PictureUrl = imageResult.Data.Path;
+    }
+}
+```
+
+To view uploaded images create a PictureController. When the image is not found it will return a not found image. Add one into Assets, one can be found in the Data folder.
+
+![Not found image](Assets/2020-12-23-23-25-31.png)
+
+Remember to Right Click on the Image and choose Properties. Change Copy to Output to Copy Always.
+
+![Not found image copy always](Assets/2020-12-23-23-28-22.png)
+
+```cs
+namespace Pezza.Api.Controllers
+{
+    using System.IO;
+    using Microsoft.AspNetCore.Mvc;
+    using Pezza.Common;
+
+    public class PictureController : ApiController
+    {
+        /// <summary>
+        /// Uploads the specified dto.
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="folder"></param>
+        /// <param name="thumbnail">Return thumbnail or not.</param>
+        /// <returns>HttpResponseMessage.</returns>
+        [HttpGet]
+        [ProducesResponseType(200)]
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Get(string file, string folder = "", bool thumbnail = false)
+        {
+            if (!string.IsNullOrEmpty(folder))
+            {
+                file = @$"{folder}\{file}";
+            }
+
+            if (string.IsNullOrEmpty(file))
+            {
+                return this.ReturnNotFoundImage();
+            }
+
+            var imageFolder = Path.Combine(Directory.GetCurrentDirectory(), Path.Combine("Media", file));
+
+
+            if (thumbnail)
+            {
+                var extension = Path.GetExtension(imageFolder);
+                imageFolder = imageFolder.Replace(extension, extension.Replace(".", "_Thumbnail."));
+            }
+
+            if (!System.IO.File.Exists(imageFolder))
+            {
+                return this.ReturnNotFoundImage();
+            }
+            else
+            {
+                imageFolder = imageFolder.Replace("_Thumbnail", "");
+            }
+
+            if (!System.IO.File.Exists(imageFolder))
+            {
+                return this.ReturnNotFoundImage();
+            }
+
+            var mimetype = MimeTypeMap.GetMimeType(Path.GetExtension(imageFolder));
+
+            var stream = new FileStream(imageFolder, FileMode.Open);
+            return new FileStreamResult(stream, mimetype);
+        }
+
+        /// <summary>
+        /// Returns the not found image.
+        /// </summary>
+        /// <returns>Not found image.</returns>
+        private IActionResult ReturnNotFoundImage()
+        {
+            var imgPath = Path.Combine(Directory.GetCurrentDirectory(), "Assets/not-found.png");
+            var stream = new FileStream(imgPath, FileMode.Open);
+            return new FileStreamResult(stream, "image/png");
+        }
+    }
 }
 ```
 
 Complete all the other Controllers
 
-![Controllers Structure!](Assets/2020-11-20-11-24-38.png)
+![Controllers Structure!](Assets/2020-12-23-23-26-10.png)
 
 Right-Click on you Pezza.Api project -> Debug.
 

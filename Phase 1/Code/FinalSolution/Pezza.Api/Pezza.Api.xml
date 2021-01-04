@@ -151,6 +151,21 @@
             </summary>
              <param name="id"></param> 
         </member>
+        <member name="M:Pezza.Api.Controllers.PictureController.Get(System.String,System.String,System.Boolean)">
+            <summary>
+            Uploads the specified dto.
+            </summary>
+            <param name="file"></param>
+            <param name="folder"></param>
+            <param name="thumbnail">Return thumbnail or not.</param>
+            <returns>HttpResponseMessage.</returns>
+        </member>
+        <member name="M:Pezza.Api.Controllers.PictureController.ReturnNotFoundImage">
+            <summary>
+            Returns the not found image.
+            </summary>
+            <returns>Not found image.</returns>
+        </member>
         <member name="M:Pezza.Api.Controllers.ProductController.Get(System.Int32)">
             <summary>
             Get Product by Id.

@@ -454,6 +454,12 @@ namespace Pezza.Core.Customer.Commands
 }
 ```
 
+If a property is not required and can be empty, don't enclose it in a if.
+
+```cs
+findEntity.Description = request.Data?.Description;
+```
+
 Create the following Queries
 
 -Get Single

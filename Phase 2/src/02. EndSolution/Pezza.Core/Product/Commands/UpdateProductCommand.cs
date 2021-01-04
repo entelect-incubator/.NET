@@ -30,10 +30,7 @@
                 findEntity.Name = request.Data?.Name;
             }
 
-            if (!string.IsNullOrEmpty(request.Data?.Description))
-            {
-                findEntity.Description = request.Data?.Description;
-            }
+            findEntity.Description = request.Data?.Description;
 
             if (!string.IsNullOrEmpty(request.Data?.PictureUrl))
             {

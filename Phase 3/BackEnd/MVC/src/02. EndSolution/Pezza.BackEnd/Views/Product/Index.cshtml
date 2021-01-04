@@ -1,0 +1,90 @@
+﻿@model IEnumerable<Pezza.Common.Entities.Product>
+
+@{
+    ViewBag.Title = "Product";
+    ViewBag.ActiveMenu = "Products";
+}
+
+<div>
+    <a class="btn btn-primary" href="/Product/Create">
+        <i class="fa fa-plus" aria-hidden="true"></i>
+        Add
+    </a>
+</div>
+<br />
+@if (Model.Any())
+{
+    @foreach (var Product in Model)
+    {
+        <div class="card @(Product.Special ? "bg-default" : "")" style="width: 18rem;">
+            <img src="@Product.PictureUrl" class="card-img-top" alt="@Product.Name Store Front">
+            <div class="card-body">
+                <h3 class="card-title">@Product.Name - <small>@(Product.IsActive ? "Available" : "Discontinued")</small></h3>
+                <p class="card-text">@Product.Description</p>
+                @if (Product.OfferEndDate.HasValue) {
+                    <p class="card-text">
+                        <em>
+                            @(Product.OfferEndDate.HasValue ? $", Offer ends on the {Product.OfferEndDate.Value.ToShortDateString()}" : "") @(Product.OfferPrice.HasValue ? $"R{Product.OfferPrice.Value}" : "")
+                        </em>
+                    </p>
+                }
+
+                <p>Added on the | @Product.DateCreated.ToShortDateString()</p>
+                <h2>@Product.Price</h2>
+                <div class="btn-group" role="group">
+                    <a rel="tooltip" class="btn btn-info btn-sm edit" href="/Product/Edit/@Product.Id">
+                        <i class="fa fa-wrench" aria-hidden="true"></i> Edit
+                    </a>
+                    <button onclick="remove(@Product.Id, '@Product.Name')" type="button" rel="tooltip" class="btn btn-danger btn-sm remove">
+                        <i class="fa fa-times" aria-hidden="true"></i> Remove
+                    </button>
+                </div>
+            </div>
+        </div>
+    }
+
+    @await Html.PartialAsync("_Modals")
+}
+else
+{
+    <div class="alert alert-info">No Product Data</div>
+}
+
+@section Scripts
+{
+    <script>
+        "use strict";
+        function remove(id, name) {
+            $('.remove-entity').html('Product');
+            $('.remove-name').html(name);
+            $('#removeId').val(id);
+            $('#confirmationModal').modal('show');
+        }
+
+        function confirmRemove() {
+            $(".alert").hide();
+
+            $('#confirmationModal').modal('hide');
+            var data = { Id: parseInt($('#removeId').val()) };
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Delete", "Stock")/' + $('#removeId').val(),
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    if (data == true) {
+                        $.alertInfo('Stock has been removed', function () {
+                            setTimeout(function () { window.location.reload() }, 1500);
+                        });
+                    }
+                    else {
+                        $.alertWarning('Error removing stock');
+                    }
+                },
+                error: function (error) {
+                    console.log(error);
+                    $.alertWarning('Error removing stock');
+                }
+            });
+        }
+    </script>
+}
