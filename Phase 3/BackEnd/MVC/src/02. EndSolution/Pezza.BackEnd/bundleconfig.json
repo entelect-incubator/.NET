@@ -1,12 +1,16 @@
 [
   {
-    "outputFileName": "wwwroot/css/pezza.min.css",
+    "outputFileName": "wwwroot/css/bundle.min.css",
     "inputFiles": [
-      "wwwroot/css/design-system.css?v=1.0.0"
-    ]
+      "wwwroot/css/design-system.min.css",
+      "wwwroot/css/site.css"
+    ],
+    "minify": {
+      "enabled": false
+    }
   },
   {
-    "outputFileName": "wwwroot/js/pezza.min.js",
+    "outputFileName": "wwwroot/js/bundle.min.js",
     "inputFiles": [
       "wwwroot/fonts/fontawesome/js/all.js",
       "wwwroot/js/core/jquery.min.js",
@@ -19,7 +23,7 @@
       "wwwroot/js/plugins/moment.min.js",
       "wwwroot/js/plugins/bootstrap-datetimepicker.js",
       "wwwroot/demo/demo.js",
-      "wwwroot/js/design-system.min.js?v=1.0.0",
+      "wwwroot/js/design-system.min.js",
       "wwwroot/js/alert.js",
       "wwwroot/js/site.js"
     ],
