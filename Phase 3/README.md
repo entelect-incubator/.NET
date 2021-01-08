@@ -1,6 +1,6 @@
 <img align="left" width="116" height="116" src="pezza-logo.png" />
 
-# &nbsp;**Pezza - Phase 2**
+# &nbsp;**Pezza - Phase 3**
 
 <br/><br/>
 
