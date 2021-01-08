@@ -1,0 +1,114 @@
+
+/*
+ =========================================================
+ * Blk• Design System - v1.0.0
+ =========================================================
+
+ * Product Page: https://www.creative-tim.com/product/design-system
+ * Copyright 2018 Creative Tim (http://www.creative-tim.com)
+
+
+ =========================================================
+
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+ */
+
+ // Core
+
+@import "design-system/custom/functions";
+@import "design-system/bootstrap/functions";
+
+@import "design-system/custom/variables";
+@import "design-system/bootstrap/variables";
+
+@import "design-system/custom/mixins";
+@import "design-system/bootstrap/mixins";
+
+ // Bootstrap components
+
+@import "design-system/bootstrap/root";
+@import "design-system/bootstrap/reboot";
+@import "design-system/bootstrap/type";
+@import "design-system/bootstrap/images";
+@import "design-system/bootstrap/code";
+@import "design-system/bootstrap/grid";
+@import "design-system/bootstrap/tables";
+@import "design-system/bootstrap/forms";
+@import "design-system/bootstrap/buttons";
+@import "design-system/bootstrap/transitions";
+@import "design-system/bootstrap/dropdown";
+@import "design-system/bootstrap/button-group";
+@import "design-system/bootstrap/input-group";
+@import "design-system/bootstrap/custom-forms";
+@import "design-system/bootstrap/nav";
+@import "design-system/bootstrap/navbar";
+@import "design-system/bootstrap/card";
+@import "design-system/bootstrap/breadcrumb";
+@import "design-system/bootstrap/pagination";
+@import "design-system/bootstrap/badge";
+@import "design-system/bootstrap/jumbotron";
+@import "design-system/bootstrap/alert";
+@import "design-system/bootstrap/progress";
+@import "design-system/bootstrap/media";
+@import "design-system/bootstrap/list-group";
+@import "design-system/bootstrap/close";
+@import "design-system/bootstrap/modal";
+@import "design-system/bootstrap/tooltip";
+@import "design-system/bootstrap/popover";
+@import "design-system/bootstrap/carousel";
+@import "design-system/bootstrap/utilities";
+@import "design-system/bootstrap/print";
+
+ // Custom components
+
+ @import "design-system/custom/alerts.scss";
+ @import "design-system/custom/buttons.scss";
+ @import "design-system/custom/dropdown.scss";
+ @import "design-system/custom/footer.scss";
+ @import "design-system/custom/forms.scss";
+ @import "design-system/custom/images.scss";
+ @import "design-system/custom/modal.scss";
+ @import "design-system/custom/navbar.scss";
+ @import "design-system/custom/type.scss";
+ @import "design-system/custom/icons.scss";
+ @import "design-system/custom/tables";
+ @import "design-system/custom/checkboxes-radio";
+ @import "design-system/custom/fixed-plugin";
+ @import "design-system/custom/pagination.scss";
+ @import "design-system/custom/misc.scss";
+ @import "design-system/custom/rtl.scss";
+ @import "design-system/custom/input-group.scss";
+ @import "design-system/custom/example-pages.scss";
+ @import "design-system/custom/progress.scss";
+ @import "design-system/custom/badge.scss";
+ @import "design-system/custom/pills.scss";
+ @import "design-system/custom/docs.scss";
+ @import "design-system/custom/tabs.scss";
+ @import "design-system/custom/info-areas.scss";
+
+// Sections
+@import "design-system/custom/sections.scss";
+
+
+
+ // Vendor / Plugins
+
+@import "design-system/custom/vendor/plugin-perfect-scrollbar.scss";
+@import "design-system/custom/vendor/plugin-animate-bootstrap-notify.scss";
+@import "design-system/custom/vendor/plugin-bootstrap-switch.scss";
+@import "design-system/custom/vendor/plugin-nouislider.scss";
+@import "design-system/custom/vendor/plugin-datetimepicker.scss";
+
+
+// Cards
+
+@import 'design-system/custom/card';
+@import "design-system/custom/cards/card-chart";
+@import "design-system/custom/cards/card-map";
+@import "design-system/custom/cards/card-user";
+@import "design-system/custom/cards/card-task";
+@import "design-system/custom/cards/card-plain";
+@import "design-system/custom/cards/card-register";
+@import "design-system/custom/cards/card-stats";
+@import "design-system/custom/cards/card-chart";
