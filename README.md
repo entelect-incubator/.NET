@@ -92,7 +92,42 @@ Overview
 
 [Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%202)
 
-### **Phase 3** UI
+### **Phase 3 - Handling Data**
+
+Now that we have deployed phase 2, we can make a few enhancements. Also, it will be easier for the customer and admin to search and filter through the data, so we will add that in as well.
+
+Overview
+- [ ] [Concurrency](https://web.microsoftstream.com/video/56e7e456-69e6-4f2b-8eec-ddb118c3aa5f?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
+
+Improve how data is displayed and validated
+
+- [ ] Fluent Validation
+- [ ] Filtering
+- [ ] Searching
+- [ ] Pagination
+
+### **Phase 4 - Standards and Error Handling**
+
+ When we work as part of a team, we usually need to adhere to coding standards. Let's have a look at how we can enforce some of the most basic standards and adding error handling.
+  
+Overview
+- [ ] [Error Handling](https://web.microsoftstream.com/video/5fcd4c8a-4e7b-41ac-9836-d1366da97c82?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
+
+- [ ] Coding Standards
+  
+### **Phase 5** - Improving Performance
+
+The sites have been running for a while now and we are getting a lot more customers on the site ordering pizza. Pezza has also expanded to more areas and realised the importance of memory and performance.
+
+Overview
+- [ ] [Performance and Memory Management](https://web.microsoftstream.com/video/64098be8-6979-4c10-85f4-efa91d0cb1f1?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
+
+Increasing Performance
+
+- [ ] Caching
+- [ ] Compression
+
+### **Phase 6** UI
 
 Overview
 - [ ] [MVC Part 1](https://web.microsoftstream.com/video/61e64cfa-c3ba-45c3-9811-e5bc25968a2a?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
@@ -118,40 +153,9 @@ We will be building a basic Pizza website for Customers and a basic Admin Back-E
  
 [Click here to get started]()
 
-### **Phase 4**
 
-Now that we have deployed phase 1, we can make a few enhancements. Also, it will be easier for the customer and admin to search and filter through the stock, so we will add that in as well.
 
-Overview
-- [ ] [Concurrency](https://web.microsoftstream.com/video/56e7e456-69e6-4f2b-8eec-ddb118c3aa5f?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
 
-Improve how data is displayed and validated
-
-- [ ] Fluent Validation
-- [ ] Filtering
-- [ ] Searching
-- [ ] Pagination
-
-### **Phase 5** - Coming soon
-
- When we work as part of a team, we usually need to adhere to coding standards. Let's have a look at how we can enforce some of the most basic standards and adding error handling.
-  
-Overview
-- [ ] [Error Handling](https://web.microsoftstream.com/video/5fcd4c8a-4e7b-41ac-9836-d1366da97c82?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
-
-- [ ] Coding Standards
-  
-### **Phase 5** - Coming soon
-
-The sites have been running for a while now and we are getting a lot more customers on the site ordering pizza. Pezza has also expanded to more areas and realised the importance of memory and performance.
-
-Overview
-- [ ] [Performance and Memory Management](https://web.microsoftstream.com/video/64098be8-6979-4c10-85f4-efa91d0cb1f1?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
-
-Increasing Performance
-
-- [ ] Caching
-- [ ] Compression
   
 ### **Phase 6** - Coming soon
 

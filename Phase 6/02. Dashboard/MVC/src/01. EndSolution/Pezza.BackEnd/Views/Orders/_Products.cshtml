@@ -1,0 +1,36 @@
+﻿@model Pezza.Portal.Models.OrderItemModel
+
+<div class="orderItem">
+    @foreach (var Product in Model.Products)
+    {
+        <div id="product-@Product.Id" class="product card @(Product.Special ? "bg-default" : "")" style="width: 18rem;float: left; margin-right: 15px;">
+            <input type="hidden" id="productId" value="@Product.Id" />
+            <img src="@Product.PictureUrl" class="card-img-top" alt="@Product.Name Store Front">
+            <div class="card-body">
+                <h4 class="card-title">@Product.Name - <small>@(Product.IsActive ? "Available" : "Discontinued")</small></h4>
+                <p class="card-text">@Product.Description</p>
+                @if (Product.OfferEndDate.HasValue)
+                {
+                    <p class="card-text">
+                        <em>
+                            @(Product.OfferEndDate.HasValue ? $", Offer ends on the {Product.OfferEndDate.Value.ToShortDateString()}" : "") @(Product.OfferPrice.HasValue ? $"R{Product.OfferPrice.Value}" : "")
+                        </em>
+                    </p>
+                }
+
+                <p>Added on the | @Product.DateCreated.ToShortDateString()</p>
+                <h2 class="price">@Product.Price</h2>
+                <div class="row" role="group">
+                    <div class="col">
+                        @Html.TextBoxFor(model => model.Quantity, new { @class = "form-control product-qty", type = "number" })
+                    </div>
+                    <div class="col">
+                        <button onclick="addProduct(@Product.Id)" type="button" rel="tooltip" class="btn btn-danger product-qty" style="margin:0px">
+                            Add
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

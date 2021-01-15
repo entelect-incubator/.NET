@@ -1,0 +1,103 @@
+﻿@model IEnumerable<Pezza.Common.Entities.Customer>
+
+@{
+    ViewBag.Title = "Customer";
+    ViewBag.ActiveMenu = "Customer";
+}
+
+<div>
+    <a class="btn btn-primary" href="/Customer/Create">
+        <i class="fa fa-plus" aria-hidden="true"></i>
+        Add
+    </a>
+</div>
+<br />
+@if (Model.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Phone</th>
+                <th>Email</th>
+                <th>Contact Person</th>
+                <th>Address</th>
+                <th>Date Created</th>
+                <th width="100px" class="text-right">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var Customer in Model)
+            {
+                <tr>
+                    <td>@Customer.Id</td>
+                    <td>@Customer.Name</td>
+                    <td><a class="btn btn-sm" target="_blank" href="tel:@Customer.Phone">@Customer.Phone</a></td>
+                    <td><a class="btn btn-sm" target="_blank" href="email:@Customer.Email">@Customer.Email</a></td>
+                    <td>@Customer.ContactPerson</td>
+                    <td>
+                        @Customer.Address<br />
+                        @Customer.City<br />
+                        @Customer.Province<br />
+                        @Customer.ZipCode
+                    </td>
+                    <td>@Customer.DateCreated.ToShortDateString()</td>
+                    <td align="right">
+                        <a rel="tooltip" class="btn btn-info btn-sm btn-round btn-icon edit" href="/Customer/Edit/@Customer.Id">
+                            <i class="fa fa-wrench" aria-hidden="true"></i>
+                        </a>
+                        <button onclick="remove(@Customer.Id, '@Customer.Name')" type="button" rel="tooltip" class="btn btn-danger btn-sm btn-round btn-icon remove">
+                            <i class="fa fa-times" aria-hidden="true"></i>
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    @await Html.PartialAsync("_Modals")
+}
+else
+{
+    <div class="alert alert-info">No Customer Data</div>
+}
+
+@section Scripts
+{
+    <script>
+        "use strict";
+        function remove(id, name) {
+            $('.remove-entity').html('Customer');
+            $('.remove-name').html("Are you sure you want to remove " + name);
+            $('#removeId').val(id);
+            $('#confirmationModal').modal('show');
+        }
+
+        function confirmRemove() {
+            $(".alert").hide();
+
+            $('#confirmationModal').modal('hide');
+            var data = { Id: parseInt($('#removeId').val()) };
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Delete", "Customer")/' + $('#removeId').val(),
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    if (data == true) {
+                        $.alertInfo('Customer has been removed', function () {
+                            setTimeout(function () { window.location.reload() }, 1500);
+                        });
+                    }
+                    else {
+                        $.alertWarning('Error removing Customer');
+                    }
+                },
+                error: function (error) {
+                    console.log(error);
+                    $.alertWarning('Error removing Customer');
+                }
+            });
+        }
+    </script>
+}

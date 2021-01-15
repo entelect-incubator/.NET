@@ -1,21 +1,21 @@
 <img align="left" width="116" height="116" src="pezza-logo.png" />
 
-# &nbsp;**Pezza - Phase 3**
+# &nbsp;**Pezza - Phase 3 - Handling Data**
 
 <br/><br/>
 
-### **CQRS**
+### **Fluent Validation**
 
-In this Incubator, we try to follow the Single Responsibility Principle as far as possible. This way we will be using a clean approach to CQRS. Don't worry too much about what CQRS, but it helps us in applying the Single Responsibility Principle.
+[Overview](https://fluentvalidation.net/)
 
-[CQRS Overview](https://docs.microsoft.com/en-us/azure/architecture/patterns/cqrs)
+FluentValidation is a server-side framework, and does not provide any client-side validation directly. However, it can provide metadata which, when applied to the generated HTML elements, can be used by a client-side framework such as jQuery Validate, in the same way that ASP. NET's default validation attributes work.
 
 ## **Setup**
 
-- [ ] Use the Final Solution from Phase 1 to get started
+- [ ] Use the Final Solution from Phase 2 to get started or use Phase3\src\01. StartSolution
 
 ## **Steps**
 
-- [ ] [Step 1 - Web Api](https://github.com/entelect-incubator/.NET/tree/master/Phase%202/Step%201)
-- [ ] [Step 2 - MVC](https://github.com/entelect-incubator/.NET/tree/master/Phase%202/Step%202) 
-- [ ] [Step 3 - Service](https://github.com/entelect-incubator/.NET/tree/master/Phase%202/Step%203) 
+- [ ] [Step 1 - Validation](https://github.com/entelect-incubator/.NET/tree/master/Phase%203/Step%201)
+- [ ] [Step 2 - Filtering & Searching](https://github.com/entelect-incubator/.NET/tree/master/Phase%203/Step%202) 
+ 

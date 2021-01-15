@@ -556,5 +556,7 @@ Press F5 and Run your API. You should see something like this.
 
 ![](Assets/2020-11-25-00-42-24.png)
 
-## Move to Step 3
-[Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%202/Step%203)
+### You are done with the Back-End that will be used to build most of the Front-End stack.
+
+## Move to Phase 3
+[Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%203)

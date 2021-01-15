@@ -77,7 +77,7 @@ namespace Pezza.Test
 
 ### **Setup**
 
-![Setup Structure](2020-11-20-09-35-39.png)
+![Setup Structure](Assets/2020-11-20-09-35-39.png)
 
 QueryTestBase.cs
 
@@ -139,11 +139,11 @@ namespace Pezza.Test
 
 Test Data for our tests. Staying with Single Responsibility we want to create a Test Class for every Entity or DTO. Create a folder for every Entity in the Database.
 
-![Unit test Test Data Structure](2020-11-20-09-37-20.png)
+![Unit test Test Data Structure](Assets/2020-11-20-09-37-20.png)
 
 CustomerTestData.cs - We will use Bogus package to help us out in creating Test Data, by creating a Faker Object. You will end up with 3 functions i.e. Entity, DTO and DTOData
 
-![Customer Test Data](2020-11-20-09-39-27.png)
+![Customer Test Data](Assets/2020-11-20-09-39-27.png)
 
 ```cs
 namespace Pezza.Test
@@ -206,7 +206,7 @@ Create a Test Data Class for every entity or you can copy it from Phase2/Data.
 
 Create a Folder in the Test Project called **DataAccess**. Create a Test Data Access Class for every Entity.
 
-![Data Access Structure](2020-11-20-09-42-04.png)
+![Data Access Structure](Assets/2020-11-20-09-42-04.png)
 
 We will test every method inside of the DataAcess class - GetAsync, GetAllAsync, SaveAsync, UpdateAsync and DeleteAsync. The class will inherit from QueryTestBase created earlier.
 
@@ -305,7 +305,7 @@ Create a DataAccess test for every Entity
 
 Create a Folder in the Test Project called **Core**. Create a Test Core Class for every Entity.
 
-![Core Tests Structure](2020-11-20-09-49-52.png)
+![Core Tests Structure](Assets/2020-11-20-09-49-52.png)
 
 We will test every method inside of the Core class - GetAsync, GetAllAsync, SaveAsync, UpdateAsync and DeleteAsync. The class will inherit from QueryTestBase created earlier.
 

@@ -97,6 +97,11 @@ Create a mapping class to map between Entities to a DTO or vice versa.
 
 ![](Assets/2020-10-04-19-37-53.png)
 
+
+### **Database EFCore Maps**
+
+![DBCOntext Map](Assets/2021-01-14-07-45-18.png)
+
 ### **Base Entity**
 
 All of our Database Tables has a Primary Key of Id and type of Int.
@@ -177,7 +182,7 @@ To help us out achieving this we will be using a Nuget Package - Mediatr
 
 To create consistency with the result we send back from the Core layer we will utilize a Result.cs class. This helps to create unity between all Commands and Queries.
 
-![DataAccess Structure](Assets/2020-10-04-23-52-01.png)
+![DataAccess Structure](Assets/2021-01-14-07-43-18.png)
 
 ```cs
 namespace Pezza.Common.Models
@@ -301,6 +306,56 @@ namespace Pezza.Common.Models
 
 ```
 
+Move Address Data into Addressbase into Pezza.Common\Entities AddressBase.cs
+
+```cs
+namespace Pezza.Common.Entities
+{
+    public class AddressBase
+    {
+        public string Address { get; set; }
+
+        public string City { get; set; }
+
+        public string Province { get; set; }
+
+        public string ZipCode { get; set; }
+    }
+}
+```
+
+Move Address Data into ImageDataBase into Pezza.Common\Entities ImageDataBase.cs
+
+```cs
+namespace Pezza.Common.Entities
+{
+    public class ImageDataBase
+    {
+        public string ImageData { get; set; }
+    }
+}
+```
+
+Create Data DTO's that we will use in the calling projects for SOLID principal. Only send in data that is needed. Copy from Phase 2\Data\Common\DTO\Data
+
+![Data DTO's](Assets/2021-01-14-08-04-14.png)
+
+You will see in any Data DTO, nullable boolean needs an extra property. Otherwise project like MVC doesn't know how to render it correctly.
+
+Copy MimeTypes.cs from Phase 2\Data\Common\Models
+
+![MimeTypes.cs](Assets/2021-01-14-08-05-17.png)
+
+Modify Pezza.Api Startup.cs Configure Method. To be able to view images you will need to enable StaticFiles.
+
+```cs
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"Media")),
+    RequestPath = new PathString("/Media"),
+});
+```
+
 Remove Project - Pezza.Core.Contracts
 
 Make sure you have Mapping for each Entity to and from its DTO
@@ -410,42 +465,13 @@ namespace Pezza.Core.Customer.Commands
         public async Task<Result<CustomerDTO>> Handle(UpdateCustomerCommand request, CancellationToken cancellationToken)
         {
             var findEntity = await this.dataAcess.GetAsync(request.Id);
-
-            if (!string.IsNullOrEmpty(request.Data?.Name))
-            {
-                findEntity.Name = request.Data?.Name;
-            }
-
-            if (!string.IsNullOrEmpty(request.Data?.AddressBase?.Address))
-            {
-                findEntity.Address = request.Data?.AddressBase?.Address;
-            }
-
-            if (!string.IsNullOrEmpty(request.Data?.AddressBase?.City))
-            {
-                findEntity.City = request.Data?.AddressBase?.City;
-            }
-
-            if (!string.IsNullOrEmpty(request.Data?.AddressBase?.Province))
-            {
-                findEntity.Province = request.Data?.AddressBase?.Province;
-            }
-
-            if (!string.IsNullOrEmpty(request.Data?.AddressBase?.ZipCode))
-            {
-                findEntity.ZipCode = request.Data?.AddressBase?.ZipCode;
-            }
-
-            if (!string.IsNullOrEmpty(request.Data?.Phone))
-            {
-                findEntity.Phone = request.Data?.Phone;
-            }
-
-            if (!string.IsNullOrEmpty(request.Data?.ContactPerson))
-            {
-                findEntity.ContactPerson = request.Data?.ContactPerson;
-            }
-
+            findEntity.Name = !string.IsNullOrEmpty(request.Data?.Name) ? request.Data?.Name : findEntity.Name;
+            findEntity.Address = !string.IsNullOrEmpty(request.Data?.Address?.Address) ? request.Data?.Address?.Address : findEntity.Address;
+            findEntity.City = !string.IsNullOrEmpty(request.Data?.Address?.City) ? request.Data?.Address?.City : findEntity.City;
+            findEntity.Province = !string.IsNullOrEmpty(request.Data?.Address?.Province) ? request.Data?.Address?.Province : findEntity.Province;
+            findEntity.ZipCode = !string.IsNullOrEmpty(request.Data?.Address?.ZipCode) ? request.Data?.Address?.ZipCode : findEntity.ZipCode;
+            findEntity.Phone = !string.IsNullOrEmpty(request.Data?.Phone) ? request.Data?.Phone : findEntity.Phone;
+            findEntity.ContactPerson = !string.IsNullOrEmpty(request.Data?.ContactPerson) ? request.Data?.ContactPerson : findEntity.ContactPerson;
             var outcome = await this.dataAcess.UpdateAsync(findEntity);
 
             return (outcome != null) ? Result<CustomerDTO>.Success(outcome.Map()) : Result<CustomerDTO>.Failure("Error updating a Customer");
