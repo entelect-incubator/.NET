@@ -12,8 +12,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "04 Common", "04 Common", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01 Apis", "01 Apis", "{62BBBDBE-A110-4A76-AD08-520728FE86E0}"
 EndProject
-Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Pezza.Database", "Pezza.Database\Pezza.Database.sqlproj", "{2FC31C2A-83CB-4262-8723-EC7F492563EC}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pezza.DataAccess.Contracts", "Pezza.DataAccess.Contracts\Pezza.DataAccess.Contracts.csproj", "{0A8F24C8-2E55-41F4-93B3-C7442E58EE87}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pezza.DataAccess", "Pezza.DataAccess\Pezza.DataAccess.csproj", "{FE42CB6B-CB36-40E0-8624-43D9E60BF918}"
@@ -30,7 +28,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pezza.Api", "Pezza.Api\Pezz
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "00 UI", "00 UI", "{29425D8C-D8BF-46B2-83D6-34C097290011}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pezza.Portal", "Pezza.BackEnd\Pezza.Portal.csproj", "{109A7763-2833-488D-968A-5115581981D3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pezza.Portal", "Pezza.BackEnd\Pezza.Portal.csproj", "{109A7763-2833-488D-968A-5115581981D3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,12 +36,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{2FC31C2A-83CB-4262-8723-EC7F492563EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2FC31C2A-83CB-4262-8723-EC7F492563EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2FC31C2A-83CB-4262-8723-EC7F492563EC}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{2FC31C2A-83CB-4262-8723-EC7F492563EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2FC31C2A-83CB-4262-8723-EC7F492563EC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2FC31C2A-83CB-4262-8723-EC7F492563EC}.Release|Any CPU.Deploy.0 = Release|Any CPU
 		{0A8F24C8-2E55-41F4-93B3-C7442E58EE87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0A8F24C8-2E55-41F4-93B3-C7442E58EE87}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0A8F24C8-2E55-41F4-93B3-C7442E58EE87}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -81,7 +73,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{2FC31C2A-83CB-4262-8723-EC7F492563EC} = {4D8B72C8-5089-4064-847F-5B1D41D9EA6F}
 		{0A8F24C8-2E55-41F4-93B3-C7442E58EE87} = {4D8B72C8-5089-4064-847F-5B1D41D9EA6F}
 		{FE42CB6B-CB36-40E0-8624-43D9E60BF918} = {4D8B72C8-5089-4064-847F-5B1D41D9EA6F}
 		{002D819F-FF03-46B3-9E3E-81A1A2F02D40} = {D8B05A7F-DABF-4E75-AC93-CE78506AE9DC}

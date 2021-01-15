@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Pezza.Api</name>
+    </assembly>
+    <members>
+        <member name="M:Pezza.Api.Controllers.StockController.Get(System.Int32)">
+            <summary>
+            Get Stock by Id.
+            </summary>
+            <param name="id"></param> 
+        </member>
+        <member name="M:Pezza.Api.Controllers.StockController.Search">
+            <summary>
+            Get all Stock.
+            </summary>
+        </member>
+        <member name="M:Pezza.Api.Controllers.StockController.Create(Pezza.Common.DTO.StockDTO)">
+            <summary>
+            Create Stock.
+            </summary>
+            <remarks>
+            Sample request:
+            
+                POST api/Stock
+                {        
+                  "name": "Tomatoes",
+                  "UnitOfMeasure": "Kg",
+                  "ValueOfMeasure": "1",
+                  "Quantity": "50"
+                }
+            </remarks>
+            <param name="stock"></param> 
+        </member>
+        <member name="M:Pezza.Api.Controllers.StockController.Update(System.Int32,Pezza.Common.DTO.StockDTO)">
+            <summary>
+            Update Stock.
+            </summary>
+            <remarks>
+            Sample request:
+            
+                PUT api/Stock/1
+                {        
+                  "Quantity": "30"
+                }
+            </remarks>
+            <param name="id"></param>
+            <param name="stock"></param>
+        </member>
+        <member name="M:Pezza.Api.Controllers.StockController.Delete(System.Int32)">
+            <summary>
+            Remove Stock by Id.
+            </summary>
+            <param name="id"></param> 
+        </member>
+    </members>
+</doc>

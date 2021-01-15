@@ -6,8 +6,7 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <NoWarn>1701;1702;1591</NoWarn>
-    <DocumentationFile>F:\Dev\.Net\Phase 3\BackEnd\MVC\src\02. EndSolution\Pezza.Api\Pezza.Api.xml</DocumentationFile>
-    <WarningLevel>5</WarningLevel>
+    <DocumentationFile>D:\Dev\.NET\Phase 8\02. Dashboard\MVC\src\01. EndSolution\Pezza.Api\Pezza.Api.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

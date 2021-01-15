@@ -4,7 +4,7 @@
 
 <br/><br/>
 
-Install Nuget Package Serilog.AspNetCore
+Install Nuget Package Serilog.AspNetCore and Serilog.Sinks.File
 
 ![](2021-01-15-11-13-06.png)
 
@@ -32,13 +32,10 @@ namespace Pezza.Common
             Log.Fatal(e, "Exception");
         }
 
-        private static void Setup()
-        {
-            Log.Logger = new LoggerConfiguration()
+        private static void Setup() => Log.Logger = new LoggerConfiguration()
             .Enrich.FromLogContext()
-            .WriteTo.Console()
+            .WriteTo.File("log.txt", rollingInterval: RollingInterval.Day)
             .CreateLogger();
-        }
     }
 }
 ```
@@ -62,7 +59,7 @@ else
 }
 ```
 
-With Serilog you can different hooks into i.e. Logging to File, Elastic etc.
+With Serilog you can different hooks into i.e. Elastic etc.
 
 Using a Static class for Logging makes it easier to add Logging and don't have to inject it before able to use it.
 
