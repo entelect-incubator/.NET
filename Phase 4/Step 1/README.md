@@ -12,15 +12,15 @@ Standards
 
 Add Phase 4/Data/StyleCopRuleSet.ruleset to your Solution
 
-![StyleCopRuleSet](2021-01-15-10-25-17.png)
+![StyleCopRuleSet](Assets/2021-01-15-10-25-17.png)
 
 Install StyleCop.Analyzers Nuget Package to all Projects
 
-![StyleCop.Analyzers](2021-01-15-10-26-37.png)
+![StyleCop.Analyzers](Assets/2021-01-15-10-26-37.png)
 
 Add the StyleCop Rule Set in every project file.
 
-![](2021-01-15-10-30-33.png)
+![](Assets/2021-01-15-10-30-33.png)
 
 ```
 <CodeAnalysisRuleSet>$(SolutionDir)\StyleCopRuleSet.ruleset</CodeAnalysisRuleSet>
