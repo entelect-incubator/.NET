@@ -8,7 +8,7 @@
 
 Extend our data DTO's to cater for filtering and pagination. In Pezza.Common Models create PagingArgs.cs
 
-![PagingArgs](2021-01-15-07-06-25.png)
+![PagingArgs](Assets/2021-01-15-07-06-25.png)
 
 ```cs
 namespace Pezza.Common.Models
@@ -241,7 +241,7 @@ namespace Test.DataAccess.Filter
 
 You can also copy the other Filters from Step3\Data\Filter
 
-![Filters](2021-01-15-07-13-03.png)
+![Filters](Assets/2021-01-15-07-13-03.png)
 
 ### **Extend Lst Result**
 
@@ -273,15 +273,133 @@ public static ListResult<T> Success(IEnumerable<T> data, int count) => new ListR
 
 Change the Data Access Interface to include the Search Model in GetAllAsync.
 
-![](2021-01-15-07-27-11.png)
+![](Assets/2021-01-15-07-27-11.png)
 
 ```
-Task<ListResult<T>> GetAllAsync(SearchBase searchModel);
+Task<ListResult<T>> GetAllAsync(SearchBase searchBase);
 ```
 
 ## **STEP 2 - Filtering & Searching**
 
+Change all the DataAccess GetAllSync methods to include the new SearchModel and Filtering.
 
+Open CustomerDataAccess
 
-Move to Step 2
-[Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%203/Step%202)
+```cs
+public async Task<ListResult<Customer>> GetAllAsync(SearchBase searchBase)
+        {
+            var searchModel = (CustomerDataDTO)searchBase;
+            if (string.IsNullOrEmpty(searchModel.OrderBy))
+            {
+                searchModel.OrderBy = "DateCreated desc";
+            }
+
+            var entities = this.databaseContext.Customers.Select(x => x)
+                .AsNoTracking()
+                .FilterByName(searchModel.Name)
+                .FilterByAddress(searchModel.Address?.Address)
+                .FilterByCity(searchModel.Address?.City)
+                .FilterByProvince(searchModel.Address?.Province)
+                .FilterByZipCode(searchModel.Address?.ZipCode)
+                .FilterByPhone(searchModel.Phone)
+                .FilterByEmail(searchModel.Email)
+                .FilterByContactPerson(searchModel.ContactPerson)
+                .FilterByDateCreated(searchModel.DateCreated)
+
+                .OrderBy(searchModel.OrderBy);
+
+            var count = entities.Count();
+            var paged = await entities.ApplyPaging(searchModel.PagingArgs).ToListAsync();
+
+            return ListResult<Customer>.Success(paged, count);
+        }
+```
+
+Add all the Filters to the other DataAccess as well or can copy it from Phase 3/Data/DataAccess
+
+### Modify all Queries
+
+Include each entity DataDTO as a Search Model in all Queries that calls GetAllAsync DataAccess.
+
+Example GetCustomersQuery.cs
+
+```cs
+namespace Pezza.Core.Customer.Queries
+{
+    using System.Threading;
+    using System.Threading.Tasks;
+    using MediatR;
+    using Pezza.Common.DTO;
+    using Pezza.Common.Mapping;
+    using Pezza.Common.Models;
+    using Pezza.DataAccess.Contracts;
+
+    public class GetCustomersQuery : IRequest<ListResult<CustomerDTO>>
+    {
+        public CustomerDataDTO SearchModel { get; set; }
+    }
+
+    public class GetCustomersQueryHandler : IRequestHandler<GetCustomersQuery, ListResult<CustomerDTO>>
+    {
+        private readonly IDataAccess<Common.Entities.Customer> dataAcess;
+
+        public GetCustomersQueryHandler(IDataAccess<Common.Entities.Customer> dataAcess) => this.dataAcess = dataAcess;
+
+        public async Task<ListResult<CustomerDTO>> Handle(GetCustomersQuery request, CancellationToken cancellationToken)
+        {
+            var search = await this.dataAcess.GetAllAsync(request.SearchModel);
+
+            return ListResult<CustomerDTO>.Success(search.Data.Map(), search.Count);
+        }
+    }
+}
+```
+
+### **Modify Controllers**
+
+Modify all the Controllers Search Functions
+
+Example Customer Controller
+
+```cs
+/// <summary>
+/// Get all Customers.
+/// </summary>
+/// <param name="searchModel"></param> 
+[HttpPost]
+[ProducesResponseType(200)]
+[ProducesResponseType(400)]
+[Route("Search")]
+public async Task<ActionResult> Search(CustomerDataDTO searchModel)
+{
+    var result = await this.Mediator.Send(new GetCustomersQuery
+    {
+        SearchModel = searchModel
+    });
+
+    return ResponseHelper.ResponseOutcome<CustomerDTO>(result, this);
+}
+```
+
+### **Modify Unit Test**
+
+Add Search Model to all GetAllAsync Unit Tests
+
+```cs
+[Test]
+public async Task GetAllAsync()
+{
+    var handler = new CustomerDataAccess(this.Context);
+    var entity = CustomerTestData.Customer;
+    await handler.SaveAsync(entity);
+
+    var searchModel = new OrderDataDTO();
+    var response = await handler.GetAllAsync(searchModel);
+    var outcome = response.Count;
+
+    Assert.IsTrue(outcome == 1);
+}
+```
+
+## **Move to Phase 4**
+[Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%204)

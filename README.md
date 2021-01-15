@@ -117,7 +117,7 @@ Overview
   
 ### **Phase 5** - Improving Performance
 
-The sites have been running for a while now and we are getting a lot more customers on the site ordering pizza. Pezza has also expanded to more areas and realised the importance of memory and performance.
+For improved performance we relaised that certain data doesn't change often and can be cached. We can also add a few small changes to improve performance.
 
 Overview
 - [ ] [Performance and Memory Management](https://web.microsoftstream.com/video/64098be8-6979-4c10-85f4-efa91d0cb1f1?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
@@ -127,7 +127,27 @@ Increasing Performance
 - [ ] Caching
 - [ ] Compression
 
-### **Phase 6** UI
+### **Phase 6** - Events
+
+We would like to notify the customer as soon as his order has been completed and ready for collection.
+
+Increasing Performance
+
+- [ ] Domain Events
+- [ ] Simple Email Notification
+
+### **Phase 7**
+
+Now that we have increased the performance lets and an increase of customers we need to secure our website.
+
+Overview
+- [ ] [Security](https://web.microsoftstream.com/video/2a2b5226-34cb-49ac-b8fe-880cb9ac893c?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
+
+Add Security
+- [ ] API Oauth / JWT Token
+- [ ] MVC Antiforgy Tokens
+
+### **Phase 8** UI
 
 Overview
 - [ ] [MVC Part 1](https://web.microsoftstream.com/video/61e64cfa-c3ba-45c3-9811-e5bc25968a2a?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
@@ -142,33 +162,16 @@ We will be building a basic Pizza website for Customers and a basic Admin Back-E
 - 
 - AngularJS - Coming Soon
 - ReactJS - Coming Soon
-- Blazor - Coming Soon
 
 **Pezza Admin Back-End**
 
 - MVC - [Click here to get started](https://web.microsoftstream.com/video/315b2034-0aa5-43ee-b030-562f4a597cfd?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
 - AngularJS - Coming Soon
 - ReactJS - Coming Soon
-- Blazor - Coming Soon
  
 [Click here to get started]()
-
-
-
-
   
-### **Phase 6** - Coming soon
-
-Now that we have increased the performance lets and an increase of customers we need to secure our website.
-
-Overview
-- [ ] [Security](https://web.microsoftstream.com/video/2a2b5226-34cb-49ac-b8fe-880cb9ac893c?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
-
-Add Security
-- [ ] API Oauth / JWT Token
-- [ ] MVC Antiforgy Tokens
-
-### **Phase 7** - Coming soon
+### **Phase 9** - Coming soon
 
 We want customers to have the ability to track their orders.
 - [ ] SignalR

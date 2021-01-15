@@ -12,10 +12,10 @@ namespace Pezza.Test
         public async Task GetAsync()
         {
             var handler = new StockDataAccess(this.Context);
-            var stock = StockTestData.Stock;
-            await handler.SaveAsync(stock);
+            var entity = StockTestData.Stock;
+            await handler.SaveAsync(entity);
 
-            var response = await handler.GetAsync(stock.Id);
+            var response = await handler.GetAsync(entity.Id);
 
             Assert.IsTrue(response != null);
         }
@@ -24,8 +24,8 @@ namespace Pezza.Test
         public async Task GetAllAsync()
         {
             var handler = new StockDataAccess(this.Context);
-            var stock = StockTestData.Stock;
-            await handler.SaveAsync(stock);
+            var entity = StockTestData.Stock;
+            await handler.SaveAsync(entity);
 
             var response = await handler.GetAllAsync();
             var outcome = response.Count();
@@ -37,8 +37,8 @@ namespace Pezza.Test
         public async Task SaveAsync()
         {
             var handler = new StockDataAccess(this.Context);
-            var stock = StockTestData.Stock;
-            var result = await handler.SaveAsync(stock);
+            var entity = StockTestData.Stock;
+            var result = await handler.SaveAsync(entity);
             var outcome = result.Id != 0;
 
             Assert.IsTrue(outcome);
@@ -48,12 +48,12 @@ namespace Pezza.Test
         public async Task UpdateAsync()
         {
             var handler = new StockDataAccess(this.Context);
-            var stock = StockTestData.Stock;
-            var originalStock = stock;
-            await handler.SaveAsync(stock);
+            var entity = StockTestData.Stock;
+            var originalStock = entity;
+            await handler.SaveAsync(entity);
 
-            stock.Name = new Faker().Commerce.Product();
-            var response = await handler.UpdateAsync(stock);
+            entity.Name = new Faker().Commerce.Product();
+            var response = await handler.UpdateAsync(entity);
             var outcome = response.Name.Equals(originalStock.Name);
 
             Assert.IsTrue(outcome);
@@ -63,10 +63,10 @@ namespace Pezza.Test
         public async Task DeleteAsync()
         {
             var handler = new StockDataAccess(this.Context);
-            var stock = StockTestData.Stock;
-            await handler.SaveAsync(stock);
+            var entity = StockTestData.Stock;
+            await handler.SaveAsync(entity);
             
-            var response = await handler.DeleteAsync(stock.Id);
+            var response = await handler.DeleteAsync(entity.Id);
 
             Assert.IsTrue(response);
         }
