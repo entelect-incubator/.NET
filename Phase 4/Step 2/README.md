@@ -63,5 +63,6 @@ With Serilog you can different hooks into i.e. Elastic etc.
 
 Using a Static class for Logging makes it easier to add Logging and don't have to inject it before able to use it.
 
-Move to Phase 5
+## **Move to Phase 5**
+
 [Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%205) 

@@ -29,5 +29,6 @@ public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 app.UseResponseCompression();
 ```
 
-Move to Phase 6
+## **Move to Phase 6**
+
 [Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%206) 

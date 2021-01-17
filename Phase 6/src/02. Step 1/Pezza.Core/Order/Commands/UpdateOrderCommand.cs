@@ -21,7 +21,6 @@
         public async Task<Result<OrderDTO>> Handle(UpdateOrderCommand request, CancellationToken cancellationToken)
         {
             var outcome = await this.dataAcess.UpdateAsync(request.Data);
-            await this.mediator.Publish(new OrderCompletedEvent { CompletedOrder = findEntity }, cancellationToken);
             return (outcome != null) ? Result<OrderDTO>.Success(outcome) : Result<OrderDTO>.Failure("Error updating a Order");
         }
     }
