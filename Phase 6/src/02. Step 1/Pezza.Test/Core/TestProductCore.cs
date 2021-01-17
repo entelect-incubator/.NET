@@ -12,13 +12,13 @@ namespace Pezza.Test
         [Test]
         public async Task GetAsync()
         {
-            var dataAccess = new ProductDataAccess(this.Context);
+            var dataAccess = new ProductDataAccess(this.Context, Mapper());
 
             //Act
             var sutCreate = new CreateProductCommandHandler(dataAccess);
             var resultCreate = await sutCreate.Handle(new CreateProductCommand
             {
-                Data = ProductTestData.ProductDataDTO
+                Data = ProductTestData.ProductDTO
             }, CancellationToken.None);
 
             //Act
@@ -34,13 +34,13 @@ namespace Pezza.Test
         [Test]
         public async Task GetAllAsync()
         {
-            var dataAccess = new ProductDataAccess(this.Context);
+            var dataAccess = new ProductDataAccess(this.Context, Mapper());
 
             //Act
             var sutCreate = new CreateProductCommandHandler(dataAccess);
             var resultCreate = await sutCreate.Handle(new CreateProductCommand
             {
-                Data = ProductTestData.ProductDataDTO
+                Data = ProductTestData.ProductDTO
             }, CancellationToken.None);
 
             //Act
@@ -53,13 +53,13 @@ namespace Pezza.Test
         [Test]
         public async Task SaveAsync()
         {
-            var dataAccess = new ProductDataAccess(this.Context);
+            var dataAccess = new ProductDataAccess(this.Context, Mapper());
 
             //Act
             var sutCreate = new CreateProductCommandHandler(dataAccess);
             var resultCreate = await sutCreate.Handle(new CreateProductCommand
             {
-                Data = ProductTestData.ProductDataDTO
+                Data = ProductTestData.ProductDTO
             }, CancellationToken.None);
 
             Assert.IsTrue(resultCreate.Succeeded);
@@ -68,22 +68,22 @@ namespace Pezza.Test
         [Test]
         public async Task UpdateAsync()
         {
-            var dataAccess = new ProductDataAccess(this.Context);
+            var dataAccess = new ProductDataAccess(this.Context, Mapper());
 
             //Act
             var sutCreate = new CreateProductCommandHandler(dataAccess);
             var resultCreate = await sutCreate.Handle(new CreateProductCommand
             {
-                Data = ProductTestData.ProductDataDTO
+                Data = ProductTestData.ProductDTO
             }, CancellationToken.None);
 
             //Act
             var sutUpdate = new UpdateProductCommandHandler(dataAccess);
             var resultUpdate = await sutUpdate.Handle(new UpdateProductCommand
             {
-                Id = resultCreate.Data.Id,
-                Data = new Common.DTO.ProductDataDTO
+                Data = new Common.DTO.ProductDTO
                 {
+                    Id = resultCreate.Data.Id,
                     Name = "New pizza"
                 }
             }, CancellationToken.None);
@@ -95,12 +95,12 @@ namespace Pezza.Test
         [Test]
         public async Task DeleteAsync()
         {
-            var dataAccess = new ProductDataAccess(this.Context);
+            var dataAccess = new ProductDataAccess(this.Context, Mapper());
             //Act
             var sutCreate = new CreateProductCommandHandler(dataAccess);
             var resultCreate = await sutCreate.Handle(new CreateProductCommand
             {
-                Data = ProductTestData.ProductDataDTO
+                Data = ProductTestData.ProductDTO
             }, CancellationToken.None);
 
 

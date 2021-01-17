@@ -6,6 +6,8 @@ namespace Pezza.Core
     using MediatR;
     using Microsoft.Extensions.DependencyInjection;
     using Pezza.Common.Behaviours;
+    using Pezza.Common.DTO;
+    using Pezza.Common.Profiles;
     using Pezza.DataAccess.Contracts;
     using Pezza.DataAccess.Data;
 
@@ -15,16 +17,19 @@ namespace Pezza.Core
         {
             services.AddMediatR(Assembly.GetExecutingAssembly());
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
+            services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnhandledExceptionBehaviour<,>));
-            services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
-            services.AddTransient(typeof(IDataAccess<Common.Entities.Order>), typeof(OrderDataAccess));
-            services.AddTransient(typeof(IDataAccess<Common.Entities.Stock>), typeof(StockDataAccess));
-            services.AddTransient(typeof(IDataAccess<Common.Entities.Notify>), typeof(NotifyDataAccess));
-            services.AddTransient(typeof(IDataAccess<Common.Entities.Product>), typeof(ProductDataAccess));
-            services.AddTransient(typeof(IDataAccess<Common.Entities.Customer>), typeof(CustomerDataAccess));
-            services.AddTransient(typeof(IDataAccess<Common.Entities.Restaurant>), typeof(RestaurantDataAccess));
+            services.AddTransient(typeof(IDataAccess<OrderDTO>), typeof(OrderDataAccess));
+            services.AddTransient(typeof(IDataAccess<StockDTO>), typeof(StockDataAccess));
+            services.AddTransient(typeof(IDataAccess<NotifyDTO>), typeof(NotifyDataAccess));
+            services.AddTransient(typeof(IDataAccess<ProductDTO>), typeof(ProductDataAccess));
+            services.AddTransient(typeof(IDataAccess<CustomerDTO>), typeof(CustomerDataAccess));
+            services.AddTransient(typeof(IDataAccess<RestaurantDTO>), typeof(RestaurantDataAccess));
+
+            services.AddAutoMapper(typeof(MappingProfile));
+            services.AddLazyCache();
 
             return services;
         }

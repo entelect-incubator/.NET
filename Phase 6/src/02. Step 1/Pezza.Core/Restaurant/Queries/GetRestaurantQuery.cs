@@ -3,25 +3,25 @@
     using System.Threading;
     using System.Threading.Tasks;
     using MediatR;
+    using Pezza.Common.DTO;
     using Pezza.Common.Models;
     using Pezza.DataAccess.Contracts;
 
-    public class GetRestaurantQuery : IRequest<Result<Common.Entities.Restaurant>>
+    public class GetRestaurantQuery : IRequest<Result<RestaurantDTO>>
     {
         public int Id { get; set; }
     }
 
-    public class GetRestaurantQueryHandler : IRequestHandler<GetRestaurantQuery, Result<Common.Entities.Restaurant>>
+    public class GetRestaurantQueryHandler : IRequestHandler<GetRestaurantQuery, Result<RestaurantDTO>>
     {
-        private readonly IDataAccess<Common.Entities.Restaurant> dataAcess;
+        private readonly IDataAccess<RestaurantDTO> dataAcess;
 
-        public GetRestaurantQueryHandler(IDataAccess<Common.Entities.Restaurant> dataAcess) => this.dataAcess = dataAcess;
+        public GetRestaurantQueryHandler(IDataAccess<RestaurantDTO> dataAcess) => this.dataAcess = dataAcess;
 
-        public async Task<Result<Common.Entities.Restaurant>> Handle(GetRestaurantQuery request, CancellationToken cancellationToken)
+        public async Task<Result<RestaurantDTO>> Handle(GetRestaurantQuery request, CancellationToken cancellationToken)
         {
             var search = await this.dataAcess.GetAsync(request.Id);
-
-            return Result<Common.Entities.Restaurant>.Success(search);
+            return Result<RestaurantDTO>.Success(search);
         }
     }
 }

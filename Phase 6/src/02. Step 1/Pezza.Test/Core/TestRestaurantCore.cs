@@ -12,13 +12,13 @@ namespace Pezza.Test
         [Test]
         public async Task GetAsync()
         {
-            var dataAccess = new RestaurantDataAccess(this.Context);
+            var dataAccess = new RestaurantDataAccess(this.Context, Mapper(), this.CachingService);
 
             //Act
             var sutCreate = new CreateRestaurantCommandHandler(dataAccess);
             var resultCreate = await sutCreate.Handle(new CreateRestaurantCommand
             {
-                Data = RestaurantTestData.RestaurantDataDTO
+                Data = RestaurantTestData.RestaurantDTO
             }, CancellationToken.None);
 
             //Act
@@ -34,13 +34,13 @@ namespace Pezza.Test
         [Test]
         public async Task GetAllAsync()
         {
-            var dataAccess = new RestaurantDataAccess(this.Context);
+            var dataAccess = new RestaurantDataAccess(this.Context, Mapper(), this.CachingService);
 
             //Act
             var sutCreate = new CreateRestaurantCommandHandler(dataAccess);
             var resultCreate = await sutCreate.Handle(new CreateRestaurantCommand
             {
-                Data = RestaurantTestData.RestaurantDataDTO
+                Data = RestaurantTestData.RestaurantDTO
             }, CancellationToken.None);
 
             //Act
@@ -53,13 +53,13 @@ namespace Pezza.Test
         [Test]
         public async Task SaveAsync()
         {
-            var dataAccess = new RestaurantDataAccess(this.Context);
+            var dataAccess = new RestaurantDataAccess(this.Context, Mapper(), this.CachingService);
 
             //Act
             var sutCreate = new CreateRestaurantCommandHandler(dataAccess);
             var resultCreate = await sutCreate.Handle(new CreateRestaurantCommand
             {
-                Data = RestaurantTestData.RestaurantDataDTO
+                Data = RestaurantTestData.RestaurantDTO
             }, CancellationToken.None);
 
             Assert.IsTrue(resultCreate.Succeeded);
@@ -68,22 +68,22 @@ namespace Pezza.Test
         [Test]
         public async Task UpdateAsync()
         {
-            var dataAccess = new RestaurantDataAccess(this.Context);
+            var dataAccess = new RestaurantDataAccess(this.Context, Mapper(), this.CachingService);
 
             //Act
             var sutCreate = new CreateRestaurantCommandHandler(dataAccess);
             var resultCreate = await sutCreate.Handle(new CreateRestaurantCommand
             {
-                Data = RestaurantTestData.RestaurantDataDTO
+                Data = RestaurantTestData.RestaurantDTO
             }, CancellationToken.None);
 
             //Act
             var sutUpdate = new UpdateRestaurantCommandHandler(dataAccess);
             var resultUpdate = await sutUpdate.Handle(new UpdateRestaurantCommand
             {
-                Id = resultCreate.Data.Id,
-                Data = new Common.DTO.RestaurantDataDTO
+                Data = new Common.DTO.RestaurantDTO
                 {
+                    Id = resultCreate.Data.Id,
                     Name = "New Restaurant"
                 }
             }, CancellationToken.None);
@@ -95,12 +95,12 @@ namespace Pezza.Test
         [Test]
         public async Task DeleteAsync()
         {
-            var dataAccess = new RestaurantDataAccess(this.Context);
+            var dataAccess = new RestaurantDataAccess(this.Context, Mapper(), this.CachingService);
             //Act
             var sutCreate = new CreateRestaurantCommandHandler(dataAccess);
             var resultCreate = await sutCreate.Handle(new CreateRestaurantCommand
             {
-                Data = RestaurantTestData.RestaurantDataDTO
+                Data = RestaurantTestData.RestaurantDTO
             }, CancellationToken.None);
 
 

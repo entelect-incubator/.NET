@@ -46,6 +46,5 @@ namespace Pezza.DataAccess.Map
                 .HasColumnName("DateSent")
                 .HasColumnType("datetime");
         }
-
     }
 }

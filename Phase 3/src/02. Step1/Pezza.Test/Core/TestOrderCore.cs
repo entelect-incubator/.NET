@@ -12,13 +12,13 @@ namespace Pezza.Test
         [Test]
         public async Task GetAsync()
         {
-            var dataAccess = new OrderDataAccess(this.Context);
+            var dataAccess = new OrderDataAccess(this.Context, Mapper());
 
             //Act
             var sutCreate = new CreateOrderCommandHandler(dataAccess);
             var resultCreate = await sutCreate.Handle(new CreateOrderCommand
             {
-                Data = OrderTestData.OrderDataDTO
+                Data = OrderTestData.OrderDTO
             }, CancellationToken.None);
 
             //Act
@@ -34,13 +34,13 @@ namespace Pezza.Test
         [Test]
         public async Task GetAllAsync()
         {
-            var dataAccess = new OrderDataAccess(this.Context);
+            var dataAccess = new OrderDataAccess(this.Context, Mapper());
 
             //Act
             var sutCreate = new CreateOrderCommandHandler(dataAccess);
             var resultCreate = await sutCreate.Handle(new CreateOrderCommand
             {
-                Data = OrderTestData.OrderDataDTO
+                Data = OrderTestData.OrderDTO
             }, CancellationToken.None);
 
             //Act
@@ -53,13 +53,13 @@ namespace Pezza.Test
         [Test]
         public async Task SaveAsync()
         {
-            var dataAccess = new OrderDataAccess(this.Context);
+            var dataAccess = new OrderDataAccess(this.Context, Mapper());
 
             //Act
             var sutCreate = new CreateOrderCommandHandler(dataAccess);
             var resultCreate = await sutCreate.Handle(new CreateOrderCommand
             {
-                Data = OrderTestData.OrderDataDTO
+                Data = OrderTestData.OrderDTO
             }, CancellationToken.None);
 
             Assert.IsTrue(resultCreate.Succeeded);
@@ -68,12 +68,12 @@ namespace Pezza.Test
         [Test]
         public async Task DeleteAsync()
         {
-            var dataAccess = new OrderDataAccess(this.Context);
+            var dataAccess = new OrderDataAccess(this.Context, Mapper());
             //Act
             var sutCreate = new CreateOrderCommandHandler(dataAccess);
             var resultCreate = await sutCreate.Handle(new CreateOrderCommand
             {
-                Data = OrderTestData.OrderDataDTO
+                Data = OrderTestData.OrderDTO
             }, CancellationToken.None);
 
 

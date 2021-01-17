@@ -7,11 +7,11 @@
     {
         public UpdateNotifyCommandValidator()
         {
-            this.RuleFor(r => r.Id)
-                .NotEmpty();
-
             this.RuleFor(r => r.Data)
                 .NotNull();
+
+            this.RuleFor(r => r.Data.Id)
+                .NotEmpty();
 
             this.RuleFor(r => r.Data.Sent)
                 .NotNull();

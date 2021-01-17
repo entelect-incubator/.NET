@@ -23,7 +23,7 @@ namespace Pezza.Common.Behaviours
                 var validationResults = await Task.WhenAll(this.validators.Select(v => v.ValidateAsync(context, cancellationToken)));
                 var failures = validationResults.SelectMany(r => r.Errors).Where(f => f != null);
 
-                if (failures.Any())
+                if (!failures.Any())
                 {
                     throw new ValidationException(failures);
                 }

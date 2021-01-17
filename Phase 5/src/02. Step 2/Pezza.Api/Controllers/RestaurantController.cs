@@ -23,26 +23,26 @@
         public async Task<ActionResult> Get(int id)
         {
             var result = await this.Mediator.Send(new GetRestaurantQuery { Id = id });
-
-            return ResponseHelper.ResponseOutcome<Restaurant>(result, this);
+            return ResponseHelper.ResponseOutcome<RestaurantDTO>(result, this);
         }
 
         /// <summary>
         /// Get all Restaurants.
         /// </summary>
-        /// <param name="searchModel">RestaurantDataDTO.</param>
-        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        /// <param name="searchModel">The search model.</param>
+        /// <returns>
+        /// A <see cref="Task" /> representing the asynchronous operation.
+        /// </returns>
         [HttpPost]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         [Route("Search")]
-        public async Task<ActionResult> Search(RestaurantDataDTO searchModel)
+        public async Task<ActionResult> Search(RestaurantDTO searchModel)
         {
             var result = await this.Mediator.Send(new GetRestaurantsQuery
             {
-                SearchModel = searchModel
+                SearchModel = searchModel ?? new RestaurantDTO()
             });
-
             return ResponseHelper.ResponseOutcome<RestaurantDTO>(result, this);
         }
 
@@ -65,12 +65,12 @@
         ///       }
         ///     }.
         /// </remarks>
-        /// <param name="data">RestaurantDataDTO.</param>
+        /// <param name="data">RestaurantDTO.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         [HttpPost]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public async Task<ActionResult<Restaurant>> Create(RestaurantDataDTO data)
+        public async Task<ActionResult<Restaurant>> Create(RestaurantDTO data)
         {
             if (!string.IsNullOrEmpty(data.ImageData))
             {
@@ -86,7 +86,7 @@
                 Data = data
             });
 
-            return ResponseHelper.ResponseOutcome<Restaurant>(result, this);
+            return ResponseHelper.ResponseOutcome<RestaurantDTO>(result, this);
         }
 
         /// <summary>
@@ -95,19 +95,19 @@
         /// <remarks>
         /// Sample request:
         ///
-        ///     PUT api/Restaurant/1
+        ///     PUT api/Restaurant
         ///     {
+        ///       "id": 1,
         ///       "name": "New Restaurant"
         ///     }.
         /// </remarks>
-        /// <param name="id">int.</param>
-        /// <param name="data">RestaurantDataDTO.</param>
+        /// <param name="data">RestaurantDTO.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        [HttpPut("{id}")]
+        [HttpPut]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
-        public async Task<ActionResult> Update(int id, RestaurantDataDTO data)
+        public async Task<ActionResult> Update(RestaurantDTO data)
         {
             if (!string.IsNullOrEmpty(data.ImageData))
             {
@@ -120,11 +120,10 @@
 
             var result = await this.Mediator.Send(new UpdateRestaurantCommand
             {
-                Id = id,
                 Data = data
             });
 
-            return ResponseHelper.ResponseOutcome<Restaurant>(result, this);
+            return ResponseHelper.ResponseOutcome<RestaurantDTO>(result, this);
         }
 
         /// <summary>
@@ -138,7 +137,6 @@
         public async Task<ActionResult> Delete(int id)
         {
             var result = await this.Mediator.Send(new DeleteRestaurantCommand { Id = id });
-
             return ResponseHelper.ResponseOutcome(result, this);
         }
     }

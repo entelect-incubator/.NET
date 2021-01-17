@@ -54,6 +54,5 @@ namespace Pezza.DataAccess.Map
                 .HasForeignKey(d => d.CustomerId)
                 .HasConstraintName("FK_Order_Customer");
         }
-
     }
 }

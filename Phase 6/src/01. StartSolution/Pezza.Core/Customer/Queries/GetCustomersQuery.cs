@@ -4,26 +4,21 @@
     using System.Threading.Tasks;
     using MediatR;
     using Pezza.Common.DTO;
-    using Pezza.Common.Mapping;
     using Pezza.Common.Models;
     using Pezza.DataAccess.Contracts;
 
     public class GetCustomersQuery : IRequest<ListResult<CustomerDTO>>
     {
-        public CustomerDataDTO SearchModel { get; set; }
+        public CustomerDTO SearchModel { get; set; }
     }
 
     public class GetCustomersQueryHandler : IRequestHandler<GetCustomersQuery, ListResult<CustomerDTO>>
     {
-        private readonly IDataAccess<Common.Entities.Customer> dataAcess;
+        private readonly IDataAccess<CustomerDTO> dataAcess;
 
-        public GetCustomersQueryHandler(IDataAccess<Common.Entities.Customer> dataAcess) => this.dataAcess = dataAcess;
+        public GetCustomersQueryHandler(IDataAccess<CustomerDTO> dataAcess) => this.dataAcess = dataAcess;
 
         public async Task<ListResult<CustomerDTO>> Handle(GetCustomersQuery request, CancellationToken cancellationToken)
-        {
-            var search = await this.dataAcess.GetAllAsync(request.SearchModel);
-
-            return ListResult<CustomerDTO>.Success(search.Data.Map(), search.Count);
-        }
+            => await this.dataAcess.GetAllAsync(request.SearchModel);
     }
 }

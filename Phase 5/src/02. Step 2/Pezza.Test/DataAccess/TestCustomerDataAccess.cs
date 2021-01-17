@@ -12,8 +12,8 @@ namespace Pezza.Test
         [Test]
         public async Task GetAsync()
         {
-            var handler = new CustomerDataAccess(this.Context);
-            var entity = CustomerTestData.Customer;
+            var handler = new CustomerDataAccess(this.Context, Mapper());
+            var entity = CustomerTestData.CustomerDTO;
             await handler.SaveAsync(entity);
 
             var response = await handler.GetAsync(entity.Id);
@@ -24,12 +24,11 @@ namespace Pezza.Test
         [Test]
         public async Task GetAllAsync()
         {
-            var handler = new CustomerDataAccess(this.Context);
-            var entity = CustomerTestData.Customer;
+            var handler = new CustomerDataAccess(this.Context, Mapper());
+            var entity = CustomerTestData.CustomerDTO;
             await handler.SaveAsync(entity);
 
-            var searchModel = new OrderDataDTO();
-            var response = await handler.GetAllAsync(searchModel);
+            var response = await handler.GetAllAsync(new CustomerDTO());
             var outcome = response.Count;
 
             Assert.IsTrue(outcome == 1);
@@ -38,8 +37,8 @@ namespace Pezza.Test
         [Test]
         public async Task SaveAsync()
         {
-            var handler = new CustomerDataAccess(this.Context);
-            var entity = CustomerTestData.Customer;
+            var handler = new CustomerDataAccess(this.Context, Mapper());
+            var entity = CustomerTestData.CustomerDTO;
             var result = await handler.SaveAsync(entity);
             var outcome = result.Id != 0;
 
@@ -49,8 +48,8 @@ namespace Pezza.Test
         [Test]
         public async Task UpdateAsync()
         {
-            var handler = new CustomerDataAccess(this.Context);
-            var entity = CustomerTestData.Customer;
+            var handler = new CustomerDataAccess(this.Context, Mapper());
+            var entity = CustomerTestData.CustomerDTO;
             var originalCustomer = entity;
             await handler.SaveAsync(entity);
 
@@ -64,10 +63,10 @@ namespace Pezza.Test
         [Test]
         public async Task DeleteAsync()
         {
-            var handler = new CustomerDataAccess(this.Context);
-            var entity = CustomerTestData.Customer;
+            var handler = new CustomerDataAccess(this.Context, Mapper());
+            var entity = CustomerTestData.CustomerDTO;
             await handler.SaveAsync(entity);
-            
+
             var response = await handler.DeleteAsync(entity.Id);
 
             Assert.IsTrue(response);

@@ -13,6 +13,6 @@
 
         public int? Retry { get; set; }
 
-        public DateTime? DateSent { get; set; }
+        public DateTime? DateSent { get; set; } = DateTime.Now;
     }
 }

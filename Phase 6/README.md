@@ -1,21 +1,20 @@
 <img align="left" width="116" height="116" src="pezza-logo.png" />
 
-# &nbsp;**Pezza - Phase 2**
+# &nbsp;**Pezza - Phase 6**
 
 <br/><br/>
 
-### **CQRS**
+### **Events**
 
-In this Incubator, we try to follow the Single Responsibility Principle as far as possible. This way we will be using a clean approach to CQRS. Don't worry too much about what CQRS, but it helps us in applying the Single Responsibility Principle.
+By using Mediatr you have the capability of firing off events between different commands. This prevents duplicate code from being created and continuing with SOLID principal.
 
-[CQRS Overview](https://docs.microsoft.com/en-us/azure/architecture/patterns/cqrs)
+[Mediatr Events](https://ardalis.com/immediate-domain-event-salvation-with-mediatr/)
 
 ## **Setup**
 
-- [ ] Use the Final Solution from Phase 1 to get started
+- [ ] Use the Final Solution from Phase 5 to get started
 
 ## **Steps**
 
-- [ ] [Step 1 - Scaffolding](https://github.com/entelect-incubator/.NET/tree/master/Phase%202/Step%201)
-- [ ] [Step 2 - Unit Tests](https://github.com/entelect-incubator/.NET/tree/master/Phase%202/Step%202)
-- [ ] [Step 3 - API](https://github.com/entelect-incubator/.NET/tree/master/Phase%202/Step%203)
+- [ ] [Step 1 - Email Service](https://github.com/entelect-incubator/.NET/tree/master/Phase%206/Step%201)
+- [ ] [Step 2 - Event](https://github.com/entelect-incubator/.NET/tree/master/Phase%206/Step%202)

@@ -8,11 +8,11 @@ Caching
 
 ## **Install Lazy Cache**
 
-Install Nuget Package LazyCache.AspNetCore on API and DataAcess Project
+Install Nuget Package LazyCache.AspNetCore on Core and DataAcess Project
 
 ![](2021-01-15-12-44-19.png)
 
-### **Dependency Injection**
+### **Dependency Injection in DependencyInjection.cs**
 
 In Pezza.API Startup.cs ConfigureServices() add
 
@@ -24,7 +24,7 @@ This will inject IAppCache throughout your application.
 
 Modify the Restaurant Data Access. Remove the filters, because we won't be using that.
 
-Add CacheBust property to RestaurantDataDTO
+Add CacheBust property to RestaurantDTO
 
 ```cs
 public bool BustCache { get; set; } = false;
@@ -40,46 +40,45 @@ namespace Pezza.DataAccess.Data
     using System.Linq;
     using System.Linq.Dynamic.Core;
     using System.Threading.Tasks;
+    using AutoMapper;
     using LazyCache;
     using Microsoft.EntityFrameworkCore;
     using Pezza.Common.DTO;
-    using Pezza.Common.DTO.Data;
     using Pezza.Common.Entities;
     using Pezza.Common.Extensions;
     using Pezza.Common.Models;
     using Pezza.DataAccess.Contracts;
 
-    public class RestaurantDataAccess : IDataAccess<Restaurant>
+    public class RestaurantDataAccess : IDataAccess<RestaurantDTO>
     {
         private readonly IAppCache cache;
         private readonly string cacheKey = "RestaurantList";
-        private readonly TimeSpan cacheExpiry = new TimeSpan(12, 0, 0); ////12 hours
+        private readonly TimeSpan cacheExpiry = new TimeSpan(12, 0, 0);
         private readonly IDatabaseContext databaseContext;
+        private readonly IMapper mapper;
         private int count = 0;
 
-        public RestaurantDataAccess(IDatabaseContext databaseContext, IAppCache cache)
-            => (this.databaseContext, this.cache) = (databaseContext, cache);
+        public RestaurantDataAccess(IDatabaseContext databaseContext, IMapper mapper, IAppCache cache)
+            => (this.databaseContext, this.mapper, this.cache) = (databaseContext, mapper, cache);
 
-        public async Task<Restaurant> GetAsync(int id)
-        {
-            return await this.databaseContext.Restaurants.FirstOrDefaultAsync(x => x.Id == id);
-        }
+        public async Task<RestaurantDTO> GetAsync(int id)
+            => this.mapper.Map<RestaurantDTO>(await this.databaseContext.Restaurants.FirstOrDefaultAsync(x => x.Id == id));
 
-        public async Task<ListResult<Restaurant>> GetAllAsync(SearchBase searchBase)
+        public async Task<ListResult<RestaurantDTO>> GetAllAsync(Entity searchBase)
         {
-            var searchModel = (RestaurantDataDTO)searchBase;
+            var searchModel = (RestaurantDTO)searchBase;
             if (searchModel.BustCache)
             {
                 this.ClearPageCache();
             }
 
-            Task<IEnumerable<Restaurant>> cacheFactory() => this.GetRestaurantCache(searchModel);
-            var data = await this.cache.GetOrAddAsync(this.cacheKey, cacheFactory, this.cacheExpiry);
+            Task<List<RestaurantDTO>> CacheFactory() => this.GetRestaurantCache(searchModel);
+            var data = await this.cache.GetOrAddAsync(this.cacheKey, CacheFactory, this.cacheExpiry);
 
-            return ListResult<Restaurant>.Success(data, this.count);
+            return ListResult<RestaurantDTO>.Success(data, this.count);
         }
 
-        private async Task<IEnumerable<Restaurant>> GetRestaurantCache(RestaurantDataDTO searchModel)
+        private async Task<List<RestaurantDTO>> GetRestaurantCache(RestaurantDTO searchModel)
         {
             if (string.IsNullOrEmpty(searchModel.OrderBy))
             {
@@ -93,35 +92,42 @@ namespace Pezza.DataAccess.Data
             this.count = entities.Count();
             var paged = await entities.ApplyPaging(searchModel.PagingArgs).ToListAsync();
 
-            return paged;
+            return this.mapper.Map<List<RestaurantDTO>>(paged);
         }
 
         public void ClearPageCache() => this.cache.Remove(this.cacheKey);
 
-        public async Task<Restaurant> SaveAsync(Restaurant entity)
+        public async Task<RestaurantDTO> SaveAsync(RestaurantDTO entity)
         {
-            this.databaseContext.Restaurants.Add(entity);
+            this.databaseContext.Restaurants.Add(this.mapper.Map<Restaurant>(entity));
             await this.databaseContext.SaveChangesAsync();
-            this.ClearPageCache();
 
             return entity;
         }
 
-        public async Task<Restaurant> UpdateAsync(Restaurant entity)
+        public async Task<RestaurantDTO> UpdateAsync(RestaurantDTO entity)
         {
-            this.databaseContext.Restaurants.Update(entity);
-            await this.databaseContext.SaveChangesAsync();
-            this.ClearPageCache();
+            var findEntity = await this.databaseContext.Restaurants.FirstOrDefaultAsync(x => x.Id == entity.Id);
+            findEntity.Name = !string.IsNullOrEmpty(entity.Name) ? entity.Name : findEntity.Name;
+            findEntity.Description = !string.IsNullOrEmpty(entity.Description) ? entity.Description : findEntity.Description;
+            findEntity.Address = !string.IsNullOrEmpty(entity?.Address?.Address) ? entity?.Address?.Address : findEntity.Address;
+            findEntity.City = !string.IsNullOrEmpty(entity?.Address?.City) ? entity?.Address?.City : findEntity.City;
+            findEntity.Province = !string.IsNullOrEmpty(entity?.Address?.Province) ? entity?.Address?.Province : findEntity.Province;
+            findEntity.PostalCode = !string.IsNullOrEmpty(entity?.Address?.ZipCode) ? entity?.Address?.ZipCode : findEntity.PostalCode;
+            findEntity.PictureUrl = !string.IsNullOrEmpty(entity.PictureUrl) ? entity.PictureUrl : findEntity.PictureUrl;
+            findEntity.IsActive = entity.IsActive ?? findEntity.IsActive;
 
-            return entity;
+            this.databaseContext.Restaurants.Update(findEntity);
+            await this.databaseContext.SaveChangesAsync();
+
+            return this.mapper.Map<RestaurantDTO>(findEntity);
         }
 
         public async Task<bool> DeleteAsync(int id)
         {
-            var entity = await this.GetAsync(id);
+            var entity = await this.databaseContext.Restaurants.FirstOrDefaultAsync(x => x.Id == id);
             this.databaseContext.Restaurants.Remove(entity);
             var result = await this.databaseContext.SaveChangesAsync();
-            this.ClearPageCache();
 
             return result == 1;
         }
@@ -137,15 +143,23 @@ Add CachingService to QueryTestBase
 namespace Pezza.Test
 {
     using System;
+    using AutoMapper;
     using LazyCache;
+    using Pezza.Common.Profiles;
     using Pezza.DataAccess;
     using static DatabaseContextFactory;
 
     public class QueryTestBase : IDisposable
     {
+        public DatabaseContext Context => Create();
+
         public CachingService CachingService = new CachingService();
 
-        public DatabaseContext Context => Create();
+        public static IMapper Mapper()
+        {
+            var mappingConfig = new MapperConfiguration(mc => mc.AddProfile(new MappingProfile()));
+            return mappingConfig.CreateMapper();
+        }
 
         public void Dispose() => Destroy(this.Context);
     }

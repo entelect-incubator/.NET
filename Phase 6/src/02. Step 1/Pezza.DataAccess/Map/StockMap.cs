@@ -56,6 +56,5 @@ namespace Pezza.DataAccess.Map
                 .HasColumnType("varchar(1000)")
                 .HasMaxLength(1000);
         }
-
     }
 }

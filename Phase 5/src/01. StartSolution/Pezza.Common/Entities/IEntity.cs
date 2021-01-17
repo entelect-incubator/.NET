@@ -1,6 +1,8 @@
 ﻿namespace Pezza.Common.Entities
 {
-    public interface IEntity
+    using Pezza.Common.DTO.Data;
+
+    public interface IEntity : ISearchBase
     {
         int Id { get; set; }
     }

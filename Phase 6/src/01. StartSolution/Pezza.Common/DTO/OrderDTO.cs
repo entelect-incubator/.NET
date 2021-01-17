@@ -6,7 +6,7 @@
 
     public class OrderDTO : Entity
     {
-        public OrderDTO() => this.OrderItems = new HashSet<OrderItemDTO>();
+        public CustomerDTO Customer { get; set; }
 
         public int? CustomerId { get; set; }
 
@@ -14,15 +14,10 @@
 
         public decimal? Amount { get; set; }
 
-        public DateTime DateCreated { get; set; }
-
         public bool? Completed { get; set; }
-
-        public virtual CustomerDTO Customer { get; set; }
-        
-        public virtual RestaurantDTO Restaurant { get; set; }
 
         public virtual ICollection<OrderItemDTO> OrderItems { get; set; }
 
+        public DateTime DateCreated { get; set; }
     }
 }

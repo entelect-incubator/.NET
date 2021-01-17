@@ -12,6 +12,10 @@ Install FluentValidation on the Core Project.
 
 ![FluentValidation Nuget](Assets/2021-01-14-08-44-04.png)
 
+## **Install Newtonsoft.Json**
+
+![Newtonsoft.Json](Assets/2021-01-17-15-36-25.png)
+
 ### **Add Validators to your Commands**
 
 For every Command create a CommandNamevalidator.cs, because you only want to validate the data that gets send into the Command.
@@ -86,11 +90,11 @@ namespace Pezza.Core.Customer.Commands
     {
         public UpdateCustomerCommandValidator()
         {
-            this.RuleFor(r => r.Id)
-                .NotEmpty();
-
             this.RuleFor(r => r.Data)
                 .NotNull();
+
+            this.RuleFor(r => r.Data.Id)
+                .NotEmpty();
 
             this.RuleFor(r => r.Data.Name)
                 .MaximumLength(100);

@@ -3,6 +3,7 @@
     using System.Threading;
     using System.Threading.Tasks;
     using MediatR;
+    using Pezza.Common.DTO;
     using Pezza.Common.Models;
     using Pezza.DataAccess.Contracts;
 
@@ -13,15 +14,14 @@
 
     public class DeleteStockCommandHandler : IRequestHandler<DeleteStockCommand, Result>
     {
-        private readonly IDataAccess<Common.Entities.Stock> dataAcess;
+        private readonly IDataAccess<StockDTO> dataAcess;
 
-        public DeleteStockCommandHandler(IDataAccess<Common.Entities.Stock> dataAcess)
+        public DeleteStockCommandHandler(IDataAccess<StockDTO> dataAcess)
             => this.dataAcess = dataAcess;
 
         public async Task<Result> Handle(DeleteStockCommand request, CancellationToken cancellationToken)
         {
             var outcome = await this.dataAcess.DeleteAsync(request.Id);
-
             return outcome ? Result.Success() : Result.Failure("Error deleting a Stock");
         }
     }

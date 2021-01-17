@@ -22,27 +22,27 @@
         public async Task<ActionResult> GetCustomer(int id)
         {
             var result = await this.Mediator.Send(new GetCustomerQuery { Id = id });
-
             return ResponseHelper.ResponseOutcome<CustomerDTO>(result, this);
         }
 
         /// <summary>
         /// Get all Customers.
         /// </summary>
-        /// <param name="searchModel">CustomerDataDTO.</param>
-        /// <returns>A <see cref="Task"/> repres
-        /// enting the asynchronous operation.</returns>
+        /// <param name="searchModel">The search model.</param>
+        /// <returns>
+        /// A <see cref="Task" /> repres
+        /// enting the asynchronous operation.
+        /// </returns>
         [HttpPost]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         [Route("Search")]
-        public async Task<ActionResult> Search(CustomerDataDTO searchModel)
+        public async Task<ActionResult> Search(CustomerDTO searchModel)
         {
             var result = await this.Mediator.Send(new GetCustomersQuery
             {
-                SearchModel = searchModel
+                SearchModel = searchModel ?? new CustomerDTO()
             });
-
             return ResponseHelper.ResponseOutcome<CustomerDTO>(result, this);
         }
 
@@ -63,12 +63,12 @@
         ///       "contactPerson": "Person B 0723210000"
         ///     }.
         /// </remarks>
-        /// <param name="customer">CustomerDataDTO.</param>
+        /// <param name="customer">CustomerDTO.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         [HttpPost]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public async Task<ActionResult<CustomerDTO>> Create(CustomerDataDTO customer)
+        public async Task<ActionResult<CustomerDTO>> Create(CustomerDTO customer)
         {
             var result = await this.Mediator.Send(new CreateCustomerCommand
             {
@@ -83,8 +83,9 @@
         /// </summary>
         /// <remarks>
         /// Sample request:
-        ///     PUT api/Customer/1
+        ///     PUT api/Customer
         ///     {
+        ///       "id": 1,
         ///       "name": "Person A",
         ///       "address": "1 Tree Street",
         ///       "city": "Pretoria",
@@ -95,18 +96,16 @@
         ///       "contactPerson": "Person B 0723210000"
         ///     }.
         /// </remarks>
-        /// <param name="id">in.</param>
-        /// <param name="customer">CustomerDataDTO.</param>
+        /// <param name="customer">CustomerDTO.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        [HttpPut("{id}")]
+        [HttpPut]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
-        public async Task<ActionResult> Update(int id, CustomerDataDTO customer)
+        public async Task<ActionResult> Update(CustomerDTO customer)
         {
             var result = await this.Mediator.Send(new UpdateCustomerCommand
             {
-                Id = id,
                 Data = customer
             });
 
@@ -124,7 +123,6 @@
         public async Task<ActionResult> Delete(int id)
         {
             var result = await this.Mediator.Send(new DeleteCustomerCommand { Id = id });
-
             return ResponseHelper.ResponseOutcome(result, this);
         }
     }

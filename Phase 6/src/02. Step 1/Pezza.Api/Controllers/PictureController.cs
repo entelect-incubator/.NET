@@ -9,8 +9,8 @@
         /// <summary>
         /// Uploads the specified dto.
         /// </summary>
-        /// <param name="file"></param>
-        /// <param name="folder"></param>
+        /// <param name="file">File.</param>
+        /// <param name="folder">Folder.</param>
         /// <param name="thumbnail">Return thumbnail or not.</param>
         /// <returns>HttpResponseMessage.</returns>
         [HttpGet]
@@ -30,7 +30,6 @@
 
             var imageFolder = Path.Combine(Directory.GetCurrentDirectory(), Path.Combine("Media", file));
 
-
             if (thumbnail)
             {
                 var extension = Path.GetExtension(imageFolder);
@@ -43,7 +42,7 @@
             }
             else
             {
-                imageFolder = imageFolder.Replace("_Thumbnail", "");
+                imageFolder = imageFolder.Replace("_Thumbnail", string.Empty);
             }
 
             if (!System.IO.File.Exists(imageFolder))

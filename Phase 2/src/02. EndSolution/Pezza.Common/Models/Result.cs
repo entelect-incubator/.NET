@@ -107,12 +107,11 @@ namespace Pezza.Common.Models
         public List<string> Errors { get; set; }
 
         public static ListResult<T> Success(List<T> data) => new ListResult<T>(true, data, new List<string> { });
-        
+
         public static ListResult<T> Success(IEnumerable<T> data) => new ListResult<T>(true, data, new List<string> { });
 
         public static ListResult<T> Failure(string error) => new ListResult<T>(false, error);
 
         public static ListResult<T> Failure(List<string> errors) => new ListResult<T>(false, errors);
     }
-
 }

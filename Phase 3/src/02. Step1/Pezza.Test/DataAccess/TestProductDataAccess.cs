@@ -1,6 +1,5 @@
 namespace Pezza.Test
 {
-    using System.Linq;
     using System.Threading.Tasks;
     using Bogus;
     using NUnit.Framework;
@@ -11,8 +10,8 @@ namespace Pezza.Test
         [Test]
         public async Task GetAsync()
         {
-            var handler = new ProductDataAccess(this.Context);
-            var entity = ProductTestData.Product;
+            var handler = new ProductDataAccess(this.Context, Mapper());
+            var entity = ProductTestData.ProductDTO;
             await handler.SaveAsync(entity);
 
             var response = await handler.GetAsync(entity.Id);
@@ -23,12 +22,12 @@ namespace Pezza.Test
         [Test]
         public async Task GetAllAsync()
         {
-            var handler = new ProductDataAccess(this.Context);
-            var entity = ProductTestData.Product;
+            var handler = new ProductDataAccess(this.Context, Mapper());
+            var entity = ProductTestData.ProductDTO;
             await handler.SaveAsync(entity);
 
             var response = await handler.GetAllAsync();
-            var outcome = response.Count();
+            var outcome = response.Count;
 
             Assert.IsTrue(outcome == 1);
         }
@@ -36,8 +35,8 @@ namespace Pezza.Test
         [Test]
         public async Task SaveAsync()
         {
-            var handler = new ProductDataAccess(this.Context);
-            var entity = ProductTestData.Product;
+            var handler = new ProductDataAccess(this.Context, Mapper());
+            var entity = ProductTestData.ProductDTO;
             var result = await handler.SaveAsync(entity);
             var outcome = result.Id != 0;
 
@@ -47,8 +46,8 @@ namespace Pezza.Test
         [Test]
         public async Task UpdateAsync()
         {
-            var handler = new ProductDataAccess(this.Context);
-            var entity = ProductTestData.Product;
+            var handler = new ProductDataAccess(this.Context, Mapper());
+            var entity = ProductTestData.ProductDTO;
             var originalProduct = entity;
             await handler.SaveAsync(entity);
 
@@ -62,10 +61,10 @@ namespace Pezza.Test
         [Test]
         public async Task DeleteAsync()
         {
-            var handler = new ProductDataAccess(this.Context);
-            var entity = ProductTestData.Product;
+            var handler = new ProductDataAccess(this.Context, Mapper());
+            var entity = ProductTestData.ProductDTO;
             await handler.SaveAsync(entity);
-            
+
             var response = await handler.DeleteAsync(entity.Id);
 
             Assert.IsTrue(response);

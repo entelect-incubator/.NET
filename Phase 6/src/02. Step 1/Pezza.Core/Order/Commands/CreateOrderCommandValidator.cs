@@ -7,7 +7,7 @@
     {
         public CreateOrderCommandValidator()
         {
-            this.RuleFor(r => r.Data.CustomerId)                
+            this.RuleFor(r => r.Data.CustomerId)
                 .NotNull()
                 .When(x => x.Data?.CustomerId != null);
 
@@ -23,7 +23,7 @@
                 .NotEmpty();
 
             this.RuleFor(r => r.Data.OrderItems)
-                .NotEmpty(); 
+                .NotEmpty();
         }
     }
 }

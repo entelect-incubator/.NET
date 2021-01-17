@@ -85,12 +85,20 @@ QueryTestBase.cs
 namespace Pezza.Test
 {
     using System;
+    using AutoMapper;
+    using Pezza.Common.Profiles;
     using Pezza.DataAccess;
     using static DatabaseContextFactory;
 
     public class QueryTestBase : IDisposable
     {
         public DatabaseContext Context => Create();
+
+        public static IMapper Mapper()
+        {
+            var mappingConfig = new MapperConfiguration(mc => mc.AddProfile(new MappingProfile()));
+            return mappingConfig.CreateMapper();
+        }
 
         public void Dispose() => Destroy(this.Context);
     }
@@ -157,43 +165,19 @@ namespace Pezza.Test
     {
         public static Faker faker = new Faker();
 
-        public static Customer Customer = new Customer()
-        {
-            Address = faker.Address.FullAddress(),
-            Name = faker.Person.FirstName,
-            City = faker.Address.City(),
-            ContactPerson = faker.Person.FullName,
-            Email = faker.Person.Email,
-            Phone = faker.Person.Phone,
-            Province = faker.Address.State(),
-            ZipCode = faker.Address.ZipCode(),
-            DateCreated = DateTime.Now
-        };
-
         public static CustomerDTO CustomerDTO = new CustomerDTO()
         {
-            Address = faker.Address.FullAddress(),
-            City = faker.Address.City(),
             ContactPerson = faker.Person.FullName,
             Email = faker.Person.Email,
             Phone = faker.Person.Phone,
-            Province = faker.Address.State(),
-            ZipCode = faker.Address.ZipCode(),
-            DateCreated = DateTime.Now
-        };
-
-        public static CustomerDataDTO CustomerDataDTO = new CustomerDataDTO()
-        {
-            ContactPerson = faker.Person.FullName,
-            Email = faker.Person.Email,
-            Phone = faker.Person.Phone,
-            AddressBase = new AddressBase
+            Address = new AddressBase
             {
                 Address = faker.Address.FullAddress(),
                 City = faker.Address.City(),
                 Province = faker.Address.State(),
                 ZipCode = faker.Address.ZipCode(),
-            }
+            },
+            DateCreated = DateTime.Now
         };
     }
 
@@ -311,7 +295,7 @@ We will test every method inside of the Core class - GetAsync, GetAllAsync, Save
 
 Every test method will start with [Test], this indicates it as a Unit Test.
 
-It will contain a new Handler declaring a new DataAccess object with the In Memory DBContext. i.e. var handler = new CustomerDataAccess(this.Context);
+It will contain a new Handler declaring a new DataAccess object with the In Memory DBContext and AutoMapper. i.e. var handler = new CustomerDataAccess(this.Context, Mapper());
 
  We will declare a new Handler for every test and inject the DataAccess into it. i.e. var sutCreate = new CreateCustomerCommandHandler(dataAccess);
 
@@ -338,13 +322,13 @@ namespace Pezza.Test
         [Test]
         public async Task GetAsync()
         {
-            var dataAccess = new CustomerDataAccess(this.Context);
+            var dataAccess = new CustomerDataAccess(this.Context, Mapper());
 
             //Act
             var sutCreate = new CreateCustomerCommandHandler(dataAccess);
             var resultCreate = await sutCreate.Handle(new CreateCustomerCommand
             {
-                Data = CustomerTestData.CustomerDataDTO
+                Data = CustomerTestData.CustomerDTO
             }, CancellationToken.None);
 
             //Act
@@ -360,13 +344,13 @@ namespace Pezza.Test
         [Test]
         public async Task GetAllAsync()
         {
-            var dataAccess = new CustomerDataAccess(this.Context);
+            var dataAccess = new CustomerDataAccess(this.Context, Mapper());
 
             //Act
             var sutCreate = new CreateCustomerCommandHandler(dataAccess);
             var resultCreate = await sutCreate.Handle(new CreateCustomerCommand
             {
-                Data = CustomerTestData.CustomerDataDTO
+                Data = CustomerTestData.CustomerDTO
             }, CancellationToken.None);
 
             //Act
@@ -379,13 +363,13 @@ namespace Pezza.Test
         [Test]
         public async Task SaveAsync()
         {
-            var dataAccess = new CustomerDataAccess(this.Context);
+            var dataAccess = new CustomerDataAccess(this.Context, Mapper());
 
             //Act
             var sutCreate = new CreateCustomerCommandHandler(dataAccess);
             var resultCreate = await sutCreate.Handle(new CreateCustomerCommand
             {
-                Data = CustomerTestData.CustomerDataDTO
+                Data = CustomerTestData.CustomerDTO
             }, CancellationToken.None);
 
             Assert.IsTrue(resultCreate.Succeeded);
@@ -394,22 +378,22 @@ namespace Pezza.Test
         [Test]
         public async Task UpdateAsync()
         {
-            var dataAccess = new CustomerDataAccess(this.Context);
+            var dataAccess = new CustomerDataAccess(this.Context, Mapper());
 
             //Act
             var sutCreate = new CreateCustomerCommandHandler(dataAccess);
             var resultCreate = await sutCreate.Handle(new CreateCustomerCommand
             {
-                Data = CustomerTestData.CustomerDataDTO
+                Data = CustomerTestData.CustomerDTO
             }, CancellationToken.None);
 
             //Act
             var sutUpdate = new UpdateCustomerCommandHandler(dataAccess);
             var resultUpdate = await sutUpdate.Handle(new UpdateCustomerCommand
             {
-                Id = resultCreate.Data.Id,
-                Data = new Common.DTO.CustomerDataDTO
+                Data = new Common.DTO.CustomerDTO
                 {
+                    Id = resultCreate.Data.Id,
                     Phone = "0721230000"
                 }
             }, CancellationToken.None);
@@ -421,12 +405,12 @@ namespace Pezza.Test
         [Test]
         public async Task DeleteAsync()
         {
-            var dataAccess = new CustomerDataAccess(this.Context);
+            var dataAccess = new CustomerDataAccess(this.Context, Mapper());
             //Act
             var sutCreate = new CreateCustomerCommandHandler(dataAccess);
             var resultCreate = await sutCreate.Handle(new CreateCustomerCommand
             {
-                Data = CustomerTestData.CustomerDataDTO
+                Data = CustomerTestData.CustomerDTO
             }, CancellationToken.None);
 
 

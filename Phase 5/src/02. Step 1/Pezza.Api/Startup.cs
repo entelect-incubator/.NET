@@ -3,18 +3,15 @@ namespace Pezza.Api
     using System;
     using System.IO;
     using System.Reflection;
-    using System.Threading.Tasks;
+    using AutoMapper;
     using Microsoft.AspNetCore.Builder;
-    using Microsoft.AspNetCore.Diagnostics;
     using Microsoft.AspNetCore.Hosting;
-    using Microsoft.AspNetCore.Http;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
     using Microsoft.OpenApi.Models;
     using Pezza.Api.Middleware;
-    using Pezza.Common;
     using Pezza.Core;
     using Pezza.DataAccess;
     using Pezza.DataAccess.Contracts;
@@ -31,7 +28,6 @@ namespace Pezza.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddLazyCache();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
@@ -59,10 +55,13 @@ namespace Pezza.Api
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseMiddleware(typeof(Middleware.ExceptionHandlerMiddleware));
+            app.UseMiddleware(typeof(ExceptionHandlerMiddleware));
 
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
+
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+            // specifying the Swagger JSON endpoint.
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Stock API V1");

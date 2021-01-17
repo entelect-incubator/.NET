@@ -1,35 +1,36 @@
 ﻿namespace Pezza.DataAccess.Data
 {
+    using System.Collections.Generic;
     using System.Linq;
     using System.Linq.Dynamic.Core;
     using System.Threading.Tasks;
+    using AutoMapper;
     using Microsoft.EntityFrameworkCore;
     using Pezza.Common.DTO;
-    using Pezza.Common.DTO.Data;
     using Pezza.Common.Entities;
     using Pezza.Common.Extensions;
     using Pezza.Common.Filter;
     using Pezza.Common.Models;
     using Pezza.DataAccess.Contracts;
 
-    public class NotifyDataAccess : IDataAccess<Notify>
+    public class NotifyDataAccess : IDataAccess<NotifyDTO>
     {
         private readonly IDatabaseContext databaseContext;
 
-        public NotifyDataAccess(IDatabaseContext databaseContext)
-            => this.databaseContext = databaseContext;
+        private readonly IMapper mapper;
 
-        public async Task<Notify> GetAsync(int id)
-        {
-            return await this.databaseContext.Notify.FirstOrDefaultAsync(x => x.Id == id);
-        }
+        public NotifyDataAccess(IDatabaseContext databaseContext, IMapper mapper)
+            => (this.databaseContext, this.mapper) = (databaseContext, mapper);
 
-        public async Task<ListResult<Notify>> GetAllAsync(SearchBase searchBase)
+        public async Task<NotifyDTO> GetAsync(int id)
+            => this.mapper.Map<NotifyDTO>(await this.databaseContext.Notify.FirstOrDefaultAsync(x => x.Id == id));
+
+        public async Task<ListResult<NotifyDTO>> GetAllAsync(Entity searchBase)
         {
-            var searchModel = (NotifyDataDTO)searchBase;
+            var searchModel = (NotifyDTO)searchBase;
             if (string.IsNullOrEmpty(searchModel.OrderBy))
             {
-                searchModel.OrderBy = "DateCreated desc";
+                searchModel.OrderBy = "DateSent desc";
             }
 
             var entities = this.databaseContext.Notify.Select(x => x)
@@ -43,30 +44,37 @@
                 .OrderBy(searchModel.OrderBy);
 
             var count = entities.Count();
-            var paged = await entities.ApplyPaging(searchModel.PagingArgs).ToListAsync();
+            var paged = this.mapper.Map<List<NotifyDTO>>(await entities.ApplyPaging(searchModel.PagingArgs).ToListAsync());
 
-            return ListResult<Notify>.Success(paged, count);
+            return ListResult<NotifyDTO>.Success(paged, count);
         }
 
-        public async Task<Notify> SaveAsync(Notify entity)
+        public async Task<NotifyDTO> SaveAsync(NotifyDTO entity)
         {
-            this.databaseContext.Notify.Add(entity);
+            this.databaseContext.Notify.Add(this.mapper.Map<Notify>(entity));
             await this.databaseContext.SaveChangesAsync();
 
             return entity;
         }
 
-        public async Task<Notify> UpdateAsync(Notify entity)
+        public async Task<NotifyDTO> UpdateAsync(NotifyDTO entity)
         {
-            this.databaseContext.Notify.Update(entity);
+            var findEntity = await this.databaseContext.Notify.FirstOrDefaultAsync(x => x.Id == entity.Id);
+
+            findEntity.CustomerId = entity.CustomerId ?? findEntity.CustomerId;
+            findEntity.Email = !string.IsNullOrEmpty(entity.Email) ? entity.Email : findEntity.Email;
+            findEntity.Sent = entity.Sent ?? findEntity.Sent;
+            findEntity.Retry = entity.Retry ?? findEntity.Retry;
+
+            this.databaseContext.Notify.Update(findEntity);
             await this.databaseContext.SaveChangesAsync();
 
-            return entity;
+            return this.mapper.Map<NotifyDTO>(findEntity);
         }
 
         public async Task<bool> DeleteAsync(int id)
         {
-            var entity = await this.GetAsync(id);
+            var entity = await this.databaseContext.Notify.FirstOrDefaultAsync(x => x.Id == id);
             this.databaseContext.Notify.Remove(entity);
             var result = await this.databaseContext.SaveChangesAsync();
 

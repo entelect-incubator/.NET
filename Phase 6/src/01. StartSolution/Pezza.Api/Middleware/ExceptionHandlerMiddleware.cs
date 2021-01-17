@@ -26,11 +26,9 @@
             }
         }
 
-
         private static Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
             // Log issues and handle exception response
-
             if (exception.GetType() == typeof(ValidationException))
             {
                 var code = HttpStatusCode.BadRequest;
@@ -39,14 +37,13 @@
                 {
                     return new
                     {
-                        Field = s.PropertyName.Replace("Data.", ""),
-                        Error = s.ErrorMessage.Replace("Data.","")
+                        Field = s.PropertyName.Replace("Data.", string.Empty),
+                        Error = s.ErrorMessage.Replace("Data.", string.Empty)
                     };
                 }));
                 context.Response.ContentType = "application/json";
                 context.Response.StatusCode = (int)code;
                 return context.Response.WriteAsync(result);
-
             }
             else
             {
@@ -54,6 +51,8 @@
                 var result = JsonConvert.SerializeObject(new { isSuccess = false, error = exception.Message });
                 context.Response.ContentType = "application/json";
                 context.Response.StatusCode = (int)code;
+                Common.Logging.Logging.LogException(exception);
+
                 return context.Response.WriteAsync(result);
             }
         }

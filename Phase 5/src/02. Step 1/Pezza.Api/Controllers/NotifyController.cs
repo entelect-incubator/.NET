@@ -24,25 +24,26 @@
         {
             var result = await this.Mediator.Send(new GetNotifyQuery { Id = id });
 
-            return ResponseHelper.ResponseOutcome<Notify>(result, this);
+            return ResponseHelper.ResponseOutcome<NotifyDTO>(result, this);
         }
 
         /// <summary>
         /// Get all Notifies.
         /// </summary>
-        /// <param name="searchmodel">Notify Data DTO.</param>
-        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        /// <param name="searchModel">The search model.</param>
+        /// <returns>
+        /// A <see cref="Task" /> representing the asynchronous operation.
+        /// </returns>
         [HttpPost]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         [Route("Search")]
-        public async Task<ActionResult> Search(NotifyDataDTO searchmodel)
+        public async Task<ActionResult> Search(NotifyDTO searchModel)
         {
             var result = await this.Mediator.Send(new GetNotifiesQuery
             {
-                SearchModel = searchmodel
+                SearchModel = searchModel ?? new NotifyDTO()
             });
-
             return ResponseHelper.ResponseOutcome<NotifyDTO>(result, this);
         }
 
@@ -69,14 +70,14 @@
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         [Route("Notify")]
-        public async Task<ActionResult<Notify>> Create(NotifyDataDTO notify)
+        public async Task<ActionResult<Notify>> Create(NotifyDTO notify)
         {
             var result = await this.Mediator.Send(new CreateNotifyCommand
             {
                 Data = notify
             });
 
-            return ResponseHelper.ResponseOutcome<Notify>(result, this);
+            return ResponseHelper.ResponseOutcome<NotifyDTO>(result, this);
         }
 
         /// <summary>
@@ -84,28 +85,26 @@
         /// </summary>
         /// <remarks>
         /// Sample request:
-        ///     PUT api/Notify/1
+        ///     PUT api/Notify
         ///     {
         ///       "customerId": "1",
         ///       "email": "person.a@gmail.com"
         ///     }.
         /// </remarks>
-        /// <param name="id">Primary Key.</param>
         /// <param name="notify">Notify Data DTO.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        [HttpPut("{id}")]
+        [HttpPut]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
-        public async Task<ActionResult> Update(int id, NotifyDataDTO notify)
+        public async Task<ActionResult> Update(NotifyDTO notify)
         {
             var result = await this.Mediator.Send(new UpdateNotifyCommand
             {
-                Id = id,
                 Data = notify
             });
 
-            return ResponseHelper.ResponseOutcome<Notify>(result, this);
+            return ResponseHelper.ResponseOutcome<NotifyDTO>(result, this);
         }
 
         /// <summary>
@@ -119,7 +118,6 @@
         public async Task<ActionResult> Delete(int id)
         {
             var result = await this.Mediator.Send(new DeleteNotifyCommand { Id = id });
-
             return ResponseHelper.ResponseOutcome(result, this);
         }
     }

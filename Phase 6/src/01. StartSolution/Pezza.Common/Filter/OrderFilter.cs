@@ -55,7 +55,5 @@ namespace Pezza.Common.Filter
 
             return query.Where(x => x.Completed == completed.Value);
         }
-
-
     }
 }

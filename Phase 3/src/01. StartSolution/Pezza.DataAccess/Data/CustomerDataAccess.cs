@@ -4,48 +4,57 @@
     using System.Linq;
     using System.Linq.Dynamic.Core;
     using System.Threading.Tasks;
+    using AutoMapper;
     using Microsoft.EntityFrameworkCore;
+    using Pezza.Common.DTO;
     using Pezza.Common.Entities;
     using Pezza.DataAccess.Contracts;
 
-    public class CustomerDataAccess : IDataAccess<Customer>
+    public class CustomerDataAccess : IDataAccess<CustomerDTO>
     {
         private readonly IDatabaseContext databaseContext;
 
-        public CustomerDataAccess(IDatabaseContext databaseContext)
-            => this.databaseContext = databaseContext;
+        private readonly IMapper mapper;
 
-        public async Task<Customer> GetAsync(int id)
-        {
-            return await this.databaseContext.Customers.FirstOrDefaultAsync(x => x.Id == id);
-        }
+        public CustomerDataAccess(IDatabaseContext databaseContext, IMapper mapper)
+            => (this.databaseContext, this.mapper) = (databaseContext, mapper);
 
-        public async Task<List<Customer>> GetAllAsync()
+        public async Task<CustomerDTO> GetAsync(int id)
+            => this.mapper.Map<CustomerDTO>(await this.databaseContext.Customers.FirstOrDefaultAsync(x => x.Id == id));
+
+        public async Task<List<CustomerDTO>> GetAllAsync()
         {
             var entities = await this.databaseContext.Customers.Select(x => x).AsNoTracking().ToListAsync();
-
-            return entities;
+            return this.mapper.Map<List<CustomerDTO>>(entities);
         }
 
-        public async Task<Customer> SaveAsync(Customer entity)
+        public async Task<CustomerDTO> SaveAsync(CustomerDTO entity)
         {
-            this.databaseContext.Customers.Add(entity);
+            this.databaseContext.Customers.Add(this.mapper.Map<Customer>(entity));
             await this.databaseContext.SaveChangesAsync();
 
             return entity;
         }
 
-        public async Task<Customer> UpdateAsync(Customer entity)
-        {
-            this.databaseContext.Customers.Update(entity);
+        public async Task<CustomerDTO> UpdateAsync(CustomerDTO entity)
+        { 
+            var findEntity = await this.databaseContext.Customers.FirstOrDefaultAsync(x => x.Id == entity.Id);
+            findEntity.Name = !string.IsNullOrEmpty(entity?.Name) ? entity?.Name : findEntity.Name;
+            findEntity.Address = !string.IsNullOrEmpty(entity?.Address?.Address) ? entity?.Address?.Address : findEntity.Address;
+            findEntity.City = !string.IsNullOrEmpty(entity?.Address?.City) ? entity?.Address?.City : findEntity.City;
+            findEntity.Province = !string.IsNullOrEmpty(entity?.Address?.Province) ? entity?.Address?.Province : findEntity.Province;
+            findEntity.ZipCode = !string.IsNullOrEmpty(entity?.Address?.ZipCode) ? entity?.Address?.ZipCode : findEntity.ZipCode;
+            findEntity.Phone = !string.IsNullOrEmpty(entity?.Phone) ? entity?.Phone : findEntity.Phone;
+            findEntity.ContactPerson = !string.IsNullOrEmpty(entity?.ContactPerson) ? entity?.ContactPerson : findEntity.ContactPerson;
+            this.databaseContext.Customers.Update(findEntity);
             await this.databaseContext.SaveChangesAsync();
 
-            return entity;
+            return this.mapper.Map<CustomerDTO>(findEntity);
         }
 
         public async Task<bool> DeleteAsync(int id)
         {
-            var entity = await this.GetAsync(id);
+            var entity = await this.databaseContext.Customers.FirstOrDefaultAsync(x => x.Id == id);
             this.databaseContext.Customers.Remove(entity);
             var result = await this.databaseContext.SaveChangesAsync();
 

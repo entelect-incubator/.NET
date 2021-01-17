@@ -95,7 +95,5 @@ namespace Pezza.Common.Filter
 
             return query.Where(x => x.DateCreated == dateCreated.Value);
         }
-
-
     }
 }

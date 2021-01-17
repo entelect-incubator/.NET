@@ -1,15 +1,17 @@
 ﻿namespace Pezza.Core.Order.Events
 {
+    using System;
     using System.IO;
     using System.Threading;
     using System.Threading.Tasks;
     using MediatR;
+    using Pezza.Common.DTO;
     using Pezza.Core.Notify.Commands;
     using Pezza.DataAccess.Contracts;
 
     public class OrderCompletedEvent : INotification
     {
-        public Common.Entities.Order CompletedOrder { get; set; }
+        public OrderDTO CompletedOrder { get; set; }
 
         public class ArrivalNotificationEventHandler : INotificationHandler<OrderCompletedEvent>
         {
@@ -17,37 +19,24 @@
             private readonly IMediator mediator;
             private readonly string rootFolder;
 
-            public ArrivalNotificationEventHandler( IMediator mediator)
+            public ArrivalNotificationEventHandler(IMediator mediator)
             {
                 this.mediator = mediator;
             }
 
             public async Task Handle(OrderCompletedEvent notification, CancellationToken cancellationToken)
             {
-                var path = this.rootFolder + "\\Template\\NotifyArrival.html";
-                var html = File.ReadAllText(path);
-
-                html = html.Replace("<%% ORDER %%>", notification.CompletedOrder.Id.ToString());
-                var subject = "Guest Arrival";
-
-                
-
-                //2. Send email(s)
-                /*var result = await this.notify.SingleGuestArrivalAsync(emails, subject, html, this.rootFolder);
-                if (!result.WasSuccessful)
+                var result = await this.mediator.Publish(new CreateNotifyCommand
                 {
-                    email.Sent = false;
-                }
+                    Data = new NotifyDTO
+                    {
+                        CustomerId = notification.CompletedOrder.CustomerId,
+                        Email = notification.CompletedOrder.Customer.Email,
+                        DateSent = DateTime.Now,
+                        Sent = true
+                    }
+                }), cancellationToken);
 
-                //save email result
-                var data = new NotifyDataDTO()
-                {
-                    CustomerId = findEntity.CustomerId,
-                    Email = findEntity.Customer.Email,
-                    DateSent = DateTime.Now,
-                    Sent = true
-                }
-                var result = await this.mediator.Publish(new CreateNotifyCommand { Data =  }, cancellationToken);*/
             }
         }
     }

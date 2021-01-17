@@ -2,29 +2,26 @@
 {
     using System.Threading;
     using System.Threading.Tasks;
-    using Common.Entities;
     using MediatR;
     using Pezza.Common.DTO;
-    using Pezza.Common.Mapping;
     using Pezza.Common.Models;
     using Pezza.DataAccess.Contracts;
 
-    public partial class CreateProductCommand : IRequest<Result<Product>>
+    public partial class CreateProductCommand : IRequest<Result<ProductDTO>>
     {
-        public ProductDataDTO Data { get; set; }
+        public ProductDTO Data { get; set; }
     }
 
-    public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, Result<Product>>
+    public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, Result<ProductDTO>>
     {
-        private readonly IDataAccess<Product> dataAcess;
+        private readonly IDataAccess<ProductDTO> dataAcess;
 
-        public CreateProductCommandHandler(IDataAccess<Product> dataAcess) => this.dataAcess = dataAcess;
+        public CreateProductCommandHandler(IDataAccess<ProductDTO> dataAcess) => this.dataAcess = dataAcess;
 
-        public async Task<Result<Product>> Handle(CreateProductCommand request, CancellationToken cancellationToken)
+        public async Task<Result<ProductDTO>> Handle(CreateProductCommand request, CancellationToken cancellationToken)
         {
-            var outcome = await this.dataAcess.SaveAsync(request.Data.Map());
-
-            return (outcome != null) ? Result<Product>.Success(outcome) : Result<Product>.Failure("Error adding a Product");
+            var outcome = await this.dataAcess.SaveAsync(request.Data);
+            return (outcome != null) ? Result<ProductDTO>.Success(outcome) : Result<ProductDTO>.Failure("Error adding a Product");
         }
     }
 }

@@ -1,6 +1,5 @@
 namespace Pezza.Test
 {
-    using System.Linq;
     using System.Threading.Tasks;
     using Bogus;
     using NUnit.Framework;
@@ -12,8 +11,8 @@ namespace Pezza.Test
         [Test]
         public async Task GetAsync()
         {
-            var handler = new RestaurantDataAccess(this.Context);
-            var entity = RestaurantTestData.Restaurant;
+            var handler = new RestaurantDataAccess(this.Context, Mapper(), this.CachingService);
+            var entity = RestaurantTestData.RestaurantDTO;
             await handler.SaveAsync(entity);
 
             var response = await handler.GetAsync(entity.Id);
@@ -24,12 +23,11 @@ namespace Pezza.Test
         [Test]
         public async Task GetAllAsync()
         {
-            var handler = new RestaurantDataAccess(this.Context);
-            var entity = RestaurantTestData.Restaurant;
+            var handler = new RestaurantDataAccess(this.Context, Mapper(), this.CachingService);
+            var entity = RestaurantTestData.RestaurantDTO;
             await handler.SaveAsync(entity);
 
-            var searchModel = new RestaurantDataDTO();
-            var response = await handler.GetAllAsync(searchModel);
+            var response = await handler.GetAllAsync(new RestaurantDTO());
             var outcome = response.Count;
 
             Assert.IsTrue(outcome == 1);
@@ -38,8 +36,8 @@ namespace Pezza.Test
         [Test]
         public async Task SaveAsync()
         {
-            var handler = new RestaurantDataAccess(this.Context);
-            var entity = RestaurantTestData.Restaurant;
+            var handler = new RestaurantDataAccess(this.Context, Mapper(), this.CachingService);
+            var entity = RestaurantTestData.RestaurantDTO;
             var result = await handler.SaveAsync(entity);
             var outcome = result.Id != 0;
 
@@ -49,8 +47,8 @@ namespace Pezza.Test
         [Test]
         public async Task UpdateAsync()
         {
-            var handler = new RestaurantDataAccess(this.Context);
-            var entity = RestaurantTestData.Restaurant;
+            var handler = new RestaurantDataAccess(this.Context, Mapper(), this.CachingService);
+            var entity = RestaurantTestData.RestaurantDTO;
             var originalRestaurant = entity;
             await handler.SaveAsync(entity);
 
@@ -64,10 +62,10 @@ namespace Pezza.Test
         [Test]
         public async Task DeleteAsync()
         {
-            var handler = new RestaurantDataAccess(this.Context);
-            var entity = RestaurantTestData.Restaurant;
+            var handler = new RestaurantDataAccess(this.Context, Mapper(), this.CachingService);
+            var entity = RestaurantTestData.RestaurantDTO;
             await handler.SaveAsync(entity);
-            
+
             var response = await handler.DeleteAsync(entity.Id);
 
             Assert.IsTrue(response);

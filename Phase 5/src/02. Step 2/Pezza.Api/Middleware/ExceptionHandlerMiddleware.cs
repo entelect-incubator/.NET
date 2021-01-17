@@ -7,7 +7,6 @@
     using FluentValidation;
     using Microsoft.AspNetCore.Http;
     using Newtonsoft.Json;
-    using Pezza.Common;
 
     public class ExceptionHandlerMiddleware
     {
@@ -29,6 +28,7 @@
 
         private static Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
+            // Log issues and handle exception response
             if (exception.GetType() == typeof(ValidationException))
             {
                 var code = HttpStatusCode.BadRequest;
@@ -43,7 +43,6 @@
                 }));
                 context.Response.ContentType = "application/json";
                 context.Response.StatusCode = (int)code;
-
                 return context.Response.WriteAsync(result);
             }
             else
@@ -52,7 +51,7 @@
                 var result = JsonConvert.SerializeObject(new { isSuccess = false, error = exception.Message });
                 context.Response.ContentType = "application/json";
                 context.Response.StatusCode = (int)code;
-                Logging.LogException(exception);
+                Common.Logging.Logging.LogException(exception);
 
                 return context.Response.WriteAsync(result);
             }

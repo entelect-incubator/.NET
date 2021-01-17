@@ -3,8 +3,7 @@ namespace Pezza.DataAccess.Map
     using Microsoft.EntityFrameworkCore;
     using Pezza.Common.Entities;
 
-    public partial class OrderItemMap
-        : IEntityTypeConfiguration<OrderItem>
+    public partial class OrderItemMap : IEntityTypeConfiguration<OrderItem>
     {
         public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<OrderItem> builder)
         {
@@ -36,6 +35,5 @@ namespace Pezza.DataAccess.Map
                 .HasColumnName("Quantity")
                 .HasColumnType("int");
         }
-
     }
 }

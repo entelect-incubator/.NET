@@ -3,25 +3,25 @@
     using System.Threading;
     using System.Threading.Tasks;
     using MediatR;
+    using Pezza.Common.DTO;
     using Pezza.Common.Models;
     using Pezza.DataAccess.Contracts;
 
-    public class GetStockQuery : IRequest<Result<Common.Entities.Stock>>
+    public class GetStockQuery : IRequest<Result<StockDTO>>
     {
         public int Id { get; set; }
     }
 
-    public class GetStockQueryHandler : IRequestHandler<GetStockQuery, Result<Common.Entities.Stock>>
+    public class GetStockQueryHandler : IRequestHandler<GetStockQuery, Result<StockDTO>>
     {
-        private readonly IDataAccess<Common.Entities.Stock> dataAcess;
+        private readonly IDataAccess<StockDTO> dataAcess;
 
-        public GetStockQueryHandler(IDataAccess<Common.Entities.Stock> dataAcess) => this.dataAcess = dataAcess;
+        public GetStockQueryHandler(IDataAccess<StockDTO> dataAcess) => this.dataAcess = dataAcess;
 
-        public async Task<Result<Common.Entities.Stock>> Handle(GetStockQuery request, CancellationToken cancellationToken)
+        public async Task<Result<StockDTO>> Handle(GetStockQuery request, CancellationToken cancellationToken)
         {
             var search = await this.dataAcess.GetAsync(request.Id);
-
-            return Result<Common.Entities.Stock>.Success(search);
+            return Result<StockDTO>.Success(search);
         }
     }
 }

@@ -75,6 +75,5 @@ namespace Pezza.DataAccess.Map
                 .HasColumnType("datetime")
                 .HasDefaultValueSql("(getdate())");
         }
-
     }
 }

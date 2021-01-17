@@ -3,8 +3,10 @@ namespace Pezza.Api
     using System;
     using System.IO;
     using System.Reflection;
+    using AutoMapper;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.ResponseCompression;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
@@ -27,7 +29,6 @@ namespace Pezza.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
@@ -43,8 +44,14 @@ namespace Pezza.Api
 
             // Add DbContext using SQL Server Provider
             services.AddDbContext<IDatabaseContext, DatabaseContext>(options =>
-                options.UseSqlServer(this.Configuration.GetConnectionString("PezzaDatabase"))
-            );
+                options.UseSqlServer(this.Configuration.GetConnectionString("PezzaDatabase")));
+
+            services.AddResponseCompression(options =>
+            {
+                options.Providers.Add<BrotliCompressionProvider>();
+                options.Providers.Add<GzipCompressionProvider>();
+            });
+            services.AddResponseCompression();
 
             DependencyInjection.AddApplication(services);
         }
@@ -56,10 +63,12 @@ namespace Pezza.Api
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseResponseCompression();
             app.UseMiddleware(typeof(ExceptionHandlerMiddleware));
 
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
+
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
             // specifying the Swagger JSON endpoint.
             app.UseSwaggerUI(c =>

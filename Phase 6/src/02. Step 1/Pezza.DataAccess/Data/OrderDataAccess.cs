@@ -1,32 +1,33 @@
 ﻿namespace Pezza.DataAccess.Data
 {
+    using System.Collections.Generic;
     using System.Linq;
     using System.Linq.Dynamic.Core;
     using System.Threading.Tasks;
+    using AutoMapper;
     using Microsoft.EntityFrameworkCore;
     using Pezza.Common.DTO;
-    using Pezza.Common.DTO.Data;
     using Pezza.Common.Entities;
     using Pezza.Common.Extensions;
     using Pezza.Common.Filter;
     using Pezza.Common.Models;
     using Pezza.DataAccess.Contracts;
 
-    public class OrderDataAccess : IDataAccess<Order>
+    public class OrderDataAccess : IDataAccess<OrderDTO>
     {
         private readonly IDatabaseContext databaseContext;
 
-        public OrderDataAccess(IDatabaseContext databaseContext)
-            => this.databaseContext = databaseContext;
+        private readonly IMapper mapper;
 
-        public async Task<Order> GetAsync(int id)
-        {
-            return await this.databaseContext.Orders.Include(x => x.OrderItems).ThenInclude(x => x.Product).Include(x => x.Restaurant).Include(x => x.Customer).FirstOrDefaultAsync(x => x.Id == id);
-        }
+        public OrderDataAccess(IDatabaseContext databaseContext, IMapper mapper)
+            => (this.databaseContext, this.mapper) = (databaseContext, mapper);
 
-        public async Task<ListResult<Order>> GetAllAsync(SearchBase searchBase)
+        public async Task<OrderDTO> GetAsync(int id)
+            => this.mapper.Map<OrderDTO>(await this.databaseContext.Orders.Include(x => x.OrderItems).ThenInclude(x => x.Product).Include(x => x.Restaurant).Include(x => x.Customer).FirstOrDefaultAsync(x => x.Id == id));
+
+        public async Task<ListResult<OrderDTO>> GetAllAsync(Entity searchBase)
         {
-            var searchModel = (OrderDataDTO)searchBase;
+            var searchModel = (OrderDTO)searchBase;
             var entities = this.databaseContext.Orders
                 .Include(x => x.OrderItems)
                 .ThenInclude(x => x.Product)
@@ -42,34 +43,39 @@
                 .OrderBy(searchModel.OrderBy);
 
             var count = entities.Count();
-            var paged = await entities.ApplyPaging(searchModel.PagingArgs).ToListAsync();
+            var paged = this.mapper.Map<List<OrderDTO>>(await entities.ApplyPaging(searchModel.PagingArgs).ToListAsync());
 
-            return ListResult<Order>.Success(paged, count);
+            return ListResult<OrderDTO>.Success(paged, count);
         }
 
-        public async Task<Order> SaveAsync(Order entity)
+        public async Task<OrderDTO> SaveAsync(OrderDTO entity)
         {
-            this.databaseContext.Orders.Add(entity);
+            this.databaseContext.Orders.Add(this.mapper.Map<Order>(entity));
             await this.databaseContext.SaveChangesAsync();
 
             return entity;
         }
 
-        public async Task<Order> UpdateAsync(Order entity)
+        public async Task<OrderDTO> UpdateAsync(OrderDTO entity)
         {
-            this.databaseContext.Orders.Update(entity);
+            var findEntity = await this.databaseContext.Orders.FirstOrDefaultAsync(x => x.Id == entity.Id);
+            findEntity.Completed = entity.Completed ?? findEntity.Completed;
+            findEntity.RestaurantId = entity.RestaurantId ?? findEntity.RestaurantId;
+            findEntity.CustomerId = entity.CustomerId ?? findEntity.CustomerId;
+
+            this.databaseContext.Orders.Update(findEntity);
             await this.databaseContext.SaveChangesAsync();
 
-            return entity;
+            return this.mapper.Map<OrderDTO>(findEntity);
         }
 
         public async Task<bool> DeleteAsync(int id)
         {
-            var entity = await this.GetAsync(id);
+            var entity = await this.databaseContext.Orders.FirstOrDefaultAsync(x => x.Id == id);
             this.databaseContext.Orders.Remove(entity);
             var result = await this.databaseContext.SaveChangesAsync();
 
-            return (result != 0);
+            return result != 0;
         }
     }
 }

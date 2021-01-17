@@ -11,7 +11,7 @@ namespace Pezza.DataAccess.Contracts
 
         Task<T> UpdateAsync(T entity);
 
-        Task<T> SaveAsync(T entity);
+        Task<T> SaveAsync(T dto);
 
         Task<bool> DeleteAsync(int id);
     }

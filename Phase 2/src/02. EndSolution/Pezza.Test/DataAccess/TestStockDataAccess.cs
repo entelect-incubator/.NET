@@ -11,8 +11,8 @@ namespace Pezza.Test
         [Test]
         public async Task GetAsync()
         {
-            var handler = new StockDataAccess(this.Context);
-            var stock = StockTestData.Stock;
+            var handler = new StockDataAccess(this.Context, Mapper());
+            var stock = StockTestData.StockDTO;
             await handler.SaveAsync(stock);
 
             var response = await handler.GetAsync(stock.Id);
@@ -23,8 +23,8 @@ namespace Pezza.Test
         [Test]
         public async Task GetAllAsync()
         {
-            var handler = new StockDataAccess(this.Context);
-            var stock = StockTestData.Stock;
+            var handler = new StockDataAccess(this.Context, Mapper());
+            var stock = StockTestData.StockDTO;
             await handler.SaveAsync(stock);
 
             var response = await handler.GetAllAsync();
@@ -36,8 +36,8 @@ namespace Pezza.Test
         [Test]
         public async Task SaveAsync()
         {
-            var handler = new StockDataAccess(this.Context);
-            var stock = StockTestData.Stock;
+            var handler = new StockDataAccess(this.Context, Mapper());
+            var stock = StockTestData.StockDTO;
             var result = await handler.SaveAsync(stock);
             var outcome = result.Id != 0;
 
@@ -47,8 +47,8 @@ namespace Pezza.Test
         [Test]
         public async Task UpdateAsync()
         {
-            var handler = new StockDataAccess(this.Context);
-            var stock = StockTestData.Stock;
+            var handler = new StockDataAccess(this.Context, Mapper());
+            var stock = StockTestData.StockDTO;
             var originalStock = stock;
             await handler.SaveAsync(stock);
 
@@ -62,8 +62,8 @@ namespace Pezza.Test
         [Test]
         public async Task DeleteAsync()
         {
-            var handler = new StockDataAccess(this.Context);
-            var stock = StockTestData.Stock;
+            var handler = new StockDataAccess(this.Context, Mapper());
+            var stock = StockTestData.StockDTO;
             await handler.SaveAsync(stock);
             
             var response = await handler.DeleteAsync(stock.Id);

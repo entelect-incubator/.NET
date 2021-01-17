@@ -15,15 +15,16 @@
         {
             if (!string.IsNullOrEmpty(base64FileData))
             {
-                var folderName = string.IsNullOrEmpty(uploadFolder) ? "" : uploadFolder;
+                var folderName = string.IsNullOrEmpty(uploadFolder) ? string.Empty : uploadFolder;
 
                 var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), Path.Combine("Media", folderName));
                 if (!Directory.Exists(pathToSave))
                 {
                     Directory.CreateDirectory(pathToSave);
                 }
+
                 var extension = base64FileData.GetMimeFromBase64().GetExtensionFromMimeType();
-                var timestamp = $"{ DateTime.Now:yyyy-MM-dd_HH-mm-ss-fff}";
+                var timestamp = $"{DateTime.Now:yyyy-MM-dd_HH-mm-ss-fff}";
                 var imageFileName = $"{timestamp}{extension}";
                 var thumbnailFileName = $"{timestamp}_Thumbnail{extension}";
 

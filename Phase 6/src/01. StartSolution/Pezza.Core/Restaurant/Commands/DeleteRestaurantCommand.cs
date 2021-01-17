@@ -3,6 +3,7 @@
     using System.Threading;
     using System.Threading.Tasks;
     using MediatR;
+    using Pezza.Common.DTO;
     using Pezza.Common.Models;
     using Pezza.DataAccess.Contracts;
 
@@ -13,16 +14,15 @@
 
     public class DeleteRestaurantCommandHandler : IRequestHandler<DeleteRestaurantCommand, Result>
     {
-        private readonly IDataAccess<Common.Entities.Restaurant> dataAcess;
+        private readonly IDataAccess<RestaurantDTO> dataAcess;
 
-        public DeleteRestaurantCommandHandler(IDataAccess<Common.Entities.Restaurant> dataAcess)
+        public DeleteRestaurantCommandHandler(IDataAccess<RestaurantDTO> dataAcess)
             => this.dataAcess = dataAcess;
 
         public async Task<Result> Handle(DeleteRestaurantCommand request, CancellationToken cancellationToken)
         {
             var outcome = await this.dataAcess.DeleteAsync(request.Id);
-
-            return (outcome) ? Result.Success() : Result.Failure("Error deleting a Restaurant");
+            return outcome ? Result.Success() : Result.Failure("Error deleting a Restaurant");
         }
     }
 }

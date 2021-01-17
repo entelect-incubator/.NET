@@ -53,7 +53,7 @@ else
     var result = JsonConvert.SerializeObject(new { isSuccess = false, error = exception.Message });
     context.Response.ContentType = "application/json";
     context.Response.StatusCode = (int)code;
-    Logging.LogException(exception);
+    Common.Logging.Logging.LogException(exception);
 
     return context.Response.WriteAsync(result);
 }

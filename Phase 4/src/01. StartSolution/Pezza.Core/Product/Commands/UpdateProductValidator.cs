@@ -1,18 +1,17 @@
 ﻿namespace Pezza.Core.Customer.Commands
 {
     using FluentValidation;
-    using Pezza.Common.Validators;
     using Pezza.Core.Product.Commands;
 
     public class UpdateProductCommandValidator : AbstractValidator<UpdateProductCommand>
     {
         public UpdateProductCommandValidator()
         {
-            this.RuleFor(r => r.Id)
-                .NotEmpty();
-
             this.RuleFor(r => r.Data)
                 .NotNull();
+
+            this.RuleFor(r => r.Data.Id)
+                .NotEmpty();
 
             this.RuleFor(r => r.Data.Name)
                 .MaximumLength(150)
