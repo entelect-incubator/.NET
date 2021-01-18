@@ -2,9 +2,11 @@
 {
     using System;
     using System.Collections.Generic;
+    using Pezza.Common.DTO.Data;
     using Pezza.Common.Entities;
+    using Pezza.Common.Models;
 
-    public class OrderDTO : Entity
+    public class OrderDTO : Entity, ISearchBase
     {
         public CustomerDTO Customer { get; set; }
 
@@ -21,5 +23,9 @@
         public virtual ICollection<OrderItemDTO> OrderItems { get; set; }
 
         public DateTime DateCreated { get; set; }
+
+        public string OrderBy { get; set; }
+
+        public PagingArgs PagingArgs { get; set; }
     }
 }

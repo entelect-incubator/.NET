@@ -66,3 +66,5 @@ System.InvalidOperationException: The entity type 'PagingArgs' requires a primar
    at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
    at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
    at Pezza.Api.Middleware.ExceptionHandlerMiddleware.Invoke(HttpContext context) in F:\Dev\.Net\Phase 7\02. Dashboard\MVC\src\01. EndSolution\Pezza.Api\Middleware\ExceptionHandlerMiddleware.cs:line 21
+2021-01-18 06:10:23.753 +02:00 [FTL] Exception
+'.' or '(' or string literal expected (at index 6)

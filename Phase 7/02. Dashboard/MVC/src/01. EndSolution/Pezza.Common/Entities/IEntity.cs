@@ -2,7 +2,7 @@
 {
     using Pezza.Common.DTO.Data;
 
-    public interface IEntity : ISearchBase
+    public interface IEntity
     {
         int Id { get; set; }
     }

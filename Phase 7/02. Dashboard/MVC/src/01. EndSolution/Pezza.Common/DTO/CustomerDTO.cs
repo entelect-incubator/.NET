@@ -1,9 +1,11 @@
 ﻿namespace Pezza.Common.DTO
 {
     using System;
+    using Pezza.Common.DTO.Data;
     using Pezza.Common.Entities;
+    using Pezza.Common.Models;
 
-    public class CustomerDTO : Entity
+    public class CustomerDTO : Entity, ISearchBase
     {
         public CustomerDTO()
         {
@@ -22,5 +24,9 @@
         public AddressBase Address { get; set; }
 
         public DateTime? DateCreated { get; set; }
+
+        public string OrderBy { get; set; }
+
+        public PagingArgs PagingArgs { get; set; }
     }
 }
