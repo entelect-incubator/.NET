@@ -43,7 +43,6 @@
                 .FilterByOfferEndDate(searchModel.OfferEndDate)
                 .FilterByOfferPrice(searchModel.OfferPrice)
                 .FilterByIsActive(searchModel.IsActive)
-                .FilterByDateCreated(searchModel.DateCreated)
 
                 .OrderBy(searchModel.OrderBy);
 
@@ -85,7 +84,7 @@
             this.databaseContext.Products.Remove(entity);
             var result = await this.databaseContext.SaveChangesAsync();
 
-            return (result == 1);
+            return result == 1;
         }
     }
 }

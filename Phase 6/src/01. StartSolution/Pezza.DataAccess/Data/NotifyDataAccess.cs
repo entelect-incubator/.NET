@@ -39,7 +39,6 @@
                 .FilterByEmail(searchModel.Email)
                 .FilterBySent(searchModel.Sent)
                 .FilterByRetry(searchModel.Retry)
-                .FilterByDateSent(searchModel.DateSent)
 
                 .OrderBy(searchModel.OrderBy);
 

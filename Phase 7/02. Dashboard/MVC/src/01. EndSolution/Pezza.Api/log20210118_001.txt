@@ -1,2 +1,0 @@
-2021-01-18 06:10:45.559 +02:00 [FTL] Exception
-'.' or '(' or string literal expected (at index 6)

@@ -43,7 +43,6 @@
                 .FilterByPhone(searchModel.Phone)
                 .FilterByEmail(searchModel.Email)
                 .FilterByContactPerson(searchModel.ContactPerson)
-                .FilterByDateCreated(searchModel.DateCreated)
 
                 .OrderBy(searchModel.OrderBy);
 
@@ -83,7 +82,7 @@
             this.databaseContext.Customers.Remove(entity);
             var result = await this.databaseContext.SaveChangesAsync();
 
-            return (result == 1);
+            return result == 1;
         }
     }
 }

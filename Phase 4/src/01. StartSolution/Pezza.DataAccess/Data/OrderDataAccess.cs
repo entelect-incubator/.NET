@@ -37,7 +37,6 @@
                 .FilterByCustomerId(searchModel.CustomerId)
                 .FilterByRestaurantId(searchModel.RestaurantId)
                 .FilterByAmount(searchModel.Amount)
-                .FilterByDateCreated(searchModel.DateCreated)
                 .FilterByCompleted(searchModel.Completed)
 
                 .OrderBy(searchModel.OrderBy);
@@ -75,7 +74,7 @@
             this.databaseContext.Orders.Remove(entity);
             var result = await this.databaseContext.SaveChangesAsync();
 
-            return (result != 0);
+            return result != 0;
         }
     }
 }

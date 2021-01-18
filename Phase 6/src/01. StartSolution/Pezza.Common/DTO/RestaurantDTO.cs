@@ -2,8 +2,9 @@
 {
     using System;
     using Pezza.Common.Entities;
+    using Pezza.Common.Models;
 
-    public class RestaurantDTO : ImageDataBase
+    public class RestaurantDTO : ImageDataBase, Data.ISearchBase
     {
         public string Name { get; set; }
 
@@ -17,6 +18,10 @@
 
         public DateTime DateCreated { get; set; }
 
-        public bool BustCache { get; set; } = false;
+        public string OrderBy { get; set; }
+
+        public PagingArgs PagingArgs { get; set; }
+
+        public bool BustCache { get; set; }
     }
 }

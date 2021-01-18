@@ -39,7 +39,6 @@
                 .FilterByEmail(searchModel.Email)
                 .FilterBySent(searchModel.Sent)
                 .FilterByRetry(searchModel.Retry)
-                .FilterByDateSent(searchModel.DateSent)
 
                 .OrderBy(searchModel.OrderBy);
 
@@ -78,7 +77,7 @@
             this.databaseContext.Notify.Remove(entity);
             var result = await this.databaseContext.SaveChangesAsync();
 
-            return (result == 1);
+            return result == 1;
         }
     }
 }

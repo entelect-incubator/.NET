@@ -90,30 +90,33 @@ namespace Pezza.Common.DTO.Data
 }
 ```
 
-Extend IEntity with SearchBase. All other Entities inherit from Entity.
+Extend all DTO's with ISearchBase.
 
 ```cs
-namespace Pezza.Common.Entities
+namespace Pezza.Common.DTO
 {
-    using Pezza.Common.DTO.Data;
-
-    public interface IEntity : ISearchBase
-    {
-        int Id { get; set; }
-    }
-}
-```
-
-Entity.cs
-
-```cs
-namespace Pezza.Common.Entities
-{
+    using System;
+    using Pezza.Common.Entities;
     using Pezza.Common.Models;
 
-    public abstract class Entity : IEntity
+    public class CustomerDTO : Entity, Data.ISearchBase
     {
-        public int Id { get; set; }
+        public CustomerDTO()
+        {
+            this.Address = new AddressBase();
+        }
+
+        public string Name { get; set; }
+
+        public string Phone { get; set; }
+
+        public string Email { get; set; }
+
+        public string ContactPerson { get; set; }
+
+        public AddressBase Address { get; set; }
+
+        public DateTime? DateCreated { get; set; }
 
         public string OrderBy { get; set; }
 
@@ -121,6 +124,17 @@ namespace Pezza.Common.Entities
     }
 }
 ```
+
+Add Paging Properties as well to all DTO's
+
+```cs
+public string OrderBy { get; set; }
+
+public PagingArgs PagingArgs { get; set; }
+```
+
+![](2021-01-18-09-58-18.png)
+
 ### **Add filtering**
 
 Create a Filter class for every entity, these filters uses fluent design for readability. In each filter you create a rule for every property that you want to filter on. If that property has a value it builds up a query before executing it to the database. See it as building up a SQL WHERE clause.

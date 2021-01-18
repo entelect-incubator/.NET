@@ -56,7 +56,7 @@
             this.databaseContext.OrderItems.Remove(entity);
             var result = await this.databaseContext.SaveChangesAsync();
 
-            return (result == 1);
+            return result == 1;
         }
     }
 }

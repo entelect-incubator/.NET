@@ -8,6 +8,9 @@
     using Microsoft.EntityFrameworkCore;
     using Pezza.Common.DTO;
     using Pezza.Common.Entities;
+    using Pezza.Common.Extensions;
+    using Pezza.Common.Filter;
+    using Pezza.Common.Models;
     using Pezza.DataAccess.Contracts;
 
     public class OrderDataAccess : IDataAccess<OrderDTO>
@@ -22,10 +25,26 @@
         public async Task<OrderDTO> GetAsync(int id)
             => this.mapper.Map<OrderDTO>(await this.databaseContext.Orders.Include(x => x.OrderItems).ThenInclude(x => x.Product).Include(x => x.Restaurant).Include(x => x.Customer).FirstOrDefaultAsync(x => x.Id == id));
 
-        public async Task<List<OrderDTO>> GetAllAsync()
+        public async Task<ListResult<OrderDTO>> GetAllAsync(Entity searchBase)
         {
-            var entities = await this.databaseContext.Orders.Include(x => x.OrderItems).ThenInclude(x => x.Product).Include(x => x.Restaurant).Include(x => x.Customer).Where(x => x.Completed == false).Select(x => x).AsNoTracking().ToListAsync();
-            return this.mapper.Map<List<OrderDTO>>(entities);
+            var searchModel = (OrderDTO)searchBase;
+            var entities = this.databaseContext.Orders
+                .Include(x => x.OrderItems)
+                .ThenInclude(x => x.Product)
+                .Include(x => x.Restaurant)
+                .Include(x => x.Customer)
+                .AsNoTracking()
+                .FilterByCustomerId(searchModel.CustomerId)
+                .FilterByRestaurantId(searchModel.RestaurantId)
+                .FilterByAmount(searchModel.Amount)
+                .FilterByCompleted(searchModel.Completed)
+
+                .OrderBy(searchModel.OrderBy);
+
+            var count = entities.Count();
+            var paged = this.mapper.Map<List<OrderDTO>>(await entities.ApplyPaging(searchModel.PagingArgs).ToListAsync());
+
+            return ListResult<OrderDTO>.Success(paged, count);
         }
 
         public async Task<OrderDTO> SaveAsync(OrderDTO entity)
@@ -55,7 +74,7 @@
             this.databaseContext.Orders.Remove(entity);
             var result = await this.databaseContext.SaveChangesAsync();
 
-            return (result != 0);
+            return result != 0;
         }
     }
 }

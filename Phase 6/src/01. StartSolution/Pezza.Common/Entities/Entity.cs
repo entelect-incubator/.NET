@@ -5,9 +5,5 @@
     public abstract class Entity : IEntity
     {
         public int Id { get; set; }
-
-        public string OrderBy { get; set; }
-
-        public PagingArgs PagingArgs { get; set; }
     }
 }

@@ -8,6 +8,9 @@
     using Microsoft.EntityFrameworkCore;
     using Pezza.Common.DTO;
     using Pezza.Common.Entities;
+    using Pezza.Common.Extensions;
+    using Pezza.Common.Filter;
+    using Pezza.Common.Models;
     using Pezza.DataAccess.Contracts;
 
     public class StockDataAccess : IDataAccess<StockDTO>
@@ -22,10 +25,29 @@
         public async Task<StockDTO> GetAsync(int id)
             => this.mapper.Map<StockDTO>(await this.databaseContext.Stocks.FirstOrDefaultAsync(x => x.Id == id));
 
-        public async Task<List<StockDTO>> GetAllAsync()
+        public async Task<ListResult<StockDTO>> GetAllAsync(Entity searchBase)
         {
-            var entities = await this.databaseContext.Stocks.Select(x => x).AsNoTracking().ToListAsync();
-            return this.mapper.Map<List<StockDTO>>(entities);
+            var searchModel = (StockDTO)searchBase;
+            if (string.IsNullOrEmpty(searchModel.OrderBy))
+            {
+                searchModel.OrderBy = "DateCreated desc";
+            }
+
+            var entities = this.databaseContext.Stocks.Select(x => x)
+                .AsNoTracking()
+                .FilterByName(searchModel.Name)
+                .FilterByUnitOfMeasure(searchModel.UnitOfMeasure)
+                .FilterByValueOfMeasure(searchModel.ValueOfMeasure)
+                .FilterByQuantity(searchModel.Quantity)
+                .FilterByExpiryDate(searchModel.ExpiryDate)
+                .FilterByComment(searchModel.Comment)
+
+                .OrderBy(searchModel.OrderBy);
+
+            var count = entities.Count();
+            var paged = this.mapper.Map<List<StockDTO>>(await entities.ApplyPaging(searchModel.PagingArgs).ToListAsync());
+
+            return ListResult<StockDTO>.Success(paged, count);
         }
 
         public async Task<StockDTO> SaveAsync(StockDTO entity)
@@ -58,7 +80,7 @@
             this.databaseContext.Stocks.Remove(entity);
             var result = await this.databaseContext.SaveChangesAsync();
 
-            return (result == 1);
+            return result == 1;
         }
     }
 }

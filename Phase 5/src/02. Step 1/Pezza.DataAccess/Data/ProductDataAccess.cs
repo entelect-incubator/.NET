@@ -43,7 +43,6 @@
                 .FilterByOfferEndDate(searchModel.OfferEndDate)
                 .FilterByOfferPrice(searchModel.OfferPrice)
                 .FilterByIsActive(searchModel.IsActive)
-                .FilterByDateCreated(searchModel.DateCreated)
 
                 .OrderBy(searchModel.OrderBy);
 

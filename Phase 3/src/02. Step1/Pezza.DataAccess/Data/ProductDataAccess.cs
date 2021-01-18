@@ -8,6 +8,9 @@
     using Microsoft.EntityFrameworkCore;
     using Pezza.Common.DTO;
     using Pezza.Common.Entities;
+    using Pezza.Common.Extensions;
+    using Pezza.Common.Filter;
+    using Pezza.Common.Models;
     using Pezza.DataAccess.Contracts;
 
     public class ProductDataAccess : IDataAccess<ProductDTO>
@@ -22,10 +25,31 @@
         public async Task<ProductDTO> GetAsync(int id)
             => this.mapper.Map<ProductDTO>(await this.databaseContext.Products.FirstOrDefaultAsync(x => x.Id == id));
 
-        public async Task<List<ProductDTO>> GetAllAsync()
+        public async Task<ListResult<ProductDTO>> GetAllAsync(Entity searchBase)
         {
-            var entities = await this.databaseContext.Products.Select(x => x).AsNoTracking().ToListAsync();
-            return this.mapper.Map<List<ProductDTO>>(entities);
+            var searchModel = (ProductDTO)searchBase;
+            if (string.IsNullOrEmpty(searchModel.OrderBy))
+            {
+                searchModel.OrderBy = "DateCreated desc";
+            }
+
+            var entities = this.databaseContext.Products.Select(x => x)
+                .AsNoTracking()
+                .FilterByName(searchModel.Name)
+                .FilterByDescription(searchModel.Description)
+                .FilterByPictureUrl(searchModel.PictureUrl)
+                .FilterByPrice(searchModel.Price)
+                .FilterBySpecial(searchModel.Special)
+                .FilterByOfferEndDate(searchModel.OfferEndDate)
+                .FilterByOfferPrice(searchModel.OfferPrice)
+                .FilterByIsActive(searchModel.IsActive)
+
+                .OrderBy(searchModel.OrderBy);
+
+            var count = entities.Count();
+            var paged = this.mapper.Map<List<ProductDTO>>(await entities.ApplyPaging(searchModel.PagingArgs).ToListAsync());
+
+            return ListResult<ProductDTO>.Success(paged, count);
         }
 
         public async Task<ProductDTO> SaveAsync(ProductDTO entity)
@@ -60,7 +84,7 @@
             this.databaseContext.Products.Remove(entity);
             var result = await this.databaseContext.SaveChangesAsync();
 
-            return (result == 1);
+            return result == 1;
         }
     }
 }

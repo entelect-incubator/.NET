@@ -37,7 +37,6 @@
                 .FilterByCustomerId(searchModel.CustomerId)
                 .FilterByRestaurantId(searchModel.RestaurantId)
                 .FilterByAmount(searchModel.Amount)
-                .FilterByDateCreated(searchModel.DateCreated)
                 .FilterByCompleted(searchModel.Completed)
 
                 .OrderBy(searchModel.OrderBy);
