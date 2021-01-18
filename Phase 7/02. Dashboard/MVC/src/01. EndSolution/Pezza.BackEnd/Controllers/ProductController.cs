@@ -22,7 +22,7 @@
             var response = await this.client.PostAsync(@$"{AppSettings.ApiUrl}Product\Search", data);
 
             var responseData = await response.Content.ReadAsStringAsync();
-            var entities = JsonConvert.DeserializeObject<List<Product>>(responseData).ToList();
+            var entities = JsonConvert.DeserializeObject<List<ProductDTO>>(responseData).ToList();
             for (var i = 0; i < entities.Count; i++)
             {
                 entities[i].PictureUrl = $"{AppSettings.ApiUrl}Picture?file={entities[i].PictureUrl}&folder=Product";
@@ -32,12 +32,12 @@
 
         public async Task<ActionResult> Details(int id)
         {
-            var entity = new Product();
+            var entity = new ProductDTO();
             var responseMessage = await this.client.GetAsync(@$"{AppSettings.ApiUrl}Product\{id}");
             if (responseMessage.IsSuccessStatusCode)
             {
                 var responseData = await responseMessage.Content.ReadAsStringAsync();
-                entity = JsonConvert.DeserializeObject<Product>(responseData);
+                entity = JsonConvert.DeserializeObject<ProductDTO>(responseData);
             }
 
             return this.View(entity);
@@ -66,7 +66,7 @@
                 if (responseMessage.IsSuccessStatusCode)
                 {
                     var responseData = await responseMessage.Content.ReadAsStringAsync();
-                    var response = JsonConvert.DeserializeObject<Product>(responseData);
+                    var response = JsonConvert.DeserializeObject<ProductDTO>(responseData);
                 }
 
                 return this.RedirectToAction("Index");
@@ -80,12 +80,12 @@
         [Route("Product/Edit/{id?}")]
         public async Task<ActionResult> Edit(int id)
         {
-            var entity = new Product();
+            var entity = new ProductDTO();
             var response = await this.client.GetAsync(@$"{AppSettings.ApiUrl}Product\{id}");
             if (response.IsSuccessStatusCode)
             {
                 var responseData = await response.Content.ReadAsStringAsync();
-                entity = JsonConvert.DeserializeObject<Product>(responseData);
+                entity = JsonConvert.DeserializeObject<ProductDTO>(responseData);
 
                 return this.View(new ProductModel
                 {
@@ -118,7 +118,7 @@
                     Product.ImageData = $"data:{MimeTypeMap.GetMimeType(Path.GetExtension(Product.Image.FileName))};base64,{Convert.ToBase64String(fileBytes)}";
                 }
 
-                var json = JsonConvert.SerializeObject(new ProductDataDTO
+                var json = JsonConvert.SerializeObject(new ProductDTO
                 {
                     Name = Product.Name,
                     Description = Product.Description,
@@ -135,7 +135,7 @@
                 if (responseMessage.IsSuccessStatusCode)
                 {
                     var responseData = await responseMessage.Content.ReadAsStringAsync();
-                    var response = JsonConvert.DeserializeObject<Product>(responseData);
+                    var response = JsonConvert.DeserializeObject<ProductDTO>(responseData);
                 }
 
                 return this.RedirectToAction("Index");

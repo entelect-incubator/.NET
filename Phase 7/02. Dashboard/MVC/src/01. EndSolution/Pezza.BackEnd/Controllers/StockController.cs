@@ -10,7 +10,6 @@
     using Pezza.Common;
     using Pezza.Common.DTO;
     using Pezza.Common.Entities;
-    using Pezza.Common.Mapping;
     using Pezza.Common.Models;
 
     public class StockController : BaseController
@@ -21,19 +20,19 @@
             var response = await this.client.PostAsync(@$"{AppSettings.ApiUrl}Stock\Search", data);
 
             var responseData = await response.Content.ReadAsStringAsync();
-            var entities = JsonConvert.DeserializeObject<List<Stock>>(responseData);
+            var entities = JsonConvert.DeserializeObject<List<StockDTO>>(responseData);
 
             return this.View(entities);
         }
 
         public async Task<ActionResult> Details(int id)
         {
-            var entity = new Stock();
+            var entity = new StockDTO();
             var responseMessage = await this.client.GetAsync(@$"{AppSettings.ApiUrl}Stock\{id}");
             if (responseMessage.IsSuccessStatusCode)
             {
                 var responseData = await responseMessage.Content.ReadAsStringAsync();
-                entity = JsonConvert.DeserializeObject<Stock>(responseData);
+                entity = JsonConvert.DeserializeObject<StockDTO>(responseData);
             }
 
             return this.View(entity);
@@ -41,12 +40,12 @@
 
         public ActionResult Create()
         {
-            return this.View(new StockDataDTO());
+            return this.View(new StockDTO());
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(StockDataDTO stock)
+        public async Task<ActionResult> Create(StockDTO stock)
         {
             if (this.ModelState.IsValid)
             {
@@ -57,7 +56,7 @@
                 if (responseMessage.IsSuccessStatusCode)
                 {
                     var responseData = await responseMessage.Content.ReadAsStringAsync();
-                    var response = JsonConvert.DeserializeObject<StockDataDTO>(responseData);
+                    var response = JsonConvert.DeserializeObject<StockDTO>(responseData);
                 }
 
                 return this.RedirectToAction("Index");
@@ -71,14 +70,14 @@
         [Route("Stock/Edit/{id?}")]
         public async Task<ActionResult> Edit(int id)
         {
-            var entity = new Stock();
+            var entity = new StockDTO();
             var response = await this.client.GetAsync(@$"{AppSettings.ApiUrl}Stock\{id}");
             if (response.IsSuccessStatusCode)
             {
                 var responseData = await response.Content.ReadAsStringAsync();
-                entity = JsonConvert.DeserializeObject<Stock>(responseData);
+                entity = JsonConvert.DeserializeObject<StockDTO>(responseData);
             }
-            return this.View(entity.Map());
+            return this.View(entity);
         }
 
         [HttpPost]
@@ -88,7 +87,7 @@
         {
             if (this.ModelState.IsValid)
             {
-                var json = JsonConvert.SerializeObject(new StockDataDTO
+                var json = JsonConvert.SerializeObject(new StockDTO
                 {
                     Name = stock.Name,
                     Quantity = stock.Quantity,
@@ -103,7 +102,7 @@
                 if (responseMessage.IsSuccessStatusCode)
                 {
                     var responseData = await responseMessage.Content.ReadAsStringAsync();
-                    var response = JsonConvert.DeserializeObject<Stock>(responseData);
+                    var response = JsonConvert.DeserializeObject<StockDTO>(responseData);
                 }
 
                 return this.RedirectToAction("Index");

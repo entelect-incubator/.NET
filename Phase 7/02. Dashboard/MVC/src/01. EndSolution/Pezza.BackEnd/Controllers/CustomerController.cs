@@ -9,34 +9,39 @@
     using Pezza.Common;
     using Pezza.Common.DTO;
     using Pezza.Common.Entities;
-    using Pezza.Common.Mapping;
+    using Pezza.Portal.Helpers;
 
     public class CustomerController : BaseController
     {
+        private readonly IHttpClientFactory clientFactory;
+
+        private readonly ApiCallHelper<CustomerDTO> apiCallHelper;
+
+        public CustomerController(IHttpClientFactory clientFactory)
+        {
+            this.apiCallHelper = new ApiCallHelper<CustomerDTO>(clientFactory);
+            this.apiCallHelper.ControllerName = "Customer";
+        }
         public async Task<ActionResult> Index()
         {
-            var data = new StringContent("", Encoding.UTF8, "application/json");
-            var response = await this.client.PostAsync(@$"{AppSettings.ApiUrl}Customer\Search", data);
-
-            var responseData = await response.Content.ReadAsStringAsync();
-            var entities = JsonConvert.DeserializeObject<List<Customer>>(responseData);
+            var entities = await this.apiCallHelper.GetListAsync();
 
             return this.View(entities);
         }
 
         public IActionResult CreatePartial()
         {
-            return this.PartialView("~/views/Customer/_Create.cshtml", new CustomerDataDTO());
+            return this.PartialView("~/views/Customer/_Create.cshtml", new CustomerDTO());
         }
 
         public async Task<ActionResult> Details(int id)
         {
-            var entity = new Customer();
+            var entity = new CustomerDTO();
             var responseMessage = await this.client.GetAsync(@$"{AppSettings.ApiUrl}Customer\{id}");
             if (responseMessage.IsSuccessStatusCode)
             {
                 var responseData = await responseMessage.Content.ReadAsStringAsync();
-                entity = JsonConvert.DeserializeObject<Customer>(responseData);
+                entity = JsonConvert.DeserializeObject<CustomerDTO>(responseData);
             }
 
             return this.View(entity);
@@ -44,11 +49,11 @@
 
         public ActionResult Create()
         {
-            return this.View(new CustomerDataDTO());
+            return this.View(new CustomerDTO());
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(CustomerDataDTO Customer)
+        public async Task<ActionResult> Create(CustomerDTO Customer)
         {
             if (this.ModelState.IsValid)
             {
@@ -80,15 +85,9 @@
                 var responseData = await response.Content.ReadAsStringAsync();
                 entity = JsonConvert.DeserializeObject<CustomerDTO>(responseData);
             }
-            return this.View(new CustomerDataDTO
+            return this.View(new CustomerDTO
             {
-                Address = new AddressBase
-                {
-                    Address = entity.Address,
-                    City = entity.City,
-                    Province = entity.Province,
-                    ZipCode = entity.ZipCode
-                },
+                Address = entity.Address,
                 ContactPerson = entity.ContactPerson,
                 Email = entity.Email,
                 Name = entity.Name,
@@ -99,7 +98,7 @@
         [HttpPost]
         [Route("Customer/Edit/{id?}")]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(int id, CustomerDataDTO customer)
+        public async Task<ActionResult> Edit(int id, CustomerDTO customer)
         {
             if (this.ModelState.IsValid)
             {

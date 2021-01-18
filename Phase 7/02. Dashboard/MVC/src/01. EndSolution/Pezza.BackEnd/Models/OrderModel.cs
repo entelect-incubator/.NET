@@ -4,14 +4,12 @@
     using Microsoft.AspNetCore.Mvc.Rendering;
     using Pezza.Common.DTO;
 
-    public class OrderModel : OrderDataDTO
+    public class OrderModel : OrderDTO
     {
         public OrderModel()
         {
             this.Amount = 0;
         }
-
-        public int Id { set; get; }
 
         public List<SelectListItem> Restaurants { set; get; }
 

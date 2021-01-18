@@ -11,7 +11,6 @@
     using Pezza.Common;
     using Pezza.Common.DTO;
     using Pezza.Common.Entities;
-    using Pezza.Common.Mapping;
     using Pezza.Portal.Models;
 
     public class OrdersController : BaseController
@@ -25,10 +24,10 @@
             var entities = JsonConvert.DeserializeObject<List<OrderDTO>>(responseData);
             var entitiesByRestaurant = entities.OrderBy(o => o.Restaurant.Name).GroupBy(g => g.Restaurant.Name);
             var ordersByRestaurant = new Dictionary<string, List<OrderDTO>>();
-            foreach(var restaurant in entitiesByRestaurant)
+            foreach (var restaurant in entitiesByRestaurant)
             {
                 var tempEntities = new List<OrderDTO>();
-                foreach(var order in restaurant)
+                foreach (var order in restaurant)
                 {
                     tempEntities.Add(order);
                 }
@@ -48,19 +47,19 @@
 
         public async Task<ActionResult> Details(int id)
         {
-            var entity = new Order();
+            var entity = new OrderDTO();
             var responseMessage = await this.client.GetAsync(@$"{AppSettings.ApiUrl}Order\{id}");
             if (responseMessage.IsSuccessStatusCode)
             {
                 var responseData = await responseMessage.Content.ReadAsStringAsync();
-                entity = JsonConvert.DeserializeObject<Order>(responseData);
+                entity = JsonConvert.DeserializeObject<OrderDTO>(responseData);
             }
 
             return this.View(entity);
         }
 
         public async Task<ActionResult> Create()
-        { 
+        {
             return this.View(new OrderModel
             {
                 Customers = await this.GetCustomers(),
@@ -74,8 +73,9 @@
             var response = await this.client.PostAsync(@$"{AppSettings.ApiUrl}Customer\Search", data);
 
             var responseData = await response.Content.ReadAsStringAsync();
-            var entities = JsonConvert.DeserializeObject<List<Customer>>(responseData);
-            return entities.Select(x => {
+            var entities = JsonConvert.DeserializeObject<List<CustomerDTO>>(responseData);
+            return entities.Select(x =>
+            {
                 return new SelectListItem
                 {
                     Value = $"{x.Id}",
@@ -90,13 +90,14 @@
             var response = await this.client.PostAsync(@$"{AppSettings.ApiUrl}Restaurant\Search", data);
 
             var responseData = await response.Content.ReadAsStringAsync();
-            var entities = JsonConvert.DeserializeObject<List<Restaurant>>(responseData).ToList();
+            var entities = JsonConvert.DeserializeObject<List<RestaurantDTO>>(responseData).ToList();
             for (var i = 0; i < entities.Count; i++)
             {
                 entities[i].PictureUrl = $"{AppSettings.ApiUrl}Picture?file={entities[i].PictureUrl}&folder=restaurant";
             }
 
-            return entities.Select(x => {
+            return entities.Select(x =>
+            {
                 return new SelectListItem
                 {
                     Value = $"{x.Id}",
@@ -105,24 +106,40 @@
             }).ToList();
         }
 
-        private async Task<List<Product>> GetProducts()
+        private async Task<List<ProductModel>> GetProducts()
         {
             var data = new StringContent("", Encoding.UTF8, "application/json");
             var response = await this.client.PostAsync(@$"{AppSettings.ApiUrl}Product\Search", data);
 
             var responseData = await response.Content.ReadAsStringAsync();
-            var entities = JsonConvert.DeserializeObject<List<Product>>(responseData).ToList();
+            var entities = JsonConvert.DeserializeObject<List<ProductDTO>>(responseData).ToList();
             for (var i = 0; i < entities.Count; i++)
             {
                 entities[i].PictureUrl = $"{AppSettings.ApiUrl}Picture?file={entities[i].PictureUrl}&folder=Product";
             }
 
-            return entities;
+            return entities.Select(x =>
+            {
+                return new ProductModel
+                {
+                    Id = x.Id,
+                    DateCreated = x.DateCreated,
+                    Description = x.Description,
+                    HasOffer = x.OfferEndDate.HasValue ? true : false,
+                    IsActive = x.IsActive,
+                    OfferEndDate = x.OfferEndDate,
+                    OfferPrice = x.OfferPrice,
+                    Name = x.Name,
+                    Price = x.Price,
+                    PictureUrl = x.PictureUrl,
+                    Special = x.Special
+                };
+            }).ToList();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(OrderDataDTO Order)
+        public async Task<ActionResult> Create(OrderDTO Order)
         {
             if (this.ModelState.IsValid)
             {
@@ -154,16 +171,16 @@
                 var responseData = await response.Content.ReadAsStringAsync();
                 entity = JsonConvert.DeserializeObject<OrderDTO>(responseData);
             }
-            return this.View(new OrderDataDTO
+            return this.View(new OrderDTO
             {
-               
+
             });
         }
 
         [HttpPost]
         [Route("Order/Edit/{id?}")]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(int id, OrderDataDTO Order)
+        public async Task<ActionResult> Edit(int id, OrderDTO Order)
         {
             if (this.ModelState.IsValid)
             {
@@ -225,7 +242,7 @@
 
             if (this.ModelState.IsValid)
             {
-                var json = JsonConvert.SerializeObject(new OrderDataDTO
+                var json = JsonConvert.SerializeObject(new OrderDTO
                 {
                     Completed = true
                 });

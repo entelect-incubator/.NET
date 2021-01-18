@@ -10,6 +10,8 @@
 
         public int? CustomerId { get; set; }
 
+        public RestaurantDTO Restaurant { get; set; }
+
         public int? RestaurantId { get; set; }
 
         public decimal? Amount { get; set; }

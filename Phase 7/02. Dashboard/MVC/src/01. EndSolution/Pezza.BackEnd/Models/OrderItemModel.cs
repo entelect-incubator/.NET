@@ -4,13 +4,13 @@
     using Pezza.Common.DTO;
     using Pezza.Common.Entities;
 
-    public class OrderItemModel : OrderItemDataDTO
+    public class OrderItemModel : OrderItemDTO
     {
         public OrderItemModel()
         {
             this.Quantity = 0;
         }
 
-        public List<Product> Products { set; get; }
+        public List<ProductModel> Products { set; get; }
     }
 }

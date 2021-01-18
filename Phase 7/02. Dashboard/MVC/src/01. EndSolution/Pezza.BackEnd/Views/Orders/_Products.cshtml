@@ -3,11 +3,11 @@
 <div class="orderItem">
     @foreach (var Product in Model.Products)
     {
-        <div id="product-@Product.Id" class="product card @(Product.Special ? "bg-default" : "")" style="width: 18rem;float: left; margin-right: 15px;">
+        <div id="product-@Product.Id" class="product card @(Product._Special ? "bg-default" : "")" style="width: 18rem;float: left; margin-right: 15px;">
             <input type="hidden" id="productId" value="@Product.Id" />
             <img src="@Product.PictureUrl" class="card-img-top" alt="@Product.Name Store Front">
             <div class="card-body">
-                <h4 class="card-title">@Product.Name - <small>@(Product.IsActive ? "Available" : "Discontinued")</small></h4>
+                <h4 class="card-title">@Product.Name - <small>@(Product._IsActive ? "Available" : "Discontinued")</small></h4>
                 <p class="card-text">@Product.Description</p>
                 @if (Product.OfferEndDate.HasValue)
                 {

@@ -22,7 +22,7 @@
             var response = await this.client.PostAsync(@$"{AppSettings.ApiUrl}Restaurant\Search", data);
 
             var responseData = await response.Content.ReadAsStringAsync();
-            var entities = JsonConvert.DeserializeObject<List<Restaurant>>(responseData).ToList();
+            var entities = JsonConvert.DeserializeObject<List<RestaurantDTO>>(responseData).ToList();
             for (var i = 0; i < entities.Count; i++)
             {
                 entities[i].PictureUrl = $"{AppSettings.ApiUrl}Picture?file={entities[i].PictureUrl}&folder=restaurant";
@@ -32,12 +32,12 @@
 
         public async Task<ActionResult> Details(int id)
         {
-            var entity = new Restaurant();
+            var entity = new RestaurantDTO();
             var responseMessage = await this.client.GetAsync(@$"{AppSettings.ApiUrl}Restaurant\{id}");
             if (responseMessage.IsSuccessStatusCode)
             {
                 var responseData = await responseMessage.Content.ReadAsStringAsync();
-                entity = JsonConvert.DeserializeObject<Restaurant>(responseData);
+                entity = JsonConvert.DeserializeObject<RestaurantDTO>(responseData);
             }
 
             return this.View(entity);
@@ -66,7 +66,7 @@
                 if (responseMessage.IsSuccessStatusCode)
                 {
                     var responseData = await responseMessage.Content.ReadAsStringAsync();
-                    var response = JsonConvert.DeserializeObject<Restaurant>(responseData);
+                    var response = JsonConvert.DeserializeObject<RestaurantDTO>(responseData);
                 }
 
                 return this.RedirectToAction("Index");
@@ -121,7 +121,7 @@
                     restaurant.ImageData = $"data:{MimeTypeMap.GetMimeType(Path.GetExtension(restaurant.Image.FileName))};base64,{Convert.ToBase64String(fileBytes)}";
                 }
 
-                var json = JsonConvert.SerializeObject(new RestaurantDataDTO
+                var json = JsonConvert.SerializeObject(new RestaurantDTO
                 {
                     Name = restaurant.Name,
                     Description = restaurant.Description,
