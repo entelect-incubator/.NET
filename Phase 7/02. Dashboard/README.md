@@ -1,12 +1,12 @@
 <img align="left" width="116" height="116" src="../../pezza-logo.png" />
 
-# &nbsp;**Pezza - Phase 3 - Dashboard**
+# &nbsp;**Pezza - Phase 7 - Dashboard**
 
 <br/><br/>
 
 ## **Starting Point**
 
-Start with your finished solution from Phase 2 or in Phase 3 > 01. StartSolution
+Start with your finished solution from Phase 2 or in Phase 7 > 01. StartSolution
 
 ### **What are we building?**
 

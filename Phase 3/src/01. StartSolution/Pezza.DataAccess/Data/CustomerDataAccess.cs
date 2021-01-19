@@ -8,8 +8,6 @@
     using Microsoft.EntityFrameworkCore;
     using Pezza.Common.DTO;
     using Pezza.Common.Entities;
-    using Pezza.Common.Extensions;
-    using Pezza.Common.Filter;
     using Pezza.Common.Models;
     using Pezza.DataAccess.Contracts;
 
@@ -25,31 +23,10 @@
         public async Task<CustomerDTO> GetAsync(int id)
             => this.mapper.Map<CustomerDTO>(await this.databaseContext.Customers.FirstOrDefaultAsync(x => x.Id == id));
 
-        public async Task<ListResult<CustomerDTO>> GetAllAsync(Entity searchBase)
+        public async Task<List<CustomerDTO>> GetAllAsync()
         {
-            var searchModel = (CustomerDTO)searchBase;
-            if (string.IsNullOrEmpty(searchModel.OrderBy))
-            {
-                searchModel.OrderBy = "DateCreated desc";
-            }
-
-            var entities = this.databaseContext.Customers.Select(x => x)
-                .AsNoTracking()
-                .FilterByName(searchModel.Name)
-                .FilterByAddress(searchModel.Address?.Address)
-                .FilterByCity(searchModel.Address?.City)
-                .FilterByProvince(searchModel.Address?.Province)
-                .FilterByZipCode(searchModel.Address?.ZipCode)
-                .FilterByPhone(searchModel.Phone)
-                .FilterByEmail(searchModel.Email)
-                .FilterByContactPerson(searchModel.ContactPerson)
-
-                .OrderBy(searchModel.OrderBy);
-
-            var count = entities.Count();
-            var paged = this.mapper.Map<List<CustomerDTO>>(await entities.ApplyPaging(searchModel.PagingArgs).ToListAsync());
-
-            return ListResult<CustomerDTO>.Success(paged, count);
+            var entities = await this.databaseContext.Customers.Select(x => x).AsNoTracking().ToListAsync();
+            return this.mapper.Map<List<CustomerDTO>>(entities);
         }
 
         public async Task<CustomerDTO> SaveAsync(CustomerDTO entity)

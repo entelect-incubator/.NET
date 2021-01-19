@@ -1,16 +1,11 @@
 ﻿namespace Pezza.DataAccess.Data
 {
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Linq.Dynamic.Core;
     using System.Threading.Tasks;
     using AutoMapper;
     using Microsoft.EntityFrameworkCore;
     using Pezza.Common.DTO;
     using Pezza.Common.Entities;
-    using Pezza.Common.Extensions;
-    using Pezza.Common.Filter;
-    using Pezza.Common.Models;
     using Pezza.DataAccess.Contracts;
 
     public class OrderDataAccess : IDataAccess<OrderDTO>
@@ -25,26 +20,10 @@
         public async Task<OrderDTO> GetAsync(int id)
             => this.mapper.Map<OrderDTO>(await this.databaseContext.Orders.Include(x => x.OrderItems).ThenInclude(x => x.Product).Include(x => x.Restaurant).Include(x => x.Customer).FirstOrDefaultAsync(x => x.Id == id));
 
-        public async Task<ListResult<OrderDTO>> GetAllAsync(Entity searchBase)
+        public async Task<List<OrderDTO>> GetAllAsync()
         {
-            var searchModel = (OrderDTO)searchBase;
-            var entities = this.databaseContext.Orders
-                .Include(x => x.OrderItems)
-                .ThenInclude(x => x.Product)
-                .Include(x => x.Restaurant)
-                .Include(x => x.Customer)
-                .AsNoTracking()
-                .FilterByCustomerId(searchModel.CustomerId)
-                .FilterByRestaurantId(searchModel.RestaurantId)
-                .FilterByAmount(searchModel.Amount)
-                .FilterByCompleted(searchModel.Completed)
-
-                .OrderBy(searchModel.OrderBy);
-
-            var count = entities.Count();
-            var paged = this.mapper.Map<List<OrderDTO>>(await entities.ApplyPaging(searchModel.PagingArgs).ToListAsync());
-
-            return ListResult<OrderDTO>.Success(paged, count);
+            var entities = await this.databaseContext.Orders.AsNoTracking().ToListAsync();
+            return this.mapper.Map<List<OrderDTO>>(entities);
         }
 
         public async Task<OrderDTO> SaveAsync(OrderDTO entity)

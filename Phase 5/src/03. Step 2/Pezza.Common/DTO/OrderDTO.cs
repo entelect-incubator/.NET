@@ -21,7 +21,7 @@
 
         public virtual ICollection<OrderItemDTO> OrderItems { get; set; }
 
-        public DateTime DateCreated { get; set; }
+        public DateTime? DateCreated { get; set; }
 
         public string OrderBy { get; set; }
 

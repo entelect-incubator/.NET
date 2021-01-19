@@ -8,9 +8,6 @@
     using Microsoft.EntityFrameworkCore;
     using Pezza.Common.DTO;
     using Pezza.Common.Entities;
-    using Pezza.Common.Extensions;
-    using Pezza.Common.Filter;
-    using Pezza.Common.Models;
     using Pezza.DataAccess.Contracts;
 
     public class NotifyDataAccess : IDataAccess<NotifyDTO>
@@ -25,27 +22,10 @@
         public async Task<NotifyDTO> GetAsync(int id)
             => this.mapper.Map<NotifyDTO>(await this.databaseContext.Notify.FirstOrDefaultAsync(x => x.Id == id));
 
-        public async Task<ListResult<NotifyDTO>> GetAllAsync(Entity searchBase)
+        public async Task<List<NotifyDTO>> GetAllAsync()
         {
-            var searchModel = (NotifyDTO)searchBase;
-            if (string.IsNullOrEmpty(searchModel.OrderBy))
-            {
-                searchModel.OrderBy = "DateSent desc";
-            }
-
-            var entities = this.databaseContext.Notify.Select(x => x)
-                .AsNoTracking()
-                .FilterByCustomerId(searchModel.CustomerId)
-                .FilterByEmail(searchModel.Email)
-                .FilterBySent(searchModel.Sent)
-                .FilterByRetry(searchModel.Retry)
-
-                .OrderBy(searchModel.OrderBy);
-
-            var count = entities.Count();
-            var paged = this.mapper.Map<List<NotifyDTO>>(await entities.ApplyPaging(searchModel.PagingArgs).ToListAsync());
-
-            return ListResult<NotifyDTO>.Success(paged, count);
+            var entities = await this.databaseContext.Notify.Select(x => x).ToListAsync();
+            return this.mapper.Map<List<NotifyDTO>>(entities);
         }
 
         public async Task<NotifyDTO> SaveAsync(NotifyDTO entity)

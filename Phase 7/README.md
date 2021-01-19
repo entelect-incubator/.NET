@@ -1,18 +1,38 @@
 <img align="left" width="116" height="116" src="pezza-logo.png" />
 
-# &nbsp;**Pezza - Phase 3**
+# &nbsp;**Pezza - Phase 7**
 
 <br/><br/>
 
-### **CQRS**
+# **UI**
 
-In this Incubator, we try to follow the Single Responsibility Principle as far as possible. This way we will be using a clean approach to CQRS. Don't worry too much about what CQRS, but it helps us in applying the Single Responsibility Principle.
-
-[CQRS Overview](https://docs.microsoft.com/en-us/azure/architecture/patterns/cqrs)
+In Phase 7 we will build the Front End implementations for the API in a variety of ways and technologies. * Remember to always be technology agnostic. Choose the technology that suites the use case the best.
 
 ## **Setup**
 
-- [ ] Use the Final Solution from Phase 2 to get started or use Phase3\01. StartSolution
+- [ ] Use the Final Solution from Phase 6 to get started or use Phase3\01. StartSolution
+- [ ] To allow calls from your Web.API you need to add CORS in your starup.cs
+
+[About CORS](https://www.youtube.com/watch?v=UjozQOaGt1k)
+
+public void ConfigureServices(IServiceCollection services)
+
+```cs
+services.AddCors(options =>
+{
+    options.AddPolicy(
+        "CorsPolicy",
+        builder => builder.AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader());
+});
+```
+
+public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+
+```cs
+app.UseCors("CorsPolicy");
+```
 
 ## **Steps**
 

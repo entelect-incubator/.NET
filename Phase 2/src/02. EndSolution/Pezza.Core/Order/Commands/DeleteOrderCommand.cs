@@ -22,7 +22,7 @@
         public async Task<Result> Handle(DeleteOrderCommand request, CancellationToken cancellationToken)
         {
             var outcome = await this.dataAcess.DeleteAsync(request.Id);
-            return (outcome) ? Result.Success() : Result.Failure("Error deleting a Order");
+            return outcome ? Result.Success() : Result.Failure("Error deleting a Order");
         }
     }
 }

@@ -65,6 +65,10 @@ Create OrderCompleted.html. The HTML might look a bit strange to you, it's becau
 
 Look in Phase 6/Data/OrderCompleted.html and Copy it into Email/Templates.
 
+Right-click on OrderCompleted.html and Choose Copy always for Copy to Output.
+
+![](Assets/2021-01-19-07-54-33.png)
+
 ![Email Service](Assets/2021-01-17-23-03-34.png)
 
 ## **STEP 2 - Event**

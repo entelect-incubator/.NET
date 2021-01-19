@@ -8,7 +8,6 @@
     using Microsoft.EntityFrameworkCore;
     using Pezza.Common.DTO;
     using Pezza.Common.Entities;
-    using Pezza.Common.Models;
     using Pezza.DataAccess.Contracts;
 
     public class OrderItemDataAccess : IDataAccess<OrderItemDTO>
@@ -23,11 +22,10 @@
         public async Task<OrderItemDTO> GetAsync(int id)
             => this.mapper.Map<OrderItemDTO>(await this.databaseContext.OrderItems.FirstOrDefaultAsync(x => x.Id == id));
 
-        public async Task<ListResult<OrderItemDTO>> GetAllAsync(Entity searchBase)
+        public async Task<List<OrderItemDTO>> GetAllAsync()
         {
-            var searchModel = (OrderItemDTO)searchBase;
-            var entities = this.mapper.Map<List<OrderItemDTO>>(await this.databaseContext.OrderItems.Select(x => x).AsNoTracking().ToListAsync());
-            return ListResult<OrderItemDTO>.Success(entities, entities.Count);
+            var entities = await this.databaseContext.OrderItems.Select(x => x).AsNoTracking().ToListAsync();
+            return this.mapper.Map<List<OrderItemDTO>>(entities);
         }
 
         public async Task<OrderItemDTO> SaveAsync(OrderItemDTO entity)

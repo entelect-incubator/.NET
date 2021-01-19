@@ -11,15 +11,12 @@
             <param name="id">int.</param>
             <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
         </member>
-        <member name="M:Pezza.Api.Controllers.CustomerController.Search(Pezza.Common.DTO.CustomerDTO)">
+        <member name="M:Pezza.Api.Controllers.CustomerController.Search">
             <summary>
             Get all Customers.
             </summary>
-            <param name="searchModel">The search model.</param>
-            <returns>
-            A <see cref="T:System.Threading.Tasks.Task" /> repres
-            enting the asynchronous operation.
-            </returns>
+            <returns>A <see cref="T:System.Threading.Tasks.Task"/> repres
+            enting the asynchronous operation.</returns>
         </member>
         <member name="M:Pezza.Api.Controllers.CustomerController.Create(Pezza.Common.DTO.CustomerDTO)">
             <summary>
@@ -78,14 +75,11 @@
             <param name="id">Primary Key.</param>
             <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
         </member>
-        <member name="M:Pezza.Api.Controllers.NotifyController.Search(Pezza.Common.DTO.NotifyDTO)">
+        <member name="M:Pezza.Api.Controllers.NotifyController.Search">
             <summary>
             Get all Notifies.
             </summary>
-            <param name="searchModel">The search model.</param>
-            <returns>
-            A <see cref="T:System.Threading.Tasks.Task" /> representing the asynchronous operation.
-            </returns>
+            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
         </member>
         <member name="M:Pezza.Api.Controllers.NotifyController.Create(Pezza.Common.DTO.NotifyDTO)">
             <summary>
@@ -137,14 +131,11 @@
             <param name="id">int.</param>
             <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
         </member>
-        <member name="M:Pezza.Api.Controllers.OrderController.Search(Pezza.Common.DTO.OrderDTO)">
+        <member name="M:Pezza.Api.Controllers.OrderController.Search">
             <summary>
             Get all Orders.
             </summary>
-            <param name="searchModel">The search model.</param>
-            <returns>
-            A <see cref="T:System.Threading.Tasks.Task" /> representing the asynchronous operation.
-            </returns>
+            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
         </member>
         <member name="M:Pezza.Api.Controllers.OrderController.Create(Pezza.Common.DTO.OrderDTO)">
             <summary>
@@ -206,14 +197,11 @@
             <param name="id">int.</param>
             <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
         </member>
-        <member name="M:Pezza.Api.Controllers.ProductController.Search(Pezza.Common.DTO.ProductDTO)">
+        <member name="M:Pezza.Api.Controllers.ProductController.Search">
             <summary>
             Get all Products.
             </summary>
-            <param name="searchModel">The search model.</param>
-            <returns>
-            A <see cref="T:System.Threading.Tasks.Task" /> representing the asynchronous operation.
-            </returns>
+            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
         </member>
         <member name="M:Pezza.Api.Controllers.ProductController.Create(Pezza.Common.DTO.ProductDTO)">
             <summary>
@@ -263,14 +251,11 @@
             <param name="id">int.</param>
             <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
         </member>
-        <member name="M:Pezza.Api.Controllers.RestaurantController.Search(Pezza.Common.DTO.RestaurantDTO)">
+        <member name="M:Pezza.Api.Controllers.RestaurantController.Search">
             <summary>
             Get all Restaurants.
             </summary>
-            <param name="searchModel">The search model.</param>
-            <returns>
-            A <see cref="T:System.Threading.Tasks.Task" /> representing the asynchronous operation.
-            </returns>
+            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
         </member>
         <member name="M:Pezza.Api.Controllers.RestaurantController.Create(Pezza.Common.DTO.RestaurantDTO)">
              <summary>
@@ -325,14 +310,11 @@
             <param name="id">id.</param>
             <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
         </member>
-        <member name="M:Pezza.Api.Controllers.StockController.Search(Pezza.Common.DTO.StockDTO)">
+        <member name="M:Pezza.Api.Controllers.StockController.Search">
             <summary>
             Get all Stock.
             </summary>
-            <param name="searchModel">The search model.</param>
-            <returns>
-            A <see cref="T:System.Threading.Tasks.Task" /> representing the asynchronous operation.
-            </returns>
+            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
         </member>
         <member name="M:Pezza.Api.Controllers.StockController.Create(Pezza.Common.DTO.StockDTO)">
             <summary>

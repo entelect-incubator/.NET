@@ -169,7 +169,7 @@ namespace Pezza.Test
 Add CachingService to all RestaurantDataAccess constructors
 
 ```cs
-var handler = new RestaurantDataAccess(this.Context, this.CachingService);
+var handler = new RestaurantDataAccess(this.Context, Mapper(), this.CachingService);
 ```
 
 Move to Phase 5 Step 2

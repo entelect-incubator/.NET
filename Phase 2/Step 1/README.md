@@ -865,6 +865,9 @@ namespace Pezza.Core
 }
 ```
 
+### **Remove Core.Contracts Project**
+
+
 ## **STEP 2 - Unit Tests**
 
 Move to Step 2

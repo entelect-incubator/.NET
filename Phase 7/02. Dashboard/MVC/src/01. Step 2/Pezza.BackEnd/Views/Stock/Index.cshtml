@@ -1,0 +1,96 @@
+﻿@model IEnumerable<Pezza.Common.DTO.StockDTO>
+
+@{
+    ViewBag.Title = "Stock";
+    ViewBag.ActiveMenu = "Stock";
+}
+
+<div>
+    <a class="btn btn-primary" href="/Stock/Create">
+        <i class="fa fa-plus" aria-hidden="true"></i>
+        Add
+    </a>
+</div>
+<br />
+@if (Model.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th width="150px" class="text-right">Quantity</th>
+                <th>Name</th>
+                <th>Metric</th>
+                <th>Expiry Date</th>
+                <th>Comment</th>
+                <th width="100px" class="text-right">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var stock in Model)
+            {
+                <tr>
+                    <td>@stock.Id</td>
+                    <td align="right">@stock.Quantity</td>
+                    <td>@stock.Name</td>
+                    <td>@stock.ValueOfMeasure @stock.UnitOfMeasure</td>
+                    <td>@stock.ExpiryDate</td>
+                    <td>@stock.Comment</td>
+                    <td align="right">
+                        <a rel="tooltip" class="btn btn-info btn-sm btn-round btn-icon edit" href="/Stock/Edit/@stock.Id">
+                            <i class="fa fa-wrench" aria-hidden="true"></i>
+                        </a>
+                        <button onclick="remove(@stock.Id, '@stock.Name')" type="button" rel="tooltip" class="btn btn-danger btn-sm btn-round btn-icon remove">
+                            <i class="fa fa-times" aria-hidden="true"></i>
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    @await Html.PartialAsync("_Modals")
+}
+else
+{
+    <div class="alert alert-info">No Stock Data</div>
+}
+
+@section Scripts
+{
+    <script>
+        "use strict";
+        function remove(id, name) {
+            $('.remove-entity').html('Stock');
+            $('.remove-name').html("Are you sure you want to remove " + name);
+            $('#removeId').val(id);
+            $('#confirmationModal').modal('show');
+        }
+
+        function confirmRemove() {
+            $(".alert").hide();
+
+            $('#confirmationModal').modal('hide');
+            var data = { Id: parseInt($('#removeId').val()) };
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Delete", "Stock")/' + $('#removeId').val(),
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    if (data == true) {
+                        $.alertInfo('Stock has been removed', function () {
+                            setTimeout(function () { window.location.reload() }, 1500);
+                        });
+                    }
+                    else {
+                        $.alertWarning('Error removing stock');
+                    }
+                },
+                error: function (error) {
+                    console.log(error);
+                    $.alertWarning('Error removing stock');
+                }
+            });
+        }
+    </script>
+}

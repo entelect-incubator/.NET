@@ -34,7 +34,7 @@ namespace Pezza.Common
 
         private static void Setup() => Log.Logger = new LoggerConfiguration()
             .Enrich.FromLogContext()
-            .WriteTo.File("log.txt", rollingInterval: RollingInterval.Day)
+            .WriteTo.File("logs\log.txt", rollingInterval: RollingInterval.Day)
             .CreateLogger();
     }
 }

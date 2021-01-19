@@ -10,6 +10,8 @@
 
         public int? CustomerId { get; set; }
 
+        public RestaurantDTO Restaurant { get; set; }
+
         public int? RestaurantId { get; set; }
 
         public decimal? Amount { get; set; }
@@ -18,7 +20,6 @@
 
         public virtual ICollection<OrderItemDTO> OrderItems { get; set; }
 
-        public DateTime DateCreated { get; set; }
-
+        public DateTime? DateCreated { get; set; }
     }
 }

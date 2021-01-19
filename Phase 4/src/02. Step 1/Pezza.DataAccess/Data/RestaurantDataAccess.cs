@@ -1,30 +1,23 @@
 ﻿namespace Pezza.DataAccess.Data
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Linq.Dynamic.Core;
     using System.Threading.Tasks;
     using AutoMapper;
-    using LazyCache;
     using Microsoft.EntityFrameworkCore;
     using Pezza.Common.DTO;
     using Pezza.Common.Entities;
-    using Pezza.Common.Extensions;
     using Pezza.Common.Models;
     using Pezza.DataAccess.Contracts;
 
     public class RestaurantDataAccess : IDataAccess<RestaurantDTO>
     {
-        private readonly IAppCache cache;
-        private readonly string cacheKey = "RestaurantList";
-        private readonly TimeSpan cacheExpiry = new TimeSpan(12, 0, 0);
         private readonly IDatabaseContext databaseContext;
         private readonly IMapper mapper;
-        private int count = 0;
 
-        public RestaurantDataAccess(IDatabaseContext databaseContext, IMapper mapper, IAppCache cache)
-            => (this.databaseContext, this.mapper, this.cache) = (databaseContext, mapper, cache);
+        public RestaurantDataAccess(IDatabaseContext databaseContext, IMapper mapper)
+            => (this.databaseContext, this.mapper) = (databaseContext, mapper);
 
         public async Task<RestaurantDTO> GetAsync(int id)
             => this.mapper.Map<RestaurantDTO>(await this.databaseContext.Restaurants.FirstOrDefaultAsync(x => x.Id == id));
@@ -32,35 +25,11 @@
         public async Task<ListResult<RestaurantDTO>> GetAllAsync(Entity searchBase)
         {
             var searchModel = (RestaurantDTO)searchBase;
-            if (searchModel.BustCache)
-            {
-                this.ClearPageCache();
-            }
+            var entities = this.mapper.Map<List<RestaurantDTO>>(await this.databaseContext.Restaurants.Select(x => x).AsNoTracking().ToListAsync());
+            var count = entities.Count();
 
-            Task<List<RestaurantDTO>> CacheFactory() => this.GetRestaurantCache(searchModel);
-            var data = await this.cache.GetOrAddAsync(this.cacheKey, CacheFactory, this.cacheExpiry);
-
-            return ListResult<RestaurantDTO>.Success(data, this.count);
+            return ListResult<RestaurantDTO>.Success(entities, count);
         }
-
-        private async Task<List<RestaurantDTO>> GetRestaurantCache(RestaurantDTO searchModel)
-        {
-            if (string.IsNullOrEmpty(searchModel.OrderBy))
-            {
-                searchModel.OrderBy = "DateCreated desc";
-            }
-
-            var entities = this.databaseContext.Restaurants.Select(x => x)
-                .AsNoTracking()
-                .OrderBy(searchModel.OrderBy);
-
-            this.count = entities.Count();
-            var paged = await entities.ApplyPaging(searchModel.PagingArgs).ToListAsync();
-
-            return this.mapper.Map<List<RestaurantDTO>>(paged);
-        }
-
-        public void ClearPageCache() => this.cache.Remove(this.cacheKey);
 
         public async Task<RestaurantDTO> SaveAsync(RestaurantDTO entity)
         {
