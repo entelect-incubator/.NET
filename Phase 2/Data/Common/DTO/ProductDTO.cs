@@ -2,8 +2,9 @@
 {
     using System;
     using Pezza.Common.Entities;
+    using Pezza.Common.Models;
 
-    public class ProductDTO : Entity
+    public class ProductDTO : ImageDataBase, Data.ISearchBase
     {
         public string Name { get; set; }
 
@@ -22,5 +23,9 @@
         public bool? IsActive { get; set; }
 
         public DateTime DateCreated { get; set; }
+
+        public string OrderBy { get; set; }
+
+        public PagingArgs PagingArgs { get; set; }
     }
 }

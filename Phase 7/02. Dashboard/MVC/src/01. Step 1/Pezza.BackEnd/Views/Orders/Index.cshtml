@@ -48,7 +48,7 @@
                             }
                         </td>
                         <td class="text-right">@Order.Amount</td>
-                        <td>@Order.DateCreated.ToShortDateString()</td>
+                        <td>@(Order.DateCreated.HasValue ? Order.DateCreated.Value.ToShortDateString() : string.Empty)</td>
                         <td align="right">
                             <button onclick="complete(@Order.Id, '#@Order.Id')" type="button" rel="tooltip" class="btn btn-danger btn-sm btn-round btn-icon remove">
                                 <i class="fa fa-check" aria-hidden="true"></i>

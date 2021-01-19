@@ -1,22 +1,17 @@
 ﻿namespace Pezza.Common.DTO
 {
     using System;
-    using System.Collections.Generic;
     using Pezza.Common.Entities;
+    using Pezza.Common.Models;
 
-    public class CustomerDTO : Entity
+    public class CustomerDTO : Entity, Data.ISearchBase
     {
-        public CustomerDTO() => this.Orders = new HashSet<OrderDTO>();
+        public CustomerDTO()
+        {
+            this.Address = new AddressBase();
+        }
 
         public string Name { get; set; }
-
-        public string Address { get; set; }
-
-        public string City { get; set; }
-
-        public string Province { get; set; }
-
-        public string ZipCode { get; set; }
 
         public string Phone { get; set; }
 
@@ -24,8 +19,12 @@
 
         public string ContactPerson { get; set; }
 
+        public AddressBase Address { get; set; }
+
         public DateTime? DateCreated { get; set; }
 
-        public virtual ICollection<OrderDTO> Orders { get; set; }
+        public string OrderBy { get; set; }
+
+        public PagingArgs PagingArgs { get; set; }
     }
 }

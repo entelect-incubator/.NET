@@ -28,6 +28,7 @@
         {
             var json = JsonConvert.SerializeObject(new OrderDTO
             {
+                Completed = false,
                 PagingArgs = Common.Models.PagingArgs.NoPaging
             });
             var entities = await this.apiCallHelper.GetListAsync(json);
@@ -88,7 +89,11 @@
             {
                 PagingArgs = Common.Models.PagingArgs.NoPaging
             });
-            var entities = await new ApiCallHelper<CustomerDTO>(this.clientFactory).GetListAsync(json);
+            var apiHelper = new ApiCallHelper<CustomerDTO>(this.clientFactory)
+            {
+                ControllerName = "Customer"
+            };
+            var entities = await apiHelper.GetListAsync(json);
             return entities.Select(x =>
             {
                 return new SelectListItem
@@ -105,7 +110,11 @@
             {
                 PagingArgs = Common.Models.PagingArgs.NoPaging
             });
-            var entities = await new ApiCallHelper<RestaurantDTO>(this.clientFactory).GetListAsync(json);
+            var apiHelper = new ApiCallHelper<RestaurantDTO>(this.clientFactory)
+            {
+                ControllerName = "Restaurant"
+            };
+            var entities = await apiHelper.GetListAsync(json);
             for (var i = 0; i < entities.Count; i++)
             {
                 entities[i].PictureUrl = $"{AppSettings.ApiUrl}Picture?file={entities[i].PictureUrl}&folder=restaurant";
@@ -127,10 +136,17 @@
             {
                 PagingArgs = Common.Models.PagingArgs.NoPaging
             });
-            var entities = await new ApiCallHelper<ProductDTO>(this.clientFactory).GetListAsync(json);
-            for (var i = 0; i < entities.Count; i++)
+            var apiHelper = new ApiCallHelper<ProductDTO>(this.clientFactory)
             {
-                entities[i].PictureUrl = $"{AppSettings.ApiUrl}Picture?file={entities[i].PictureUrl}&folder=Product";
+                ControllerName = "Product"
+            };
+            var entities = await apiHelper.GetListAsync(json);
+            if (entities.Any())
+            {
+                for (var i = 0; i < entities.Count; i++)
+                {
+                    entities[i].PictureUrl = $"{AppSettings.ApiUrl}Picture?file={entities[i].PictureUrl}&folder=Product";
+                }
             }
 
             return entities.Select(x =>
@@ -209,6 +225,7 @@
             var result = await this.apiCallHelper.Edit(new OrderDTO
             {
                 Id = id,
+                DateCreated = null,
                 Completed = true
             });
             return this.Json(result != null ? true : false);

@@ -2,8 +2,9 @@
 {
     using System;
     using Pezza.Common.Entities;
+    using Pezza.Common.Models;
 
-    public class NotifyDTO : Entity
+    public class NotifyDTO : Entity, Data.ISearchBase
     {
         public int? CustomerId { get; set; }
 
@@ -13,6 +14,10 @@
 
         public int? Retry { get; set; }
 
-        public DateTime? DateSent { get; set; }
+        public DateTime? DateSent { get; set; } = DateTime.Now;
+
+        public string OrderBy { get; set; }
+
+        public PagingArgs PagingArgs { get; set; }
     }
 }
