@@ -201,9 +201,15 @@
                             $("#Count").val(result.count);
 
                             var tableBody = '';
-                            if (result.data.length == 0) {
+                            if (!result.data) {
                                 $("#loading").hide();
                                 $("#tbody").html('<tr><td colspan="7"> No Stock Data</td></tr>');
+                                $("#paginationBar").hide();
+                            }
+                            else if (result.data.length == 0) {
+                                $("#loading").hide();
+                                $("#tbody").html('<tr><td colspan="7"> No Stock Data</td></tr>');
+                                $("#paginationBar").hide();
                             }
                             else {
                                 for (var i = 0; i < result.data.length; i++) {

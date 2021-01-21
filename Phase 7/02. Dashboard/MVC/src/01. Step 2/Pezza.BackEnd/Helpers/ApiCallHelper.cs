@@ -16,6 +16,8 @@
 
         private readonly HttpClient client;
 
+        private readonly JsonSerializerOptions jsonSerializerOptions;
+
         public string ControllerName { get; set; }
 
         public ApiCallHelper(IHttpClientFactory clientFactory)
@@ -25,6 +27,13 @@
             this.client.BaseAddress = new Uri(AppSettings.ApiUrl);
             this.client.DefaultRequestHeaders.Accept.Clear();
             this.client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            this.jsonSerializerOptions = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                IgnoreNullValues = true,
+                MaxDepth = 20
+            };
         }
 
         public async Task<ListOutcome<T>> GetListAsync(string jsonData)
@@ -34,12 +43,7 @@
 
             var responseData = await response.Content.ReadAsStringAsync();
 
-            var entities = JsonSerializer.Deserialize<ListOutcome<T>>(responseData, new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                IgnoreNullValues = true,
-                MaxDepth = 20
-            });
+            var entities = JsonSerializer.Deserialize<ListOutcome<T>>(responseData, this.jsonSerializerOptions);
             return entities;
         }
 
@@ -49,7 +53,7 @@
             if (responseMessage.IsSuccessStatusCode)
             {
                 var responseData = await responseMessage.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<T>(responseData);
+                return JsonSerializer.Deserialize<T>(responseData, this.jsonSerializerOptions);
             }
 
             return default;
@@ -64,7 +68,7 @@
             if (responseMessage.StatusCode == System.Net.HttpStatusCode.BadRequest)
             {
                 var responseData = await responseMessage.Content.ReadAsStringAsync();
-                var response = JsonSerializer.Deserialize<T>(responseData);
+                var response = JsonSerializer.Deserialize<T>(responseData, this.jsonSerializerOptions);
 
                 return response;
             }
@@ -72,7 +76,7 @@
             if (responseMessage.IsSuccessStatusCode)
             {
                 var responseData = await responseMessage.Content.ReadAsStringAsync();
-                var response = JsonSerializer.Deserialize<T>(responseData);
+                var response = JsonSerializer.Deserialize<T>(responseData, this.jsonSerializerOptions);
 
                 return response;
             }
@@ -89,7 +93,8 @@
             if (responseMessage.IsSuccessStatusCode)
             {
                 var responseData = await responseMessage.Content.ReadAsStringAsync();
-                var response = JsonSerializer.Deserialize<T>(responseData);
+                var response = JsonSerializer.Deserialize<T>(responseData, this.jsonSerializerOptions);
+                return response;
             }
 
             return default;
@@ -101,7 +106,7 @@
             if (responseMessage.IsSuccessStatusCode)
             {
                 var responseData = await responseMessage.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<bool>(responseData);
+                return JsonSerializer.Deserialize<bool>(responseData, this.jsonSerializerOptions);
             }
 
             return false;

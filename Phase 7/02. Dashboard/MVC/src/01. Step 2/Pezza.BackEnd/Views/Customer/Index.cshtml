@@ -201,9 +201,15 @@
                             $("#Count").val(result.count);
 
                             var tableBody = '';
-                            if (result.data.length == 0) {
+                            if (!result.data) {
                                 $("#loading").hide();
                                 $("#tbody").html('<tr><td colspan="7"> No Customer Data</td></tr>');
+                                $("#paginationBar").hide();
+                            }
+                            else if (result.data.length == 0) {
+                                $("#loading").hide();
+                                $("#tbody").html('<tr><td colspan="7"> No Customer Data</td></tr>');
+                                $("#paginationBar").hide();
                             }
                             else {
                                 for (var i = 0; i < result.data.length; i++) {
@@ -250,37 +256,3 @@
         });
     </script>
 }
-
-
-@* 
-
-<div class="alert alert-info">No new orders has been placed.</div><tbody>
-        @foreach (var Order in restaurant.Value)
-        {
-            <tr>
-                <td>@Order.Id</td>
-                <td>
-                    @Order.Customer?.Name<br />
-                    <a class="btn btn-sm" target="_blank" href="tel:@Order.Customer?.Phone">@Order.Customer?.Phone</a><br />
-                    <a class="btn btn-sm" target="_blank" href="email:@Order.Customer?.Email">@Order.Customer?.Email</a>
-                </td>
-                <td>
-                    @foreach (var order in Order.OrderItems)
-                    {
-                        @order.Product?.Name<br />
-                        @order.Quantity<br />
-                    }
-                </td>
-                <td class="text-right">@Order.Amount</td>
-                <td>@(Order.DateCreated.HasValue ? Order.DateCreated.Value.ToShortDateString() : string.Empty)</td>
-                <td align="right">
-                    <button onclick="complete(@Order.Id, '#@Order.Id')" type="button" rel="tooltip" class="btn btn-danger btn-sm btn-round btn-icon remove">
-                        <i class="fa fa-check" aria-hidden="true"></i>
-                    </button>
-                    <button onclick="remove(@Order.Id, '#@Order.Id')" type="button" rel="tooltip" class="btn btn-danger btn-sm btn-round btn-icon remove">
-                        <i class="fa fa-times" aria-hidden="true"></i>
-                    </button>
-                </td>
-            </tr>
-        }
-    </tbody>*@

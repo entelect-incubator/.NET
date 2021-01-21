@@ -33,7 +33,7 @@
         }
 
         [HttpPost]
-        public async Task<JsonResult> List(SearchModel<OrderDTO> searchmodel)
+        public async Task<JsonResult> List([FromBody] SearchModel<OrderDTO> searchmodel)
         {
             var entity = searchmodel.SearchData;
             entity.OrderBy = searchmodel.OrderBy;
@@ -208,7 +208,7 @@
                 DateCreated = null,
                 Completed = true
             });
-            return this.Json(result != null ? true : false);
+            return this.Json(result.Id > 0 ? true : false);
         }
     }
 }

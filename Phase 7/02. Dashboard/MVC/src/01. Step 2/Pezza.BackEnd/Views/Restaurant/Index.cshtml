@@ -142,9 +142,15 @@
                             $("#Count").val(result.count);
 
                             var cardBody = '';
-                            if (result.data.length == 0) {
+                            if (!result.data) {
                                 $("#loading").hide();
                                 $("#cardData").html('No Restaurant Data');
+                                $("#paginationBar").hide();
+                            }
+                            else if (result.data.length == 0) {
+                                $("#loading").hide();
+                                $("#cardData").html('No Restaurant Data');
+                                $("#paginationBar").hide();
                             }
                             else {
                                 for (var i = 0; i < result.data.length; i++) {
