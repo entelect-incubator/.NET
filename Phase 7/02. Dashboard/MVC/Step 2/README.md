@@ -869,6 +869,7 @@ Orders Index.chtml
 
             function loadData() {
                 $("#loading").show();
+                $("#paginationBar").show();
                 var orderBy = $("#OrderBy").val();
 
                 var dto = new Object;

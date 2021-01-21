@@ -13,7 +13,7 @@ namespace Pezza.Common.Filter
                 return query;
             }
 
-            return query.Where(x => x.Name.Contains(name));
+            return query.Where(x => x.Name.ToLower().Contains(name.ToLower()));
         }
 
         public static IQueryable<Customer> FilterByAddress(this IQueryable<Customer> query, string address)
