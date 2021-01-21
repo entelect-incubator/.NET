@@ -6,8 +6,9 @@
     using System.Net.Http.Headers;
     using System.Text;
     using System.Threading.Tasks;
-    using Newtonsoft.Json;
     using Pezza.Common;
+    using System.Text.Json;
+    using Pezza.Common.Models;
 
     public class ApiCallHelper<T>
     {
@@ -26,14 +27,19 @@
             this.client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        public async Task<List<T>> GetListAsync(string jsonData)
+        public async Task<ListOutcome<T>> GetListAsync(string jsonData)
         {
             var data = new StringContent(jsonData, Encoding.UTF8, "application/json");
             var response = await this.client.PostAsync(@$"{AppSettings.ApiUrl}{ControllerName}\Search", data);
 
             var responseData = await response.Content.ReadAsStringAsync();
-            var entities = JsonConvert.DeserializeObject<List<T>>(responseData);
 
+            var entities = JsonSerializer.Deserialize<ListOutcome<T>>(responseData, new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                IgnoreNullValues = true,
+                MaxDepth = 20
+            });
             return entities;
         }
 
@@ -43,7 +49,7 @@
             if (responseMessage.IsSuccessStatusCode)
             {
                 var responseData = await responseMessage.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<T>(responseData);
+                return JsonSerializer.Deserialize<T>(responseData);
             }
 
             return default;
@@ -51,14 +57,14 @@
 
         public async Task<T> Create(T entity)
         {
-            var json = JsonConvert.SerializeObject(entity);
+            var json = JsonSerializer.Serialize(entity);
             var data = new StringContent(json, Encoding.UTF8, "application/json");
 
             var responseMessage = await this.client.PostAsync(@$"{AppSettings.ApiUrl}{ControllerName}", data);
             if (responseMessage.StatusCode == System.Net.HttpStatusCode.BadRequest)
             {
                 var responseData = await responseMessage.Content.ReadAsStringAsync();
-                var response = JsonConvert.DeserializeObject<T>(responseData);
+                var response = JsonSerializer.Deserialize<T>(responseData);
 
                 return response;
             }
@@ -66,7 +72,7 @@
             if (responseMessage.IsSuccessStatusCode)
             {
                 var responseData = await responseMessage.Content.ReadAsStringAsync();
-                var response = JsonConvert.DeserializeObject<T>(responseData);
+                var response = JsonSerializer.Deserialize<T>(responseData);
 
                 return response;
             }
@@ -76,14 +82,14 @@
 
         public async Task<T> Edit(T entity)
         {
-            var json = JsonConvert.SerializeObject(entity);
+            var json = JsonSerializer.Serialize(entity);
             var data = new StringContent(json, Encoding.UTF8, "application/json");
 
             var responseMessage = await this.client.PutAsync(@$"{AppSettings.ApiUrl}{ControllerName}", data);
             if (responseMessage.IsSuccessStatusCode)
             {
                 var responseData = await responseMessage.Content.ReadAsStringAsync();
-                var response = JsonConvert.DeserializeObject<T>(responseData);
+                var response = JsonSerializer.Deserialize<T>(responseData);
             }
 
             return default;
@@ -95,7 +101,7 @@
             if (responseMessage.IsSuccessStatusCode)
             {
                 var responseData = await responseMessage.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<bool>(responseData);
+                return JsonSerializer.Deserialize<bool>(responseData);
             }
 
             return false;

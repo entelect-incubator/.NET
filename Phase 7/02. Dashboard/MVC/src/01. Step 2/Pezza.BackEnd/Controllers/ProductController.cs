@@ -25,18 +25,34 @@
             this.apiCallHelper.ControllerName = "Product";
         }
 
-        public async Task<ActionResult> Index()
+        public ActionResult Index()
+        {
+            return this.View(new Portal.Models.PagingModel
+            {
+                Limit = 10,
+                Page = 1
+            });
+        }
+
+        public async Task<JsonResult> List(int limit, int page, string orderBy = "Name asc")
         {
             var json = JsonConvert.SerializeObject(new ProductDTO
             {
-                PagingArgs = Common.Models.PagingArgs.NoPaging
+                OrderBy = orderBy,
+                PagingArgs = new Common.Models.PagingArgs
+                {
+                    Limit = limit,
+                    Offset = (page - 1) * limit,
+                    UsePaging = true
+                }
             });
-            var entities = await this.apiCallHelper.GetListAsync(json);
-            for (var i = 0; i < entities.Count; i++)
+            var result = await this.apiCallHelper.GetListAsync(json);
+            for (var i = 0; i < result.Data.Count; i++)
             {
-                entities[i].PictureUrl = $"{AppSettings.ApiUrl}Picture?file={entities[i].PictureUrl}&folder=Product";
+                var picture = result.Data[i].PictureUrl;
+                result.Data[i].PictureUrl = $"{AppSettings.ApiUrl}Picture?file={picture}&folder=Product";
             }
-            return this.View(entities);
+            return this.Json(result);
         }
 
         public async Task<ActionResult> Details(int id)

@@ -40,7 +40,7 @@
             Task<List<RestaurantDTO>> CacheFactory() => this.GetRestaurantCache(searchModel);
             var data = await this.cache.GetOrAddAsync(this.cacheKey, CacheFactory, this.cacheExpiry);
 
-            return ListResult<RestaurantDTO>.Success(data, this.count);
+            return ListResult<RestaurantDTO>.Success(data, data.Count());
         }
 
         private async Task<List<RestaurantDTO>> GetRestaurantCache(RestaurantDTO searchModel)

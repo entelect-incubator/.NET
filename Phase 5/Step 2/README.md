@@ -8,7 +8,7 @@
 
 [Response Compression](https://docs.microsoft.com/en-us/aspnet/core/performance/response-compression?view=aspnetcore-5.0)
 
-To improve the response time we will be adding compression in. THere is a variety of other things you can do to improve performance. This is just a few things you can do.
+To improve the response time we will be adding compression. There is a variety of other things you can do to improve performance. This is just a few things you can do.
 
 Open up Startup.cs in Pezza.API
 

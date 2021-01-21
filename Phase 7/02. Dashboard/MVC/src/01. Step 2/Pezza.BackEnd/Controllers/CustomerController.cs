@@ -1,14 +1,11 @@
 ﻿namespace Pezza.BackEnd.Controllers
 {
-    using System.Collections.Generic;
+    using System.Linq;
     using System.Net.Http;
-    using System.Text;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Mvc;
     using Newtonsoft.Json;
-    using Pezza.Common;
     using Pezza.Common.DTO;
-    using Pezza.Common.Entities;
     using Pezza.Portal.Helpers;
 
     public class CustomerController : BaseController
@@ -16,20 +13,35 @@
         private readonly ApiCallHelper<CustomerDTO> apiCallHelper;
 
         public CustomerController(IHttpClientFactory clientFactory)
-            :base(clientFactory)
+            : base(clientFactory)
         {
             this.apiCallHelper = new ApiCallHelper<CustomerDTO>(this.clientFactory);
             this.apiCallHelper.ControllerName = "Customer";
         }
 
-        public async Task<ActionResult> Index()
+        public ActionResult Index()
+        {
+            return this.View(new Portal.Models.PagingModel
+            {
+                Limit = 10,
+                Page = 1
+            });
+        }
+
+        public async Task<JsonResult> List(int limit, int page, string orderBy = "Name asc")
         {
             var json = JsonConvert.SerializeObject(new CustomerDTO
             {
-                PagingArgs = Common.Models.PagingArgs.NoPaging
+                OrderBy = orderBy,
+                PagingArgs = new Common.Models.PagingArgs
+                {
+                    Limit = limit,
+                    Offset = (page - 1) * limit,
+                    UsePaging = true
+                }
             });
-            var entities = await this.apiCallHelper.GetListAsync(json);
-            return this.View(entities);
+            var result = await this.apiCallHelper.GetListAsync(json);
+            return this.Json(result);
         }
 
         public IActionResult CreatePartial()

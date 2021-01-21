@@ -66,7 +66,7 @@
         {
             this.databaseContext.Restaurants.Add(this.mapper.Map<Restaurant>(entity));
             await this.databaseContext.SaveChangesAsync();
-
+            this.ClearPageCache();
             return entity;
         }
 
@@ -84,7 +84,7 @@
 
             this.databaseContext.Restaurants.Update(findEntity);
             await this.databaseContext.SaveChangesAsync();
-
+            this.ClearPageCache();
             return this.mapper.Map<RestaurantDTO>(findEntity);
         }
 
@@ -93,7 +93,7 @@
             var entity = await this.databaseContext.Restaurants.FirstOrDefaultAsync(x => x.Id == id);
             this.databaseContext.Restaurants.Remove(entity);
             var result = await this.databaseContext.SaveChangesAsync();
-
+            this.ClearPageCache();
             return result == 1;
         }
     }

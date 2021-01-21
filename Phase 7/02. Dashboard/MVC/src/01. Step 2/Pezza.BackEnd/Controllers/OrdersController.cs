@@ -3,7 +3,6 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Net.Http;
-    using System.Text;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Rendering;
@@ -24,27 +23,29 @@
             this.apiCallHelper.ControllerName = "Order";
         }
 
-        public async Task<ActionResult> Index()
+        public ActionResult Index()
         {
-            var json = JsonConvert.SerializeObject(new OrderDTO
+            return this.View(new Portal.Models.PagingModel
             {
-                Completed = false,
-                PagingArgs = Common.Models.PagingArgs.NoPaging
+                Limit = 10,
+                Page = 1
             });
-            var entities = await this.apiCallHelper.GetListAsync(json);
-            var entitiesByRestaurant = entities.OrderBy(o => o.Restaurant.Name).GroupBy(g => g.Restaurant.Name);
-            var ordersByRestaurant = new Dictionary<string, List<OrderDTO>>();
-            foreach (var restaurant in entitiesByRestaurant)
-            {
-                var tempEntities = new List<OrderDTO>();
-                foreach (var order in restaurant)
-                {
-                    tempEntities.Add(order);
-                }
-                ordersByRestaurant.Add(restaurant.Key, tempEntities);
-            }
+        }
 
-            return this.View(ordersByRestaurant);
+        [HttpPost]
+        public async Task<JsonResult> List(SearchModel<OrderDTO> searchmodel)
+        {
+            var entity = searchmodel.SearchData;
+            entity.OrderBy = searchmodel.OrderBy;
+            entity.PagingArgs = new Common.Models.PagingArgs
+            {
+                Limit = searchmodel.Limit,
+                Offset = (searchmodel.Page - 1) * searchmodel.Limit,
+                UsePaging = true
+            };
+            var json = JsonConvert.SerializeObject(entity);
+            var result = await this.apiCallHelper.GetListAsync(json);
+            return this.Json(result);
         }
 
         public async Task<IActionResult> OrderItem()
@@ -94,7 +95,7 @@
                 ControllerName = "Customer"
             };
             var entities = await apiHelper.GetListAsync(json);
-            return entities.Select(x =>
+            return entities.Data?.Select(x =>
             {
                 return new SelectListItem
                 {
@@ -115,12 +116,12 @@
                 ControllerName = "Restaurant"
             };
             var entities = await apiHelper.GetListAsync(json);
-            for (var i = 0; i < entities.Count; i++)
+            for (var i = 0; i < entities.Data.Count; i++)
             {
-                entities[i].PictureUrl = $"{AppSettings.ApiUrl}Picture?file={entities[i].PictureUrl}&folder=restaurant";
+                entities.Data[i].PictureUrl = $"{AppSettings.ApiUrl}Picture?file={entities.Data[i].PictureUrl}&folder=restaurant";
             }
 
-            return entities.Select(x =>
+            return entities.Data.Select(x =>
             {
                 return new SelectListItem
                 {
@@ -141,15 +142,15 @@
                 ControllerName = "Product"
             };
             var entities = await apiHelper.GetListAsync(json);
-            if (entities.Any())
+            if (entities.Data.Any())
             {
-                for (var i = 0; i < entities.Count; i++)
+                for (var i = 0; i < entities.Data.Count; i++)
                 {
-                    entities[i].PictureUrl = $"{AppSettings.ApiUrl}Picture?file={entities[i].PictureUrl}&folder=Product";
+                    entities.Data[i].PictureUrl = $"{AppSettings.ApiUrl}Picture?file={entities.Data[i].PictureUrl}&folder=Product";
                 }
             }
 
-            return entities.Select(x =>
+            return entities.Data.Select(x =>
             {
                 return new ProductModel
                 {

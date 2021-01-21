@@ -3,6 +3,7 @@
     "outputFileName": "wwwroot/css/bundle.min.css",
     "inputFiles": [
       "wwwroot/css/design-system.min.css",
+      "wwwroot/fonts/fontawesome/css/font-awesome.min.css",
       "wwwroot/css/site.css"
     ],
     "minify": {
