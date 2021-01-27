@@ -37,7 +37,7 @@
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         [Route("Search")]
-        public async Task<ActionResult> Search(RestaurantDTO searchModel)
+        public async Task<ActionResult> Search([FromBody] RestaurantDTO searchModel)
         {
             var result = await this.Mediator.Send(new GetRestaurantsQuery
             {

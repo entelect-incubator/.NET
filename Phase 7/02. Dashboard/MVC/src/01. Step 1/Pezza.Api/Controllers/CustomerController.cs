@@ -21,7 +21,6 @@
         [ProducesResponseType(404)]
         public async Task<ActionResult> GetCustomer(int id)
         {
-            Common.Logging.Logging.LogInfo("ddd", id);
             var result = await this.Mediator.Send(new GetCustomerQuery { Id = id });
             return ResponseHelper.ResponseOutcome<CustomerDTO>(result, this);
         }
@@ -38,7 +37,7 @@
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         [Route("Search")]
-        public async Task<ActionResult> Search(CustomerDTO searchModel)
+        public async Task<ActionResult> Search([FromBody] CustomerDTO searchModel)
         {
             var result = await this.Mediator.Send(new GetCustomersQuery
             {

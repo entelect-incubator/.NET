@@ -16,6 +16,7 @@
 	<link href="./assets/css/design-system.css?v=1.0.0" rel="stylesheet" />
 	<!-- CSS Just for demo purpose, don't include it in your project -->
 	<link href="./assets/demo/demo.css" rel="stylesheet" />
+	<link href="./assets/css/style.css" rel="stylesheet" />
 </head>
 
 <body class="landing-page"
@@ -159,46 +160,70 @@
 					<div class="col-md-6">
 						<div class="card card-register">
 							<div class="card-header">
-								<h4 class="card-title">Contact Us</h4>
+								<h4 class="card-title">Order</h4>
 							</div>
 							<div class="card-body">
-								<form class="form">
-									<div class="input-group">
-										<div class="input-group-prepend">
-											<div class="input-group-text">
-												<i class="tim-icons icon-single-02"></i>
+								<div class="form-group">
+									<div class="row">
+										<div class="col">
+											<label class="label-control">Name</label>
+											<input type="text" name="Name" id="CustomerName" class="form-control" />
+										</div>
+										<div class="col">
+											<label class="label-control">Phone</label>
+											<input type="tel" name="Phone" id="CustomerPhone" class="form-control" />
+										</div>
+									</div>
+									<br />
+								
+									<div class="row">
+										<div class="col">
+											<label class="label-control">Email</label>
+											<input type="email" name="Email" id="CustomerEmail" class="form-control" />
+										</div>
+										<div class="col">
+											<label class="label-control">Contact Person</label>
+											<input type="text" name="ContactPerson" id="CustomerContactPerson"  class="form-control" />
+										</div>
+									</div>
+									<br />
+								
+									<br />
+									<fieldset>
+										<legend>Delivery</legend>
+										<div class="row">
+											<div class="col">
+												<label class="label-control">Street Address</label>
+												<input type="text" name="Address" id="Address" class="form-control" />
 											</div>
 										</div>
-										<input type="text" class="form-control" placeholder="Full Name" />
-									</div>
-									<div class="input-group">
-										<div class="input-group-prepend">
-											<div class="input-group-text">
-												<i class="tim-icons icon-email-85"></i>
+									
+										<div class="row">
+											<div class="col">
+												<label class="label-control">City</label>
+												<select name="City" id="City" class="form-control"></select>
 											</div>
 										</div>
-										<input type="text" placeholder="Email" class="form-control" />
-									</div>
-									<div class="input-group">
-										<div class="input-group-prepend">
-											<div class="input-group-text">
-												<i class="tim-icons icon-lock-circle"></i>
+									
+										<div class="row">
+											<div class="col">
+												<label class="label-control">Province</label>
+												<select name="Address.Province" id="Province" class="form-control"></select>
 											</div>
 										</div>
-										<input type="text" class="form-control" placeholder="Password" />
-									</div>
-									<div class="form-check text-left">
-										<label class="form-check-label">
-											<input class="form-check-input" type="checkbox" />
-											<span class="form-check-sign"></span>
-											I agree to the
-											<a href="javascript:void(0)">terms and conditions</a>.
-										</label>
-									</div>
-								</form>
+									
+										<div class="row">
+											<div class="col-xs-12 col-lg-4">
+												<label class="label-control">ZipCode</label>
+												<input type="number" name="ZipCode" id="AddreZipCodess" class="form-control" />
+											</div>
+										</div>
+										<br />
+									</fieldset>
+								</div>
 							</div>
 							<div class="card-footer">
-								<a href="javascript:void(0)" class="btn btn-default btn-lg pull-right">Get Started</a>
+								<a href="javascript:void(0)" class="btn btn-default btn-lg pull-right">Place your order</a>
 							</div>
 						</div>
 					</div>

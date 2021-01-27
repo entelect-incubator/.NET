@@ -37,7 +37,7 @@
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         [Route("Search")]
-        public async Task<ActionResult> Search(ProductDTO searchModel)
+        public async Task<ActionResult> Search([FromBody] ProductDTO searchModel)
         {
             var result = await this.Mediator.Send(new GetProductsQuery
             {

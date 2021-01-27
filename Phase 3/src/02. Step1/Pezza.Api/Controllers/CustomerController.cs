@@ -28,15 +28,21 @@
         /// <summary>
         /// Get all Customers.
         /// </summary>
-        /// <returns>A <see cref="Task"/> repres
-        /// enting the asynchronous operation.</returns>
+        /// <param name="searchModel">The search model.</param>
+        /// <returns>
+        /// A <see cref="Task" /> repres
+        /// enting the asynchronous operation.
+        /// </returns>
         [HttpPost]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         [Route("Search")]
-        public async Task<ActionResult> Search()
+        public async Task<ActionResult> Search([FromBody] CustomerDTO searchModel)
         {
-            var result = await this.Mediator.Send(new GetCustomersQuery());
+            var result = await this.Mediator.Send(new GetCustomersQuery
+            {
+                SearchModel = searchModel ?? new CustomerDTO()
+            });
             return ResponseHelper.ResponseOutcome<CustomerDTO>(result, this);
         }
 

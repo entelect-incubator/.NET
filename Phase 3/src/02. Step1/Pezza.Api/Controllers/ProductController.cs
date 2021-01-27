@@ -29,14 +29,20 @@
         /// <summary>
         /// Get all Products.
         /// </summary>
-        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        /// <param name="searchModel">The search model.</param>
+        /// <returns>
+        /// A <see cref="Task" /> representing the asynchronous operation.
+        /// </returns>
         [HttpPost]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         [Route("Search")]
-        public async Task<ActionResult> Search()
+        public async Task<ActionResult> Search([FromBody] ProductDTO searchModel)
         {
-            var result = await this.Mediator.Send(new GetProductsQuery());
+            var result = await this.Mediator.Send(new GetProductsQuery
+            {
+                SearchModel = searchModel ?? new ProductDTO()
+            });
             return ResponseHelper.ResponseOutcome<ProductDTO>(result, this);
         }
 
@@ -60,8 +66,13 @@
         [HttpPost]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public async Task<ActionResult<Product>> Create(ProductDTO data)
+        public async Task<ActionResult> Create(ProductDTO data)
         {
+            if (string.IsNullOrEmpty(data.Description))
+            {
+                data.Description = string.Empty;
+            }
+
             if (!string.IsNullOrEmpty(data.ImageData))
             {
                 var imageResult = await MediaHelper.UploadMediaAsync("product", data.ImageData);

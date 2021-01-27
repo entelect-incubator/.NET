@@ -29,14 +29,20 @@
         /// <summary>
         /// Get all Stock.
         /// </summary>
-        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        /// <param name="searchModel">The search model.</param>
+        /// <returns>
+        /// A <see cref="Task" /> representing the asynchronous operation.
+        /// </returns>
         [HttpPost]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         [Route("Search")]
-        public async Task<ActionResult> Search()
+        public async Task<ActionResult> Search([FromBody] StockDTO searchModel)
         {
-            var result = await this.Mediator.Send(new GetStocksQuery());
+            var result = await this.Mediator.Send(new GetStocksQuery
+            {
+                SearchModel = searchModel ?? new StockDTO()
+            });
             return ResponseHelper.ResponseOutcome<StockDTO>(result, this);
         }
 

@@ -136,18 +136,7 @@ Increasing Performance
 - [ ] Domain Events
 - [ ] Simple Email Notification
 
-### **Phase 7**
-
-Now that we have increased the performance lets and an increase of customers we need to secure our website.
-
-Overview
-- [ ] [Security](https://web.microsoftstream.com/video/2a2b5226-34cb-49ac-b8fe-880cb9ac893c?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
-
-Add Security
-- [ ] API Oauth / JWT Token
-- [ ] MVC Antiforgy Tokens
-
-### **Phase 8** UI
+### **Phase 7** UI
 
 Overview
 - [ ] [MVC Part 1](https://web.microsoftstream.com/video/61e64cfa-c3ba-45c3-9811-e5bc25968a2a?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
@@ -159,7 +148,7 @@ We will be building a basic Pizza website for Customers and a basic Admin Back-E
 
 **Pezza Website**
 
-- 
+- [Plain HTML](https://github.com/entelect-incubator/.NET/tree/master/Phase%207/03.%20Website/Html/src)
 - AngularJS - Coming Soon
 - ReactJS - Coming Soon
 
@@ -170,6 +159,17 @@ We will be building a basic Pizza website for Customers and a basic Admin Back-E
 - ReactJS - Coming Soon
  
 [Click here to get started]()
+
+### **Phase 8** Coming Soon
+
+Now that we have increased the performance lets and an increase of customers we need to secure our website.
+
+Overview
+- [ ] [Security](https://web.microsoftstream.com/video/2a2b5226-34cb-49ac-b8fe-880cb9ac893c?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
+
+Add Security
+- [ ] API Oauth / JWT Token
+- [ ] MVC Antiforgy Tokens
   
 ### **Phase 9** - Coming soon
 
