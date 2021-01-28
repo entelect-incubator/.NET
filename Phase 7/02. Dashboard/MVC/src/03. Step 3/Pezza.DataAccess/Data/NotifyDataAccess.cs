@@ -33,7 +33,7 @@
                 searchModel.OrderBy = "DateSent desc";
             }
 
-            var entities = this.databaseContext.Notify.Select(x => x)
+            var entities = this.databaseContext.Notify.Include(x => x.Customer).Select(x => x)
                 .AsNoTracking()
                 .FilterByCustomerId(searchModel.CustomerId)
                 .FilterByEmail(searchModel.Email)

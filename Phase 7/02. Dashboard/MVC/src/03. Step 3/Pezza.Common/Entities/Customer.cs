@@ -26,5 +26,7 @@ namespace Pezza.Common.Entities
         public DateTime DateCreated { get; set; }
 
         public virtual ICollection<Order> Orders { get; set; }
+
+        public virtual ICollection<Notify> Notifies { get; set; }
     }
 }

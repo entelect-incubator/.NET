@@ -45,6 +45,11 @@ namespace Pezza.DataAccess.Map
                 .IsRequired()
                 .HasColumnName("DateSent")
                 .HasColumnType("datetime");
+
+            builder.HasOne(t => t.Customer)
+                .WithMany(t => t.Notifies)
+                .HasForeignKey(d => d.CustomerId)
+                .HasConstraintName("FK_Notify_Customer");
         }
     }
 }

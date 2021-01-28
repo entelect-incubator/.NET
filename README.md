@@ -4,7 +4,7 @@
 
 <br/><br/>
 
-### **Learning Overview?**
+## **What you will be learning?**
 
 - [ ] What is .NET?
 - [ ] Where can I ask for help?
@@ -12,13 +12,17 @@
   - [ ] CRUD System
   - [ ] Handling Background Jobs
   - [ ] Creating an API
-    - [ ] RESTful
-  - [ ] Bulding a Front-End to consume your API - **your choice*
-    - [ ] Blazor or
-    - [ ] React or
-    - [ ] Angular
+    - [ ] RESTful - Web API
+  - [ ] Schedule Background Jobs
+    - [ ] Hangfire
+  - [ ] Building a Front-End to consume your API - **your choice*
+    - [ ] MVC
+    - [ ] HTML & JQuery
+    - [ ] React (Coming Soon!) or
+    - [ ] Angular (Coming Soon!)
 
 ## **Resources**
+
 - [Entelect Stream](https://web.microsoftstream.com/channel/fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
 
 ## **Prerequirements**
@@ -89,7 +93,6 @@ We will be extending the foundation from Phase 1 to all Entities CRUD operations
 Overview
 - [ ] [Working with Data in C#](https://web.microsoftstream.com/channel/fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
 
-
 [Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%202)
 
 ### **Phase 3 - Handling Data**
@@ -106,6 +109,8 @@ Improve how data is displayed and validated
 - [ ] Searching
 - [ ] Pagination
 
+[Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%203)
+
 ### **Phase 4 - Standards and Error Handling**
 
  When we work as part of a team, we usually need to adhere to coding standards. Let's have a look at how we can enforce some of the most basic standards and adding error handling.
@@ -114,6 +119,8 @@ Overview
 - [ ] [Error Handling](https://web.microsoftstream.com/video/5fcd4c8a-4e7b-41ac-9836-d1366da97c82?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
 
 - [ ] Coding Standards
+
+[Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%204)
   
 ### **Phase 5** - Improving Performance
 
@@ -127,6 +134,8 @@ Increasing Performance
 - [ ] Caching
 - [ ] Compression
 
+[Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%205)
+
 ### **Phase 6** - Events
 
 We would like to notify the customer as soon as his order has been completed and ready for collection.
@@ -135,6 +144,10 @@ Increasing Performance
 
 - [ ] Domain Events
 - [ ] Simple Email Notification
+- [ ] Schedule Background Jobs
+  - [ ] Hangfire
+
+[Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%206)
 
 ### **Phase 7** UI
 

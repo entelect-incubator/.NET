@@ -28,11 +28,6 @@
         public async Task<ListResult<OrderDTO>> GetAllAsync(Entity searchBase)
         {
             var searchModel = (OrderDTO)searchBase;
-            if (string.IsNullOrEmpty(searchModel.OrderBy))
-            {
-                searchModel.OrderBy = "DateCreated desc";
-            }
-
             var entities = this.databaseContext.Orders
                 .Include(x => x.OrderItems)
                 .ThenInclude(x => x.Product)
@@ -75,12 +70,8 @@
 
         public async Task<bool> DeleteAsync(int id)
         {
-            var orderItems = await this.databaseContext.OrderItems.Where(x => x.OrderId == id).ToListAsync();
-            this.databaseContext.OrderItems.RemoveRange(orderItems);
-
             var entity = await this.databaseContext.Orders.FirstOrDefaultAsync(x => x.Id == id);
             this.databaseContext.Orders.Remove(entity);
-
             var result = await this.databaseContext.SaveChangesAsync();
 
             return result != 0;

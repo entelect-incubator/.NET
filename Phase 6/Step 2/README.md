@@ -85,7 +85,7 @@ public async Task<Result<OrderDTO>> Handle(UpdateOrderCommand request, Cancellat
 }
 ```
 
-## **Phase 7 - Create UI's**
+## **Step 3 - Background Job Scheduler**
 
-Move to Phase 7
-[Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%207)
+Move to Step 3
+[Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%206/Step%203)

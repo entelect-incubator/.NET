@@ -13,7 +13,7 @@
     using Pezza.Common.Models;
     using Pezza.DataAccess.Contracts;
 
-    public class CustomerDataAccess : IDataAccess<CustomerDTO>
+    public class CustomerDataAccess : IDataAccess<Common.DTO.CustomerDTO>
     {
         private readonly IDatabaseContext databaseContext;
 
@@ -22,12 +22,12 @@
         public CustomerDataAccess(IDatabaseContext databaseContext, IMapper mapper)
             => (this.databaseContext, this.mapper) = (databaseContext, mapper);
 
-        public async Task<CustomerDTO> GetAsync(int id)
-            => this.mapper.Map<CustomerDTO>(await this.databaseContext.Customers.FirstOrDefaultAsync(x => x.Id == id));
+        public async Task<Common.DTO.CustomerDTO> GetAsync(int id)
+            => this.mapper.Map<Common.DTO.CustomerDTO>(await this.databaseContext.Customers.FirstOrDefaultAsync(x => x.Id == id));
 
-        public async Task<ListResult<CustomerDTO>> GetAllAsync(Entity searchBase)
+        public async Task<ListResult<Common.DTO.CustomerDTO>> GetAllAsync(Entity searchBase)
         {
-            var searchModel = (CustomerDTO)searchBase;
+            var searchModel = (Common.DTO.CustomerDTO)searchBase;
             if (string.IsNullOrEmpty(searchModel.OrderBy))
             {
                 searchModel.OrderBy = "DateCreated desc";
@@ -47,20 +47,20 @@
                 .OrderBy(searchModel.OrderBy);
 
             var count = entities.Count();
-            var paged = this.mapper.Map<List<CustomerDTO>>(await entities.ApplyPaging(searchModel.PagingArgs).ToListAsync());
+            var paged = this.mapper.Map<List<Common.DTO.CustomerDTO>>(await entities.ApplyPaging(searchModel.PagingArgs).ToListAsync());
 
-            return ListResult<CustomerDTO>.Success(paged, count);
+            return ListResult<Common.DTO.CustomerDTO>.Success(paged, count);
         }
 
-        public async Task<CustomerDTO> SaveAsync(CustomerDTO entity)
+        public async Task<Common.DTO.CustomerDTO> SaveAsync(Common.DTO.CustomerDTO entity)
         {
-            this.databaseContext.Customers.Add(this.mapper.Map<Customer>(entity));
+            this.databaseContext.Customers.Add(this.mapper.Map<Common.Entities.Customer>(entity));
             await this.databaseContext.SaveChangesAsync();
 
             return entity;
         }
 
-        public async Task<CustomerDTO> UpdateAsync(CustomerDTO entity)
+        public async Task<Common.DTO.CustomerDTO> UpdateAsync(Common.DTO.CustomerDTO entity)
         {
             var findEntity = await this.databaseContext.Customers.FirstOrDefaultAsync(x => x.Id == entity.Id);
             findEntity.Name = !string.IsNullOrEmpty(entity?.Name) ? entity?.Name : findEntity.Name;
@@ -73,7 +73,7 @@
             this.databaseContext.Customers.Update(findEntity);
             await this.databaseContext.SaveChangesAsync();
 
-            return this.mapper.Map<CustomerDTO>(findEntity);
+            return this.mapper.Map<Common.DTO.CustomerDTO>(findEntity);
         }
 
         public async Task<bool> DeleteAsync(int id)

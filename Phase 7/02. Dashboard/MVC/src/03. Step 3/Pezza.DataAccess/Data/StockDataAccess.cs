@@ -68,7 +68,7 @@
             findEntity.Quantity = entity.Quantity ?? findEntity.Quantity;
             findEntity.ExpiryDate = entity.ExpiryDate ?? findEntity.ExpiryDate;
             findEntity.Comment = entity.Comment;
-            this.databaseContext.Stocks.Update(findEntity);
+            this.databaseContext.Stocks.Update(this.mapper.Map<Stock>(entity));
             await this.databaseContext.SaveChangesAsync();
 
             return this.mapper.Map<StockDTO>(findEntity);

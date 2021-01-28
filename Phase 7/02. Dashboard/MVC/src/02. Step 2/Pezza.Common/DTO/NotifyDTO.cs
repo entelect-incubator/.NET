@@ -8,6 +8,8 @@
     {
         public int? CustomerId { get; set; }
 
+        public virtual CustomerDTO Customer { get; set; }
+
         public string Email { get; set; }
 
         public bool? Sent { get; set; }
