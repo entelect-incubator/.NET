@@ -1,0 +1,91 @@
+﻿@model Pezza.Common.DTO.StockDTO
+
+@{
+    ViewBag.Title = "Edit Stock";
+    ViewBag.ActiveMenu = "Stock";
+}
+
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary(true)
+    <div class="form-group">
+        <fieldset>
+            <legend>Edit Stock</legend>
+
+            <div class="form-group">
+                <div class="row">
+                    <div class="col">
+                        <label class="label-control">Name</label>
+                        @Html.TextBoxFor(model => model.Name, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Name)
+                    </div>
+                </div>
+                <br />
+
+                <div class="row">
+                    <div class="col">
+                        <label class="label-control">Quantity</label>
+                        @Html.TextBoxFor(model => model.Quantity, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Quantity)
+                    </div>
+                </div>
+                <br />
+
+                <div class="row">
+                    <div class="col">
+                        <label class="label-control">Value Of Measure i.e 50</label>
+                        @Html.TextBoxFor(model => model.ValueOfMeasure, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.ValueOfMeasure)
+                    </div>
+                    <div class="col">
+                        <label class="label-control">Unit Of Measure i.e Kg</label>
+                        @Html.TextBoxFor(model => model.UnitOfMeasure, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.UnitOfMeasure)
+                    </div>
+                </div>
+                <br />
+
+                <div class="row">
+                    <div class="col">
+                        <label class="label-control">Expiry Date</label>
+                        @Html.TextBoxFor(model => model.ExpiryDate, new { @class = "form-control datepicker" })
+                        @Html.ValidationMessageFor(model => model.ExpiryDate)
+                    </div>
+                </div>
+                <br />
+
+                <div class="row">
+                    <div class="col">
+                        <label class="label-control">Comment</label>
+                        @Html.TextAreaFor(model => model.Comment, new { @class = "form-control " })
+                        @Html.ValidationMessageFor(model => model.Comment)
+                    </div>
+                </div>
+
+                <br />
+                <button class="btn btn-primary pull-right" type="submit">Edit</button>
+            </div>
+        </fieldset>
+    </div>
+}
+@section Scripts
+{
+    <script>
+        "use strict";
+        $(document).ready(function () {
+            $('.datepicker').datetimepicker({
+                icons: {
+                    time: "fa fa-clock-o",
+                    date: "fa fa-calendar",
+                    up: "fa fa-chevron-up",
+                    down: "fa fa-chevron-down",
+                    previous: 'fa fa-chevron-left',
+                    next: 'fa fa-chevron-right',
+                    today: 'fa fa-screenshot',
+                    clear: 'fa fa-trash',
+                    close: 'fa fa-remove'
+                }
+            });
+        });
+    </script>
+}

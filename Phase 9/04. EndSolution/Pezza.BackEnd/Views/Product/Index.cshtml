@@ -1,0 +1,209 @@
+﻿@model Pezza.Portal.Models.PagingModel
+
+@{
+    ViewBag.Title = "Product";
+    ViewBag.ActiveMenu = "Products";
+}
+
+<div>
+    <a class="btn btn-primary" href="/Product/Create">
+        <i class="fa fa-plus" aria-hidden="true"></i>
+        Add
+    </a>
+</div>
+<br />
+<div class="row">
+    <div class="col-6">
+        <div id="loading">Loading...</div>
+    </div>
+    <div class="col-6 text-right">
+        <span id="CountData">0</span> Products
+    </div>
+</div>
+<br />
+<div class="row">
+    <div class="col-12">
+        <div id="cardData"></div>
+    </div>
+</div>
+
+<div id="paginationBar" class="row">
+    <div class="col-12">
+        <div class="btn-group" role="group" aria-label="Basic example">
+            <button id="first" type="button" class="btn btn-secondary">First</button>
+            <button id="prev" type="button" class="btn btn-secondary">Prev</button>
+            <button type="button" class="btn btn-secondary"><span id="pagingData"></span></button>
+            <button id="next" type="button" class="btn btn-secondary">Next</button>
+            <button id="last" type="button" class="btn btn-secondary">Last</button>
+        </div>
+    </div>
+</div>
+
+@await Html.PartialAsync("_Modals")
+
+<input type="hidden" id="Count" />
+<input type="hidden" id="OrderBy" value="Name asc" />
+@Html.HiddenFor(model => model.Limit)
+@Html.HiddenFor(model => model.Page)
+
+@section Scripts
+{
+    <script>
+        "use strict";
+        function remove(id, name) {
+            $('.remove-entity').html('Product');
+            $('.remove-name').html("Are you sure you want to remove " + name);
+            $('#removeId').val(id);
+            $('#confirmationModal').modal('show');
+        }
+
+        function confirmRemove() {
+            $(".alert").hide();
+
+            $('#confirmationModal').modal('hide');
+            var data = { Id: parseInt($('#removeId').val()) };
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Delete", "Product")/' + $('#removeId').val(),
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    if (data == true) {
+                        $.alertInfo('Stock has been removed', function () {
+                            setTimeout(function () { window.location.reload() }, 1500);
+                        });
+                    }
+                    else {
+                        $.alertWarning('Error removing stock');
+                        $("#loading").hide();
+                    }
+                },
+                error: function (error) {
+                    console.log(error);
+                    $.alertWarning('Error removing stock');
+                    $("#loading").hide();
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            loadData();
+
+            $("#first").on("click", function () {
+                var page = 1;
+                $('#Page').val(page);
+                loadData();
+            });
+
+            $("#prev").on("click", function () {
+                var page = parseInt($('#Page').val());
+                if (page > 1) {
+                    page -= 1;
+                    $('#Page').val(page);
+                    loadData();
+                }
+            });
+
+            $("#next").on("click", function () {
+                console.log('next');
+                var page = parseInt($('#Page').val());
+                if (page < parseInt($("#Count").val())) {
+                    page += 1;
+                    $('#Page').val(page);
+                    loadData();
+                }
+            });
+
+            $("#last").on("click", function () {
+                var count = parseInt($("#Count").val());
+                var limit = parseInt($("#Limit").val());
+                var page = Math.round(count / limit);
+                $('#Page').val(page);
+                loadData();
+            });
+
+            function updatePagingData() {
+                var count = parseInt($("#Count").val());
+                var limit = parseInt($("#Limit").val());
+                var page = parseInt($('#Page').val());
+                var lastPage = Math.round(count / limit);
+                if (lastPage == 0 || count <= limit) {
+                    $("#paginationBar").hide();
+                }
+                $("#pagingData").html((lastPage > 0) ? page + "/" + lastPage : page);
+                $("#CountData").html(count);
+            }
+
+            function loadData() {
+                $("#loading").show();
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("List", "Product")?limit=' + parseInt($('#Limit').val()) + '&page=' + parseInt($('#Page').val()),
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (result) {
+                        if (result) {
+                            console.log(result);
+                            $("#Count").val(result.count);
+
+                            var cardBody = '';
+                            if (!result.data) {
+                                $("#loading").hide();
+                                $("#cardData").html('No Product Data');
+                                $("#paginationBar").hide();
+                            }
+                            else if (result.data.length == 0) {
+                                $("#loading").hide();
+                                $("#cardData").html('No Product Data');
+                                $("#paginationBar").hide();
+                            }
+                            else {
+                                for (var i = 0; i < result.data.length; i++) {
+                                    var entity = result.data[i];
+                                    cardBody += ' <div class="card ' + (entity.Special ? " bg-default" : "") + '" style="width: 18rem;float: left; margin-right: 15px;">';
+                                    cardBody += '<img src="' + entity.pictureUrl + '" class="card-img-top" alt="' + entity.name + ' Store Front" />';
+                                    cardBody += '<div class="card-body">';
+                                    cardBody += '<h4 class="card-title">' + entity.name + ' - <small>' + (entity.isActive ? "Available" : "Discontinued") + '</small></h4>';
+                                    cardBody += '<p class="card-text">' + entity.description + ' </p>';
+                                    if (entity.offerEndData) {
+                                        if (entity.offerEndData != '') {
+                                            cardBody += `<p class="card-text">
+                                                            <em>
+                                                                Offer ends on the `+ new Date(entity.offerEndDate).toLocaleDateString() + ` R` + entity.offerPrice + `
+                                                            </em>
+                                                        </p>`;
+                                        }
+                                    }
+                                    cardBody += '<p>Since | ' + new Date(entity.dateCreated).toLocaleDateString() + '</p>';
+                                    cardBody += '<h2>' + entity.price + '</h2>';
+                                    cardBody += `<div class="btn-group" role="group">
+                                        <a rel="tooltip" class="btn btn-info btn-sm edit" href="/Product/Edit/` + entity.id + `">
+                                            <i class="fa fa-wrench" aria-hidden="true"></i>
+                                         </a>
+                                        <button onclick="remove(` + entity.id + `, '` + entity.name + `')" type="button" rel="tooltip" class="btn btn-danger btn-sm remove">
+                                            <i class="fa fa-times" aria-hidden="true"></i>
+                                        </button>
+                                    </div>`
+
+                                    cardBody += '</div>';
+                                    cardBody += '</div>';
+                                }
+
+                                $("#loading").hide();
+                                $("#cardData").html(cardBody);
+                                updatePagingData();
+                            }
+                        }
+                        else {
+                            $("#loading").hide();
+                            $.alertWarning('Error loading Products');
+                        }
+                    },
+                    error: function (error) {
+                        console.log(error);
+                        $("#loading").hide();
+                        $.alertWarning('Error loading Products');
+                    }
+                });
+            }
+        });
+    </script>
+}
