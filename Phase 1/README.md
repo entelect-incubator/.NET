@@ -1,6 +1,6 @@
 <img align="left" width="116" height="116" src="pezza-logo.png" />
 
-# &nbsp;**Pezza - Phase 1**
+# &nbsp;**Pezza - Phase 1** [![.NET Core](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase1-finalsolution.yml/badge.svg?branch=master)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase1-finalsolution.yml)
 
 <br/><br/>
 

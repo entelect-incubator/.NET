@@ -39,10 +39,7 @@
         [Route("Search")]
         public async Task<ActionResult> Search([FromBody] CustomerDTO searchModel)
         {
-            var result = await this.Mediator.Send(new GetCustomersQuery
-            {
-                SearchModel = searchModel ?? new CustomerDTO()
-            });
+            var result = await this.Mediator.Send(new GetCustomersQuery());
             return ResponseHelper.ResponseOutcome<CustomerDTO>(result, this);
         }
 

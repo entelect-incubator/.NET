@@ -40,10 +40,7 @@
         [Route("Search")]
         public async Task<ActionResult> Search([FromBody] NotifyDTO searchModel)
         {
-            var result = await this.Mediator.Send(new GetNotifiesQuery
-            {
-                SearchModel = searchModel ?? new NotifyDTO()
-            });
+            var result = await this.Mediator.Send(new GetNotifiesQuery());
             return ResponseHelper.ResponseOutcome<NotifyDTO>(result, this);
         }
 
