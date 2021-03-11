@@ -1,4 +1,4 @@
-name: .NET Core
+name: .NET Core - Phase 2
 
 on:
   push:
