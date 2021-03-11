@@ -1,4 +1,4 @@
-name: .NET Core - Phase 2
+name: .NET Core - Phase 3 - Start Solution
 
 on:
   push:
