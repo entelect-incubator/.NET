@@ -1,12 +1,12 @@
 <img align="left" width="116" height="116" src="../pezza-logo.png" />
 
-# &nbsp;**Pezza - Phase 3 - Step 1**
+# &nbsp;**Pezza - Phase 3 - Step 1** [![.NET Core - Phase 3 - Step 1](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phas3-step1.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phas3-step1.yml)
 
 <br/><br/>
 
 ## **Install FluentValidation**
 
-THis helps us separate validation rules into separate classes for SOLID principal.
+This helps us separate validation rules into separate classes for SOLID principal.
 
 Install FluentValidation on the Core Project.
 
