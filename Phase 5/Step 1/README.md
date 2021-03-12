@@ -1,6 +1,6 @@
 <img align="left" width="116" height="116" src="../pezza-logo.png" />
 
-# &nbsp;**Pezza - Phase 5 - Step 1**
+# &nbsp;**Pezza - Phase 5 - Step 1** [![.NET Core - Phase 5 - Step 1](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase5-step1.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase5-step1.yml)
 
 <br/><br/>
 
@@ -30,7 +30,7 @@ Add CacheBust property to RestaurantDTO
 public bool BustCache { get; set; } = false;
 ```
 
-This will cache the request to memory if it doesn't exists. When you change anything on the database it will bust the cache.
+This will cache the request to memory if it doesn't exist. When you change anything on the database it will bust the cache.
 
 ```cs
 namespace Pezza.DataAccess.Data
