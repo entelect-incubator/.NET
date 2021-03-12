@@ -1,6 +1,6 @@
 <img align="left" width="116" height="116" src="../pezza-logo.png" />
 
-# &nbsp;**Pezza - Phase 5 - Step 2**
+# &nbsp;**Pezza - Phase 5 - Step 2** [![.NET Core - Phase 5 - Step 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase5-step2.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase5-step2.yml)
 
 <br/><br/>
 
@@ -8,7 +8,7 @@
 
 [Response Compression](https://docs.microsoft.com/en-us/aspnet/core/performance/response-compression?view=aspnetcore-5.0)
 
-To improve the response time we will be adding compression. There is a variety of other things you can do to improve performance. This is just a few things you can do.
+To improve the response time we will be adding compression. There is a variety of other things you can do to improve performance. There are just a few things you can do.
 
 Open up Startup.cs in Pezza.API
 

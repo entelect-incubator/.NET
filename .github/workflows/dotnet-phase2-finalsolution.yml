@@ -1,0 +1,23 @@
+name: .NET Core - Phase 2
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.301
+    - name: Install dependencies
+      run: dotnet restore "./Phase 2/src/02. EndSolution/Pezza.sln"
+    - name: Build
+      run: dotnet build "./Phase 2/src/02. EndSolution/Pezza.sln" --configuration Release --no-restore

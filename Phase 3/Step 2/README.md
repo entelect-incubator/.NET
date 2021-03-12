@@ -1,6 +1,6 @@
 <img align="left" width="116" height="116" src="../pezza-logo.png" />
 
-# &nbsp;**Pezza - Phase 3 - Step 2**
+# &nbsp;**Pezza - Phase 3 - Step 2** [![.NET Core - Phase 3 - Step 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase3-step2.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase3-step2.yml)
 
 <br/><br/>
 
@@ -45,7 +45,7 @@ namespace Pezza.Common.Models
 }
 ```
 
-Add Extensions method in Pezza.Common to do the Pagination. Create a new Folder Extensions in Pezza.Common with Extensions.cs
+Add Extensions method in Pezza.Common to do the Pagination. Create a new Folder Extension in Pezza.Common with Extensions.cs
 
 ```cs
 using System.Linq;
@@ -70,11 +70,11 @@ namespace Park.Common.Extensions
 }
 ```
 
-Every DataDTO in Pezza.Common extend to include OrdeBy and PagingArgs.
+Every DataDTO in Pezza.Common extends to include OrdeBy and PagingArgs.
 
 ![](2021-01-15-07-08-27.png)
 
-Cerate a new ISearchBase.cs in Pezza.Common\Models
+Create a new ISearchBase.cs in Pezza.Common\Models
 
 ```cs
 namespace Pezza.Common.DTO.Data
@@ -137,7 +137,7 @@ public PagingArgs PagingArgs { get; set; }
 
 ### **Add filtering**
 
-Create a Filter class for every entity, these filters uses fluent design for readability. In each filter you create a rule for every property that you want to filter on. If that property has a value it builds up a query before executing it to the database. See it as building up a SQL WHERE clause.
+Create a Filter class for every entity, these filters use fluent design for readability. In each filter, you create a rule for every property that you want to filter on. If that property has a value it builds up a query before executing it to the database. See it as building up a SQL WHERE clause.
 
 Create a CustomerFilter.cs in Pezza.Common Filter
 
@@ -257,7 +257,7 @@ In Pezza.Commmon Models Result.cs add a new Count Property to List Result.
  public int Count { get; set; }
 ```
 
-And the contructor
+And the constructor
 
 ```cs
 internal ListResult(bool succeeded, IEnumerable<T> data, int count, List<string> errors)

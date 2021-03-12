@@ -1,6 +1,6 @@
 <img align="left" width="116" height="116" src="net-logo.svg" />
 
-# &nbsp;**Welcome to the .NET Incubator**
+# &nbsp;**Welcome to the .NET Incubator** [![Twitter Follow](https://img.shields.io/twitter/follow/Entelect.svg?style=social&label=Follow)](https://twitter.com/Entelect)
 
 <br/><br/>
 
@@ -86,6 +86,7 @@ Overview
 
 [Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%201)
 
+[![.NET Core - Phase 1](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase1-finalsolution.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase1-finalsolution.yml)
 ### **Phase 2** Scaffolding
 
 We will be extending the foundation from Phase 1 to all Entities CRUD operations, we will also be moving to use CQRS Pattern and Mediatr NuGet Package.
@@ -94,6 +95,8 @@ Overview
 - [ ] [Working with Data in C#](https://web.microsoftstream.com/channel/fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
 
 [Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%202)
+
+[![.NET Core - Phase 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase2-finalsolution.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase2-finalsolution.yml)
 
 ### **Phase 3 - Handling Data**
 
@@ -111,6 +114,8 @@ Improve how data is displayed and validated
 
 [Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%203)
 
+[![.NET Core - Phase 3 - Step 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase3-step2.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase3-step2.yml)
+
 ### **Phase 4 - Standards and Error Handling**
 
  When we work as part of a team, we usually need to adhere to coding standards. Let's have a look at how we can enforce some of the most basic standards and adding error handling.
@@ -121,6 +126,8 @@ Overview
 - [ ] Coding Standards
 
 [Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%204)
+
+[![.NET Core - Phase 4 - Step 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase4-step2.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase4-step2.yml)
   
 ### **Phase 5** - Improving Performance
 
@@ -136,6 +143,8 @@ Increasing Performance
 
 [Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%205)
 
+[![.NET Core - Phase 5 - Step 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase5-step2.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase5-step2.yml)
+
 ### **Phase 6** - Events
 
 We would like to notify the customer as soon as his order has been completed and ready for collection.
@@ -149,13 +158,15 @@ Increasing Performance
 
 [Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%206)
 
+[![.NET Core - Phase 6 - Step 3](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-step3.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-step3.yml)
+
 ### **Phase 7** UI
 
 Overview
 - [ ] [MVC Part 1](https://web.microsoftstream.com/video/61e64cfa-c3ba-45c3-9811-e5bc25968a2a?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
 - [ ] [MVC Part 2](https://web.microsoftstream.com/video/315b2034-0aa5-43ee-b030-562f4a597cfd?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
 
-We will be building a basic Pizza website for Customers and a basic Admin Back-End. To help us doing this we will using the Pezza Branding Guide & Design System.
+We will be building a basic Pizza website for Customers and a basic Admin Back-End. To help us do this we will use the [Pezza Branding Guide & Design System](https://github.com/entelect-incubator/DesignSystem).
 
 [Documentation](https://web.microsoftstream.com/video/315b2034-0aa5-43ee-b030-562f4a597cfd?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
 

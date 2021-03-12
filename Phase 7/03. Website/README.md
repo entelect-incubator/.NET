@@ -1,17 +1,17 @@
-<img align="left" width="116" height="116" src="../../pezza-logo.png" />
+<img align="left" width="116" height="116" src="../pezza-logo.png" />
 
-# &nbsp;**Pezza - Phase 7 - Dashboard**
+# &nbsp;**Pezza - Phase 7 - Website**
 
 <br/><br/>
 
 ## **Starting Point**
 
-Start with your finished solution from Phase 2 or in Phase 7 > 01. StartSolution
+Start with your finished solution from Phase 7 > 04. API
 
 ### **What are we building?**
 
-A basic Portal for Pezza to manage all their stock, products, orders, customers and restaurant data.
+We will be building a basic Pizza website for Customers to order pizzas on.
 
-## **Choices**
+## **Framework**
 
-- [ ] [MVC](https://github.com/entelect-incubator/.NET/tree/master/Phase%203/02.%20Dashboard/MVC)
+- [ ] [HTML & JQuery](https://github.com/entelect-incubator/.NET/tree/master/Phase%203/02.%20Dashboard/MVC)

@@ -1,6 +1,6 @@
 <img align="left" width="116" height="116" src="../pezza-logo.png" />
 
-# &nbsp;**Pezza - Phase 6 - Step 3**
+# &nbsp;**Pezza - Phase 6 - Step 3** [![.NET Core - Phase 6 - Step 3](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-step3.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-step3.yml)
 
 <br/><br/>
 
@@ -8,9 +8,9 @@
 
 [Hangfire](https://www.hangfire.io/)
 
-An easy way to perform background processing in .NET and .NET Core applications. No Windows Service or separate process required.
+An easy way to perform background processing in .NET and .NET Core applications. No Windows Service or separate process is required.
 
-The benefit of using Hangfire is that it comes with a Dashboard. Hangfire Dashboard is a place where you could find all the information about your background jobs. It is written as an OWIN middleware, so you can plug it into your ASP.NET, ASP.NET MVC, Nancy, ServiceStack application as well as use OWIN Self-Host feature to host Dashboard inside console applications or in Windows Services.
+The benefit of using Hangfire is that it comes with a Dashboard. Hangfire Dashboard is a place where you could find all the information about your background jobs. It is written as an OWIN middleware, so you can plug it into your ASP.NET, ASP.NET MVC, Nancy, ServiceStack application as well as use the OWIN Self-Host feature to host Dashboard inside console applications or in Windows Services.
 
 [Hangfire Dashboard](https://docs.hangfire.io/en/latest/configuration/using-dashboard.html)
 
@@ -62,7 +62,7 @@ services.AddHangfire(config =>
 
 In the above code, the AddHangfire method takes an Action delegate, which passes IGlobalConfiguration of the Hangfire ecosystem to configure the Hangfire.
 
-And here first I will call SetDataCompatibilityLevel method on the IGlobalConfiguration instance passed to set the compatibility to Version_170.
+And here first I will call the SetDataCompatibilityLevel method on the IGlobalConfiguration instance passed to set the compatibility to Version_170.
 
 Next, I will call the UseSimpleAssemblyNameTypeSerializer and UseDefaultTypeSerializer one after the other, to set serialization configuration.
 
@@ -112,7 +112,7 @@ var emailService = new EmailService
 var send = await emailService.SendEmail();
 ```
 
-When calling unsent notifications we want to pull in the customer detail as well. To do this we will need to add a foreging Key to Customers on the Notify Table.
+When calling unsent notifications we want to pull in the customer detail as well. To do this we will need to add a foreign Key to Customers on the Notify Table.
 
 ![](Assets/2021-01-28-08-38-32.png)
 
