@@ -1,4 +1,4 @@
-name: .NET Core - Phase 6 - Step Start Solution
+name: .NET Core - Phase 6 - Start Solution
 
 on:
   push:
