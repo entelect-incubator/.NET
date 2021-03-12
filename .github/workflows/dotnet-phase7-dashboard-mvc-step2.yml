@@ -18,6 +18,6 @@ jobs:
       with:
         dotnet-version: 3.1.301
     - name: Install dependencies
-      run: dotnet restore "./Phase 7/02. Dashboard/MVC/src/03. Step 2/Pezza.sln"
+      run: dotnet restore "./Phase 7/02. Dashboard/MVC/src/02. Step 2/Pezza.sln"
     - name: Build
-      run: dotnet build "./Phase 7/02. Dashboard/MVC/src/03. Step 2/Pezza.sln" --configuration Release --no-restore
+      run: dotnet build "./Phase 7/02. Dashboard/MVC/src/02. Step 2/Pezza.sln" --configuration Release --no-restore
