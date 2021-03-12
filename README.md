@@ -1,6 +1,6 @@
 <img align="left" width="116" height="116" src="net-logo.svg" />
 
-# &nbsp;**Welcome to the .NET Incubator**
+# &nbsp;**Welcome to the .NET Incubator** [![Twitter Follow](https://img.shields.io/twitter/follow/Entelect.svg?style=social&label=Follow)](https://twitter.com/Entelect)
 
 <br/><br/>
 
