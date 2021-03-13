@@ -178,9 +178,11 @@ We will be building a basic Pizza website for Customers and a basic Admin Back-E
 
 **Pezza Admin Back-End**
 
-- MVC - [Click here to get started](https://web.microsoftstream.com/video/315b2034-0aa5-43ee-b030-562f4a597cfd?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
+- MVC - [Click here to get started](https://web.microsoftstream.com/video/315b2034-0aa5-43ee-b030-562f4a597cfd?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9) 
+<br/>[![.NET Core - Phase 7 - Dashboard - MVC](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase7-dashboard-mvc.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase7-dashboard-mvc.yml)
 - AngularJS - Coming Soon
 - ReactJS - Coming Soon
+- 
  
 [Click here to get started]()
 
