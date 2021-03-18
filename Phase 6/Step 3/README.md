@@ -287,7 +287,7 @@ Firstly, I will add the OrderCompleteJob to the dependency injection container i
 
 ```cs
 services.AddSingleton<IOrderCompleteJob, OrderCompleteJob>();
-``
+```
 
 Secondly, I will update the Configure method to take two new parameters. The first one is the IRecurringJobManager necessary for creating a recurring job. And the second one is the IServiceProvider to get the IPrintJob instance from the dependency injection container.
 
