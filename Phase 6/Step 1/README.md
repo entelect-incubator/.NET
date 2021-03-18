@@ -74,4 +74,4 @@ Right-click on OrderCompleted.html and Choose Copy always for Copy to Output.
 ## **STEP 2 - Event**
 
 Move to Step 2
-[Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%202/Step%202) 
+[Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%206/Step%202) 

@@ -3057,5 +3057,5 @@ Complete Customers on your own. If you having any problems with your solution, t
 ## **Step 2 - Pagination & Filtering**
 
 Move to Step 2
-[Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%207/02.%20Dashboard/MVC/step%202)
+[Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%207/02.%20Dashboard/MVC/Step%202)
 
