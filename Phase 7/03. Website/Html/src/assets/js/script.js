@@ -1,4 +1,10 @@
 $(document).ready(function() {
+    //events
+    $("#btnPizza").on("click",function(){
+       console.log('ddd'); 
+    });
+
+
     //products 
     $.ajax({
         type: 'POST',

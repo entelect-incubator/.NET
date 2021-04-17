@@ -8,6 +8,7 @@
     using Microsoft.EntityFrameworkCore;
     using Pezza.Common.DTO;
     using Pezza.Common.Entities;
+    using Pezza.Common.Extensions;
     using Pezza.Common.Models;
     using Pezza.DataAccess.Contracts;
 
@@ -25,10 +26,15 @@
         public async Task<ListResult<RestaurantDTO>> GetAllAsync(Entity searchBase)
         {
             var searchModel = (RestaurantDTO)searchBase;
-            var entities = this.mapper.Map<List<RestaurantDTO>>(await this.databaseContext.Restaurants.Select(x => x).AsNoTracking().ToListAsync());
-            var count = entities.Count();
 
-            return ListResult<RestaurantDTO>.Success(entities, count);
+            var entities = this.databaseContext.Restaurants.Select(x => x)
+                .AsNoTracking()
+                .OrderBy(searchModel.OrderBy);
+
+            var count = entities.Count();
+            var paged = await entities.ApplyPaging(searchModel.PagingArgs).ToListAsync();
+
+            return ListResult<RestaurantDTO>.Success(this.mapper.Map<List<RestaurantDTO>>(paged), count);
         }
 
         public async Task<RestaurantDTO> SaveAsync(RestaurantDTO entity)
