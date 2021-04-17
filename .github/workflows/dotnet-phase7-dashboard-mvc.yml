@@ -16,7 +16,7 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 5.0.20
+        dotnet-version: 5.0.100
     - name: Install dependencies
       run: dotnet restore "./Phase 7/02. Dashboard/MVC/src/03. Step 3/Pezza.sln"
     - name: Build
