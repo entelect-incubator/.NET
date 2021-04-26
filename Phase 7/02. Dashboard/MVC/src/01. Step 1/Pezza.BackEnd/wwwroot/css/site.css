@@ -163,6 +163,10 @@ input[type=checkbox] {
     transform: translate(0,15%);
 }
 
+.field-validation-error {
+    color: #bf2437;
+}
+
 @media (min-width: 768px) {
     .bd-sidebar {
         height: calc(100vh - 4rem);

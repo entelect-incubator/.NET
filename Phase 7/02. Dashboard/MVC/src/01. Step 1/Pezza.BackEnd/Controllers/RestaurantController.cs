@@ -2,6 +2,7 @@
 {
     using System;
     using System.IO;
+    using System.Linq;
     using System.Net.Http;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Mvc;
@@ -50,7 +51,6 @@
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(RestaurantModel restaurant)
         {
-            if (this.ModelState.IsValid)
             {
                 if(string.IsNullOrEmpty(restaurant.Description))
                 {
@@ -66,13 +66,31 @@
                     var fileBytes = ms.ToArray();
                     restaurant.ImageData = $"data:{MimeTypeMap.GetMimeType(Path.GetExtension(restaurant.Image.FileName))};base64,{Convert.ToBase64String(fileBytes)}";
                 }
+                else
+                {
+                    ModelState.AddModelError("Image", "Please select a photo of the restaurant");
+                }
 
                 var result = await this.apiCallHelper.Create(restaurant);
+                if(!result.Succeeded)
+                {
+                    if(this.apiCallHelper.ValidationErrors.Any())
+                    {
+                        foreach(var validation in this.apiCallHelper.ValidationErrors)
+                        {
+                            ModelState.AddModelError(validation.Property, validation.Error);
+                        }
+                    }
+
+                    return this.View(restaurant);
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    return this.View(restaurant);
+                }
+
                 return this.RedirectToAction("Index");
-            }
-            else
-            {
-                return this.View(restaurant);
             }
         }
 

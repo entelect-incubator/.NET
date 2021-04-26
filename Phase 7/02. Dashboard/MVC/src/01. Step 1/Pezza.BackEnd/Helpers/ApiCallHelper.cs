@@ -2,18 +2,23 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Net.Http;
     using System.Net.Http.Headers;
     using System.Text;
     using System.Threading.Tasks;
     using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
     using Pezza.Common;
+    using Pezza.Common.Models;
 
     public class ApiCallHelper<T>
     {
         private readonly IHttpClientFactory clientFactory;
 
         private readonly HttpClient client;
+
+        public List<ValidationError> ValidationErrors;
 
         public string ControllerName { get; set; }
 
@@ -24,6 +29,8 @@
             this.client.BaseAddress = new Uri(AppSettings.ApiUrl);
             this.client.DefaultRequestHeaders.Accept.Clear();
             this.client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            this.ValidationErrors = new List<ValidationError>();
         }
 
         public async Task<List<T>> GetListAsync(string jsonData)
@@ -49,8 +56,9 @@
             return default;
         }
 
-        public async Task<T> Create(T entity)
+        public async Task<Result<T>> Create(T entity)
         {
+            this.ValidationErrors = new List<ValidationError>();
             var json = JsonConvert.SerializeObject(entity);
             var data = new StringContent(json, Encoding.UTF8, "application/json");
 
@@ -58,9 +66,14 @@
             if (responseMessage.StatusCode == System.Net.HttpStatusCode.BadRequest)
             {
                 var responseData = await responseMessage.Content.ReadAsStringAsync();
-                var response = JsonConvert.DeserializeObject<T>(responseData);
+                var response = JsonConvert.DeserializeObject<Result>(responseData);
 
-                return response;
+                this.ValidationErrors = response.Errors.Select(x =>
+                {
+                    return (x as JObject).ToObject<ValidationError>();
+                }).ToList();
+
+                return Result<T>.Failure("ValidationError");
             }
 
             if (responseMessage.IsSuccessStatusCode)
@@ -68,10 +81,10 @@
                 var responseData = await responseMessage.Content.ReadAsStringAsync();
                 var response = JsonConvert.DeserializeObject<T>(responseData);
 
-                return response;
+                return Result<T>.Success(response);
             }
 
-            return default;
+            return Result<T>.Failure("Error");
         }
 
         public async Task<T> Edit(T entity)

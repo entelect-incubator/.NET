@@ -1,18 +1,21 @@
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.ResponseCompression;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Pezza.Common;
-using Pezza.Common.Entities;
-using Pezza.Portal.Helpers;
-
 namespace Pezza.BackEnd
 {
+    using System.Reflection;
+    using System.Threading.Tasks;
+    using FluentValidation;
+    using FluentValidation.AspNetCore;
+    using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.ResponseCompression;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Hosting;
+    using Pezza.Common;
+    using Pezza.Common.Behaviours;
+    using Pezza.Common.Entities;
+    using Pezza.Portal.Helpers;
+
     public class Startup
     {
         public Startup(IHostEnvironment env, IConfiguration configuration)
@@ -43,14 +46,21 @@ namespace Pezza.BackEnd
             });
             services.AddResponseCompression();
 
-            services.AddControllersWithViews();
+            services.AddControllersWithViews()
+                .AddFluentValidation(s =>
+                {
+                    s.RegisterValidatorsFromAssemblyContaining<Startup>();
+                    s.RunDefaultMvcValidationAfterFluentValidationExecutes = false;
+                });
+            services.AddMvc(options =>
+            {
+                options.Filters.Add(typeof(ValidateModelStateAttribute));
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseExceptionHandler(errorApp => errorApp.Run(async context => await this.ErrorHandling(context)));
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -63,6 +73,7 @@ namespace Pezza.BackEnd
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseMiddleware(typeof(ExceptionHandlerMiddleware));
 
             app.UseRouting();
 
@@ -74,18 +85,6 @@ namespace Pezza.BackEnd
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
-        }
-
-        private async Task<HttpContext> ErrorHandling(HttpContext context)
-        {
-            context.Response.StatusCode = 500;
-            context.Response.ContentType = "plain/text";
-
-            var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
-
-            await context.Response.WriteAsync($"An error occurred - {exceptionHandlerPathFeature?.Error?.Message}\r\n");
-
-            return context;
         }
     }
 }
