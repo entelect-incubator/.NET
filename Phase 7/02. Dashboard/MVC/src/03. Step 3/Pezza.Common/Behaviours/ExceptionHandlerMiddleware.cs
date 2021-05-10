@@ -1,4 +1,4 @@
-﻿namespace Pezza.Api.Middleware
+namespace Pezza.Common.Behaviours
 {
     using System;
     using System.Linq;
@@ -7,6 +7,7 @@
     using FluentValidation;
     using Microsoft.AspNetCore.Http;
     using Newtonsoft.Json;
+    using Pezza.Common.Models;
 
     public class ExceptionHandlerMiddleware
     {
@@ -22,40 +23,46 @@
             }
             catch (Exception ex)
             {
+                Logging.Logging.LogException(ex);
+
                 await HandleExceptionAsync(context, ex);
             }
         }
 
         private static Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
-            // Log issues and handle exception response
             if (exception.GetType() == typeof(ValidationException))
             {
                 var errors = ((ValidationException)exception).Errors;
-                if (!errors.Any())
+                if (errors.Any())
                 {
-                    var code = HttpStatusCode.BadRequest;
-                    var result = JsonConvert.SerializeObject(errors.Select(s =>
+                    var failures = errors.Select(x =>
                     {
-                        return new
+                        return new ValidationError
                         {
-                            Field = s.PropertyName.Replace("Data.", string.Empty),
-                            Error = s.ErrorMessage.Replace("Data.", string.Empty)
+                            Property = x.PropertyName.Replace("Data.", string.Empty),
+                            Error = x.ErrorMessage.Replace("Data ", string.Empty)
                         };
-                    }));
+                    });
+                    var result = Result.Failure(failures.ToList<object>());
+                    var code = HttpStatusCode.BadRequest;
+                    var resultJson = JsonConvert.SerializeObject(result);
+
                     context.Response.ContentType = "application/json";
                     context.Response.StatusCode = (int)code;
-                    return context.Response.WriteAsync(result);
+
+                    return context.Response.WriteAsync(resultJson);
                 }
                 else
                 {
-                    var code = HttpStatusCode.InternalServerError;
-                    var result = JsonConvert.SerializeObject(new { isSuccess = false, error = exception.Message });
+                    var code = HttpStatusCode.BadRequest;
+                    var result = Result.Failure(exception?.Message);
+                    var resultJson = JsonConvert.SerializeObject(result);
+
                     context.Response.ContentType = "application/json";
                     context.Response.StatusCode = (int)code;
-                    Common.Logging.Logging.LogException(exception);
 
-                    return context.Response.WriteAsync(result);
+                    return context.Response.WriteAsync(resultJson);
                 }
             }
             else
@@ -64,7 +71,6 @@
                 var result = JsonConvert.SerializeObject(new { isSuccess = false, error = exception.Message });
                 context.Response.ContentType = "application/json";
                 context.Response.StatusCode = (int)code;
-                Common.Logging.Logging.LogException(exception);
 
                 return context.Response.WriteAsync(result);
             }

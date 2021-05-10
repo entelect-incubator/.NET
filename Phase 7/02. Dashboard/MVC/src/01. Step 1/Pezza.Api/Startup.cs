@@ -33,7 +33,7 @@ namespace Pezza.Api
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Title = "Stock API",
+                    Title = "Pezza API",
                     Version = "v1"
                 });
 

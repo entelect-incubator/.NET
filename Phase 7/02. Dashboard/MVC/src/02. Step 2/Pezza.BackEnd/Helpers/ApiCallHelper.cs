@@ -2,12 +2,14 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Net.Http;
     using System.Net.Http.Headers;
     using System.Text;
-    using System.Threading.Tasks;
-    using Pezza.Common;
     using System.Text.Json;
+    using System.Threading.Tasks;
+    using Newtonsoft.Json.Linq;
+    using Pezza.Common;
     using Pezza.Common.Models;
 
     public class ApiCallHelper<T>
@@ -15,6 +17,8 @@
         private readonly IHttpClientFactory clientFactory;
 
         private readonly HttpClient client;
+
+        public List<ValidationError> ValidationErrors;
 
         private readonly JsonSerializerOptions jsonSerializerOptions;
 
@@ -43,7 +47,7 @@
 
             var responseData = await response.Content.ReadAsStringAsync();
 
-            var entities = JsonSerializer.Deserialize<ListOutcome<T>>(responseData, this.jsonSerializerOptions);
+            var entities = System.Text.Json.JsonSerializer.Deserialize<ListOutcome<T>>(responseData, this.jsonSerializerOptions);
             return entities;
         }
 
@@ -53,14 +57,15 @@
             if (responseMessage.IsSuccessStatusCode)
             {
                 var responseData = await responseMessage.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<T>(responseData, this.jsonSerializerOptions);
+                return System.Text.Json.JsonSerializer.Deserialize<T>(responseData, this.jsonSerializerOptions);
             }
 
             return default;
         }
 
-        public async Task<T> Create(T entity)
+        public async Task<Result<T>> Create(T entity)
         {
+            this.ValidationErrors = new List<ValidationError>();
             var json = JsonSerializer.Serialize(entity);
             var data = new StringContent(json, Encoding.UTF8, "application/json");
 
@@ -68,9 +73,14 @@
             if (responseMessage.StatusCode == System.Net.HttpStatusCode.BadRequest)
             {
                 var responseData = await responseMessage.Content.ReadAsStringAsync();
-                var response = JsonSerializer.Deserialize<T>(responseData, this.jsonSerializerOptions);
+                var response = JsonSerializer.Deserialize<Result>(responseData, this.jsonSerializerOptions);
 
-                return response;
+                this.ValidationErrors = response.Errors.Select(x =>
+                {
+                    return (x as JObject).ToObject<ValidationError>();
+                }).ToList();
+
+                return Result<T>.Failure("ValidationError");
             }
 
             if (responseMessage.IsSuccessStatusCode)
@@ -78,26 +88,41 @@
                 var responseData = await responseMessage.Content.ReadAsStringAsync();
                 var response = JsonSerializer.Deserialize<T>(responseData, this.jsonSerializerOptions);
 
-                return response;
+                return Result<T>.Success(response);
             }
 
-            return default;
+            return Result<T>.Failure("Error");
         }
 
-        public async Task<T> Edit(T entity)
+        public async Task<Result<T>> Edit(T entity)
         {
+            this.ValidationErrors = new List<ValidationError>();
             var json = JsonSerializer.Serialize(entity);
             var data = new StringContent(json, Encoding.UTF8, "application/json");
 
             var responseMessage = await this.client.PutAsync(@$"{AppSettings.ApiUrl}{ControllerName}", data);
+            if (responseMessage.StatusCode == System.Net.HttpStatusCode.BadRequest)
+            {
+                var responseData = await responseMessage.Content.ReadAsStringAsync();
+                var response = JsonSerializer.Deserialize<Result>(responseData, this.jsonSerializerOptions);
+
+                this.ValidationErrors = response.Errors.Select(x =>
+                {
+                    return (x as JObject).ToObject<ValidationError>();
+                }).ToList();
+
+                return Result<T>.Failure("ValidationError");
+            }
+
             if (responseMessage.IsSuccessStatusCode)
             {
                 var responseData = await responseMessage.Content.ReadAsStringAsync();
                 var response = JsonSerializer.Deserialize<T>(responseData, this.jsonSerializerOptions);
-                return response;
+
+                return Result<T>.Success(response);
             }
 
-            return default;
+            return Result<T>.Failure("Error");
         }
 
         public async Task<bool> Delete(int id)
@@ -106,7 +131,7 @@
             if (responseMessage.IsSuccessStatusCode)
             {
                 var responseData = await responseMessage.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<bool>(responseData, this.jsonSerializerOptions);
+                return System.Text.Json.JsonSerializer.Deserialize<bool>(responseData, this.jsonSerializerOptions);
             }
 
             return false;

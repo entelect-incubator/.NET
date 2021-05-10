@@ -65,30 +65,33 @@
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(RestaurantModel restaurant)
         {
-            if (this.ModelState.IsValid)
-            {
-                if (string.IsNullOrEmpty(restaurant.Description))
-                {
-                    restaurant.Description = string.Empty;
-                }
-                restaurant.IsActive = true;
-                restaurant.DateCreated = DateTime.Now;
-
-                if (restaurant.Image?.Length > 0)
-                {
-                    using var ms = new MemoryStream();
-                    restaurant.Image.CopyTo(ms);
-                    var fileBytes = ms.ToArray();
-                    restaurant.ImageData = $"data:{MimeTypeMap.GetMimeType(Path.GetExtension(restaurant.Image.FileName))};base64,{Convert.ToBase64String(fileBytes)}";
-                }
-
-                var result = await this.apiCallHelper.Create(restaurant);
-                return this.RedirectToAction("Index");
-            }
-            else
+            if (!this.ModelState.IsValid)
             {
                 return this.View(restaurant);
             }
+
+            if (string.IsNullOrEmpty(restaurant.Description))
+            {
+                restaurant.Description = string.Empty;
+            }
+            restaurant.IsActive = true;
+            restaurant.DateCreated = DateTime.Now;
+
+            if (restaurant.Image?.Length > 0)
+            {
+                using var ms = new MemoryStream();
+                restaurant.Image.CopyTo(ms);
+                var fileBytes = ms.ToArray();
+                restaurant.ImageData = $"data:{MimeTypeMap.GetMimeType(Path.GetExtension(restaurant.Image.FileName))};base64,{Convert.ToBase64String(fileBytes)}";
+            }
+            else
+            {
+                restaurant.PictureUrl = null;
+                ModelState.AddModelError("Image", "Please select a photo of the restaurant");
+            }
+
+            var result = await this.apiCallHelper.Create(restaurant);
+            return Validate<RestaurantDTO>(result, this.apiCallHelper, restaurant);
         }
 
         [Route("Restaurant/Edit/{id?}")]
@@ -133,11 +136,12 @@
             else
             {
                 restaurant.PictureUrl = null;
+                ModelState.AddModelError("Image", "Please select a photo of the restaurant");
             }
 
             restaurant.Id = id;
             var result = await this.apiCallHelper.Edit(restaurant);
-            return this.RedirectToAction("Index");
+            return Validate<RestaurantDTO>(result, this.apiCallHelper, restaurant);
         }
 
         [HttpPost]

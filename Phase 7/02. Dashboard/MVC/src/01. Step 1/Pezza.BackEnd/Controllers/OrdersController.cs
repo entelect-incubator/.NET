@@ -80,7 +80,7 @@
             }
 
             var result = await this.apiCallHelper.Create(order);
-            return this.RedirectToAction("Index");
+            return Validate<OrderDTO>(result, this.apiCallHelper, order);
         }
 
         private async Task<List<SelectListItem>> GetCustomers()
@@ -187,7 +187,7 @@
 
             order.Id = id;
             var result = await this.apiCallHelper.Edit(order);
-            return this.RedirectToAction("Index");
+            return Validate<OrderDTO>(result, this.apiCallHelper, order);
         }
 
         [HttpPost]

@@ -1,12 +1,9 @@
 ﻿namespace Pezza.BackEnd.Controllers
 {
-    using System.Collections.Generic;
     using System.Net.Http;
-    using System.Text;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Mvc;
     using Newtonsoft.Json;
-    using Pezza.Common;
     using Pezza.Common.DTO;
     using Pezza.Portal.Helpers;
 
@@ -38,7 +35,7 @@
                 PagingArgs = new Common.Models.PagingArgs
                 {
                     Limit = limit,
-                    Offset = (page-1) * limit,
+                    Offset = (page - 1) * limit,
                     UsePaging = true
                 }
             });
@@ -61,15 +58,13 @@
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(StockDTO stock)
         {
-            if (this.ModelState.IsValid)
-            {
-                var result = await this.apiCallHelper.Create(stock);
-                return this.RedirectToAction("Index");
-            }
-            else
+            if (!this.ModelState.IsValid)
             {
                 return this.View(stock);
             }
+
+            var result = await this.apiCallHelper.Create(stock);
+            return Validate<StockDTO>(result, this.apiCallHelper, stock);
         }
 
         [Route("Stock/Edit/{id?}")]
@@ -91,7 +86,7 @@
 
             stock.Id = id;
             var result = await this.apiCallHelper.Edit(stock);
-            return this.RedirectToAction("Index");
+            return Validate<StockDTO>(result, this.apiCallHelper, stock);
         }
 
         [HttpPost]

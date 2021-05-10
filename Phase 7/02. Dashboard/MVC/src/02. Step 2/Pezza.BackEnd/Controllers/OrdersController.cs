@@ -81,7 +81,7 @@
             }
 
             var result = await this.apiCallHelper.Create(order);
-            return this.RedirectToAction("Index");
+            return Validate<OrderDTO>(result, this.apiCallHelper, order);
         }
 
         private async Task<List<SelectListItem>> GetCustomers()
@@ -208,7 +208,13 @@
                 DateCreated = null,
                 Completed = true
             });
-            return this.Json(result.Id > 0 ? true : false);
+
+            if(!result.Succeeded)
+            {
+                return this.Json(false);
+            }
+
+            return this.Json(result.Data?.Id > 0 ? true : false);
         }
     }
 }

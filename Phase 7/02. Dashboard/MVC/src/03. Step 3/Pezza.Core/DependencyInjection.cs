@@ -17,9 +17,9 @@ namespace Pezza.Core
         {
             services.AddMediatR(Assembly.GetExecutingAssembly());
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
-            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnhandledExceptionBehaviour<,>));
 
             services.AddTransient(typeof(IDataAccess<OrderDTO>), typeof(OrderDataAccess));
             services.AddTransient(typeof(IDataAccess<StockDTO>), typeof(StockDataAccess));

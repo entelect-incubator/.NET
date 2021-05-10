@@ -9,12 +9,16 @@
     using Pezza.Common;
     using System.Text.Json;
     using Pezza.Common.Models;
+    using System.Linq;
+    using Newtonsoft.Json.Linq;
 
     public class ApiCallHelper<T>
     {
         private readonly IHttpClientFactory clientFactory;
 
         private readonly HttpClient client;
+
+        public List<ValidationError> ValidationErrors;
 
         private readonly JsonSerializerOptions jsonSerializerOptions;
 
@@ -59,8 +63,9 @@
             return default;
         }
 
-        public async Task<T> Create(T entity)
+        public async Task<Result<T>> Create(T entity)
         {
+            this.ValidationErrors = new List<ValidationError>();
             var json = JsonSerializer.Serialize(entity);
             var data = new StringContent(json, Encoding.UTF8, "application/json");
 
@@ -68,36 +73,56 @@
             if (responseMessage.StatusCode == System.Net.HttpStatusCode.BadRequest)
             {
                 var responseData = await responseMessage.Content.ReadAsStringAsync();
-                var response = JsonSerializer.Deserialize<T>(responseData, this.jsonSerializerOptions);
+                var response = JsonSerializer.Deserialize<Result>(responseData, this.jsonSerializerOptions);
 
-                return response;
+                this.ValidationErrors = response.Errors.Select(x =>
+                {
+                    return (x as JObject).ToObject<ValidationError>();
+                }).ToList();
+
+                return Result<T>.Failure("ValidationError");
             }
 
             if (responseMessage.IsSuccessStatusCode)
             {
-                var responseData = await responseMessage.Content.ReadAsStringAsync();
+                var responseData = await responseMessage.Content.ReadAsStringAsync(); 
                 var response = JsonSerializer.Deserialize<T>(responseData, this.jsonSerializerOptions);
 
-                return response;
+                return Result<T>.Success(response);
             }
 
-            return default;
+            return Result<T>.Failure("Error");
         }
 
-        public async Task<T> Edit(T entity)
+        public async Task<Result<T>> Edit(T entity)
         {
+            this.ValidationErrors = new List<ValidationError>();
             var json = JsonSerializer.Serialize(entity);
             var data = new StringContent(json, Encoding.UTF8, "application/json");
 
             var responseMessage = await this.client.PutAsync(@$"{AppSettings.ApiUrl}{ControllerName}", data);
+            if (responseMessage.StatusCode == System.Net.HttpStatusCode.BadRequest)
+            {
+                var responseData = await responseMessage.Content.ReadAsStringAsync();
+                var response = JsonSerializer.Deserialize<Result>(responseData, this.jsonSerializerOptions);
+
+                this.ValidationErrors = response.Errors.Select(x =>
+                {
+                    return (x as JObject).ToObject<ValidationError>();
+                }).ToList();
+
+                return Result<T>.Failure("ValidationError");
+            }
+
             if (responseMessage.IsSuccessStatusCode)
             {
                 var responseData = await responseMessage.Content.ReadAsStringAsync();
                 var response = JsonSerializer.Deserialize<T>(responseData, this.jsonSerializerOptions);
-                return response;
+
+                return Result<T>.Success(response);
             }
 
-            return default;
+            return Result<T>.Failure("Error");
         }
 
         public async Task<bool> Delete(int id)

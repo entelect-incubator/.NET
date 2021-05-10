@@ -1,11 +1,8 @@
 ﻿namespace Pezza.BackEnd.Controllers
 {
     using System;
-    using System.Collections.Generic;
     using System.IO;
-    using System.Linq;
     using System.Net.Http;
-    using System.Text;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Mvc;
     using Newtonsoft.Json;
@@ -67,28 +64,31 @@
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(ProductModel product)
         {
-            if (this.ModelState.IsValid)
-            {
-                if(string.IsNullOrEmpty(product.Description))
-                {
-                    product.Description = string.Empty;
-                }
-
-                if (product.Image?.Length > 0)
-                {
-                    using var ms = new MemoryStream();
-                    product.Image.CopyTo(ms);
-                    var fileBytes = ms.ToArray();
-                    product.ImageData = $"data:{MimeTypeMap.GetMimeType(Path.GetExtension(product.Image.FileName))};base64,{Convert.ToBase64String(fileBytes)}";
-                }
-
-                var result = await this.apiCallHelper.Create(product);
-                return this.RedirectToAction("Index");
-            }
-            else
+            if (!this.ModelState.IsValid)
             {
                 return this.View(product);
             }
+
+            if (string.IsNullOrEmpty(product.Description))
+            {
+                product.Description = string.Empty;
+            }
+
+            if (product.Image?.Length > 0)
+            {
+                using var ms = new MemoryStream();
+                product.Image.CopyTo(ms);
+                var fileBytes = ms.ToArray();
+                product.ImageData = $"data:{MimeTypeMap.GetMimeType(Path.GetExtension(product.Image.FileName))};base64,{Convert.ToBase64String(fileBytes)}";
+            }
+            else
+            {
+                product.PictureUrl = null;
+                ModelState.AddModelError("Image", "Please select a photo of the product");
+            }
+
+            var result = await this.apiCallHelper.Create(product);
+            return Validate<ProductDTO>(result, this.apiCallHelper, product);
         }
 
         [Route("Product/Edit/{id?}")]
@@ -129,11 +129,12 @@
             else
             {
                 product.PictureUrl = null;
+                ModelState.AddModelError("Image", "Please select a photo of the product");
             }
 
             product.Id = id;
             var result = await this.apiCallHelper.Edit(product);
-            return this.RedirectToAction("Index");
+            return Validate<ProductDTO>(result, this.apiCallHelper, product);
         }
 
         [HttpPost]

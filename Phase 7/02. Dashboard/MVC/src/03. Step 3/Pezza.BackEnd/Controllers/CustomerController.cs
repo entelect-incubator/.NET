@@ -62,15 +62,15 @@
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(CustomerDTO Customer)
+        public async Task<ActionResult> Create(CustomerDTO customer)
         {
             if (!this.ModelState.IsValid)
             {
-                return this.View(Customer);
+                return this.View(customer);
             }
 
-            var result = await this.apiCallHelper.Create(Customer);
-            return this.RedirectToAction("Index");
+            var result = await this.apiCallHelper.Create(customer);
+            return Validate<CustomerDTO>(result, this.apiCallHelper, customer);
         }
 
         [Route("Customer/Edit/{id?}")]
@@ -92,7 +92,7 @@
 
             customer.Id = id;
             var result = await this.apiCallHelper.Edit(customer);
-            return this.RedirectToAction("Index");
+            return Validate<CustomerDTO>(result, this.apiCallHelper, customer);
         }
 
         [HttpPost]

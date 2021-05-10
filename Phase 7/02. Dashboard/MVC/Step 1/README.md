@@ -574,7 +574,16 @@ In Startup.cs add
 
 ```cs
 services.AddHttpClient();
+
+services.AddControllersWithViews()
+    .AddFluentValidation(s =>
+    {
+        s.RegisterValidatorsFromAssemblyContaining<Startup>();
+        s.RunDefaultMvcValidationAfterFluentValidationExecutes = false;
+    });
 ```
+
+In the Web.API we are using Fluent Validation for Server Validation. We can automatically map this to ModelState Error in MVC by doing the following. In the BaseController.cs we are adding a Validate function that will check if any errors are retruned from the API Call and automatically mapping the model state errors. The code that you added in Startup automatically registers FluentValidation Assembly for you. 
 
 ```cs
 namespace Pezza.BackEnd.Controllers
@@ -598,6 +607,29 @@ namespace Pezza.BackEnd.Controllers
             this.client.BaseAddress = new Uri(AppSettings.ApiUrl);
             this.client.DefaultRequestHeaders.Accept.Clear();
             this.client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        }
+
+        public ActionResult Validate<T>(Result<T> result, ApiCallHelper<T> apiCallHelper, object model)
+        {
+            if (!result.Succeeded)
+            {
+                if (apiCallHelper.ValidationErrors.Any())
+                {
+                    foreach (var validation in apiCallHelper.ValidationErrors)
+                    {
+                        ModelState.AddModelError(validation.Property, validation.Error);
+                    }
+                }
+
+                return this.View(model);
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return this.View(model);
+            }
+
+            return this.RedirectToAction("Index");
         }
     }
 }
@@ -699,18 +731,25 @@ namespace Pezza.Portal.Helpers
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Net.Http;
     using System.Net.Http.Headers;
     using System.Text;
+    using System.Text.Json;
     using System.Threading.Tasks;
-    using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
     using Pezza.Common;
+    using Pezza.Common.Models;
 
     public class ApiCallHelper<T>
     {
         private readonly IHttpClientFactory clientFactory;
 
         private readonly HttpClient client;
+
+        public List<ValidationError> ValidationErrors;
+
+        private readonly JsonSerializerOptions jsonSerializerOptions;
 
         public string ControllerName { get; set; }
 
@@ -721,16 +760,23 @@ namespace Pezza.Portal.Helpers
             this.client.BaseAddress = new Uri(AppSettings.ApiUrl);
             this.client.DefaultRequestHeaders.Accept.Clear();
             this.client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            this.jsonSerializerOptions = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                IgnoreNullValues = true,
+                MaxDepth = 20
+            };
         }
 
-        public async Task<List<T>> GetListAsync(string jsonData)
+        public async Task<ListOutcome<T>> GetListAsync(string jsonData)
         {
             var data = new StringContent(jsonData, Encoding.UTF8, "application/json");
             var response = await this.client.PostAsync(@$"{AppSettings.ApiUrl}{ControllerName}\Search", data);
 
             var responseData = await response.Content.ReadAsStringAsync();
-            var entities = JsonConvert.DeserializeObject<List<T>>(responseData);
 
+            var entities = System.Text.Json.JsonSerializer.Deserialize<ListOutcome<T>>(responseData, this.jsonSerializerOptions);
             return entities;
         }
 
@@ -740,50 +786,72 @@ namespace Pezza.Portal.Helpers
             if (responseMessage.IsSuccessStatusCode)
             {
                 var responseData = await responseMessage.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<T>(responseData);
+                return System.Text.Json.JsonSerializer.Deserialize<T>(responseData, this.jsonSerializerOptions);
             }
 
             return default;
         }
 
-        public async Task<T> Create(T entity)
+        public async Task<Result<T>> Create(T entity)
         {
-            var json = JsonConvert.SerializeObject(entity);
+            this.ValidationErrors = new List<ValidationError>();
+            var json = JsonSerializer.Serialize(entity);
             var data = new StringContent(json, Encoding.UTF8, "application/json");
 
             var responseMessage = await this.client.PostAsync(@$"{AppSettings.ApiUrl}{ControllerName}", data);
             if (responseMessage.StatusCode == System.Net.HttpStatusCode.BadRequest)
             {
                 var responseData = await responseMessage.Content.ReadAsStringAsync();
-                var response = JsonConvert.DeserializeObject<T>(responseData);
+                var response = JsonSerializer.Deserialize<Result>(responseData, this.jsonSerializerOptions);
 
-                return response;
+                this.ValidationErrors = response.Errors.Select(x =>
+                {
+                    return (x as JObject).ToObject<ValidationError>();
+                }).ToList();
+
+                return Result<T>.Failure("ValidationError");
             }
 
             if (responseMessage.IsSuccessStatusCode)
             {
                 var responseData = await responseMessage.Content.ReadAsStringAsync();
-                var response = JsonConvert.DeserializeObject<T>(responseData);
+                var response = JsonSerializer.Deserialize<T>(responseData, this.jsonSerializerOptions);
 
-                return response;
+                return Result<T>.Success(response);
             }
 
-            return default;
+            return Result<T>.Failure("Error");
         }
 
-        public async Task<T> Edit(T entity)
+        public async Task<Result<T>> Edit(T entity)
         {
-            var json = JsonConvert.SerializeObject(entity);
+            this.ValidationErrors = new List<ValidationError>();
+            var json = JsonSerializer.Serialize(entity);
             var data = new StringContent(json, Encoding.UTF8, "application/json");
 
             var responseMessage = await this.client.PutAsync(@$"{AppSettings.ApiUrl}{ControllerName}", data);
+            if (responseMessage.StatusCode == System.Net.HttpStatusCode.BadRequest)
+            {
+                var responseData = await responseMessage.Content.ReadAsStringAsync();
+                var response = JsonSerializer.Deserialize<Result>(responseData, this.jsonSerializerOptions);
+
+                this.ValidationErrors = response.Errors.Select(x =>
+                {
+                    return (x as JObject).ToObject<ValidationError>();
+                }).ToList();
+
+                return Result<T>.Failure("ValidationError");
+            }
+
             if (responseMessage.IsSuccessStatusCode)
             {
                 var responseData = await responseMessage.Content.ReadAsStringAsync();
-                var response = JsonConvert.DeserializeObject<T>(responseData);
+                var response = JsonSerializer.Deserialize<T>(responseData, this.jsonSerializerOptions);
+
+                return Result<T>.Success(response);
             }
 
-            return default;
+            return Result<T>.Failure("Error");
         }
 
         public async Task<bool> Delete(int id)
@@ -792,7 +860,7 @@ namespace Pezza.Portal.Helpers
             if (responseMessage.IsSuccessStatusCode)
             {
                 var responseData = await responseMessage.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<bool>(responseData);
+                return System.Text.Json.JsonSerializer.Deserialize<bool>(responseData, this.jsonSerializerOptions);
             }
 
             return false;
@@ -800,6 +868,27 @@ namespace Pezza.Portal.Helpers
     }
 }
 
+```
+
+Create ValidateModelStateAttribute in Helpers
+
+```cs
+namespace Pezza.Portal.Helpers
+{
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.Filters;
+
+    public class ValidateModelStateAttribute : ActionFilterAttribute
+    {
+        public override void OnActionExecuting(ActionExecutingContext context)
+        {
+            if (!context.ModelState.IsValid)
+            {
+                context.Result = new BadRequestObjectResult(context.ModelState);
+            }
+        }
+    }
+}
 ```
 
 Create a new StockController
@@ -892,15 +981,13 @@ namespace Pezza.BackEnd.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(StockDTO stock)
         {
-            if (this.ModelState.IsValid)
-            {
-                var result = await this.apiCallHelper.Create(stock);
-                return this.RedirectToAction("Index");
-            }
-            else
+            if (!this.ModelState.IsValid)
             {
                 return this.View(stock);
             }
+
+            var result = await this.apiCallHelper.Create(stock);
+            return Validate<StockDTO>(result, this.apiCallHelper, stock);
         }
 
         [Route("Stock/Edit/{id?}")]
@@ -922,7 +1009,7 @@ namespace Pezza.BackEnd.Controllers
 
             stock.Id = id;
             var result = await this.apiCallHelper.Edit(stock);
-            return this.RedirectToAction("Index");
+            return Validate<StockDTO>(result, this.apiCallHelper, stock);
         }
 
         [HttpPost]
@@ -1026,6 +1113,7 @@ namespace Pezza.BackEnd.Controllers
 {
     using System;
     using System.IO;
+    using System.Linq;
     using System.Net.Http;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Mvc;
@@ -1074,7 +1162,6 @@ namespace Pezza.BackEnd.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(RestaurantModel restaurant)
         {
-            if (this.ModelState.IsValid)
             {
                 if(string.IsNullOrEmpty(restaurant.Description))
                 {
@@ -1090,13 +1177,13 @@ namespace Pezza.BackEnd.Controllers
                     var fileBytes = ms.ToArray();
                     restaurant.ImageData = $"data:{MimeTypeMap.GetMimeType(Path.GetExtension(restaurant.Image.FileName))};base64,{Convert.ToBase64String(fileBytes)}";
                 }
+                else
+                {
+                    ModelState.AddModelError("Image", "Please select a photo of the restaurant");
+                }
 
                 var result = await this.apiCallHelper.Create(restaurant);
-                return this.RedirectToAction("Index");
-            }
-            else
-            {
-                return this.View(restaurant);
+                return Validate<RestaurantDTO>(result, this.apiCallHelper, restaurant);
             }
         }
 
@@ -1142,11 +1229,12 @@ namespace Pezza.BackEnd.Controllers
             else
             {
                 restaurant.PictureUrl = null;
+                ModelState.AddModelError("Image", "Please select a photo of the restaurant");
             }
 
             restaurant.Id = id;
             var result = await this.apiCallHelper.Edit(restaurant);
-            return this.RedirectToAction("Index");
+            return Validate<RestaurantDTO>(result, this.apiCallHelper, restaurant);
         }
 
         [HttpPost]
@@ -1262,7 +1350,7 @@ namespace Pezza.BackEnd.Controllers
             }
 
             var result = await this.apiCallHelper.Create(order);
-            return this.RedirectToAction("Index");
+            return Validate<OrderDTO>(result, this.apiCallHelper, order);
         }
 
         private async Task<List<SelectListItem>> GetCustomers()
@@ -1350,6 +1438,27 @@ namespace Pezza.BackEnd.Controllers
             }).ToList();
         }
 
+        [Route("Order/Edit/{id?}")]
+        public async Task<ActionResult> Edit(int id)
+        {
+            var entity = await this.apiCallHelper.GetAsync(id);
+            return this.View(entity);
+        }
+
+        [HttpPost]
+        [Route("Order/Edit/{id?}")]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Edit(int id, OrderDTO order)
+        {
+            if (!this.ModelState.IsValid)
+            {
+                return this.View(order);
+            }
+
+            order.Id = id;
+            var result = await this.apiCallHelper.Edit(order);
+            return Validate<OrderDTO>(result, this.apiCallHelper, order);
+        }
 
         [HttpPost]
         [Route("Order/Delete/{id?}")]

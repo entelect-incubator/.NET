@@ -61,15 +61,13 @@
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(StockDTO stock)
         {
-            if (this.ModelState.IsValid)
-            {
-                var result = await this.apiCallHelper.Create(stock);
-                return this.RedirectToAction("Index");
-            }
-            else
+            if (!this.ModelState.IsValid)
             {
                 return this.View(stock);
             }
+
+            var result = await this.apiCallHelper.Create(stock);
+            return Validate<StockDTO>(result, this.apiCallHelper, stock);
         }
 
         [Route("Stock/Edit/{id?}")]
@@ -91,7 +89,7 @@
 
             stock.Id = id;
             var result = await this.apiCallHelper.Edit(stock);
-            return this.RedirectToAction("Index");
+            return Validate<StockDTO>(result, this.apiCallHelper, stock);
         }
 
         [HttpPost]

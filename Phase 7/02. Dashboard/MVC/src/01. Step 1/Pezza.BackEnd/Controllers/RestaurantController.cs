@@ -72,25 +72,7 @@
                 }
 
                 var result = await this.apiCallHelper.Create(restaurant);
-                if(!result.Succeeded)
-                {
-                    if(this.apiCallHelper.ValidationErrors.Any())
-                    {
-                        foreach(var validation in this.apiCallHelper.ValidationErrors)
-                        {
-                            ModelState.AddModelError(validation.Property, validation.Error);
-                        }
-                    }
-
-                    return this.View(restaurant);
-                }
-
-                if (!ModelState.IsValid)
-                {
-                    return this.View(restaurant);
-                }
-
-                return this.RedirectToAction("Index");
+                return Validate<RestaurantDTO>(result, this.apiCallHelper, restaurant);
             }
         }
 
@@ -136,11 +118,12 @@
             else
             {
                 restaurant.PictureUrl = null;
+                ModelState.AddModelError("Image", "Please select a photo of the restaurant");
             }
 
             restaurant.Id = id;
             var result = await this.apiCallHelper.Edit(restaurant);
-            return this.RedirectToAction("Index");
+            return Validate<RestaurantDTO>(result, this.apiCallHelper, restaurant);
         }
 
         [HttpPost]
