@@ -5,7 +5,6 @@
     using MediatR;
     using Pezza.Common.DTO;
     using Pezza.Common.Models;
-    using Pezza.Core.Customer.Commands;
     using Pezza.DataAccess.Contracts;
 
     public partial class CreateStockCommand : IRequest<Result<StockDTO>>
@@ -21,9 +20,6 @@
 
         public async Task<Result<StockDTO>> Handle(CreateStockCommand request, CancellationToken cancellationToken)
         {
-            var validator = new CreateStockCommandValidator();
-            var result = validator.Validate(request);
-
             var outcome = await this.dataAcess.SaveAsync(request.Data);
             return (outcome != null) ? Result<StockDTO>.Success(outcome) : Result<StockDTO>.Failure("Error adding a Stock");
         }

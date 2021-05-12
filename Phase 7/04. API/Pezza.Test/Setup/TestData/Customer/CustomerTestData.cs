@@ -9,7 +9,7 @@
     {
         public static Faker faker = new Faker();
 
-        public static CustomerDTO CustomerDTO = new CustomerDTO()
+        public static Common.DTO.CustomerDTO CustomerDTO = new Common.DTO.CustomerDTO()
         {
             ContactPerson = faker.Person.FullName,
             Email = faker.Person.Email,
