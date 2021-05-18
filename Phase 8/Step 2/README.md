@@ -1,6 +1,6 @@
 <img align="left" width="116" height="116" src="../pezza-logo.png" />
 
-# &nbsp;**Pezza - Phase 8 - Step 2** [![.NET Core - Phase 6 - Step 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-step2.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-step2.yml)
+# &nbsp;**Pezza - Phase 8 - Step 2** [![.NET Core - Phase 8 - Step 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase8-step2.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase8-step2.yml)
 
 <br/><br/>
 
@@ -26,6 +26,35 @@ For example
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true)
 ```
+
+In the controllers after [HttpPost] or [HttpPut] make sure you add the following.
+
+```cs
+[ValidateAntiForgeryToken]
+```
+
+For example
+
+```cs
+[HttpPost]
+[ValidateAntiForgeryToken]
+public async Task<ActionResult> Create(StockDTO stock)
+{
+    if (!this.ModelState.IsValid)
+    {
+        return this.View(stock);
+    }
+
+    var result = await this.apiCallHelper.Create(stock);
+    return Validate<StockDTO>(result, this.apiCallHelper, stock);
+}
+```
+
+Run the solution and when inspecting the create or edit screen you should find the following
+
+![](2021-05-18-20-43-14.png)
+
+You are done.
 
 Move to Phase 9
 [Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%209)

@@ -130,4 +130,13 @@ namespace Pezza.Common.Models
 
         public static ListResult<T> Failure(List<object> errors) => new ListResult<T>(false, errors);
     }
+
+    public class ListOutcome<T>
+    {
+        public List<T> Data { get; set; }
+
+        public int Count { get; set; }
+
+        public List<string> Errors { get; set; }
+    }
 }
