@@ -1,0 +1,55 @@
+﻿@model Pezza.Common.DTO.CustomerDTO
+
+@{
+    ViewBag.Title = "Add Customer";
+    ViewBag.ActiveMenu = "Customer";
+}
+
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary(true)
+    @Html.AntiForgeryToken()
+    <div class="form-group">
+        <fieldset>
+            <legend>Add Customer</legend>
+
+            <div class="form-group">
+                <div class="row">
+                    <div class="col">
+                        <label class="label-control">Name</label>
+                        @Html.TextBoxFor(model => model.Name, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Name)
+                    </div>
+                    <div class="col">
+                        <label class="label-control">Phone</label>
+                        @Html.TextBoxFor(model => model.Phone, new { @class = "form-control", type = "tel" })
+                        @Html.ValidationMessageFor(model => model.Phone)
+                    </div>
+                </div>
+                <br />
+
+                <div class="row">
+                    <div class="col">
+                        <label class="label-control">Email</label>
+                        @Html.TextBoxFor(model => model.Email, new { @class = "form-control", type = "email" })
+                        @Html.ValidationMessageFor(model => model.Email)
+                    </div>
+                    <div class="col">
+                        <label class="label-control">Contact Person</label>
+                        @Html.TextBoxFor(model => model.ContactPerson, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.ContactPerson)
+                    </div>
+                </div>
+                <br />
+
+                <br />
+                @{ Html.ViewData.TemplateInfo.HtmlFieldPrefix = "Address"; }
+                @await Html.PartialAsync("_Address", Model.Address)
+                @{ Html.ViewData.TemplateInfo.HtmlFieldPrefix = ""; }
+
+                <br />
+                <button class="btn btn-primary pull-right" type="submit">Create</button>
+            </div>
+        </fieldset>
+    </div>
+}

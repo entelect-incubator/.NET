@@ -1,6 +1,6 @@
 <img align="left" width="116" height="116" src="../pezza-logo.png" />
 
-# &nbsp;**Pezza - Phase 8 - Step 1** [![.NET Core - Phase 8 - Step 1](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-step1.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-step1.yml)
+# &nbsp;**Pezza - Phase 8 - Step 1** [![.NET Core - Phase 8 - Step 1](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase8-step1.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase8-step1.yml)
 
 <br/><br/>
 
@@ -131,7 +131,7 @@ Once, we have enabled the JWT based authentication, I have created a simple Web 
  
 If we call this method without a token, we will get 401 (UnAuthorizedAccess) HTTP status code as a response. If we want to bypass the authentication for any method, we can mark that method with the AllowAnonymous attribute.
 
-![](2021-05-10-21-20-57.png)
+![](Assets/2021-05-10-21-20-57.png)
 
 As a response, we will get the JSON like the following,
 
@@ -193,9 +193,9 @@ services.AddSwaggerGen(c =>
 
 Test Using Swagger
 
-![](2021-05-10-21-49-30.png)
+![](Assets/2021-05-10-21-49-30.png)
 
-![](2021-05-10-21-48-36.png)
+![](Assets/2021-05-10-21-48-36.png)
 
 ## **MVC**
 
@@ -409,4 +409,4 @@ namespace Pezza.Portal.Helpers
 ## **STEP 2 - AntiForgeryToken**
 
 Move to Step 2
-[Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%208/Step%202) 
+[Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%208/Step%202)

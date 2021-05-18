@@ -1,11 +1,15 @@
 ﻿namespace Pezza.Api.Controllers
 {
+    using System.Text.RegularExpressions;
     using System.Threading.Tasks;
+    using HtmlAgilityPack;
     using Microsoft.AspNetCore.Mvc;
     using Pezza.Api.Helpers;
     using Pezza.Common.DTO;
     using Pezza.Core.Customer.Commands;
     using Pezza.Core.Customer.Queries;
+    using SendGrid;
+    using SendGrid.Helpers.Mail;
 
     [ApiController]
     public class CustomerController : ApiController

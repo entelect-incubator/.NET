@@ -613,11 +613,14 @@ namespace Pezza.BackEnd.Controllers
         {
             if (!result.Succeeded)
             {
-                if (apiCallHelper.ValidationErrors.Any())
+                if (apiCallHelper.ValidationErrors != null)
                 {
-                    foreach (var validation in apiCallHelper.ValidationErrors)
+                    if (apiCallHelper.ValidationErrors.Any())
                     {
-                        ModelState.AddModelError(validation.Property, validation.Error);
+                        foreach (var validation in apiCallHelper.ValidationErrors)
+                        {
+                            ModelState.AddModelError(validation.Property, validation.Error);
+                        }
                     }
                 }
 
@@ -804,7 +807,7 @@ namespace Pezza.Portal.Helpers
                 var responseData = await responseMessage.Content.ReadAsStringAsync();
                 var response = JsonSerializer.Deserialize<Result>(responseData, this.jsonSerializerOptions);
 
-                this.ValidationErrors = response.Errors.Select(x =>
+                this.ValidationErrors = response.Errors?.Select(x =>
                 {
                     return (x as JObject).ToObject<ValidationError>();
                 }).ToList();
@@ -835,7 +838,7 @@ namespace Pezza.Portal.Helpers
                 var responseData = await responseMessage.Content.ReadAsStringAsync();
                 var response = JsonSerializer.Deserialize<Result>(responseData, this.jsonSerializerOptions);
 
-                this.ValidationErrors = response.Errors.Select(x =>
+                this.ValidationErrors = response.Errors?.Select(x =>
                 {
                     return (x as JObject).ToObject<ValidationError>();
                 }).ToList();

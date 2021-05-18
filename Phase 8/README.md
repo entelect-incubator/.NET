@@ -1,6 +1,6 @@
 <img align="left" width="116" height="116" src="pezza-logo.png" />
 
-# &nbsp;**Pezza - Phase 8** [![.NET Core - Phase 6 - Start Solution](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-startsolution.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-startsolution.yml)
+# &nbsp;**Pezza - Phase 8** [![.NET Core - Phase 8 - Start Solution](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase8-startsolution.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase8-startsolution.yml)
 
 <br/><br/>
 
@@ -17,5 +17,4 @@ ASP.NET Core enables developers to easily configure and manage security for thei
 ## **Steps**
 
 - [ ] [Step 1 - Authentication](https://github.com/entelect-incubator/.NET/tree/master/Phase%208/Step%201)
-- [ ] [Step 2 - Event](https://github.com/entelect-incubator/.NET/tree/master/Phase%206/Step%202)
-- [ ]  [Step 3 - Background Scheduler](https://github.com/entelect-incubator/.NET/tree/master/Phase%206/Step%203)
+- [ ] [Step 2 - AntiForgery Token](https://github.com/entelect-incubator/.NET/tree/master/Phase%208/Step%202)
