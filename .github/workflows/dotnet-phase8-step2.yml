@@ -1,0 +1,23 @@
+name: .NET Core - Phase 8 - Step 2
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.100
+    - name: Install dependencies
+      run: dotnet restore "./Phase 8/src/02. Step 2/Pezza.sln"
+    - name: Build
+      run: dotnet build "./Phase 8/src/02. Step 2/Pezza.sln" --configuration Release --no-restore
