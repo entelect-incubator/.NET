@@ -38,7 +38,7 @@ namespace Pezza.Common.Behaviours
                 {
                     var failures = errors.Select(x =>
                     {
-                        return new
+                        return new ValidationError
                         {
                             Property = x.PropertyName.Replace("Data.", string.Empty),
                             Error = x.ErrorMessage.Replace("Data ", string.Empty)

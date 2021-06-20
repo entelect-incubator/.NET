@@ -6,7 +6,7 @@
 
 ## **Starting Point**
 
-Start with your finished solution from Phase 7 > 04. API
+Start with your finished solution from Phase 7 > 04. API [![.NET Core - Phase 7 - API](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase7-api.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase7-api.yml)
 
 ### **What are we building?**
 

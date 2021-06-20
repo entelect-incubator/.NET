@@ -28,6 +28,13 @@
                     var html = File.ReadAllText(path);
 
                     html = html.Replace("<%% ORDER %%>", notification.CompletedOrder.Id.ToString());
+                    var emailService = new EmailService
+                    {
+                        Customer = notification.CompletedOrder?.Customer,
+                        HtmlContent = html
+                    };
+
+                    var send = await emailService.SendEmail();
                     if (notification.CompletedOrder.CustomerId.HasValue)
                     {
                         var customer = await this.mediator.Send(new GetCustomerQuery { Id = notification.CompletedOrder.CustomerId.Value });
@@ -39,8 +46,8 @@
                                 {
                                     CustomerId = customer.Data.Id,
                                     DateSent = DateTime.Now,
-                                    Email = html,
-                                    Sent = false,
+                                    Email = customer.Data.Email,
+                                    Sent = send.Succeeded,
                                     Retry = 0
                                 }
                             });

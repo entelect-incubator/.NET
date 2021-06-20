@@ -8,7 +8,6 @@ namespace Pezza.Scheduler
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
-    using Pezza.Common.Behaviours;
     using Pezza.Core;
     using Pezza.DataAccess;
     using Pezza.DataAccess.Contracts;
@@ -52,7 +51,6 @@ namespace Pezza.Scheduler
                 );
 
             app.UseHangfireDashboard();
-            app.UseMiddleware(typeof(ExceptionHandlerMiddleware));
 
             if (env.IsDevelopment())
             {
