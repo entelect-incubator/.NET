@@ -31,6 +31,7 @@
                             <input type="file" name="Image" id="Image" class="form-control custom-file-input rounded-pill" />
                             <label for="customFile" class="custom-file-label rounded-pill">Choose file</label>
                         </div>
+                        @Html.ValidationMessageFor(model => model.Image)
                     </div>
                 </div>
 

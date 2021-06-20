@@ -33,10 +33,10 @@
             var entities = await this.apiCallHelper.GetListAsync(json);
             for (var i = 0; i < entities.Count; i++)
             {
-                var picture = entities[i].PictureUrl;
-                entities[i].PictureUrl = $"{AppSettings.ApiUrl}Picture?file={picture}&folder=restaurant";
+                var picture = entities.Data[i].PictureUrl;
+                entities.Data[i].PictureUrl = $"{AppSettings.ApiUrl}Picture?file={picture}&folder=restaurant";
             }
-            return this.View(entities);
+            return this.View(entities.Data);
         }
 
         public async Task<ActionResult> Details(int id)
@@ -114,11 +114,6 @@
                 restaurant.Image.CopyTo(ms);
                 var fileBytes = ms.ToArray();
                 restaurant.ImageData = $"data:{MimeTypeMap.GetMimeType(Path.GetExtension(restaurant.Image.FileName))};base64,{Convert.ToBase64String(fileBytes)}";
-            }
-            else
-            {
-                restaurant.PictureUrl = null;
-                ModelState.AddModelError("Image", "Please select a photo of the restaurant");
             }
 
             restaurant.Id = id;

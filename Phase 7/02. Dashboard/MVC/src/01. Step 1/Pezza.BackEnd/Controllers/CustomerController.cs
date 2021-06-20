@@ -29,7 +29,7 @@
                 PagingArgs = Common.Models.PagingArgs.NoPaging
             });
             var entities = await this.apiCallHelper.GetListAsync(json);
-            return this.View(entities);
+            return this.View(entities.Data);
         }
 
         public IActionResult CreatePartial()

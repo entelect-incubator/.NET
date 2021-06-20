@@ -34,9 +34,9 @@
             var entities = await this.apiCallHelper.GetListAsync(json);
             for (var i = 0; i < entities.Count; i++)
             {
-                entities[i].PictureUrl = $"{AppSettings.ApiUrl}Picture?file={entities[i].PictureUrl}&folder=Product";
+                entities.Data[i].PictureUrl = $"{AppSettings.ApiUrl}Picture?file={entities.Data[i].PictureUrl}&folder=Product";
             }
-            return this.View(entities);
+            return this.View(entities.Data);
         }
 
         public async Task<ActionResult> Details(int id)
@@ -111,11 +111,6 @@
                 product.Image.CopyTo(ms);
                 var fileBytes = ms.ToArray();
                 product.ImageData = $"data:{MimeTypeMap.GetMimeType(Path.GetExtension(product.Image.FileName))};base64,{Convert.ToBase64String(fileBytes)}";
-            }
-            else
-            {
-                product.PictureUrl = null;
-                ModelState.AddModelError("Image", "Please select a photo of the product");
             }
 
             product.Id = id;

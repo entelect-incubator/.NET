@@ -3,7 +3,6 @@ namespace Pezza.Api
     using System;
     using System.IO;
     using System.Reflection;
-    using AutoMapper;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.ResponseCompression;
@@ -33,7 +32,7 @@ namespace Pezza.Api
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Title = "Pezza API",
+                    Title = "Stock API",
                     Version = "v1"
                 });
 

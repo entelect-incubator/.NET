@@ -106,7 +106,7 @@
                 var responseData = await responseMessage.Content.ReadAsStringAsync();
                 var response = JsonSerializer.Deserialize<Result>(responseData, this.jsonSerializerOptions);
 
-                this.ValidationErrors = response.Errors.Select(x =>
+                this.ValidationErrors = response.Errors?.Select(x =>
                 {
                     return (x as JObject).ToObject<ValidationError>();
                 }).ToList();

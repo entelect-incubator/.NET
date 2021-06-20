@@ -83,11 +83,6 @@
                 var fileBytes = ms.ToArray();
                 product.ImageData = $"data:{MimeTypeMap.GetMimeType(Path.GetExtension(product.Image.FileName))};base64,{Convert.ToBase64String(fileBytes)}";
             }
-            else
-            {
-                product.PictureUrl = null;
-                ModelState.AddModelError("Image", "Please select a photo of the product");
-            }
 
             var result = await this.apiCallHelper.Create(product);
             return Validate<ProductDTO>(result, this.apiCallHelper, product);

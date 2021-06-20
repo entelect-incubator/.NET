@@ -615,7 +615,7 @@ namespace Pezza.BackEnd.Controllers
             {
                 if (apiCallHelper.ValidationErrors != null)
                 {
-                    if (apiCallHelper.ValidationErrors.Any())
+                    if (apiCallHelper.ValidationErrors?.Count > 0)
                     {
                         foreach (var validation in apiCallHelper.ValidationErrors)
                         {
@@ -1228,11 +1228,6 @@ namespace Pezza.BackEnd.Controllers
                 restaurant.Image.CopyTo(ms);
                 var fileBytes = ms.ToArray();
                 restaurant.ImageData = $"data:{MimeTypeMap.GetMimeType(Path.GetExtension(restaurant.Image.FileName))};base64,{Convert.ToBase64String(fileBytes)}";
-            }
-            else
-            {
-                restaurant.PictureUrl = null;
-                ModelState.AddModelError("Image", "Please select a photo of the restaurant");
             }
 
             restaurant.Id = id;

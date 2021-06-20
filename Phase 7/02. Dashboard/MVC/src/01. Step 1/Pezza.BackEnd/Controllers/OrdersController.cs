@@ -32,7 +32,7 @@
                 PagingArgs = Common.Models.PagingArgs.NoPaging
             });
             var entities = await this.apiCallHelper.GetListAsync(json);
-            var entitiesByRestaurant = entities.OrderBy(o => o.Restaurant.Name).GroupBy(g => g.Restaurant.Name);
+            var entitiesByRestaurant = entities.Data?.OrderBy(o => o.Restaurant.Name).GroupBy(g => g.Restaurant.Name);
             var ordersByRestaurant = new Dictionary<string, List<OrderDTO>>();
             foreach (var restaurant in entitiesByRestaurant)
             {
@@ -94,7 +94,7 @@
                 ControllerName = "Customer"
             };
             var entities = await apiHelper.GetListAsync(json);
-            return entities.Select(x =>
+            return entities.Data.Select(x =>
             {
                 return new SelectListItem
                 {
@@ -117,10 +117,10 @@
             var entities = await apiHelper.GetListAsync(json);
             for (var i = 0; i < entities.Count; i++)
             {
-                entities[i].PictureUrl = $"{AppSettings.ApiUrl}Picture?file={entities[i].PictureUrl}&folder=restaurant";
+                entities.Data[i].PictureUrl = $"{AppSettings.ApiUrl}Picture?file={entities.Data[i].PictureUrl}&folder=restaurant";
             }
 
-            return entities.Select(x =>
+            return entities.Data?.Select(x =>
             {
                 return new SelectListItem
                 {
@@ -141,15 +141,15 @@
                 ControllerName = "Product"
             };
             var entities = await apiHelper.GetListAsync(json);
-            if (entities.Any())
+            if (entities.Data.Any())
             {
                 for (var i = 0; i < entities.Count; i++)
                 {
-                    entities[i].PictureUrl = $"{AppSettings.ApiUrl}Picture?file={entities[i].PictureUrl}&folder=Product";
+                    entities.Data[i].PictureUrl = $"{AppSettings.ApiUrl}Picture?file={entities.Data[i].PictureUrl}&folder=Product";
                 }
             }
 
-            return entities.Select(x =>
+            return entities.Data?.Select(x =>
             {
                 return new ProductModel
                 {

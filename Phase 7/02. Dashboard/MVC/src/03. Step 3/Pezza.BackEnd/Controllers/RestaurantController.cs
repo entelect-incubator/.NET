@@ -133,11 +133,6 @@
                 var fileBytes = ms.ToArray();
                 restaurant.ImageData = $"data:{MimeTypeMap.GetMimeType(Path.GetExtension(restaurant.Image.FileName))};base64,{Convert.ToBase64String(fileBytes)}";
             }
-            else
-            {
-                restaurant.PictureUrl = null;
-                ModelState.AddModelError("Image", "Please select a photo of the restaurant");
-            }
 
             restaurant.Id = id;
             var result = await this.apiCallHelper.Edit(restaurant);

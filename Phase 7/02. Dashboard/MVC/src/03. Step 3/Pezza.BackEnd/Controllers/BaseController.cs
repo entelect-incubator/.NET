@@ -28,7 +28,7 @@
         {
             if (!result.Succeeded)
             {
-                if (apiCallHelper.ValidationErrors.Any())
+                if (apiCallHelper.ValidationErrors?.Count > 0)
                 {
                     foreach (var validation in apiCallHelper.ValidationErrors)
                     {

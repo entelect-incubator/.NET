@@ -20,6 +20,58 @@ Install FluentValidation on the Core Project.
 
 For every Command create a CommandNamevalidator.cs, because you only want to validate the data that gets send into the Command.
 
+Create AddressValidator.cs in Pezza.COmmon/Validators
+
+```cs
+namespace Pezza.Common.Validators
+{
+    using FluentValidation;
+    using Pezza.Common.Entities;
+
+    public class AddressValidator : AbstractValidator<AddressBase>
+    {
+        public AddressValidator()
+        {
+            this.RuleFor(x => x.Address)
+            .NotEmpty()
+            .MaximumLength(500);
+
+            this.RuleFor(x => x.City)
+            .NotEmpty()
+            .MaximumLength(100);
+
+            this.RuleFor(x => x.Province)
+            .NotEmpty()
+            .MaximumLength(100);
+
+            this.RuleFor(x => x.ZipCode)
+            .NotEmpty()
+            .Must(x => int.TryParse(x, out var val) && val > 0)
+            .MaximumLength(8);
+        }
+    }
+
+    public class AddressUpdateValidator : AbstractValidator<AddressBase>
+    {
+        public AddressUpdateValidator()
+        {
+            this.RuleFor(x => x.Address)
+            .MaximumLength(500);
+
+            this.RuleFor(x => x.City)
+            .MaximumLength(100);
+
+            this.RuleFor(x => x.Province)
+            .MaximumLength(100);
+
+            this.RuleFor(x => x.ZipCode)
+            .Must(x => int.TryParse(x, out var val) && val > 0)
+            .MaximumLength(8);
+        }
+    }
+}
+```
+
 Let's start with creating Validators for Customer Commands.
 
 Add a new class in Customer/Commands CreateCustomerCommandValidator.cs
