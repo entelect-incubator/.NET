@@ -1,4 +1,4 @@
-﻿namespace Pezza.Test
+﻿namespace Pezza.Test.Setup.TestData.Stock
 {
     using System;
     using Bogus;

@@ -9,9 +9,9 @@
 
     public class StockDataAccess : IStockDataAccess
     {
-        private readonly IDatabaseContext databaseContext;
+        private readonly DatabaseContext databaseContext;
 
-        public StockDataAccess(IDatabaseContext databaseContext) 
+        public StockDataAccess(DatabaseContext databaseContext) 
             => this.databaseContext = databaseContext;
 
         public async Task<Common.Entities.Stock> GetAsync(int id)

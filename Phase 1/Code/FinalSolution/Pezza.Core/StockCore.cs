@@ -1,10 +1,10 @@
 ﻿namespace Pezza.Core
 {
-    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using AutoMapper;
     using Pezza.Common.DTO;
-    using Pezza.Common.Mapping;
+    using Pezza.Common.Entities;
     using Pezza.Core.Contracts;
     using Pezza.DataAccess.Contracts;
 
@@ -12,73 +12,53 @@
     {
         private readonly IStockDataAccess dataAcess;
 
+        private readonly IMapper mapper;
+
         public StockCore(IStockDataAccess dataAcess) => this.dataAcess = dataAcess;
 
         public async Task<StockDTO> GetAsync(int id)
         {
             var search = await this.dataAcess.GetAsync(id);
 
-            return search.Map();
+            return this.mapper.Map<StockDTO>(search);
         }
 
         public async Task<IEnumerable<StockDTO>> GetAllAsync()
         {
             var search = await this.dataAcess.GetAllAsync();
 
-            return search.Map();
+            return this.mapper.Map<List<StockDTO>>(search);
         }
 
-        public async Task<StockDTO> SaveAsync(StockDTO model)
+        public async Task<StockDTO> SaveAsync(Stock model)
         {
 
-            var outcome = await this.dataAcess.SaveAsync(model.Map());
+            var outcome = await this.dataAcess.SaveAsync(model);
 
-            return outcome.Map();
+            return this.mapper.Map<StockDTO>(outcome);
         }
 
         public async Task<StockDTO> UpdateAsync(StockDTO model)
         {
 
-            var entity = await this.dataAcess.GetAsync(model.Id);
+            var entity = await this.dataAcess.GetAsync(model.Id);            
 
-            if (!string.IsNullOrEmpty(model.Name))
-            {
-                entity.Name = model.Name;
-            }
-
-            if (!string.IsNullOrEmpty(model.UnitOfMeasure))
-            {
-                entity.UnitOfMeasure = model.UnitOfMeasure;
-            }
-
-            if (model.ValueOfMeasure.HasValue)
-            {
-                entity.ValueOfMeasure = model.ValueOfMeasure;
-            }
-
-            if (model.Quantity.HasValue)
-            {
-                entity.Quantity = model.Quantity.Value;
-            }
-
-            if (model.ExpiryDate.HasValue)
-            {
-                entity.ExpiryDate = model.ExpiryDate;
-            }
-
-            if (!string.IsNullOrEmpty(model.Comment))
-            {
-                entity.Comment = model.Comment;
-            }
+            entity.Name = !string.IsNullOrEmpty(model.Name) ? model.Name : entity.Name;
+            entity.UnitOfMeasure = !string.IsNullOrEmpty(model.UnitOfMeasure) ? model.UnitOfMeasure : entity.UnitOfMeasure;
+            entity.UnitOfMeasure = !string.IsNullOrEmpty(model.UnitOfMeasure) ? model.UnitOfMeasure : entity.UnitOfMeasure;
+            entity.ValueOfMeasure = (model.ValueOfMeasure.HasValue) ? model.ValueOfMeasure : entity.ValueOfMeasure;
+            entity.Quantity = (model.Quantity.HasValue) ? model.Quantity.Value : entity.Quantity;
+            entity.ExpiryDate = (model.ExpiryDate.HasValue) ? model.ExpiryDate : entity.ExpiryDate;
+            entity.Comment = (!string.IsNullOrEmpty(model.Comment)) ? model.Comment : entity.Comment;
 
             var outcome = await this.dataAcess.UpdateAsync(entity);
-            return outcome.Map();
+            return this.mapper.Map<StockDTO>(outcome);
         }
 
         public async Task<bool> DeleteAsync(int id)
         {
-            var outcome = await this.dataAcess.DeleteAsync(id); 
-            
+            var outcome = await this.dataAcess.DeleteAsync(id);
+
             return outcome;
         }
     }

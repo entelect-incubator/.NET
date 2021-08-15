@@ -1,11 +1,9 @@
 ﻿namespace Pezza.Api.Controllers
 {
-    using System;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Mvc;
     using Pezza.Common.DTO;
     using Pezza.Common.Entities;
-    using Pezza.Core;
     using Pezza.Core.Contracts;
 
     [ApiController]
@@ -26,12 +24,8 @@
         public async Task<ActionResult> Get(int id)
         {
             var search = await this.StockCore.GetAsync(id);
-            if (search == null)
-            {
-                return this.NotFound();
-            }
 
-            return this.Ok(search);
+            return (search == null) ? this.NotFound() : this.Ok(search);
         }
 
         /// <summary>
@@ -64,15 +58,11 @@
         [HttpPost]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public async Task<ActionResult<Stock>> Create([FromBody] StockDTO stock)
+        public async Task<ActionResult<Stock>> Create([FromBody] Stock stock)
         {
             var result = await this.StockCore.SaveAsync(stock);
-            if (result == null)
-            {
-                return this.BadRequest();
-            }
 
-            return this.Ok(result);
+            return (result == null) ? this.BadRequest() : this.Ok(result);
         }
 
         /// <summary>
@@ -94,12 +84,8 @@
         public async Task<ActionResult> Update(int id, [FromBody] StockDTO stock)
         {
             var result = await this.StockCore.UpdateAsync(stock);
-            if (result == null)
-            {
-                return this.BadRequest();
-            }
 
-            return this.Ok(result);
+            return (result == null) ? this.BadRequest() : this.Ok(result);
         }
 
         /// <summary>
@@ -112,12 +98,8 @@
         public async Task<ActionResult> Delete(int id)
         {
             var result = await this.StockCore.DeleteAsync(id);
-            if (!result)
-            {
-                return this.BadRequest();
-            }
 
-            return this.Ok(result);
+            return (!result) ? this.BadRequest() : this.Ok(result);
         }
     }
 }
