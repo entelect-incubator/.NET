@@ -1,4 +1,4 @@
-<img align="left" width="116" height="116" src="net-logo.svg" />
+<img align="left" width="116" height="116" src="./Assets/net-logo.svg" />
 
 # &nbsp;**Welcome to the .NET Incubator** [![Twitter Follow](https://img.shields.io/twitter/follow/Entelect.svg?style=social&label=Follow)](https://twitter.com/Entelect)
 
@@ -17,20 +17,21 @@
     - [ ] Hangfire
   - [ ] Building a Front-End to consume your API - **your choice*
     - [ ] MVC
-    - [ ] HTML & JQuery
-    - [ ] React (Coming Soon!) or
-    - [ ] Angular (Coming Soon!)
+    - [ ] ASP.NET
+    - [ ] JS Libraries (Coming Soon!)
 
-## **Resources**
-
+## **Resource
 - [Entelect Stream](https://web.microsoftstream.com/channel/fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
 
 ## **Prerequirements**
 
 - [ ] .NET Fundamentals - [Read more...](https://github.com/entelect-incubator/.Net/tree/master/Fundamentals)
 - [ ] .NET Overview - [Read more...](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/?view=aspnetcore-3.1&tabs=windows)
+- [ ] Coding Standards - [9 Coding Standards](https://blog.submain.com/coding-standards-c-developers-need/)
+- [ ] Coding Standards - [Coding Guidelines And Best Practices](https://www.c-sharpcorner.com/blogs/c-sharp-coding-guidelines-and-best-practices-v10)
+- [ ] Only extra coding standard for this incubator is that we prefer Usings inside of the namespace for a variety of reasons.
 
-For this Incubator we will be using [.NET Core 3.1](https://dotnet.microsoft.com/download) - Scan through the basic concepts.
+For this Incubator we will be using [.NET 5](https://dotnet.microsoft.com/download) - Scan through the basic concepts.
 
     1. The Startup class
     2. Dependency injection (services)
@@ -53,10 +54,77 @@ In this Incubator, we will build a solution based on the Single Responsibility P
 
 - [ ] Setup your environment - [How to video](https://www.youtube.com/watch?v=G1-Zfr9-3zs&list=PLLWMQd6PeGY2GVsQZ-u3DPXqwwKW8MkiP)
   - [ ] [Visual Studio 2019 Community](https://visualstudio.microsoft.com/downloads/) Installed
-  - [ ] [.NET Core 3.1](https://dotnet.microsoft.com/download) Installed
+  - [ ] [.NET 5](https://dotnet.microsoft.com/download) Installed
   - [ ] [SQL Server Developer](https://www.microsoft.com/en-us/sql-server/sql-server-downloads) Installed
   - [ ] [SQL Server Management Studio SSMS](https://docs.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-ssms?view=sql-server-ver15) Installed
 - [ ] SQL Incubator - [SQL basics for Beginners](https://www.youtube.com/watch?v=9Pzj7Aj25lw)
+
+Setup Visual Studio
+- [ ] Update the default C# Class in Visual Studio, everytime you create a new class it will use this template.
+- [ ]  Open the following file in a text editor
+
+```
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\ItemTemplates\CSharp\Code\1033\Class\Class.cs
+```
+
+Change the template to the following, move using inside of the namespace and public before the class.
+
+```cs
+namespace $rootnamespace$
+{
+    using System;
+    using System.Collections.Generic;
+    $if$ ($targetframeworkversion$ >= 3.5)using System.Linq;
+    $endif$using System.Text;
+    $if$ ($targetframeworkversion$ >= 4.5)using System.Threading.Tasks;
+    $endif$
+
+    public class $safeitemrootname$
+    {
+    }
+}
+```
+
+Do the same with the Interface Template
+
+```
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\ItemTemplates\CSharp\Code\1033\Interface\Interface.cs
+```
+
+```cs
+namespace $rootnamespace$
+{
+    using System;
+    using System.Collections.Generic;
+    $if$ ($targetframeworkversion$ >= 3.5)using System.Linq;
+    $endif$using System.Text;
+    $if$ ($targetframeworkversion$ >= 4.5)using System.Threading.Tasks;
+    $endif$
+
+    public interface $safeitemrootname$
+    {
+    }
+}
+```
+
+
+- [ ] [Import new Settings](./Assets/visualstudio.vssettings)
+
+![](./Assets/2021-08-15-14-25-41.png)
+
+![](./Assets/2021-08-15-14-26-35.png)
+
+![](./Assets/2021-08-15-14-27-20.png)
+
+Browse to **visualstudio.vssettings**
+
+![](./Assets/2021-08-15-14-27-59.png)
+
+At the bottom of Visual Studio click on the broom and choose **Configure Code Cleanup**. Choose everything except the bottom 2.
+
+![](./Assets/2021-08-15-14-31-39.png)
+
+No on any file you can press Ctr+K and then Ctrl+E to cleanup your code. This helps for consitency and clean code.
 
 # **Pezza Digital Solutions**
 
