@@ -1,4 +1,4 @@
-namespace Pezza.Test
+namespace Pezza.Test.Setup
 {
     using System;
     using Microsoft.EntityFrameworkCore;

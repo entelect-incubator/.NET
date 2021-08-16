@@ -5,6 +5,8 @@ namespace Pezza.Test
     using Bogus;
     using NUnit.Framework;
     using Pezza.DataAccess.Data;
+    using Pezza.Test.Setup;
+    using Pezza.Test.Setup.TestData.Stock;
 
     public class TestStockDataAccess : QueryTestBase
     {

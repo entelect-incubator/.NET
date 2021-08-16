@@ -12,11 +12,11 @@
 
     public class NotifyDataAccess : IDataAccess<NotifyDTO>
     {
-        private readonly IDatabaseContext databaseContext;
+        private readonly DatabaseContext databaseContext;
 
         private readonly IMapper mapper;
 
-        public NotifyDataAccess(IDatabaseContext databaseContext, IMapper mapper)
+        public NotifyDataAccess(DatabaseContext databaseContext, IMapper mapper)
             => (this.databaseContext, this.mapper) = (databaseContext, mapper);
 
         public async Task<NotifyDTO> GetAsync(int id)

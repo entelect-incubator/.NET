@@ -20,7 +20,7 @@
         public async Task<ListResult<RestaurantDTO>> Handle(GetRestaurantsQuery request, CancellationToken cancellationToken)
         {
             var search = await this.dataAcess.GetAllAsync();
-            return ListResult<RestaurantDTO>.Success(search);
+            return ListResult<RestaurantDTO>.Success(search, search.Count);
         }
     }
 }

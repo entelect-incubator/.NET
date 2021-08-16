@@ -20,7 +20,7 @@
         public async Task<ListResult<OrderDTO>> Handle(GetOrdersQuery request, CancellationToken cancellationToken)
         {
             var search = await this.dataAcess.GetAllAsync();
-            return ListResult<OrderDTO>.Success(search);
+            return ListResult<OrderDTO>.Success(search, search.Count);
         }
     }
 }

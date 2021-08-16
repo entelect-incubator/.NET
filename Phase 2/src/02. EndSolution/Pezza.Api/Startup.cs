@@ -41,7 +41,7 @@ namespace Pezza.Api
             });
 
             // Add DbContext using SQL Server Provider
-            services.AddDbContext<IDatabaseContext, DatabaseContext>(options =>
+            services.AddDbContext<DatabaseContext>(options =>
                 options.UseSqlServer(this.Configuration.GetConnectionString("PezzaDatabase"))
             );
 

@@ -276,11 +276,32 @@ There are a variety of ways we can setup Unit Tests, this is one way to do it.
 - [ ] Install Nuget Package
   - [ ]  Microsoft.EntityFrameworkCore.InMemory
   - [ ]  AutoMapper
+  - [ ]  Bogus
 - [ ] Create a **Setup folder**, create QueryTestBase.cs class this will be inherited by by different Entity Data Access Test classes to expose Create() function.
+
+TestBase.cs - Create a In Memory DBContext.
+
+```cs
+namespace Pezza.Test
+{
+    using Microsoft.EntityFrameworkCore;
+
+    public class TestBase : DatabaseContextTest
+    {
+        public TestBase()
+        : base(
+            new DbContextOptionsBuilder<DbContext>()
+                .UseInMemoryDatabase("PezzaDb")
+                .Options)
+        {
+        }
+    }
+}
+```
 
 ![](./Assets/2021-08-15-17-28-14.png)
 
-```
+```cs
 namespace Pezza.Test.Setup
 {
     using System;
@@ -298,7 +319,7 @@ namespace Pezza.Test.Setup
 
 - [ ] Create DatabaseContextFactory.cs class in **Setup folder** that will be used to create a new DbContext object, but it will create a database session in memory.
 
-```
+```cs
 namespace Pezza.Test.Setup
 {
     using System;
@@ -339,7 +360,7 @@ namespace Pezza.Test.Setup
 - [ ] Install Bogus NuGet Package to your *Pezza.Test* Project.
 - [ ] For clean code we will create Test Data for each Entity. Create a folder TestData, then create a folder Stock. Create a StockTestData.cs class. This will create a fake Stock Entity for testing. <br/> ![](Assets/2020-09-14-05-58-42.png)
 
-```
+```cs
 namespace Pezza.Test
 {
     using System;
@@ -366,7 +387,7 @@ namespace Pezza.Test
 ```
 - [ ] Create a new folder DataAccess, that will be used to test Stock Data Access. Create TestStockDataAccess.cs class. <br/> ![](Assets/2020-09-14-06-01-45.png)
 
-```
+```cs
 namespace Pezza.Test
 {
     using System.Linq;
@@ -475,7 +496,7 @@ For every test we will create a new stock data access that will create a test se
 - [ ] Create a DTO folder in *Pezza.Common*
 - [ ] Create a new Class StockDTO.cs <br/> ![](Assets/2020-09-15-04-37-29.png)
 
-```
+```cs
 namespace Pezza.Common.DTO
 {
     using System;
@@ -499,7 +520,7 @@ namespace Pezza.Common.DTO
 }
 ```
 - [ ] We want to create Mapping between these 2 objects. Create a Mapping folder in *Pezza.Common*
-  - [ ] Install Nuget Package AutoMapper
+  - [ ] Install Nuget Package [AutoMapper](https://docs.automapper.org/en/stable/Getting-started.html)
   - [ ] Create a new folder Profiles
   - [ ] Create a new class MappingProfile.cs
 
@@ -631,7 +652,7 @@ namespace Pezza.Core
 
 - [ ] To keep the Dependency Injection clean and relevant to *Pezza.Core*, create a DependencyInjection.cs class that can be called from any Startup.cs class. <br/> ![](Assets/2020-09-15-05-10-13.png)
 
-```
+```cs
 namespace Pezza.Core
 {
     using Microsoft.Extensions.DependencyInjection;

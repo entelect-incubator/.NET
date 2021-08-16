@@ -1,4 +1,4 @@
-namespace Pezza.Test
+namespace Pezza.Test.DataAccess
 {
     using System.Threading.Tasks;
     using NUnit.Framework;

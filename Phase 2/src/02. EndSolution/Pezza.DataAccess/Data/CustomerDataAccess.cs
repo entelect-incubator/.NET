@@ -12,11 +12,11 @@
 
     public class CustomerDataAccess : IDataAccess<CustomerDTO>
     {
-        private readonly IDatabaseContext databaseContext;
+        private readonly DatabaseContext databaseContext;
 
         private readonly IMapper mapper;
 
-        public CustomerDataAccess(IDatabaseContext databaseContext, IMapper mapper)
+        public CustomerDataAccess(DatabaseContext databaseContext, IMapper mapper)
             => (this.databaseContext, this.mapper) = (databaseContext, mapper);
 
         public async Task<CustomerDTO> GetAsync(int id)

@@ -1,4 +1,4 @@
-<img align="left" width="116" height="116" src="../pezza-logo.png" />
+<img align="left" width="116" height="116" src="../Assets//pezza-logo.png" />
 
 # &nbsp;**Pezza - Phase 2 - Step 1**
 
@@ -6,7 +6,7 @@
 
 This Phase might feel a bit tedious, but it puts down a strong foundation to build off from for the entire incubator.
 
-If at any point you are struggling you can refrence Phase 2\src\02. EndSolution
+If at any point you are struggling you can reference Phase 2\src\02. EndSolution
 
 ## **Install Mediatr**
 
@@ -30,7 +30,7 @@ Install MediatR.Extensions.Microsoft.DependencyInjection on the Core Project.
   - [ ] Create a new folder where entities and mapping be generated in
   - [ ] ```dotnet tool install --global EntityFrameworkCore.Generator```
   - [ ] ```efg generate -c "DB Connection String"```
-  - [ ] Fix the generated namespaces and code cleanup
+  - [ ] Fix the generated namespaces and code cleanup. Right click on Pezza.Coomon <br/> ![](./Assets/2021-08-16-06-39-43.png)
   - [ ] or can copy it from Phase2\Data
 
 ### **Create Base Address**
@@ -90,40 +90,6 @@ Create a Data Transfer Object with only the information the consumer of the data
 ### **Database EFCore Maps**
 
 ![DBCOntext Map](Assets/2021-01-14-07-45-18.png)
-
-### **Base Entity**
-
-All of our Database Tables has a Primary Key of Id and type of Int.
-
-![](Assets/![Database%20Context%20Interface%20Setup](../Assets/phase1-setup-db-context-interface.png).png)
-
-```cs
-namespace Pezza.Common.Entities
-{
-    public interface IEntity
-    {
-        int Id { get; set; }
-    }
-}
-
-namespace Pezza.Common.Entities
-{
-    public abstract class Entity : IEntity
-    {
-        public int Id { get; set; }
-    }
-}
-```
-
-Add Entity Inheritance to all entities and DTO's
-
-![](Assets/2020-10-04-20-31-00.png)
-
-Remove
-
-```cs
-public int Id { get; set; }
-```
 
 ### **Base DataAccess**
 
@@ -224,6 +190,7 @@ namespace Pezza.DataAccess.Data
 Create DataAccess for all the Entities
 
 ![DataAccess Structure](Assets/2020-10-04-20-46-27.png)
+
 ### **Business Logic - Core**
 
 We will be moving to CQRS pattern for the Core Layer. This helps Single Responsibility.
@@ -252,27 +219,39 @@ namespace Pezza.Common.Models
 
     public class Result
     {
+        public Result()
+        {
+        }
+
         internal Result(bool succeeded, string error)
         {
             this.Succeeded = succeeded;
 
-            this.Errors = new List<string>
+            this.Errors = new List<object>
             {
                 error
             };
         }
 
-        internal Result(bool succeeded, List<string> errors)
+        internal Result(bool succeeded, List<object> errors)
         {
             this.Succeeded = succeeded;
             this.Errors = errors;
         }
 
+        internal Result(bool succeeded, List<string> errors)
+        {
+            this.Succeeded = succeeded;
+            this.Errors = errors.ToList<object>();
+        }
+
         public bool Succeeded { get; set; }
 
-        public List<string> Errors { get; set; }
+        public List<object> Errors { get; set; }
 
-        public static Result Success() => new Result(true, new List<string> { });
+        public static Result Success() => new Result(true, new List<object> { });
+
+        public static Result Failure(List<object> errors) => new Result(false, errors);
 
         public static Result Failure(List<string> errors) => new Result(false, errors);
 
@@ -284,19 +263,19 @@ namespace Pezza.Common.Models
         internal Result(bool succeeded, string error)
         {
             this.Succeeded = succeeded;
-            this.Errors = new List<string>
+            this.Errors = new List<object>
             {
                 error
             };
         }
 
-        internal Result(bool succeeded, List<string> errors)
+        internal Result(bool succeeded, List<object> errors)
         {
             this.Succeeded = succeeded;
             this.Errors = errors;
         }
 
-        internal Result(bool succeeded, T data, List<string> errors)
+        internal Result(bool succeeded, T data, List<object> errors)
         {
             this.Succeeded = succeeded;
             this.Errors = errors;
@@ -307,13 +286,13 @@ namespace Pezza.Common.Models
 
         public T Data { get; set; }
 
-        public List<string> Errors { get; set; }
+        public List<object> Errors { get; set; }
 
-        public static Result<T> Success(T data) => new Result<T>(true, data, new List<string> { });
+        public static Result<T> Success(T data) => new Result<T>(true, data, new List<object> { });
 
         public static Result<T> Failure(string error) => new Result<T>(false, error);
 
-        public static Result<T> Failure(List<string> errors) => new Result<T>(false, errors);
+        public static Result<T> Failure(List<object> errors) => new Result<T>(false, errors);
     }
 
     public class ListResult<T>
@@ -321,49 +300,60 @@ namespace Pezza.Common.Models
         internal ListResult(bool succeeded, string error)
         {
             this.Succeeded = succeeded;
-            this.Errors = new List<string>
+            this.Errors = new List<object>
             {
                 error
             };
         }
 
-        internal ListResult(bool succeeded, List<string> errors)
+        internal ListResult(bool succeeded, List<object> errors)
         {
             this.Succeeded = succeeded;
             this.Errors = errors;
         }
 
-        internal ListResult(bool succeeded, List<T> data, List<string> errors)
+        internal ListResult(bool succeeded, List<T> data, int count, List<object> errors)
         {
             this.Succeeded = succeeded;
             this.Errors = errors;
             this.Data = data;
+            this.Count = count;
         }
 
-        internal ListResult(bool succeeded, IEnumerable<T> data, List<string> errors)
+        internal ListResult(bool succeeded, IEnumerable<T> data, int count, List<object> errors)
         {
             this.Succeeded = succeeded;
             this.Errors = errors;
             this.Data = data.ToList();
+            this.Count = count;
         }
 
         public bool Succeeded { get; set; }
 
         public List<T> Data { get; set; }
 
-        public List<string> Errors { get; set; }
+        public List<object> Errors { get; set; }
 
-        public static ListResult<T> Success(List<T> data) => new ListResult<T>(true, data, new List<string> { });
-        
-        public static ListResult<T> Success(IEnumerable<T> data) => new ListResult<T>(true, data, new List<string> { });
+        public int Count { get; set; }
+
+        public static ListResult<T> Success(List<T> data, int count) => new ListResult<T>(true, data, count, new List<object> { });
+
+        public static ListResult<T> Success(IEnumerable<T> data, int count) => new ListResult<T>(true, data, count, new List<object> { });
 
         public static ListResult<T> Failure(string error) => new ListResult<T>(false, error);
 
-        public static ListResult<T> Failure(List<string> errors) => new ListResult<T>(false, errors);
+        public static ListResult<T> Failure(List<object> errors) => new ListResult<T>(false, errors);
     }
 
-}
+    public class ListOutcome<T>
+    {
+        public List<T> Data { get; set; }
 
+        public int Count { get; set; }
+
+        public List<string> Errors { get; set; }
+    }
+}
 ```
 
 Move Address Data into Addressbase into Pezza.Common\Entities AddressBase.cs
@@ -402,17 +392,11 @@ Create DTO's that we will use in the calling projects for SOLID principal. Only 
 
 ![DTO's](Assets/2021-01-17-09-04-19.png)
 
-You will see in any Data DTO, nullable boolean needs an extra property. Otherwise project like MVC doesn't know how to render it correctly.
+You will see in any Data DTO, nullable boolean needs an extra property. Otherwise, project like MVC doesn't know how to render it correctly.
 
 ## **Mapping**
 
-Make sure Automapper is installed
-
-![Automapper](2021-01-17-15-09-07.png)
-
-[AutoMapper](https://docs.automapper.org/en/stable/Getting-started.html)
-
-In Pezza.Common create a Profile folder, inside a new class MappingProfile.cs. We will use to Map Entities to DTO's and back.
+In Pezza.Common ammend changes to the MappingProfile.cs. 
 
 ```cs
 namespace Pezza.Common.Profiles
@@ -483,30 +467,7 @@ app.UseStaticFiles(new StaticFileOptions
 });
 ```
 
-![Core Contract Structure](Assets/2020-10-04-22-21-37.png)
-
-```cs
-namespace Pezza.Core.Contracts
-{
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-
-    public interface ICore<T>
-    {
-        Task<T> GetAsync(int id);
-
-        Task<IEnumerable<T>> GetAllAsync();
-
-        Task<T> UpdateAsync(T model);
-
-        Task<T> SaveAsync(T model);
-
-        Task<bool> DeleteAsync(int id);
-    }
-}
-```
-
-Create the following Commands for each Entity in Pezza.Core
+Create the following Commands for each Entity in Pezza.Core inside the Entity Name Folder/Commands <br/> ![](./Assets/2021-08-16-06-51-20.png)
 
 - Create Command
 
@@ -673,7 +634,7 @@ namespace Pezza.Core.Customer.Queries
         {
             var search = await this.dataAcess.GetAllAsync();
 
-            return ListResult<CustomerDTO>.Success(search);
+            return ListResult<CustomerDTO>.Success(search, search.Count);
         }
     }
 }
@@ -687,7 +648,7 @@ Update DependencyInjection.cs - to include the new DataAccess and CQRS Classes
 
 For MediatR Dependency Injection we need to create 3 Behaviour Classes inside Common
 
-- PerformanceBehaviour.cs
+- PerformanceBehaviour.cs this will pick up any slow running queries
 
 ```cs
 namespace Pezza.Common.Behaviours
@@ -749,7 +710,7 @@ namespace Pezza.Common.Behaviours
 }
 ```
 
-- UnhandledExceptionBehaviour.cs
+- UnhandledExceptionBehaviour.cs this will pick up any exceptions during the executio npipeline. 
 
 ```cs
 namespace Pezza.Common.Behaviours
@@ -785,7 +746,7 @@ namespace Pezza.Common.Behaviours
 }
 ```
 
-- ValidationBehavior.cs -Will be used in Phase 3
+- ValidationBehavior.cs -Will be used in Phase 3 to pick up andy validation that was added for Commands or Queries.
 
 ```cs
 namespace Pezza.Common.Behaviours
@@ -871,4 +832,4 @@ namespace Pezza.Core
 ## **STEP 2 - Unit Tests**
 
 Move to Step 2
-[Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%202/Step%202) 
+[Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%202/Step%202)

@@ -1,4 +1,4 @@
-namespace Pezza.Test
+namespace Pezza.Test.Core
 {
     using System.Threading;
     using System.Threading.Tasks;

@@ -15,7 +15,7 @@
             Get all Stock.
             </summary>
         </member>
-        <member name="M:Pezza.Api.Controllers.StockController.Create(Pezza.Common.DTO.StockDTO)">
+        <member name="M:Pezza.Api.Controllers.StockController.Create(Pezza.Common.Entities.Stock)">
             <summary>
             Create Stock.
             </summary>

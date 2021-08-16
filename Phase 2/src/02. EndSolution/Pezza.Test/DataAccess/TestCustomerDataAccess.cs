@@ -1,10 +1,8 @@
-namespace Pezza.Test
+namespace Pezza.Test.DataAccess
 {
-    using System.Linq;
     using System.Threading.Tasks;
     using Bogus;
     using NUnit.Framework;
-    using Pezza.Common.DTO;
     using Pezza.DataAccess.Data;
 
     public class TestCustomerDataAccess : QueryTestBase

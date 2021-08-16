@@ -12,11 +12,11 @@
 
     public class StockDataAccess : IDataAccess<StockDTO>
     {
-        private readonly IDatabaseContext databaseContext;
+        private readonly DatabaseContext databaseContext;
 
         private readonly IMapper mapper;
 
-        public StockDataAccess(IDatabaseContext databaseContext, IMapper mapper)
+        public StockDataAccess(DatabaseContext databaseContext, IMapper mapper)
             => (this.databaseContext, this.mapper) = (databaseContext, mapper);
 
         public async Task<StockDTO> GetAsync(int id)

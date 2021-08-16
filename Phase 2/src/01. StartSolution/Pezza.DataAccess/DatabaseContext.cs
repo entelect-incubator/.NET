@@ -1,11 +1,10 @@
 namespace Pezza.DataAccess
 {
-    using Pezza.DataAccess.Contracts;
     using Microsoft.EntityFrameworkCore;
     using Pezza.Common.Entities;
     using Pezza.DataAccess.Mapping;
 
-    public class DatabaseContext : DbContext, IDatabaseContext
+    public class DatabaseContext : DbContext
     {
         public DatabaseContext()
         {

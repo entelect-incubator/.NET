@@ -21,7 +21,7 @@
         {
             var search = await this.dataAcess.GetAllAsync();
 
-            return ListResult<CustomerDTO>.Success(search);
+            return ListResult<CustomerDTO>.Success(search, search.Count);
         }
     }
 }

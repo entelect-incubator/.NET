@@ -1,4 +1,4 @@
-<img align="left" width="116" height="116" src="../pezza-logo.png" />
+<img align="left" width="116" height="116" src="../Assets/pezza-logo.png" />
 
 # &nbsp;**Pezza - Phase 2 - Step 2**
 
@@ -16,140 +16,11 @@ The project at the end will look like this
 
 ![](Assets/2020-11-20-09-27-07.png)
 
-First, we need to install some Nuget Packages to help us out.
-
-- Microsoft.EntityFrameworkCore.InMemory - To Database Calls in Memory.
-- Bogus - Create dummy test data.
-
-Now we need some base classes that we can reuse during the Unit Tests.
-
-TestBase.cs - Create a In Memory DBContext.
-
-```cs
-namespace Pezza.Test
-{
-    using Microsoft.EntityFrameworkCore;
-
-    public class TestBase : DatabaseContextTest
-    {
-        public TestBase()
-        : base(
-            new DbContextOptionsBuilder<DbContext>()
-                .UseInMemoryDatabase("PezzaDb")
-                .Options)
-        {
-        }
-    }
-}
-```
-
-DatabaseContextTest.cs - Creates a new DB Context to run Unit Tests on.
-
-```cs
-namespace Pezza.Test
-{
-    using Microsoft.EntityFrameworkCore;
-    using Pezza.DataAccess;
-
-    public class DatabaseContextTest
-    {
-        protected DatabaseContextTest(DbContextOptions<DbContext> contextOptions)
-        {
-            this.ContextOptions = contextOptions;
-            this.Seed();
-        }
-
-        protected DbContextOptions<DbContext> ContextOptions { get; }
-
-        private void Seed()
-        {
-            using var context = new DatabaseContext(this.ContextOptions);
-
-            context.Database.EnsureDeleted();
-            context.Database.EnsureCreated();
-
-
-            context.SaveChanges();
-        }
-    }
-}
-```
-
-### **Setup**
-
-![Setup Structure](Assets/2020-11-20-09-35-39.png)
-
-QueryTestBase.cs
-
-```cs
-namespace Pezza.Test
-{
-    using System;
-    using AutoMapper;
-    using Pezza.Common.Profiles;
-    using Pezza.DataAccess;
-    using static DatabaseContextFactory;
-
-    public class QueryTestBase : IDisposable
-    {
-        public DatabaseContext Context => Create();
-
-        public static IMapper Mapper()
-        {
-            var mappingConfig = new MapperConfiguration(mc => mc.AddProfile(new MappingProfile()));
-            return mappingConfig.CreateMapper();
-        }
-
-        public void Dispose() => Destroy(this.Context);
-    }
-}
-```
-
-DatabaseContextFactory.cs
-
-```cs
-namespace Pezza.Test
-{
-    using System;
-    using Microsoft.EntityFrameworkCore;
-    using Pezza.DataAccess;
-
-    public class DatabaseContextFactory
-    {
-        protected DatabaseContextFactory()
-        {
-        }
-
-        public static DatabaseContext DBContext()
-        {
-            var options = new DbContextOptionsBuilder<DbContext>().UseInMemoryDatabase(Guid.NewGuid().ToString()).Options;
-            return new DatabaseContext(options);
-        }
-
-        public static DatabaseContext Create()
-        {
-            var context = DBContext();
-
-            context.Database.EnsureCreated();
-
-            return context;
-        }
-
-        public static void Destroy(DatabaseContext context)
-        {
-            context.Database.EnsureDeleted();
-
-            context.Dispose();
-        }
-    }
-}
-```
-
-Test Data for our tests. Staying with Single Responsibility we want to create a Test Class for every Entity or DTO. Create a folder for every Entity in the Database.
+Test Data for our tests. Staying with **Single Responsibility** we want to create a Test Class for every Entity or DTO. Create a folder for every Entity in the Database.
 
 ![Unit test Test Data Structure](Assets/2020-11-20-09-37-20.png)
 
-CustomerTestData.cs - We will use Bogus package to help us out in creating Test Data, by creating a Faker Object. You will end up with 3 functions i.e. Entity, DTO and DTOData
+CustomerTestData.cs - We will use Bogus package to help us out in creating Test Data, by creating a Faker Object. You will end up with 3 functions i.e. Entity, DTO and DTOData, the same as you did for StockTestData.
 
 ![Customer Test Data](Assets/2020-11-20-09-39-27.png)
 
@@ -201,6 +72,8 @@ It will contain a new Handler declaring a new DataAccess object with the In Memo
  The entity passed will be from the Test Data created earlier. i.e.  var entity = CustomerTestData.Customer;
 
  Next we will Unit Test the Database Call and test the result i.e await handler.SaveAsync(entity);
+
+ This is building on for what was done for TestStockDataAccess
 
 TestCustomerDataAccess.cs
 
@@ -306,9 +179,11 @@ It will contain a new Handler declaring a new DataAccess object with the In Memo
 
  Next we will test the the result.
 
-TestCustomerDataAccess.cs
+![](./Asssets/2021-08-16-07-05-14.png)
+
+TestCustomerCore.cs in Core folder
 ```cs
-namespace Pezza.Test
+namespace Pezza.Test.Core
 {
     using System.Threading;
     using System.Threading.Tasks;
@@ -428,7 +303,7 @@ namespace Pezza.Test
 }
 ```
 
-Create the Core Unit Test classes now
+Create the Core Unit Test classes now, when you are done it should look like this.
 
 ![](Assets/2020-11-20-09-55-09.png)
 
@@ -439,7 +314,7 @@ To run the test go to the top Menu bar -> Test -> Run All Tests. This will open 
 You should now have 64 Passed Unit Tests
 ![](Assets/2020-11-20-09-57-00.png)
 
-## **STEP 3 - Create the API**
+## **STEP 3 - Finishing up the API to use CQRS**
 
 Move to Step 3
 [Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%202/Step%203)

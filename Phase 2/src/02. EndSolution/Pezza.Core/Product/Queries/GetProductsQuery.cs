@@ -20,7 +20,7 @@
         public async Task<ListResult<ProductDTO>> Handle(GetProductsQuery request, CancellationToken cancellationToken)
         {
             var search = await this.dataAcess.GetAllAsync();
-            return ListResult<ProductDTO>.Success(search);
+            return ListResult<ProductDTO>.Success(search, search.Count);
         }
     }
 }

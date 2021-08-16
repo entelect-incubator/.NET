@@ -12,11 +12,11 @@
 
     public class RestaurantDataAccess : IDataAccess<RestaurantDTO>
     {
-        private readonly IDatabaseContext databaseContext;
+        private readonly DatabaseContext databaseContext;
 
         private readonly IMapper mapper;
 
-        public RestaurantDataAccess(IDatabaseContext databaseContext, IMapper mapper)
+        public RestaurantDataAccess(DatabaseContext databaseContext, IMapper mapper)
             => (this.databaseContext, this.mapper) = (databaseContext, mapper);
 
         public async Task<RestaurantDTO> GetAsync(int id)

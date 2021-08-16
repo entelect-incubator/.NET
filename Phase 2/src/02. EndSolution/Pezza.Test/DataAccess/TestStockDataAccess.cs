@@ -1,4 +1,4 @@
-namespace Pezza.Test
+namespace Pezza.Test.DataAccess
 {
     using System.Linq;
     using System.Threading.Tasks;
@@ -65,7 +65,7 @@ namespace Pezza.Test
             var handler = new StockDataAccess(this.Context, Mapper());
             var stock = StockTestData.StockDTO;
             await handler.SaveAsync(stock);
-            
+
             var response = await handler.DeleteAsync(stock.Id);
 
             Assert.IsTrue(response);
