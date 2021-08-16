@@ -599,7 +599,8 @@ namespace Pezza.Core
 
         private readonly IMapper mapper;
 
-        public StockCore(IStockDataAccess dataAcess) => this.dataAcess = dataAcess;
+        public StockCore(IStockDataAccess dataAcess, IMapper mapper)
+            => (this.dataAcess, this.mapper) = (dataAcess, mapper);
 
         public async Task<StockDTO> GetAsync(int id)
         {

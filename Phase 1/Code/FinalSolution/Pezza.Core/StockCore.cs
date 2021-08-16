@@ -14,7 +14,8 @@
 
         private readonly IMapper mapper;
 
-        public StockCore(IStockDataAccess dataAcess) => this.dataAcess = dataAcess;
+        public StockCore(IStockDataAccess dataAcess, IMapper mapper)
+            => (this.dataAcess, this.mapper) = (dataAcess, mapper);
 
         public async Task<StockDTO> GetAsync(int id)
         {
@@ -41,7 +42,7 @@
         public async Task<StockDTO> UpdateAsync(StockDTO model)
         {
 
-            var entity = await this.dataAcess.GetAsync(model.Id);            
+            var entity = await this.dataAcess.GetAsync(model.Id);
 
             entity.Name = !string.IsNullOrEmpty(model.Name) ? model.Name : entity.Name;
             entity.UnitOfMeasure = !string.IsNullOrEmpty(model.UnitOfMeasure) ? model.UnitOfMeasure : entity.UnitOfMeasure;
