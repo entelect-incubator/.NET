@@ -1,4 +1,4 @@
-namespace Pezza.Test
+namespace Pezza.Test.Core
 {
     using System.Threading;
     using System.Threading.Tasks;
@@ -12,13 +12,13 @@ namespace Pezza.Test
         [Test]
         public async Task GetAsync()
         {
-            var dataAccess = new CustomerDataAccess(this.Context);
+            var dataAccess = new CustomerDataAccess(this.Context, Mapper());
 
             //Act
             var sutCreate = new CreateCustomerCommandHandler(dataAccess);
             var resultCreate = await sutCreate.Handle(new CreateCustomerCommand
             {
-                Data = CustomerTestData.CustomerDataDTO
+                Data = CustomerTestData.CustomerDTO
             }, CancellationToken.None);
 
             //Act
@@ -34,13 +34,13 @@ namespace Pezza.Test
         [Test]
         public async Task GetAllAsync()
         {
-            var dataAccess = new CustomerDataAccess(this.Context);
+            var dataAccess = new CustomerDataAccess(this.Context, Mapper());
 
             //Act
             var sutCreate = new CreateCustomerCommandHandler(dataAccess);
             var resultCreate = await sutCreate.Handle(new CreateCustomerCommand
             {
-                Data = CustomerTestData.CustomerDataDTO
+                Data = CustomerTestData.CustomerDTO
             }, CancellationToken.None);
 
             //Act
@@ -53,13 +53,13 @@ namespace Pezza.Test
         [Test]
         public async Task SaveAsync()
         {
-            var dataAccess = new CustomerDataAccess(this.Context);
+            var dataAccess = new CustomerDataAccess(this.Context, Mapper());
 
             //Act
             var sutCreate = new CreateCustomerCommandHandler(dataAccess);
             var resultCreate = await sutCreate.Handle(new CreateCustomerCommand
             {
-                Data = CustomerTestData.CustomerDataDTO
+                Data = CustomerTestData.CustomerDTO
             }, CancellationToken.None);
 
             Assert.IsTrue(resultCreate.Succeeded);
@@ -68,22 +68,22 @@ namespace Pezza.Test
         [Test]
         public async Task UpdateAsync()
         {
-            var dataAccess = new CustomerDataAccess(this.Context);
+            var dataAccess = new CustomerDataAccess(this.Context, Mapper());
 
             //Act
             var sutCreate = new CreateCustomerCommandHandler(dataAccess);
             var resultCreate = await sutCreate.Handle(new CreateCustomerCommand
             {
-                Data = CustomerTestData.CustomerDataDTO
+                Data = CustomerTestData.CustomerDTO
             }, CancellationToken.None);
 
             //Act
             var sutUpdate = new UpdateCustomerCommandHandler(dataAccess);
             var resultUpdate = await sutUpdate.Handle(new UpdateCustomerCommand
             {
-                Id = resultCreate.Data.Id,
-                Data = new Common.DTO.CustomerDataDTO
+                Data = new Common.DTO.CustomerDTO
                 {
+                    Id = resultCreate.Data.Id,
                     Phone = "0721230000"
                 }
             }, CancellationToken.None);
@@ -95,12 +95,12 @@ namespace Pezza.Test
         [Test]
         public async Task DeleteAsync()
         {
-            var dataAccess = new CustomerDataAccess(this.Context);
+            var dataAccess = new CustomerDataAccess(this.Context, Mapper());
             //Act
             var sutCreate = new CreateCustomerCommandHandler(dataAccess);
             var resultCreate = await sutCreate.Handle(new CreateCustomerCommand
             {
-                Data = CustomerTestData.CustomerDataDTO
+                Data = CustomerTestData.CustomerDTO
             }, CancellationToken.None);
 
 

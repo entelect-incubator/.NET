@@ -28,19 +28,21 @@
             return this.mapper.Map<List<OrderItemDTO>>(entities);
         }
 
-        public async Task<OrderItemDTO> SaveAsync(OrderItemDTO entity)
+        public async Task<OrderItemDTO> SaveAsync(OrderItemDTO dto)
         {
-            this.databaseContext.OrderItems.Add(this.mapper.Map<OrderItem>(entity));
+            var entity = this.mapper.Map<OrderItem>(dto);
+            this.databaseContext.OrderItems.Add(entity);
             await this.databaseContext.SaveChangesAsync();
+            dto.Id = entity.Id;
 
-            return entity;
+            return dto;
         }
 
-        public async Task<OrderItemDTO> UpdateAsync(OrderItemDTO entity)
+        public async Task<OrderItemDTO> UpdateAsync(OrderItemDTO dto)
         {
-            var findEntity = await this.databaseContext.OrderItems.FirstOrDefaultAsync(x => x.Id == entity.Id);
-            findEntity.Quantity = entity.Quantity ?? findEntity.Quantity;
-            findEntity.ProductId = entity.ProductId ?? findEntity.ProductId;
+            var findEntity = await this.databaseContext.OrderItems.FirstOrDefaultAsync(x => x.Id == dto.Id);
+            findEntity.Quantity = dto.Quantity ?? findEntity.Quantity;
+            findEntity.ProductId = dto.ProductId ?? findEntity.ProductId;
 
             this.databaseContext.OrderItems.Update(findEntity);
             await this.databaseContext.SaveChangesAsync();

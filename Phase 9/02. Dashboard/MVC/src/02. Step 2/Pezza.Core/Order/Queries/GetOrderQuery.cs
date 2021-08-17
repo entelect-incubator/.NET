@@ -14,13 +14,13 @@
 
     public class GetOrderQueryHandler : IRequestHandler<GetOrderQuery, Result<OrderDTO>>
     {
-        private readonly IDataAccess<OrderDTO> dataAcess;
+        private readonly IDataAccess<OrderDTO> DataAccess;
 
-        public GetOrderQueryHandler(IDataAccess<OrderDTO> dataAcess) => this.dataAcess = dataAcess;
+        public GetOrderQueryHandler(IDataAccess<OrderDTO> DataAccess) => this.DataAccess = DataAccess;
 
         public async Task<Result<OrderDTO>> Handle(GetOrderQuery request, CancellationToken cancellationToken)
         {
-            var search = await this.dataAcess.GetAsync(request.Id);
+            var search = await this.DataAccess.GetAsync(request.Id);
             return Result<OrderDTO>.Success(search);
         }
     }

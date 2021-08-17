@@ -16,17 +16,17 @@
 
     public class UpdateOrderCommandHandler : IRequestHandler<UpdateOrderCommand, Result<Common.Entities.Order>>
     {
-        private readonly IDataAccess<Common.Entities.Order> dataAcess;
+        private readonly IDataAccess<Common.Entities.Order> DataAccess;
 
-        public UpdateOrderCommandHandler(IDataAccess<Common.Entities.Order> dataAcess) => this.dataAcess = dataAcess;
+        public UpdateOrderCommandHandler(IDataAccess<Common.Entities.Order> DataAccess) => this.DataAccess = DataAccess;
 
         public async Task<Result<Common.Entities.Order>> Handle(UpdateOrderCommand request, CancellationToken cancellationToken)
         {
-            var findEntity = await this.dataAcess.GetAsync(request.Id);
+            var findEntity = await this.DataAccess.GetAsync(request.Id);
             findEntity.Completed = request.Data?.Completed ?? findEntity.Completed;
             findEntity.RestaurantId = request.Data?.RestaurantId ?? findEntity.RestaurantId;
             findEntity.CustomerId = request.Data?.CustomerId ?? findEntity.CustomerId;
-            var outcome = await this.dataAcess.UpdateAsync(findEntity);
+            var outcome = await this.DataAccess.UpdateAsync(findEntity);
 
             return (outcome != null) ? Result<Common.Entities.Order>.Success(outcome) : Result<Common.Entities.Order>.Failure("Error updating a Order");
         }

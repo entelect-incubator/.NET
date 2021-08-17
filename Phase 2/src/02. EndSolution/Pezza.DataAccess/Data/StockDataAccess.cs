@@ -28,25 +28,29 @@
             return this.mapper.Map<List<StockDTO>>(entities);
         }
 
-        public async Task<StockDTO> SaveAsync(StockDTO entity)
+        public async Task<StockDTO> SaveAsync(StockDTO dto)
         {
-            this.databaseContext.Stocks.Add(this.mapper.Map<Stock>(entity));
+            var entity = this.mapper.Map<Stock>(dto);
+            this.databaseContext.Stocks.Add(entity);
             await this.databaseContext.SaveChangesAsync();
+            dto.Id = entity.Id;
 
-            return entity;
+            return dto;
+
+            return this.mapper.Map<StockDTO>(entity);
         }
 
-        public async Task<StockDTO> UpdateAsync(StockDTO entity)
+        public async Task<StockDTO> UpdateAsync(StockDTO dto)
         {
-            var findEntity = await this.databaseContext.Stocks.FirstOrDefaultAsync(x => x.Id == entity.Id);
+            var findEntity = await this.databaseContext.Stocks.FirstOrDefaultAsync(x => x.Id == dto.Id);
 
-            findEntity.Name = !string.IsNullOrEmpty(entity.Name) ? entity.Name : findEntity.Name;
-            findEntity.UnitOfMeasure = !string.IsNullOrEmpty(entity.UnitOfMeasure) ? entity.UnitOfMeasure : findEntity.UnitOfMeasure;
-            findEntity.ValueOfMeasure = entity.ValueOfMeasure ?? findEntity.ValueOfMeasure;
-            findEntity.Quantity = entity.Quantity ?? findEntity.Quantity;
-            findEntity.ExpiryDate = entity.ExpiryDate ?? findEntity.ExpiryDate;
-            findEntity.Comment = entity.Comment;
-            this.databaseContext.Stocks.Update(this.mapper.Map<Stock>(entity));
+            findEntity.Name = !string.IsNullOrEmpty(dto.Name) ? dto.Name : findEntity.Name;
+            findEntity.UnitOfMeasure = !string.IsNullOrEmpty(dto.UnitOfMeasure) ? dto.UnitOfMeasure : findEntity.UnitOfMeasure;
+            findEntity.ValueOfMeasure = dto.ValueOfMeasure ?? findEntity.ValueOfMeasure;
+            findEntity.Quantity = dto.Quantity ?? findEntity.Quantity;
+            findEntity.ExpiryDate = dto.ExpiryDate ?? findEntity.ExpiryDate;
+            findEntity.Comment = dto.Comment;
+            this.databaseContext.Stocks.Update(findEntity);
             await this.databaseContext.SaveChangesAsync();
 
             return this.mapper.Map<StockDTO>(findEntity);

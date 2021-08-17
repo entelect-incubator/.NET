@@ -16,7 +16,7 @@
 
         public string Province { get; set; }
 
-        public string ZipCode { get; set; }
+        public string PostalCode { get; set; }
 
         public string Phone { get; set; }
 

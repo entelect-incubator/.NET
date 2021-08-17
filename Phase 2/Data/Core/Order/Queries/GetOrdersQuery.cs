@@ -4,7 +4,6 @@
     using System.Threading.Tasks;
     using MediatR;
     using Pezza.Common.DTO;
-    using Pezza.Common.Mapping;
     using Pezza.Common.Models;
     using Pezza.DataAccess.Contracts;
 
@@ -14,15 +13,14 @@
 
     public class GetOrdersQueryHandler : IRequestHandler<GetOrdersQuery, ListResult<OrderDTO>>
     {
-        private readonly IDataAccess<Common.Entities.Order> dataAcess;
+        private readonly IDataAccess<OrderDTO> DataAccess;
 
-        public GetOrdersQueryHandler(IDataAccess<Common.Entities.Order> dataAcess) => this.dataAcess = dataAcess;
+        public GetOrdersQueryHandler(IDataAccess<OrderDTO> DataAccess) => this.DataAccess = DataAccess;
 
         public async Task<ListResult<OrderDTO>> Handle(GetOrdersQuery request, CancellationToken cancellationToken)
         {
-            var search = await this.dataAcess.GetAllAsync();
-
-            return ListResult<OrderDTO>.Success(search.Map());
+            var search = await this.DataAccess.GetAllAsync();
+            return ListResult<OrderDTO>.Success(search, search.Count);
         }
     }
 }

@@ -58,7 +58,7 @@
         ///       "Address": {
         ///         "city": "Pretoria",
         ///         "province": "Gauteng",
-        ///         "ZipCode": "0000"
+        ///         "PostalCode": "0000"
         ///       }
         ///     }.
         /// </remarks>

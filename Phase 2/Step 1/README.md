@@ -26,11 +26,11 @@ Install MediatR.Extensions.Microsoft.DependencyInjection on the Core Project.
 ## **Create the other database entities and update database context**
 
 - [ ] To speed up entity generation you can use a CLI tool or create it manually
-  - [ ] Open Command Line
   - [ ] Create a new folder where entities and mapping be generated in
-  - [ ] ```dotnet tool install --global EntityFrameworkCore.Generator```
-  - [ ] ```efg generate -c "DB Connection String"```
-  - [ ] Fix the generated namespaces and code cleanup. Right click on Pezza.Coomon <br/> ![](./Assets/2021-08-16-06-39-43.png)
+  - [ ] Open Command Line and change directory to the folder you created  - [ ] 
+  - [ ] In CMD Run ```dotnet tool install --global EntityFrameworkCore.Generator```
+  - [ ] In CMD Run ```efg generate -c "DB Connection String"```
+  - [ ] Fix the generated namespaces and code cleanup. Right click on Pezza.Common <br/> ![](./Assets/2021-08-16-06-39-43.png)
   - [ ] or can copy it from Phase2\Data
 
 ### **Create Base Address**
@@ -50,10 +50,12 @@ namespace Pezza.Common.Entities
 
         public string Province { get; set; }
 
-        public string ZipCode { get; set; }
+        public string PostalCode { get; set; }
     }
 }
 ```
+
+
 
 ### **Create Image Data Base**
 
@@ -71,7 +73,7 @@ namespace Pezza.Common.Entities
 }
 ```
 
-### **Entitites**
+### **Entities**
 
 Representing Database Tables Entities
 
@@ -105,16 +107,16 @@ namespace Pezza.DataAccess.Contracts
 
         Task<List<T>> GetAllAsync();
 
-        Task<T> UpdateAsync(T entity);
+        Task<T> UpdateAsync(T dto);
 
-        Task<T> SaveAsync(T entity);
+        Task<T> SaveAsync(T dto);
 
         Task<bool> DeleteAsync(int id);
     }
 }
 ```
 
-Remove IStockDataAcess.cs
+Remove IStockDataAccess.cs
 
 !DataAccess Contracts Structure[](Assets/2020-10-04-20-36-09.png)
 
@@ -135,11 +137,11 @@ namespace Pezza.DataAccess.Data
 
     public class StockDataAccess : IDataAccess<StockDTO>
     {
-        private readonly IDatabaseContext databaseContext;
+        private readonly DatabaseContext databaseContext;
 
         private readonly IMapper mapper;
 
-        public StockDataAccess(IDatabaseContext databaseContext, IMapper mapper)
+        public StockDataAccess(DatabaseContext databaseContext, IMapper mapper)
             => (this.databaseContext, this.mapper) = (databaseContext, mapper);
 
         public async Task<StockDTO> GetAsync(int id)
@@ -151,25 +153,29 @@ namespace Pezza.DataAccess.Data
             return this.mapper.Map<List<StockDTO>>(entities);
         }
 
-        public async Task<StockDTO> SaveAsync(StockDTO entity)
+        public async Task<StockDTO> SaveAsync(StockDTO dto)
         {
-            this.databaseContext.Stocks.Add(this.mapper.Map<Stock>(entity));
+            var entity = this.mapper.Map<Stock>(dto);
+            this.databaseContext.Stocks.Add(entity);
             await this.databaseContext.SaveChangesAsync();
+            dto.Id = entity.Id;
 
-            return entity;
+            return dto;
+
+            return this.mapper.Map<StockDTO>(entity);
         }
 
-        public async Task<StockDTO> UpdateAsync(StockDTO entity)
+        public async Task<StockDTO> UpdateAsync(StockDTO dto)
         {
-            var findEntity = await this.databaseContext.Stocks.FirstOrDefaultAsync(x => x.Id == entity.Id);
+            var findEntity = await this.databaseContext.Stocks.FirstOrDefaultAsync(x => x.Id == dto.Id);
 
-            findEntity.Name = !string.IsNullOrEmpty(entity.Name) ? entity.Name : findEntity.Name;
-            findEntity.UnitOfMeasure = !string.IsNullOrEmpty(entity.UnitOfMeasure) ? entity.UnitOfMeasure : findEntity.UnitOfMeasure;
-            findEntity.ValueOfMeasure = entity.ValueOfMeasure ?? findEntity.ValueOfMeasure;
-            findEntity.Quantity = entity.Quantity ?? findEntity.Quantity;
-            findEntity.ExpiryDate = entity.ExpiryDate ?? findEntity.ExpiryDate;
-            findEntity.Comment = entity.Comment;
-            this.databaseContext.Stocks.Update(this.mapper.Map<Stock>(entity));
+            findEntity.Name = !string.IsNullOrEmpty(dto.Name) ? dto.Name : findEntity.Name;
+            findEntity.UnitOfMeasure = !string.IsNullOrEmpty(dto.UnitOfMeasure) ? dto.UnitOfMeasure : findEntity.UnitOfMeasure;
+            findEntity.ValueOfMeasure = dto.ValueOfMeasure ?? findEntity.ValueOfMeasure;
+            findEntity.Quantity = dto.Quantity ?? findEntity.Quantity;
+            findEntity.ExpiryDate = dto.ExpiryDate ?? findEntity.ExpiryDate;
+            findEntity.Comment = dto.Comment;
+            this.databaseContext.Stocks.Update(findEntity);
             await this.databaseContext.SaveChangesAsync();
 
             return this.mapper.Map<StockDTO>(findEntity);
@@ -356,7 +362,9 @@ namespace Pezza.Common.Models
 }
 ```
 
-Move Address Data into Addressbase into Pezza.Common\Entities AddressBase.cs
+Move Address Data and ImageDataBase into Pezza.Common\Entities.
+
+AddressBase.cs
 
 ```cs
 namespace Pezza.Common.Entities
@@ -369,12 +377,12 @@ namespace Pezza.Common.Entities
 
         public string Province { get; set; }
 
-        public string ZipCode { get; set; }
+        public string PostalCode { get; set; }
     }
 }
 ```
 
-Move Address Data into ImageDataBase into Pezza.Common\Entities ImageDataBase.cs
+ ImageDataBase.cs
 
 ```cs
 namespace Pezza.Common.Entities
@@ -386,13 +394,49 @@ namespace Pezza.Common.Entities
 }
 ```
 
+Change 
+- [ ] CustomerDTO
+- [ ] RestaurantDTO
+- [ ] ProductDTO
+
+To something like this. Can also look at Phase 2\Data on how it suppose to look like.
+
+```cs
+namespace Pezza.Common.DTO
+{
+    using System;
+    using Pezza.Common.Entities;
+
+    public class ProductDTO : ImageDataBase
+    {
+        public int Id { get; set; }
+
+        public string Name { get; set; }
+
+        public string Description { get; set; }
+
+        public string PictureUrl { get; set; }
+
+        public decimal? Price { get; set; }
+
+        public bool? Special { get; set; }
+
+        public DateTime? OfferEndDate { get; set; }
+
+        public decimal? OfferPrice { get; set; }
+
+        public bool? IsActive { get; set; }
+
+        public DateTime DateCreated { get; set; }
+    }
+}
+```
+
 ## **DTO's**
 
 Create DTO's that we will use in the calling projects for SOLID principal. Only send in data that is needed. Copy from Phase 2\Data\Common\DTO
 
 ![DTO's](Assets/2021-01-17-09-04-19.png)
-
-You will see in any Data DTO, nullable boolean needs an extra property. Otherwise, project like MVC doesn't know how to render it correctly.
 
 ## **Mapping**
 
@@ -414,14 +458,14 @@ namespace Pezza.Common.Profiles
                     Address = src.Address,
                     City = src.City,
                     Province = src.Province,
-                    ZipCode = src.ZipCode
+                    PostalCode = src.PostalCode
                 }))
                 .ReverseMap();
             this.CreateMap<CustomerDTO, Customer>()
                 .ForMember(vm => vm.Address, m => m.MapFrom(u => u.Address.Address))
                 .ForMember(vm => vm.City, m => m.MapFrom(u => u.Address.City))
                 .ForMember(vm => vm.Province, m => m.MapFrom(u => u.Address.Province))
-                .ForMember(vm => vm.ZipCode, m => m.MapFrom(u => u.Address.ZipCode));
+                .ForMember(vm => vm.PostalCode, m => m.MapFrom(u => u.Address.PostalCode));
 
             this.CreateMap<Notify, NotifyDTO>();
             this.CreateMap<NotifyDTO, Notify>();
@@ -441,14 +485,14 @@ namespace Pezza.Common.Profiles
                     Address = src.Address,
                     City = src.City,
                     Province = src.Province,
-                    ZipCode = src.PostalCode
+                    PostalCode = src.PostalCode
                 }))
                 .ReverseMap();
             this.CreateMap<RestaurantDTO, Restaurant>()
                 .ForMember(vm => vm.Address, m => m.MapFrom(u => u.Address.Address))
                 .ForMember(vm => vm.City, m => m.MapFrom(u => u.Address.City))
                 .ForMember(vm => vm.Province, m => m.MapFrom(u => u.Address.Province))
-                .ForMember(vm => vm.PostalCode, m => m.MapFrom(u => u.Address.ZipCode));
+                .ForMember(vm => vm.PostalCode, m => m.MapFrom(u => u.Address.PostalCode));
 
             this.CreateMap<Stock, StockDTO>();
             this.CreateMap<StockDTO, Stock>();
@@ -488,14 +532,14 @@ namespace Pezza.Core.Customer.Commands
 
     public class CreateCustomerCommandHandler : IRequestHandler<CreateCustomerCommand, Result<CustomerDTO>>
     {
-        private readonly IDataAccess<CustomerDTO> dataAcess;
+        private readonly IDataAccess<CustomerDTO> DataAccess;
 
-        public CreateCustomerCommandHandler(IDataAccess<CustomerDTO> dataAcess)
-            => this.dataAcess = dataAcess;
+        public CreateCustomerCommandHandler(IDataAccess<CustomerDTO> DataAccess)
+            => this.DataAccess = DataAccess;
 
         public async Task<Result<CustomerDTO>> Handle(CreateCustomerCommand request, CancellationToken cancellationToken)
         {
-            var outcome = await this.dataAcess.SaveAsync(request.Data);
+            var outcome = await this.DataAccess.SaveAsync(request.Data);
             return (outcome != null) ? Result<CustomerDTO>.Success(outcome) : Result<CustomerDTO>.Failure("Error creating a Customer");
         }
     }
@@ -521,14 +565,14 @@ namespace Pezza.Core.Customer.Commands
 
     public class DeleteCustomerCommandHandler : IRequestHandler<DeleteCustomerCommand, Result>
     {
-        private readonly IDataAccess<CustomerDTO> dataAcess;
+        private readonly IDataAccess<CustomerDTO> DataAccess;
 
-        public DeleteCustomerCommandHandler(IDataAccess<CustomerDTO> dataAcess)
-            => this.dataAcess = dataAcess;
+        public DeleteCustomerCommandHandler(IDataAccess<CustomerDTO> DataAccess)
+            => this.DataAccess = DataAccess;
 
         public async Task<Result> Handle(DeleteCustomerCommand request, CancellationToken cancellationToken)
         {
-            var outcome = await this.dataAcess.DeleteAsync(request.Id);
+            var outcome = await this.DataAccess.DeleteAsync(request.Id);
 
             return (outcome) ? Result.Success() : Result.Failure("Error deleting a Customer");
         }
@@ -555,13 +599,13 @@ namespace Pezza.Core.Customer.Commands
 
     public class UpdateCustomerCommandHandler : IRequestHandler<UpdateCustomerCommand, Result<CustomerDTO>>
     {
-        private readonly IDataAccess<CustomerDTO> dataAcess;
+        private readonly IDataAccess<CustomerDTO> DataAccess;
 
-        public UpdateCustomerCommandHandler(IDataAccess<CustomerDTO> dataAcess) => this.dataAcess = dataAcess ?? throw new System.ArgumentNullException(nameof(dataAcess));
+        public UpdateCustomerCommandHandler(IDataAccess<CustomerDTO> DataAccess) => this.DataAccess = DataAccess ?? throw new System.ArgumentNullException(nameof(DataAccess));
 
         public async Task<Result<CustomerDTO>> Handle(UpdateCustomerCommand request, CancellationToken cancellationToken)
         {            
-            var outcome = await this.dataAcess.UpdateAsync(request.Data);
+            var outcome = await this.DataAccess.UpdateAsync(request.Data);
             return (outcome != null) ? Result<CustomerDTO>.Success(outcome) : Result<CustomerDTO>.Failure("Error updating a Customer");
         }
     }
@@ -595,13 +639,13 @@ namespace Pezza.Core.Customer.Queries
 
     public class GetCustomerQueryHandler : IRequestHandler<GetCustomerQuery, Result<CustomerDTO>>
     {
-        private readonly IDataAccess<CustomerDTO> dataAcess;
+        private readonly IDataAccess<CustomerDTO> DataAccess;
 
-        public GetCustomerQueryHandler(IDataAccess<CustomerDTO> dataAcess) => this.dataAcess = dataAcess;
+        public GetCustomerQueryHandler(IDataAccess<CustomerDTO> DataAccess) => this.DataAccess = DataAccess;
 
         public async Task<Result<CustomerDTO>> Handle(GetCustomerQuery request, CancellationToken cancellationToken)
         {
-            var search = await this.dataAcess.GetAsync(request.Id);
+            var search = await this.DataAccess.GetAsync(request.Id);
             return Result<CustomerDTO>.Success(search);
         }
     }
@@ -626,13 +670,13 @@ namespace Pezza.Core.Customer.Queries
 
     public class GetCustomersQueryHandler : IRequestHandler<GetCustomersQuery, ListResult<CustomerDTO>>
     {
-        private readonly IDataAccess<CustomerDTO> dataAcess;
+        private readonly IDataAccess<CustomerDTO> DataAccess;
 
-        public GetCustomersQueryHandler(IDataAccess<CustomerDTO> dataAcess) => this.dataAcess = dataAcess;
+        public GetCustomersQueryHandler(IDataAccess<CustomerDTO> DataAccess) => this.DataAccess = DataAccess;
 
         public async Task<ListResult<CustomerDTO>> Handle(GetCustomersQuery request, CancellationToken cancellationToken)
         {
-            var search = await this.dataAcess.GetAllAsync();
+            var search = await this.DataAccess.GetAllAsync();
 
             return ListResult<CustomerDTO>.Success(search, search.Count);
         }
@@ -710,7 +754,7 @@ namespace Pezza.Common.Behaviours
 }
 ```
 
-- UnhandledExceptionBehaviour.cs this will pick up any exceptions during the executio npipeline. 
+- UnhandledExceptionBehaviour.cs this will pick up any exceptions during the executio pipeline. 
 
 ```cs
 namespace Pezza.Common.Behaviours
@@ -746,7 +790,7 @@ namespace Pezza.Common.Behaviours
 }
 ```
 
-- ValidationBehavior.cs -Will be used in Phase 3 to pick up andy validation that was added for Commands or Queries.
+- ValidationBehavior.cs -Will be used in Phase 3 to pick up any validation that was added for Commands or Queries.
 
 ```cs
 namespace Pezza.Common.Behaviours

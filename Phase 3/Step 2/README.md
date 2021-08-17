@@ -190,14 +190,14 @@ namespace Test.DataAccess.Filter
             return query.Where(x => x.Province.Contains(province));
         }
 
-        public static IQueryable<Customer> FilterByZipCode(this IQueryable<Customer> query, string zipCode)
+        public static IQueryable<Customer> FilterByPostalCode(this IQueryable<Customer> query, string PostalCode)
         {
-            if (string.IsNullOrWhiteSpace(zipCode))
+            if (string.IsNullOrWhiteSpace(PostalCode))
             {
                 return query;
             }
 
-            return query.Where(x => x.ZipCode.Contains(zipCode));
+            return query.Where(x => x.PostalCode.Contains(PostalCode));
         }
 
         public static IQueryable<Customer> FilterByPhone(this IQueryable<Customer> query, string phone)
@@ -316,7 +316,7 @@ public async Task<ListResult<CustomerDTO>> GetAllAsync(Entity searchBase)
                 .FilterByAddress(searchModel.Address?.Address)
                 .FilterByCity(searchModel.Address?.City)
                 .FilterByProvince(searchModel.Address?.Province)
-                .FilterByZipCode(searchModel.Address?.ZipCode)
+                .FilterByPostalCode(searchModel.Address?.PostalCode)
                 .FilterByPhone(searchModel.Phone)
                 .FilterByEmail(searchModel.Email)
                 .FilterByContactPerson(searchModel.ContactPerson)
@@ -357,12 +357,12 @@ namespace Pezza.Core.Customer.Queries
 
     public class GetCustomersQueryHandler : IRequestHandler<GetCustomersQuery, ListResult<CustomerDTO>>
     {
-        private readonly IDataAccess<Common.Entities.Customer> dataAcess;
+        private readonly IDataAccess<Common.Entities.Customer> DataAccess;
 
-        public GetCustomersQueryHandler(IDataAccess<Common.Entities.Customer> dataAcess) => this.dataAcess = dataAcess;
+        public GetCustomersQueryHandler(IDataAccess<Common.Entities.Customer> DataAccess) => this.DataAccess = DataAccess;
 
         public async Task<ListResult<CustomerDTO>> Handle(GetCustomersQuery request, CancellationToken cancellationToken)
-          => await this.dataAcess.GetAllAsync(request.SearchModel);
+          => await this.DataAccess.GetAllAsync(request.SearchModel);
     }
 }
 ```

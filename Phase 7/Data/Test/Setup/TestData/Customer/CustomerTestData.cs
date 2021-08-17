@@ -18,7 +18,7 @@
             Email = faker.Person.Email,
             Phone = faker.Person.Phone,
             Province = faker.Address.State(),
-            ZipCode = faker.Address.ZipCode(),
+            PostalCode = faker.Address.PostalCode(),
             DateCreated = DateTime.Now
         };
 
@@ -30,7 +30,7 @@
             Email = faker.Person.Email,
             Phone = faker.Person.Phone,
             Province = faker.Address.State(),
-            ZipCode = faker.Address.ZipCode(),
+            PostalCode = faker.Address.PostalCode(),
             DateCreated = DateTime.Now
         };
 
@@ -44,7 +44,7 @@
                 Address = faker.Address.FullAddress(),
                 City = faker.Address.City(),
                 Province = faker.Address.State(),
-                ZipCode = faker.Address.ZipCode(),
+                PostalCode = faker.Address.PostalCode(),
             }
         };
     }

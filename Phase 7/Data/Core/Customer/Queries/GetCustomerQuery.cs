@@ -15,13 +15,13 @@
 
     public class GetCustomerQueryHandler : IRequestHandler<GetCustomerQuery, Result<CustomerDTO>>
     {
-        private readonly IDataAccess<Common.Entities.Customer> dataAcess;
+        private readonly IDataAccess<Common.Entities.Customer> DataAccess;
 
-        public GetCustomerQueryHandler(IDataAccess<Common.Entities.Customer> dataAcess) => this.dataAcess = dataAcess;
+        public GetCustomerQueryHandler(IDataAccess<Common.Entities.Customer> DataAccess) => this.DataAccess = DataAccess;
 
         public async Task<Result<CustomerDTO>> Handle(GetCustomerQuery request, CancellationToken cancellationToken)
         {
-            var search = await this.dataAcess.GetAsync(request.Id);
+            var search = await this.DataAccess.GetAsync(request.Id);
 
             return Result<CustomerDTO>.Success(search.Map());
         }

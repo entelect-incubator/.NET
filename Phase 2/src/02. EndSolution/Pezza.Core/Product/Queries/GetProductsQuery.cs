@@ -13,13 +13,13 @@
 
     public class GetProductsQueryHandler : IRequestHandler<GetProductsQuery, ListResult<ProductDTO>>
     {
-        private readonly IDataAccess<ProductDTO> dataAcess;
+        private readonly IDataAccess<ProductDTO> DataAccess;
 
-        public GetProductsQueryHandler(IDataAccess<ProductDTO> dataAcess) => this.dataAcess = dataAcess;
+        public GetProductsQueryHandler(IDataAccess<ProductDTO> DataAccess) => this.DataAccess = DataAccess;
 
         public async Task<ListResult<ProductDTO>> Handle(GetProductsQuery request, CancellationToken cancellationToken)
         {
-            var search = await this.dataAcess.GetAllAsync();
+            var search = await this.DataAccess.GetAllAsync();
             return ListResult<ProductDTO>.Success(search, search.Count);
         }
     }

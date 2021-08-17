@@ -3,9 +3,11 @@ namespace Pezza.Common.Entities
     using System;
     using System.Collections.Generic;
 
-    public class Customer : Entity
+    public class Customer
     {
         public Customer() => this.Orders = new HashSet<Order>();
+
+        public int Id { get; set; }
 
         public string Name { get; set; }
 
@@ -15,7 +17,7 @@ namespace Pezza.Common.Entities
 
         public string Province { get; set; }
 
-        public string ZipCode { get; set; }
+        public string PostalCode { get; set; }
 
         public string Phone { get; set; }
 

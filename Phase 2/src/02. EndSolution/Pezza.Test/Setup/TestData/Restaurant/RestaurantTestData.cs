@@ -18,7 +18,7 @@
             {
                 Address = faker.Address.FullAddress(),
                 City = faker.Address.City(),
-                ZipCode = faker.Address.ZipCode(),
+                PostalCode = faker.Address.ZipCode(),
                 Province = faker.Address.State(),
             },
             DateCreated = DateTime.Now,

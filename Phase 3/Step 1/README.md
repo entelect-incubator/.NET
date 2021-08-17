@@ -44,7 +44,7 @@ namespace Pezza.Common.Validators
             .NotEmpty()
             .MaximumLength(100);
 
-            this.RuleFor(x => x.ZipCode)
+            this.RuleFor(x => x.PostalCode)
             .NotEmpty()
             .Must(x => int.TryParse(x, out var val) && val > 0)
             .MaximumLength(8);
@@ -64,7 +64,7 @@ namespace Pezza.Common.Validators
             this.RuleFor(x => x.Province)
             .MaximumLength(100);
 
-            this.RuleFor(x => x.ZipCode)
+            this.RuleFor(x => x.PostalCode)
             .Must(x => int.TryParse(x, out var val) && val > 0)
             .MaximumLength(8);
         }

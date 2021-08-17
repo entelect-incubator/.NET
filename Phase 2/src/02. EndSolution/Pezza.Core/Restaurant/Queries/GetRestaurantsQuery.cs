@@ -13,13 +13,13 @@
 
     public class GetRestaurantsQueryHandler : IRequestHandler<GetRestaurantsQuery, ListResult<RestaurantDTO>>
     {
-        private readonly IDataAccess<RestaurantDTO> dataAcess;
+        private readonly IDataAccess<RestaurantDTO> DataAccess;
 
-        public GetRestaurantsQueryHandler(IDataAccess<RestaurantDTO> dataAcess) => this.dataAcess = dataAcess;
+        public GetRestaurantsQueryHandler(IDataAccess<RestaurantDTO> DataAccess) => this.DataAccess = DataAccess;
 
         public async Task<ListResult<RestaurantDTO>> Handle(GetRestaurantsQuery request, CancellationToken cancellationToken)
         {
-            var search = await this.dataAcess.GetAllAsync();
+            var search = await this.DataAccess.GetAllAsync();
             return ListResult<RestaurantDTO>.Success(search, search.Count);
         }
     }

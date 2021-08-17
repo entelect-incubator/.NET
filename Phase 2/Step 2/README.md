@@ -46,7 +46,7 @@ namespace Pezza.Test
                 Address = faker.Address.FullAddress(),
                 City = faker.Address.City(),
                 Province = faker.Address.State(),
-                ZipCode = faker.Address.ZipCode(),
+                PostalCode = faker.Address.PostalCode(),
             },
             DateCreated = DateTime.Now
         };
@@ -63,7 +63,7 @@ Create a Folder in the Test Project called **DataAccess**. Create a Test Data Ac
 
 ![Data Access Structure](Assets/2020-11-20-09-42-04.png)
 
-We will test every method inside of the DataAcess class - GetAsync, GetAllAsync, SaveAsync, UpdateAsync and DeleteAsync. The class will inherit from QueryTestBase created earlier.
+We will test every method inside of the DataAccess class - GetAsync, GetAllAsync, SaveAsync, UpdateAsync and DeleteAsync. The class will inherit from QueryTestBase created earlier.
 
 Every test method will start with [Test], this indicates it as a Unit Test.
 

@@ -1,4 +1,4 @@
-namespace Pezza.Test
+namespace Pezza.Test.Core
 {
     using System.Threading;
     using System.Threading.Tasks;
@@ -12,13 +12,13 @@ namespace Pezza.Test
         [Test]
         public async Task GetAsync()
         {
-            var dataAccess = new NotifyDataAccess(this.Context);
+            var dataAccess = new NotifyDataAccess(this.Context, Mapper());
 
             //Act
             var sutCreate = new CreateNotifyCommandHandler(dataAccess);
             var resultCreate = await sutCreate.Handle(new CreateNotifyCommand
             {
-                Data = NotifyTestData.NotifyDataDTO
+                Data = NotifyTestData.NotifyDTO
             }, CancellationToken.None);
 
             //Act
@@ -34,13 +34,13 @@ namespace Pezza.Test
         [Test]
         public async Task GetAllAsync()
         {
-            var dataAccess = new NotifyDataAccess(this.Context);
+            var dataAccess = new NotifyDataAccess(this.Context, Mapper());
 
             //Act
             var sutCreate = new CreateNotifyCommandHandler(dataAccess);
             var resultCreate = await sutCreate.Handle(new CreateNotifyCommand
             {
-                Data = NotifyTestData.NotifyDataDTO
+                Data = NotifyTestData.NotifyDTO
             }, CancellationToken.None);
 
             //Act
@@ -53,13 +53,13 @@ namespace Pezza.Test
         [Test]
         public async Task SaveAsync()
         {
-            var dataAccess = new NotifyDataAccess(this.Context);
+            var dataAccess = new NotifyDataAccess(this.Context, Mapper());
 
             //Act
             var sutCreate = new CreateNotifyCommandHandler(dataAccess);
             var resultCreate = await sutCreate.Handle(new CreateNotifyCommand
             {
-                Data = NotifyTestData.NotifyDataDTO
+                Data = NotifyTestData.NotifyDTO
             }, CancellationToken.None);
 
             Assert.IsTrue(resultCreate.Succeeded);
@@ -68,22 +68,22 @@ namespace Pezza.Test
         [Test]
         public async Task UpdateAsync()
         {
-            var dataAccess = new NotifyDataAccess(this.Context);
+            var dataAccess = new NotifyDataAccess(this.Context, Mapper());
 
             //Act
             var sutCreate = new CreateNotifyCommandHandler(dataAccess);
             var resultCreate = await sutCreate.Handle(new CreateNotifyCommand
             {
-                Data = NotifyTestData.NotifyDataDTO
+                Data = NotifyTestData.NotifyDTO
             }, CancellationToken.None);
 
             //Act
             var sutUpdate = new UpdateNotifyCommandHandler(dataAccess);
             var resultUpdate = await sutUpdate.Handle(new UpdateNotifyCommand
             {
-                Id = resultCreate.Data.Id,
-                Data = new Common.DTO.NotifyDataDTO
+                Data = new Common.DTO.NotifyDTO
                 {
+                    Id = resultCreate.Data.Id,
                     Email = "test@pezza.co.za"
                 }
             }, CancellationToken.None);
@@ -95,12 +95,12 @@ namespace Pezza.Test
         [Test]
         public async Task DeleteAsync()
         {
-            var dataAccess = new NotifyDataAccess(this.Context);
+            var dataAccess = new NotifyDataAccess(this.Context, Mapper());
             //Act
             var sutCreate = new CreateNotifyCommandHandler(dataAccess);
             var resultCreate = await sutCreate.Handle(new CreateNotifyCommand
             {
-                Data = NotifyTestData.NotifyDataDTO
+                Data = NotifyTestData.NotifyDTO
             }, CancellationToken.None);
 
 

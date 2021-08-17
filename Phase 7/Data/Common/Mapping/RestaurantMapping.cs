@@ -55,7 +55,7 @@
                Address = dto.Address?.Address,
                City = dto.Address?.City,
                Province = dto.Address?.Province,
-               PostalCode = dto.Address?.ZipCode,
+               PostalCode = dto.Address?.PostalCode,
                IsActive = dto.IsActive ?? true,
            } : null;
 

@@ -28,8 +28,11 @@
             Amount = faker.Finance.Amount(),
             Customer = CustomerTestData.CustomerDTO,
             CustomerId = 1,
+            Restaurant = RestaurantTestData.RestaurantDTO,
+            RestaurantId = 1,
             DateCreated = DateTime.Now,
-            OrderItems = OrderItemsDTO()
+            Completed = false,
+           // OrderItems = OrderItemsDTO()
         };
 
         public static List<OrderItemDTO> OrderItemsDTO()

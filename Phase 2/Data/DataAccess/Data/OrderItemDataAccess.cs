@@ -4,48 +4,53 @@
     using System.Linq;
     using System.Linq.Dynamic.Core;
     using System.Threading.Tasks;
+    using AutoMapper;
     using Microsoft.EntityFrameworkCore;
+    using Pezza.Common.DTO;
     using Pezza.Common.Entities;
     using Pezza.DataAccess.Contracts;
 
-    public class OrderItemDataAccess : IDataAccess<OrderItem>
+    public class OrderItemDataAccess : IDataAccess<OrderItemDTO>
     {
-        private readonly IDatabaseContext databaseContext;
+        private readonly DatabaseContext databaseContext;
 
-        public OrderItemDataAccess(IDatabaseContext databaseContext)
-            => this.databaseContext = databaseContext;
+        private readonly IMapper mapper;
 
-        public async Task<Common.Entities.OrderItem> GetAsync(int id)
-        {
-            return await this.databaseContext.OrderItems.FirstOrDefaultAsync(x => x.Id == id);
-        }
+        public OrderItemDataAccess(DatabaseContext databaseContext, IMapper mapper)
+            => (this.databaseContext, this.mapper) = (databaseContext, mapper);
 
-        public async Task<List<OrderItem>> GetAllAsync()
+        public async Task<OrderItemDTO> GetAsync(int id)
+            => this.mapper.Map<OrderItemDTO>(await this.databaseContext.OrderItems.FirstOrDefaultAsync(x => x.Id == id));
+
+        public async Task<List<OrderItemDTO>> GetAllAsync()
         {
             var entities = await this.databaseContext.OrderItems.Select(x => x).AsNoTracking().ToListAsync();
-
-            return entities;
+            return this.mapper.Map<List<OrderItemDTO>>(entities);
         }
 
-        public async Task<OrderItem> SaveAsync(OrderItem entity)
+        public async Task<OrderItemDTO> SaveAsync(OrderItemDTO entity)
         {
-            this.databaseContext.OrderItems.Add(entity);
+            this.databaseContext.OrderItems.Add(this.mapper.Map<OrderItem>(entity));
             await this.databaseContext.SaveChangesAsync();
 
             return entity;
         }
 
-        public async Task<OrderItem> UpdateAsync(OrderItem entity)
+        public async Task<OrderItemDTO> UpdateAsync(OrderItemDTO entity)
         {
-            this.databaseContext.OrderItems.Update(entity);
+            var findEntity = await this.databaseContext.OrderItems.FirstOrDefaultAsync(x => x.Id == entity.Id);
+            findEntity.Quantity = entity.Quantity ?? findEntity.Quantity;
+            findEntity.ProductId = entity.ProductId ?? findEntity.ProductId;
+
+            this.databaseContext.OrderItems.Update(findEntity);
             await this.databaseContext.SaveChangesAsync();
 
-            return entity;
+            return this.mapper.Map<OrderItemDTO>(findEntity);
         }
 
         public async Task<bool> DeleteAsync(int id)
         {
-            var entity = await this.GetAsync(id);
+            var entity = await this.databaseContext.OrderItems.FirstOrDefaultAsync(x => x.Id == id);
             this.databaseContext.OrderItems.Remove(entity);
             var result = await this.databaseContext.SaveChangesAsync();
 

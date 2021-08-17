@@ -110,7 +110,7 @@
                     Address = entity.Address?.Address,
                     City = entity.Address?.City,
                     Province = entity.Address?.Province,
-                    ZipCode = entity.Address?.ZipCode
+                    PostalCode = entity.Address?.PostalCode
                 },
                 IsActive = entity.IsActive
             });

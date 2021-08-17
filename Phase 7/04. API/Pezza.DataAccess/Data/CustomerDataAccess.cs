@@ -39,7 +39,7 @@
                 .FilterByAddress(searchModel.Address?.Address)
                 .FilterByCity(searchModel.Address?.City)
                 .FilterByProvince(searchModel.Address?.Province)
-                .FilterByZipCode(searchModel.Address?.ZipCode)
+                .FilterByPostalCode(searchModel.Address?.PostalCode)
                 .FilterByPhone(searchModel.Phone)
                 .FilterByEmail(searchModel.Email)
                 .FilterByContactPerson(searchModel.ContactPerson)
@@ -67,7 +67,7 @@
             findEntity.Address = !string.IsNullOrEmpty(entity?.Address?.Address) ? entity?.Address?.Address : findEntity.Address;
             findEntity.City = !string.IsNullOrEmpty(entity?.Address?.City) ? entity?.Address?.City : findEntity.City;
             findEntity.Province = !string.IsNullOrEmpty(entity?.Address?.Province) ? entity?.Address?.Province : findEntity.Province;
-            findEntity.ZipCode = !string.IsNullOrEmpty(entity?.Address?.ZipCode) ? entity?.Address?.ZipCode : findEntity.ZipCode;
+            findEntity.PostalCode = !string.IsNullOrEmpty(entity?.Address?.PostalCode) ? entity?.Address?.PostalCode : findEntity.PostalCode;
             findEntity.Phone = !string.IsNullOrEmpty(entity?.Phone) ? entity?.Phone : findEntity.Phone;
             findEntity.ContactPerson = !string.IsNullOrEmpty(entity?.ContactPerson) ? entity?.ContactPerson : findEntity.ContactPerson;
             this.databaseContext.Customers.Update(findEntity);

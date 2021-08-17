@@ -13,14 +13,14 @@
 
     public class DeleteOrderCommandHandler : IRequestHandler<DeleteOrderCommand, Result>
     {
-        private readonly IDataAccess<Common.Entities.Order> dataAcess;
+        private readonly IDataAccess<Common.Entities.Order> DataAccess;
 
-        public DeleteOrderCommandHandler(IDataAccess<Common.Entities.Order> dataAcess)
-            => this.dataAcess = dataAcess;
+        public DeleteOrderCommandHandler(IDataAccess<Common.Entities.Order> DataAccess)
+            => this.DataAccess = DataAccess;
 
         public async Task<Result> Handle(DeleteOrderCommand request, CancellationToken cancellationToken)
         {
-            var outcome = await this.dataAcess.DeleteAsync(request.Id);
+            var outcome = await this.DataAccess.DeleteAsync(request.Id);
 
             return (outcome) ? Result.Success() : Result.Failure("Error deleting a Order");
         }

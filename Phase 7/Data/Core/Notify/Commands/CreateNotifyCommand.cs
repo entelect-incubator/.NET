@@ -16,13 +16,13 @@
 
     public class CreateNotifyCommandHandler : IRequestHandler<CreateNotifyCommand, Result<Notify>>
     {
-        private readonly IDataAccess<Notify> dataAcess;
+        private readonly IDataAccess<Notify> DataAccess;
 
-        public CreateNotifyCommandHandler(IDataAccess<Notify> dataAcess) => this.dataAcess = dataAcess;
+        public CreateNotifyCommandHandler(IDataAccess<Notify> DataAccess) => this.DataAccess = DataAccess;
 
         public async Task<Result<Notify>> Handle(CreateNotifyCommand request, CancellationToken cancellationToken)
         {
-            var outcome = await this.dataAcess.SaveAsync(request.Data.Map());
+            var outcome = await this.DataAccess.SaveAsync(request.Data.Map());
 
             return (outcome != null) ? Result<Notify>.Success(outcome) : Result<Notify>.Failure("Error creating a Notification");
         }

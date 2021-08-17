@@ -13,20 +13,22 @@
                     Address = src.Address,
                     City = src.City,
                     Province = src.Province,
-                    ZipCode = src.ZipCode
+                    PostalCode = src.PostalCode
                 }))
                 .ReverseMap();
             this.CreateMap<CustomerDTO, Customer>()
                 .ForMember(vm => vm.Address, m => m.MapFrom(u => u.Address.Address))
                 .ForMember(vm => vm.City, m => m.MapFrom(u => u.Address.City))
                 .ForMember(vm => vm.Province, m => m.MapFrom(u => u.Address.Province))
-                .ForMember(vm => vm.ZipCode, m => m.MapFrom(u => u.Address.ZipCode));
+                .ForMember(vm => vm.PostalCode, m => m.MapFrom(u => u.Address.PostalCode));
 
             this.CreateMap<Notify, NotifyDTO>();
             this.CreateMap<NotifyDTO, Notify>();
 
-            this.CreateMap<Order, OrderDTO>();
-            this.CreateMap<OrderDTO, Order>();
+            this.CreateMap<Order, OrderDTO>()
+                .ForMember(vm => vm.OrderItems, m => m.MapFrom(u => u.OrderItems));            
+            this.CreateMap<OrderDTO, Order>()
+                .ForMember(vm => vm.OrderItems, m => m.MapFrom(u => u.OrderItems));
 
             this.CreateMap<OrderItem, OrderItemDTO>();
             this.CreateMap<OrderItemDTO, OrderItem>();
@@ -40,14 +42,14 @@
                     Address = src.Address,
                     City = src.City,
                     Province = src.Province,
-                    ZipCode = src.PostalCode
+                    PostalCode = src.PostalCode
                 }))
                 .ReverseMap();
             this.CreateMap<RestaurantDTO, Restaurant>()
                 .ForMember(vm => vm.Address, m => m.MapFrom(u => u.Address.Address))
                 .ForMember(vm => vm.City, m => m.MapFrom(u => u.Address.City))
                 .ForMember(vm => vm.Province, m => m.MapFrom(u => u.Address.Province))
-                .ForMember(vm => vm.PostalCode, m => m.MapFrom(u => u.Address.ZipCode));
+                .ForMember(vm => vm.PostalCode, m => m.MapFrom(u => u.Address.PostalCode));
 
             this.CreateMap<Stock, StockDTO>();
             this.CreateMap<StockDTO, Stock>();

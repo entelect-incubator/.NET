@@ -9,7 +9,7 @@ namespace Pezza.DataAccess.Contracts
 
         Task<List<T>> GetAllAsync();
 
-        Task<T> UpdateAsync(T entity);
+        Task<T> UpdateAsync(T dto);
 
         Task<T> SaveAsync(T dto);
 

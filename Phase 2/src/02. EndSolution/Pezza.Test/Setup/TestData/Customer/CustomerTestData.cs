@@ -19,7 +19,7 @@
                 Address = faker.Address.FullAddress(),
                 City = faker.Address.City(),
                 Province = faker.Address.State(),
-                ZipCode = faker.Address.ZipCode(),
+                PostalCode = faker.Address.ZipCode(),
             },
             DateCreated = DateTime.Now
         };

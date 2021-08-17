@@ -58,7 +58,7 @@
         ///       "address": "1 Tree Street",
         ///       "city": "Pretoria",
         ///       "province": "Gautenf",
-        ///       "zipCode": "0181",
+        ///       "PostalCode": "0181",
         ///       "phone": "0721230000",
         ///       "email": "person.a@gmail.com"
         ///       "contactPerson": "Person B 0723210000"

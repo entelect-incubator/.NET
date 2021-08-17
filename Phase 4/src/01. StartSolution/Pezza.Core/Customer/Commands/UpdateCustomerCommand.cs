@@ -14,13 +14,13 @@
 
     public class UpdateCustomerCommandHandler : IRequestHandler<UpdateCustomerCommand, Result<CustomerDTO>>
     {
-        private readonly IDataAccess<CustomerDTO> dataAcess;
+        private readonly IDataAccess<CustomerDTO> DataAccess;
 
-        public UpdateCustomerCommandHandler(IDataAccess<CustomerDTO> dataAcess) => this.dataAcess = dataAcess ?? throw new System.ArgumentNullException(nameof(dataAcess));
+        public UpdateCustomerCommandHandler(IDataAccess<CustomerDTO> DataAccess) => this.DataAccess = DataAccess ?? throw new System.ArgumentNullException(nameof(DataAccess));
 
         public async Task<Result<CustomerDTO>> Handle(UpdateCustomerCommand request, CancellationToken cancellationToken)
         {            
-            var outcome = await this.dataAcess.UpdateAsync(request.Data);
+            var outcome = await this.DataAccess.UpdateAsync(request.Data);
             return (outcome != null) ? Result<CustomerDTO>.Success(outcome) : Result<CustomerDTO>.Failure("Error updating a Customer");
         }
     }

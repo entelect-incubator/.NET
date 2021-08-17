@@ -16,22 +16,22 @@
 
     public class UpdateRestaurantCommandHandler : IRequestHandler<UpdateRestaurantCommand, Result<Common.Entities.Restaurant>>
     {
-        private readonly IDataAccess<Common.Entities.Restaurant> dataAcess;
+        private readonly IDataAccess<Common.Entities.Restaurant> DataAccess;
 
-        public UpdateRestaurantCommandHandler(IDataAccess<Common.Entities.Restaurant> dataAcess) => this.dataAcess = dataAcess;
+        public UpdateRestaurantCommandHandler(IDataAccess<Common.Entities.Restaurant> DataAccess) => this.DataAccess = DataAccess;
 
         public async Task<Result<Common.Entities.Restaurant>> Handle(UpdateRestaurantCommand request, CancellationToken cancellationToken)
         {
-            var findEntity = await this.dataAcess.GetAsync(request.Id);
+            var findEntity = await this.DataAccess.GetAsync(request.Id);
             findEntity.Name = !string.IsNullOrEmpty(request.Data?.Name) ? request.Data?.Name : findEntity.Name;
             findEntity.Description = !string.IsNullOrEmpty(request.Data?.Description) ? request.Data?.Description : findEntity.Description;
             findEntity.Address = !string.IsNullOrEmpty(request.Data?.Address?.Address) ? request.Data?.Address?.Address : findEntity.Address;
             findEntity.City = !string.IsNullOrEmpty(request.Data?.Address?.City) ? request.Data?.Address?.City : findEntity.City;
             findEntity.Province = !string.IsNullOrEmpty(request.Data?.Address?.Province) ? request.Data?.Address?.Province : findEntity.Province;
-            findEntity.PostalCode = !string.IsNullOrEmpty(request.Data?.Address?.ZipCode) ? request.Data?.Address?.ZipCode : findEntity.PostalCode;
+            findEntity.PostalCode = !string.IsNullOrEmpty(request.Data?.Address?.PostalCode) ? request.Data?.Address?.PostalCode : findEntity.PostalCode;
             findEntity.PictureUrl = !string.IsNullOrEmpty(request.Data?.PictureUrl) ? request.Data?.PictureUrl : findEntity.PictureUrl;
             findEntity.IsActive = request.Data.IsActive ?? findEntity.IsActive;
-            var outcome = await this.dataAcess.UpdateAsync(findEntity);
+            var outcome = await this.DataAccess.UpdateAsync(findEntity);
 
             return (outcome != null) ? Result<Common.Entities.Restaurant>.Success(outcome) : Result<Common.Entities.Restaurant>.Failure("Error updating a Restaurant");
         }

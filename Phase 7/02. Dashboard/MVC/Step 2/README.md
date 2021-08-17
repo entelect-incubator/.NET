@@ -334,7 +334,7 @@ function loadData() {
                         tableBody += customer.address.address + '<br/>';
                         tableBody += customer.address.city + '<br/>';
                         tableBody += customer.address.province + '<br/>';
-                        tableBody += customer.address.zipcode;
+                        tableBody += customer.address.PostalCode;
                         tableBody += '</td>';
                         tableBody += '<td>' + new Date(customer.dateCreated).toLocaleDateString() + '</td>';
                         tableBody += `<td align="right">
@@ -397,7 +397,7 @@ function loadData() {
                         cardBody += entity.address.address + '<br/>';
                         cardBody += entity.address.city + '<br/>';
                         cardBody += entity.address.province + '<br/>';
-                        cardBody += entity.address.zipcode;
+                        cardBody += entity.address.PostalCode;
                         cardBody += '</p>';
                         cardBody += '<p class="card-text">' + entity.description + ' </p>';
                         cardBody += '<p>Since | ' + new Date(entity.dateCreated).toLocaleDateString() + '</p>';

@@ -16,7 +16,7 @@
             PictureUrl = string.Empty,
             Address = faker.Address.FullAddress(),
             City = faker.Address.City(),
-            PostalCode = faker.Address.ZipCode(),
+            PostalCode = faker.Address.PostalCode(),
             Province = faker.Address.State(),
             DateCreated = DateTime.Now,
             Id = 1,
@@ -30,7 +30,7 @@
             PictureUrl = string.Empty,
             Address = faker.Address.FullAddress(),
             City = faker.Address.City(),
-            PostalCode = faker.Address.ZipCode(),
+            PostalCode = faker.Address.PostalCode(),
             Province = faker.Address.State(),
             DateCreated = DateTime.Now,
             Id = 1,
@@ -46,7 +46,7 @@
             {
                 Address = faker.Address.FullAddress(),
                 City = faker.Address.City(),
-                ZipCode = faker.Address.ZipCode(),
+                PostalCode = faker.Address.PostalCode(),
                 Province = faker.Address.State(),
             },
             IsActive = true

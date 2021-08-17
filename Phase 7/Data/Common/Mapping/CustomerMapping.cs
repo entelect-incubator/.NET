@@ -20,7 +20,7 @@
                Name = entity.Name,
                Phone = entity.Phone,
                Province = entity.Province,
-               ZipCode = entity.ZipCode
+               PostalCode = entity.PostalCode
            } : null;
 
         public static IEnumerable<CustomerDTO> Map(this IEnumerable<Customer> entity) =>
@@ -39,7 +39,7 @@
                Orders = entity.Orders.Map(),
                Phone = entity.Phone,
                Province = entity.Province,
-               ZipCode = entity.ZipCode
+               PostalCode = entity.PostalCode
            } : null;
 
         public static IEnumerable<CustomerDTO> MapWithOrders(this IEnumerable<Customer> entity) =>
@@ -57,7 +57,7 @@
                Name = dto.Name,
                Phone = dto.Phone,
                Province = dto.Province,
-               ZipCode = dto.ZipCode
+               PostalCode = dto.PostalCode
            } : null;
 
         public static IEnumerable<Customer> Map(this IEnumerable<CustomerDTO> dto) =>
@@ -75,7 +75,7 @@
                Name = dto.Name,
                Phone = dto.Phone,
                Province = dto.Province,
-               ZipCode = dto.ZipCode
+               PostalCode = dto.PostalCode
            } : null;
 
         public static IEnumerable<Customer> MapWithOrders(this IEnumerable<CustomerDTO> dto) =>
@@ -92,7 +92,7 @@
                Name = dto.Name,
                Phone = dto.Phone,
                Province = dto.Address.Province,
-               ZipCode = dto.Address.ZipCode
+               PostalCode = dto.Address.PostalCode
            } : null;
 
         public static IEnumerable<Customer> Map(this IEnumerable<CustomerDataDTO> dto) =>

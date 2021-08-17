@@ -7,32 +7,21 @@
     using Pezza.Common.Models;
     using Pezza.DataAccess.Contracts;
 
-    public partial class UpdateStockCommand : IRequest<Result<Common.Entities.Stock>>
+    public partial class UpdateStockCommand : IRequest<Result<StockDTO>>
     {
-        public int Id { get; set; }
-
-        public StockDataDTO Data { get; set; }
+        public StockDTO Data { get; set; }
     }
 
-    public class UpdateStockCommandHandler : IRequestHandler<UpdateStockCommand, Result<Common.Entities.Stock>>
+    public class UpdateStockCommandHandler : IRequestHandler<UpdateStockCommand, Result<StockDTO>>
     {
-        private readonly IDataAccess<Common.Entities.Stock> dataAcess;
+        private readonly IDataAccess<StockDTO> DataAccess;
 
-        public UpdateStockCommandHandler(IDataAccess<Common.Entities.Stock> dataAcess) => this.dataAcess = dataAcess;
+        public UpdateStockCommandHandler(IDataAccess<StockDTO> DataAccess) => this.DataAccess = DataAccess;
 
-        public async Task<Result<Common.Entities.Stock>> Handle(UpdateStockCommand request, CancellationToken cancellationToken)
-        {
-            var findEntity = await this.dataAcess.GetAsync(request.Id);
-
-            findEntity.Name = !string.IsNullOrEmpty(request.Data?.Name) ? request.Data?.Name : findEntity.Name;
-            findEntity.UnitOfMeasure = !string.IsNullOrEmpty(request.Data?.UnitOfMeasure) ? request.Data?.UnitOfMeasure : findEntity.UnitOfMeasure;
-            findEntity.ValueOfMeasure = request.Data?.ValueOfMeasure ?? findEntity.ValueOfMeasure;
-            findEntity.Quantity = request.Data.Quantity ?? findEntity.Quantity;
-            findEntity.ExpiryDate = request.Data.ExpiryDate ?? findEntity.ExpiryDate;
-            findEntity.Comment = request.Data?.Comment;
-            var outcome = await this.dataAcess.UpdateAsync(findEntity);
-
-            return (outcome != null) ? Result<Common.Entities.Stock>.Success(outcome) : Result<Common.Entities.Stock>.Failure("Error updating a Stock");
+        public async Task<Result<StockDTO>> Handle(UpdateStockCommand request, CancellationToken cancellationToken)
+        {            
+            var outcome = await this.DataAccess.UpdateAsync(request.Data);
+            return (outcome != null) ? Result<StockDTO>.Success(outcome) : Result<StockDTO>.Failure("Error updating a Stock");
         }
     }
 }

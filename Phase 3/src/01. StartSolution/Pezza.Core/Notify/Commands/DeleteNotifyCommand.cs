@@ -14,14 +14,14 @@
 
     public class DeleteNotifyCommandHandler : IRequestHandler<DeleteNotifyCommand, Result>
     {
-        private readonly IDataAccess<NotifyDTO> dataAcess;
+        private readonly IDataAccess<NotifyDTO> DataAccess;
 
-        public DeleteNotifyCommandHandler(IDataAccess<NotifyDTO> dataAcess)
-            => this.dataAcess = dataAcess;
+        public DeleteNotifyCommandHandler(IDataAccess<NotifyDTO> DataAccess)
+            => this.DataAccess = DataAccess;
 
         public async Task<Result> Handle(DeleteNotifyCommand request, CancellationToken cancellationToken)
         {
-            var outcome = await this.dataAcess.DeleteAsync(request.Id);
+            var outcome = await this.DataAccess.DeleteAsync(request.Id);
             return (outcome) ? Result.Success() : Result.Failure("Error deleting notification");
         }
     }

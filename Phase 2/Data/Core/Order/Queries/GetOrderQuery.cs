@@ -3,25 +3,25 @@
     using System.Threading;
     using System.Threading.Tasks;
     using MediatR;
+    using Pezza.Common.DTO;
     using Pezza.Common.Models;
     using Pezza.DataAccess.Contracts;
 
-    public class GetOrderQuery : IRequest<Result<Common.Entities.Order>>
+    public class GetOrderQuery : IRequest<Result<OrderDTO>>
     {
         public int Id { get; set; }
     }
 
-    public class GetOrderQueryHandler : IRequestHandler<GetOrderQuery, Result<Common.Entities.Order>>
+    public class GetOrderQueryHandler : IRequestHandler<GetOrderQuery, Result<OrderDTO>>
     {
-        private readonly IDataAccess<Common.Entities.Order> dataAcess;
+        private readonly IDataAccess<OrderDTO> DataAccess;
 
-        public GetOrderQueryHandler(IDataAccess<Common.Entities.Order> dataAcess) => this.dataAcess = dataAcess;
+        public GetOrderQueryHandler(IDataAccess<OrderDTO> DataAccess) => this.DataAccess = DataAccess;
 
-        public async Task<Result<Common.Entities.Order>> Handle(GetOrderQuery request, CancellationToken cancellationToken)
+        public async Task<Result<OrderDTO>> Handle(GetOrderQuery request, CancellationToken cancellationToken)
         {
-            var search = await this.dataAcess.GetAsync(request.Id);
-
-            return Result<Common.Entities.Order>.Success(search);
+            var search = await this.DataAccess.GetAsync(request.Id);
+            return Result<OrderDTO>.Success(search);
         }
     }
 }

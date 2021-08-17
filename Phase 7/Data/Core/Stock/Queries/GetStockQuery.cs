@@ -13,13 +13,13 @@
 
     public class GetStockQueryHandler : IRequestHandler<GetStockQuery, Result<Common.Entities.Stock>>
     {
-        private readonly IDataAccess<Common.Entities.Stock> dataAcess;
+        private readonly IDataAccess<Common.Entities.Stock> DataAccess;
 
-        public GetStockQueryHandler(IDataAccess<Common.Entities.Stock> dataAcess) => this.dataAcess = dataAcess;
+        public GetStockQueryHandler(IDataAccess<Common.Entities.Stock> DataAccess) => this.DataAccess = DataAccess;
 
         public async Task<Result<Common.Entities.Stock>> Handle(GetStockQuery request, CancellationToken cancellationToken)
         {
-            var search = await this.dataAcess.GetAsync(request.Id);
+            var search = await this.DataAccess.GetAsync(request.Id);
 
             return Result<Common.Entities.Stock>.Success(search);
         }

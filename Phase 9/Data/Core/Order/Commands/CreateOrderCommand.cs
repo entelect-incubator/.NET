@@ -16,13 +16,13 @@
 
     public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Result<Order>>
     {
-        private readonly IDataAccess<Order> dataAcess;
+        private readonly IDataAccess<Order> DataAccess;
 
-        public CreateOrderCommandHandler(IDataAccess<Order> orderDataAcess) => this.dataAcess = orderDataAcess;
+        public CreateOrderCommandHandler(IDataAccess<Order> orderDataAccess) => this.DataAccess = orderDataAccess;
 
         public async Task<Result<Order>> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
         {
-            var outcome = await this.dataAcess.SaveAsync(request.Data.Map());
+            var outcome = await this.DataAccess.SaveAsync(request.Data.Map());
 
             return (outcome != null) ? Result<Order>.Success(outcome) : Result<Order>.Failure("Error adding a Order");
         }

@@ -75,7 +75,7 @@ We want to trigger the event if the DTO Completed property that gets send is tru
 ```cs
 public async Task<Result<OrderDTO>> Handle(UpdateOrderCommand request, CancellationToken cancellationToken)
 {
-    var outcome = await this.dataAcess.UpdateAsync(request.Data);
+    var outcome = await this.DataAccess.UpdateAsync(request.Data);
     if (request.Data.Completed.HasValue)
     {
         await this.mediator.Publish(new OrderCompletedEvent { CompletedOrder = outcome }, cancellationToken);

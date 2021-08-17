@@ -46,14 +46,14 @@ namespace Test.DataAccess.Filter
             return query.Where(x => x.Province.Contains(province));
         }
 
-        public static IQueryable<Customer> FilterByZipCode(this IQueryable<Customer> query, string zipCode)
+        public static IQueryable<Customer> FilterByPostalCode(this IQueryable<Customer> query, string PostalCode)
         {
-            if (string.IsNullOrWhiteSpace(zipCode))
+            if (string.IsNullOrWhiteSpace(PostalCode))
             {
                 return query;
             }
 
-            return query.Where(x => x.ZipCode.Contains(zipCode));
+            return query.Where(x => x.PostalCode.Contains(PostalCode));
         }
 
         public static IQueryable<Customer> FilterByPhone(this IQueryable<Customer> query, string phone)

@@ -10,23 +10,23 @@
 
     public class StockCore : IStockCore
     {
-        private readonly IStockDataAccess dataAcess;
+        private readonly IStockDataAccess DataAccess;
 
         private readonly IMapper mapper;
 
-        public StockCore(IStockDataAccess dataAcess, IMapper mapper)
-            => (this.dataAcess, this.mapper) = (dataAcess, mapper);
+        public StockCore(IStockDataAccess DataAccess, IMapper mapper)
+            => (this.DataAccess, this.mapper) = (DataAccess, mapper);
 
         public async Task<StockDTO> GetAsync(int id)
         {
-            var search = await this.dataAcess.GetAsync(id);
+            var search = await this.DataAccess.GetAsync(id);
 
             return this.mapper.Map<StockDTO>(search);
         }
 
         public async Task<IEnumerable<StockDTO>> GetAllAsync()
         {
-            var search = await this.dataAcess.GetAllAsync();
+            var search = await this.DataAccess.GetAllAsync();
 
             return this.mapper.Map<List<StockDTO>>(search);
         }
@@ -34,7 +34,7 @@
         public async Task<StockDTO> SaveAsync(Stock model)
         {
 
-            var outcome = await this.dataAcess.SaveAsync(model);
+            var outcome = await this.DataAccess.SaveAsync(model);
 
             return this.mapper.Map<StockDTO>(outcome);
         }
@@ -42,7 +42,7 @@
         public async Task<StockDTO> UpdateAsync(StockDTO model)
         {
 
-            var entity = await this.dataAcess.GetAsync(model.Id);
+            var entity = await this.DataAccess.GetAsync(model.Id);
 
             entity.Name = !string.IsNullOrEmpty(model.Name) ? model.Name : entity.Name;
             entity.UnitOfMeasure = !string.IsNullOrEmpty(model.UnitOfMeasure) ? model.UnitOfMeasure : entity.UnitOfMeasure;
@@ -52,13 +52,13 @@
             entity.ExpiryDate = (model.ExpiryDate.HasValue) ? model.ExpiryDate : entity.ExpiryDate;
             entity.Comment = (!string.IsNullOrEmpty(model.Comment)) ? model.Comment : entity.Comment;
 
-            var outcome = await this.dataAcess.UpdateAsync(entity);
+            var outcome = await this.DataAccess.UpdateAsync(entity);
             return this.mapper.Map<StockDTO>(outcome);
         }
 
         public async Task<bool> DeleteAsync(int id)
         {
-            var outcome = await this.dataAcess.DeleteAsync(id);
+            var outcome = await this.DataAccess.DeleteAsync(id);
 
             return outcome;
         }

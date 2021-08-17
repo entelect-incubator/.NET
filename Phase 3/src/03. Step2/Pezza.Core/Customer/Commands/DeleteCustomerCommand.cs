@@ -14,14 +14,14 @@
 
     public class DeleteCustomerCommandHandler : IRequestHandler<DeleteCustomerCommand, Result>
     {
-        private readonly IDataAccess<CustomerDTO> dataAcess;
+        private readonly IDataAccess<CustomerDTO> DataAccess;
 
-        public DeleteCustomerCommandHandler(IDataAccess<CustomerDTO> dataAcess)
-            => this.dataAcess = dataAcess;
+        public DeleteCustomerCommandHandler(IDataAccess<CustomerDTO> DataAccess)
+            => this.DataAccess = DataAccess;
 
         public async Task<Result> Handle(DeleteCustomerCommand request, CancellationToken cancellationToken)
         {
-            var outcome = await this.dataAcess.DeleteAsync(request.Id);
+            var outcome = await this.DataAccess.DeleteAsync(request.Id);
 
             return (outcome) ? Result.Success() : Result.Failure("Error deleting a Customer");
         }

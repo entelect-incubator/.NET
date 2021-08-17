@@ -14,14 +14,14 @@
 
     public class CreateCustomerCommandHandler : IRequestHandler<CreateCustomerCommand, Result<CustomerDTO>>
     {
-        private readonly IDataAccess<CustomerDTO> dataAcess;
+        private readonly IDataAccess<CustomerDTO> DataAccess;
 
-        public CreateCustomerCommandHandler(IDataAccess<CustomerDTO> dataAcess)
-            => this.dataAcess = dataAcess;
+        public CreateCustomerCommandHandler(IDataAccess<CustomerDTO> DataAccess)
+            => this.DataAccess = DataAccess;
 
         public async Task<Result<CustomerDTO>> Handle(CreateCustomerCommand request, CancellationToken cancellationToken)
         {
-            var outcome = await this.dataAcess.SaveAsync(request.Data);
+            var outcome = await this.DataAccess.SaveAsync(request.Data);
             return (outcome != null) ? Result<CustomerDTO>.Success(outcome) : Result<CustomerDTO>.Failure("Error creating a Customer");
         }
     }

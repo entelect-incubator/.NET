@@ -1,4 +1,4 @@
-namespace Pezza.Test
+namespace Pezza.Test.Core
 {
     using System.Threading;
     using System.Threading.Tasks;
@@ -13,13 +13,13 @@ namespace Pezza.Test
         [Test]
         public async Task GetAsync()
         {
-            var dataAccess = new StockDataAccess(this.Context);
+            var dataAccess = new StockDataAccess(this.Context, Mapper());
 
             //Act
             var sutCreate = new CreateStockCommandHandler(dataAccess);
             var resultCreate = await sutCreate.Handle(new CreateStockCommand
             {
-                Data = StockTestData.StockDataDTO
+                Data = StockTestData.StockDTO
             }, CancellationToken.None);
 
             //Act
@@ -35,13 +35,13 @@ namespace Pezza.Test
         [Test]
         public async Task GetAllAsync()
         {
-            var dataAccess = new StockDataAccess(this.Context);
+            var dataAccess = new StockDataAccess(this.Context, Mapper());
 
             //Act
             var sutCreate = new CreateStockCommandHandler(dataAccess);
             var resultCreate = await sutCreate.Handle(new CreateStockCommand
             {
-                Data = StockTestData.StockDataDTO
+                Data = StockTestData.StockDTO
             }, CancellationToken.None);
 
             //Act
@@ -54,13 +54,13 @@ namespace Pezza.Test
         [Test]
         public async Task SaveAsync()
         {
-            var dataAccess = new StockDataAccess(this.Context);
+            var dataAccess = new StockDataAccess(this.Context, Mapper());
 
             //Act
             var sutCreate = new CreateStockCommandHandler(dataAccess);
             var resultCreate = await sutCreate.Handle(new CreateStockCommand
             {
-                Data = StockTestData.StockDataDTO
+                Data = StockTestData.StockDTO
             }, CancellationToken.None);
 
             Assert.IsTrue(resultCreate.Succeeded);
@@ -69,22 +69,22 @@ namespace Pezza.Test
         [Test]
         public async Task UpdateAsync()
         {
-            var dataAccess = new StockDataAccess(this.Context);
+            var dataAccess = new StockDataAccess(this.Context, Mapper());
 
             //Act
             var sutCreate = new CreateStockCommandHandler(dataAccess);
             var resultCreate = await sutCreate.Handle(new CreateStockCommand
             {
-                Data = StockTestData.StockDataDTO
+                Data = StockTestData.StockDTO
             }, CancellationToken.None);
 
             //Act
             var sutUpdate = new UpdateStockCommandHandler(dataAccess);
             var resultUpdate = await sutUpdate.Handle(new UpdateStockCommand
             {
-                Id = resultCreate.Data.Id,
-                Data = new StockDataDTO
+                Data = new StockDTO
                 {
+                    Id = resultCreate.Data.Id,
                     Quantity = 50
                 }
             }, CancellationToken.None);
@@ -96,12 +96,12 @@ namespace Pezza.Test
         [Test]
         public async Task DeleteAsync()
         {
-            var dataAccess = new StockDataAccess(this.Context);
+            var dataAccess = new StockDataAccess(this.Context, Mapper());
             //Act
             var sutCreate = new CreateStockCommandHandler(dataAccess);
             var resultCreate = await sutCreate.Handle(new CreateStockCommand
             {
-                Data = StockTestData.StockDataDTO
+                Data = StockTestData.StockDTO
             }, CancellationToken.None);
 
 

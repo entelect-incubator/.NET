@@ -8,7 +8,7 @@ Caching
 
 ## **Install Lazy Cache**
 
-Install Nuget Package LazyCache.AspNetCore on Core and DataAcess Project
+Install Nuget Package LazyCache.AspNetCore on Core and DataAccess Project
 
 ![](2021-01-15-12-44-19.png)
 
@@ -113,7 +113,7 @@ namespace Pezza.DataAccess.Data
             findEntity.Address = !string.IsNullOrEmpty(entity?.Address?.Address) ? entity?.Address?.Address : findEntity.Address;
             findEntity.City = !string.IsNullOrEmpty(entity?.Address?.City) ? entity?.Address?.City : findEntity.City;
             findEntity.Province = !string.IsNullOrEmpty(entity?.Address?.Province) ? entity?.Address?.Province : findEntity.Province;
-            findEntity.PostalCode = !string.IsNullOrEmpty(entity?.Address?.ZipCode) ? entity?.Address?.ZipCode : findEntity.PostalCode;
+            findEntity.PostalCode = !string.IsNullOrEmpty(entity?.Address?.PostalCode) ? entity?.Address?.PostalCode : findEntity.PostalCode;
             findEntity.PictureUrl = !string.IsNullOrEmpty(entity.PictureUrl) ? entity.PictureUrl : findEntity.PictureUrl;
             findEntity.IsActive = entity.IsActive ?? findEntity.IsActive;
 

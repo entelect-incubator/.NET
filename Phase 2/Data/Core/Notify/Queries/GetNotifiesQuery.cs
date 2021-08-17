@@ -3,24 +3,24 @@
     using System.Threading;
     using System.Threading.Tasks;
     using MediatR;
+    using Pezza.Common.DTO;
     using Pezza.Common.Models;
     using Pezza.DataAccess.Contracts;
 
-    public class GetNotifiesQuery : IRequest<ListResult<Common.Entities.Notify>>
+    public class GetNotifiesQuery : IRequest<ListResult<NotifyDTO>>
     {
     }
 
-    public class GetNotifiesQueryHandler : IRequestHandler<GetNotifiesQuery, ListResult<Common.Entities.Notify>>
+    public class GetNotifiesQueryHandler : IRequestHandler<GetNotifiesQuery, ListResult<NotifyDTO>>
     {
-        private readonly IDataAccess<Common.Entities.Notify> dataAcess;
+        private readonly IDataAccess<NotifyDTO> DataAccess;
 
-        public GetNotifiesQueryHandler(IDataAccess<Common.Entities.Notify> dataAcess) => this.dataAcess = dataAcess;
+        public GetNotifiesQueryHandler(IDataAccess<NotifyDTO> DataAccess) => this.DataAccess = DataAccess;
 
-        public async Task<ListResult<Common.Entities.Notify>> Handle(GetNotifiesQuery request, CancellationToken cancellationToken)
+        public async Task<ListResult<NotifyDTO>> Handle(GetNotifiesQuery request, CancellationToken cancellationToken)
         {
-            var search = await this.dataAcess.GetAllAsync();
-
-            return ListResult<Common.Entities.Notify>.Success(search);
+            var search = await this.DataAccess.GetAllAsync();
+            return ListResult<NotifyDTO>.Success(search, search.Count);
         }
     }
 }

@@ -706,9 +706,9 @@ Create a new Partial View in Views\Shared _Address.cshtml
 
     <div class="row">
         <div class="col-xs-12 col-lg-4">
-            <label class="label-control">ZipCode</label>
-            @Html.TextBoxFor(model => model.ZipCode, new { @class = "form-control", type = "number" })
-            @Html.ValidationMessageFor(model => model.ZipCode)
+            <label class="label-control">PostalCode</label>
+            @Html.TextBoxFor(model => model.PostalCode, new { @class = "form-control", type = "number" })
+            @Html.ValidationMessageFor(model => model.PostalCode)
         </div>
     </div>
     <br />
@@ -1103,7 +1103,7 @@ return this.View(new RestaurantModel
         Address = entity.Address,
         City = entity.City,
         Province = entity.Province,
-        ZipCode = entity.PostalCode
+        PostalCode = entity.PostalCode
     },
     IsActive = entity.IsActive
 });
@@ -1206,7 +1206,7 @@ namespace Pezza.BackEnd.Controllers
                     Address = entity.Address?.Address,
                     City = entity.Address?.City,
                     Province = entity.Address?.Province,
-                    ZipCode = entity.Address?.ZipCode
+                    PostalCode = entity.Address?.PostalCode
                 },
                 IsActive = entity.IsActive
             });
@@ -1966,7 +1966,7 @@ For better UI/UX Restaurant we will be using Cards on the main page and cover im
                     @restaurant.Address.Address,
                     @restaurant.Address.City,
                     @restaurant.Address.Province,
-                    @restaurant.Address.ZipCode
+                    @restaurant.Address.PostalCode
                 </p>
                 <p class="card-text">@restaurant.Description</p>
                 <p>Since | @restaurant.DateCreated.ToShortDateString()</p>
@@ -3023,7 +3023,7 @@ Create.cshtml
             cust.Address.Address = $('#Address_Address').val();
             cust.Address.City = $('#City').val();
             cust.Address.Province = $('#Province').val();
-            cust.Address.ZipCode = $('#Address_ZipCode').val();
+            cust.Address.PostalCode = $('#Address_PostalCode').val();
 
             if (cust != null) {
                 $.ajax({

@@ -14,11 +14,11 @@
 
     public class GetNotifiesQueryHandler : IRequestHandler<GetNotifiesQuery, ListResult<NotifyDTO>>
     {
-        private readonly IDataAccess<NotifyDTO> dataAcess;
+        private readonly IDataAccess<NotifyDTO> DataAccess;
 
-        public GetNotifiesQueryHandler(IDataAccess<NotifyDTO> dataAcess) => this.dataAcess = dataAcess;
+        public GetNotifiesQueryHandler(IDataAccess<NotifyDTO> DataAccess) => this.DataAccess = DataAccess;
 
         public async Task<ListResult<NotifyDTO>> Handle(GetNotifiesQuery request, CancellationToken cancellationToken)
-            => await this.dataAcess.GetAllAsync(request.SearchModel);
+            => await this.DataAccess.GetAllAsync(request.SearchModel);
     }
 }

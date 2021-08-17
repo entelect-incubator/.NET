@@ -183,7 +183,7 @@ To keep the calls to the database as clean as possible and single responsibility
 
 - [ ] Create an interface in DataAccess.Contracts called IStockDataAccess.cs <br/> ![](Assets/2020-09-11-10-27-53.png)
 
-```
+```cs
 namespace Pezza.DataAccess.Contracts
 {
     using System.Collections.Generic;
@@ -207,7 +207,7 @@ namespace Pezza.DataAccess.Contracts
 
 Create a new folder in *Pezza.DataAccess* called Data, add a new Data Access called StockDataAccess.cs. <br/> ![](Assets/2020-09-14-05-35-34.png)
 
-```
+```cs
 namespace Pezza.DataAccess.Data
 {
     using System.Collections.Generic;
@@ -595,23 +595,23 @@ namespace Pezza.Core
 
     public class StockCore : IStockCore
     {
-        private readonly IStockDataAccess dataAcess;
+        private readonly IStockDataAccess DataAccess;
 
         private readonly IMapper mapper;
 
-        public StockCore(IStockDataAccess dataAcess, IMapper mapper)
-            => (this.dataAcess, this.mapper) = (dataAcess, mapper);
+        public StockCore(IStockDataAccess DataAccess, IMapper mapper)
+            => (this.DataAccess, this.mapper) = (DataAccess, mapper);
 
         public async Task<StockDTO> GetAsync(int id)
         {
-            var search = await this.dataAcess.GetAsync(id);
+            var search = await this.DataAccess.GetAsync(id);
 
             return this.mapper.Map<StockDTO>(search);
         }
 
         public async Task<IEnumerable<StockDTO>> GetAllAsync()
         {
-            var search = await this.dataAcess.GetAllAsync();
+            var search = await this.DataAccess.GetAllAsync();
 
             return this.mapper.Map<List<StockDTO>>(search);
         }
@@ -619,7 +619,7 @@ namespace Pezza.Core
         public async Task<StockDTO> SaveAsync(Stock model)
         {
 
-            var outcome = await this.dataAcess.SaveAsync(model);
+            var outcome = await this.DataAccess.SaveAsync(model);
 
             return this.mapper.Map<StockDTO>(outcome);
         }
@@ -627,7 +627,7 @@ namespace Pezza.Core
         public async Task<StockDTO> UpdateAsync(StockDTO model)
         {
 
-            var entity = await this.dataAcess.GetAsync(model.Id);            
+            var entity = await this.DataAccess.GetAsync(model.Id);            
 
             entity.Name = !string.IsNullOrEmpty(model.Name) ? model.Name : entity.Name;
             entity.UnitOfMeasure = !string.IsNullOrEmpty(model.UnitOfMeasure) ? model.UnitOfMeasure : entity.UnitOfMeasure;
@@ -637,13 +637,13 @@ namespace Pezza.Core
             entity.ExpiryDate = (model.ExpiryDate.HasValue) ? model.ExpiryDate : entity.ExpiryDate;
             entity.Comment = (!string.IsNullOrEmpty(model.Comment)) ? model.Comment : entity.Comment;
 
-            var outcome = await this.dataAcess.UpdateAsync(entity);
+            var outcome = await this.DataAccess.UpdateAsync(entity);
             return this.mapper.Map<StockDTO>(outcome);
         }
 
         public async Task<bool> DeleteAsync(int id)
         {
-            var outcome = await this.dataAcess.DeleteAsync(id);
+            var outcome = await this.DataAccess.DeleteAsync(id);
 
             return outcome;
         }
@@ -790,7 +790,7 @@ Install-Package Swashbuckle.AspNetCore
 ```
 - [ ] Configuring the Swagger Middleware. Let's make the following changes in the ConfigureServices() method of the Startup.cs class. This adds the Swagger generator to the services collection.
 
-```
+```cs
 public void ConfigureServices(IServiceCollection services)
 {
     // Register the Swagger generator, defining 1 or more Swagger documents
@@ -802,7 +802,8 @@ public void ConfigureServices(IServiceCollection services)
 }
 ```
 - [ ] In the Configure() method, let’s enable the middleware for serving the generated JSON document and the Swagger UI
-```
+
+```cs
 public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 {
     // Enable middleware to serve generated Swagger as a JSON endpoint.
@@ -818,14 +819,14 @@ public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 
 - [ ] Inside of Startup.cs add DependencyInjection.cs inside of ConfigureService.
 
-```
+```cs
 DependencyInjection.AddApplication(services);
 ```
 
 ![](Assets/2020-09-15-05-29-10.png)
 - [ ] Add Connection String in appsettings.json
 
-```
+```json
 "ConnectionStrings": {
     "PezzaDatabase": "Server=.;Database=PezzaDb;Trusted_Connection=True;"
   },
@@ -833,7 +834,7 @@ DependencyInjection.AddApplication(services);
 
 - [ ] Add Dependency injection for Database Context in Startup.cs ConfigureServices
 
-```
+```cs
 // Add DbContext using SQL Server Provider
 services.AddDbContext<DatabaseContext>(options =>
     options.UseSqlServer(this.Configuration.GetConnectionString("PezzaDatabase"))
@@ -851,7 +852,8 @@ public StockController(IStockCore StockCore) => this.StockCore = StockCore;
 ```
 
 Then all the endpoints.
-```
+
+```cs
 namespace Pezza.Api.Controllers
 {
     using System;
@@ -941,7 +943,7 @@ namespace Pezza.Api.Controllers
 - [ ] Let us enable XML Documentation on the *Pezza.Api* project. Right-click on the API goes to Properties. <br/> ![](Assets/2020-09-15-05-59-50.png)
 - [ ] In the ConfigureServices() method, configure Swagger to use the XML file that’s generated in the above step.
 
-```
+```cs
 services.AddSwaggerGen(c =>
     {
         c.SwaggerDoc("v1", new OpenApiInfo

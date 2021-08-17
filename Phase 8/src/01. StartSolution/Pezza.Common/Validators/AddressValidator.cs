@@ -19,7 +19,7 @@
             .NotEmpty()
             .MaximumLength(100);
 
-            this.RuleFor(x => x.ZipCode)
+            this.RuleFor(x => x.PostalCode)
             .NotEmpty()
             .Matches(@"^\d$")
             .MaximumLength(8);
@@ -39,7 +39,7 @@
             this.RuleFor(x => x.Province)
             .MaximumLength(100);
 
-            this.RuleFor(x => x.ZipCode)
+            this.RuleFor(x => x.PostalCode)
             .Matches(@"^\d$")
             .MaximumLength(8);
         }

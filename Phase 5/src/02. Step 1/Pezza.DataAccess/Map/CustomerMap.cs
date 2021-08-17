@@ -45,9 +45,9 @@ namespace Pezza.DataAccess.Map
                 .HasColumnType("varchar(100)")
                 .HasMaxLength(100);
 
-            builder.Property(t => t.ZipCode)
+            builder.Property(t => t.PostalCode)
                 .IsRequired()
-                .HasColumnName("ZipCode")
+                .HasColumnName("PostalCode")
                 .HasColumnType("varchar(8)")
                 .HasMaxLength(8);
 

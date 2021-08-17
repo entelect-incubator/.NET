@@ -14,13 +14,13 @@
 
     public class UpdateRestaurantCommandHandler : IRequestHandler<UpdateRestaurantCommand, Result<RestaurantDTO>>
     {
-        private readonly IDataAccess<RestaurantDTO> dataAcess;
+        private readonly IDataAccess<RestaurantDTO> DataAccess;
 
-        public UpdateRestaurantCommandHandler(IDataAccess<RestaurantDTO> dataAcess) => this.dataAcess = dataAcess;
+        public UpdateRestaurantCommandHandler(IDataAccess<RestaurantDTO> DataAccess) => this.DataAccess = DataAccess;
 
         public async Task<Result<RestaurantDTO>> Handle(UpdateRestaurantCommand request, CancellationToken cancellationToken)
         {            
-            var outcome = await this.dataAcess.UpdateAsync(request.Data);
+            var outcome = await this.DataAccess.UpdateAsync(request.Data);
             return (outcome != null) ? Result<RestaurantDTO>.Success(outcome) : Result<RestaurantDTO>.Failure("Error updating a Restaurant");
         }
     }

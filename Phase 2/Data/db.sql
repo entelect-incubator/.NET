@@ -16,7 +16,7 @@ CREATE TABLE [dbo].[Customer](
 	[Address] [varchar](500) NOT NULL,
 	[City] [varchar](100) NOT NULL,
 	[Province] [varchar](100) NOT NULL,
-	[ZipCode] [varchar](8) NOT NULL,
+	[PostalCode] [varchar](8) NOT NULL,
 	[Phone] [varchar](20) NOT NULL,
 	[Email] [varchar](200) NOT NULL,
 	[ContactPerson] [varchar](200) NOT NULL,
