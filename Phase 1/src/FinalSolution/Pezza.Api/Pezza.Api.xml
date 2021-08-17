@@ -4,358 +4,54 @@
         <name>Pezza.Api</name>
     </assembly>
     <members>
-        <member name="M:Pezza.Api.Controllers.CustomerController.GetCustomer(System.Int32)">
-            <summary>
-            Get Customer by Id.
-            </summary>
-            <param name="id">int.</param>
-            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
-        </member>
-        <member name="M:Pezza.Api.Controllers.CustomerController.Search">
-            <summary>
-            Get all Customers.
-            </summary>
-            <returns>A <see cref="T:System.Threading.Tasks.Task"/> repres
-            enting the asynchronous operation.</returns>
-        </member>
-        <member name="M:Pezza.Api.Controllers.CustomerController.Create(Pezza.Common.DTO.CustomerDTO)">
-            <summary>
-            Create Customer.
-            </summary>
-            <remarks>
-            Sample request:
-                POST api/Customer
-                {
-                  "name": "Person A",
-                  "address": "1 Tree Street",
-                  "city": "Pretoria",
-                  "province": "Gautenf",
-                  "PostalCode": "0181",
-                  "phone": "0721230000",
-                  "email": "person.a@gmail.com"
-                  "contactPerson": "Person B 0723210000"
-                }.
-            </remarks>
-            <param name="customer">CustomerDTO.</param>
-            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
-        </member>
-        <member name="M:Pezza.Api.Controllers.CustomerController.Update(Pezza.Common.DTO.CustomerDTO)">
-            <summary>
-            Update Customer.
-            </summary>
-            <remarks>
-            Sample request:
-                PUT api/Customer
-                {
-                  "id": 1,
-                  "name": "Person A",
-                  "address": "1 Tree Street",
-                  "city": "Pretoria",
-                  "province": "Gautenf",
-                  "PostalCode": "0181",
-                  "phone": "0721230000",
-                  "email": "person.a@gmail.com"
-                  "contactPerson": "Person B 0723210000"
-                }.
-            </remarks>
-            <param name="customer">CustomerDTO.</param>
-            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
-        </member>
-        <member name="M:Pezza.Api.Controllers.CustomerController.Delete(System.Int32)">
-            <summary>
-            Remove Customer by Id.
-            </summary>
-            <param name="id">int.</param>
-            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
-        </member>
-        <member name="M:Pezza.Api.Controllers.NotifyController.Get(System.Int32)">
-            <summary>
-            Get Notify by Id.
-            </summary>
-            <param name="id">Primary Key.</param>
-            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
-        </member>
-        <member name="M:Pezza.Api.Controllers.NotifyController.Search">
-            <summary>
-            Get all Notifies.
-            </summary>
-            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
-        </member>
-        <member name="M:Pezza.Api.Controllers.NotifyController.Create(Pezza.Common.DTO.NotifyDTO)">
-            <summary>
-            Create Notify.
-            </summary>
-            <remarks>
-            Sample request:
-                POST api/Notify
-                {
-                  "name": "Person A",
-                  "address": "1 Tree Street",
-                  "city": "Pretoria",
-                  "province": "Gautenf",
-                  "PostalCode": "0181",
-                  "phone": "0721230000",
-                  "email": "person.a@gmail.com"
-                  "contactPerson": "Person B 0723210000"
-                }.
-            </remarks>
-            <param name="notify">Notify Data DTO.</param>
-            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
-        </member>
-        <member name="M:Pezza.Api.Controllers.NotifyController.Update(Pezza.Common.DTO.NotifyDTO)">
-            <summary>
-            Update Notify.
-            </summary>
-            <remarks>
-            Sample request:
-                PUT api/Notify
-                {
-                  "customerId": "1",
-                  "email": "person.a@gmail.com"
-                }.
-            </remarks>
-            <param name="notify">Notify Data DTO.</param>
-            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
-        </member>
-        <member name="M:Pezza.Api.Controllers.NotifyController.Delete(System.Int32)">
-            <summary>
-            Remove Notify by Id.
-            </summary>
-            <param name="id">Primary Key.</param>
-            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
-        </member>
-        <member name="M:Pezza.Api.Controllers.OrderController.Get(System.Int32)">
-            <summary>
-            Get Order by Id.
-            </summary>
-            <param name="id">int.</param>
-            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
-        </member>
-        <member name="M:Pezza.Api.Controllers.OrderController.Search">
-            <summary>
-            Get all Orders.
-            </summary>
-            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
-        </member>
-        <member name="M:Pezza.Api.Controllers.OrderController.Create(Pezza.Common.DTO.OrderDTO)">
-            <summary>
-            Create Order.
-            </summary>
-            <remarks>
-            Sample request:
-                POST api/Order
-                {
-                  "customerId": "1",
-                  "restaurantId": "1",
-                  "amount": "1.00"
-                }.
-            </remarks>
-            <param name="data">OrderDTO.</param>
-            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
-        </member>
-        <member name="M:Pezza.Api.Controllers.OrderController.Update(Pezza.Common.DTO.OrderDTO)">
-            <summary>
-            Update Order.
-            </summary>
-            <remarks>
-            Sample request:
-                PUT api/Order
-                {
-                  "id": 1,,
-                  "completed": true
-                }.
-            </remarks>
-            <param name="data">OrderDTO.</param>
-            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
-        </member>
-        <member name="M:Pezza.Api.Controllers.OrderController.Delete(System.Int32)">
-            <summary>
-            Remove Order by Id.
-            </summary>
-            <param name="id">int.</param>
-            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
-        </member>
-        <member name="M:Pezza.Api.Controllers.PictureController.Get(System.String,System.String,System.Boolean)">
-            <summary>
-            Uploads the specified dto.
-            </summary>
-            <param name="file">File.</param>
-            <param name="folder">Folder.</param>
-            <param name="thumbnail">Return thumbnail or not.</param>
-            <returns>HttpResponseMessage.</returns>
-        </member>
-        <member name="M:Pezza.Api.Controllers.PictureController.ReturnNotFoundImage">
-            <summary>
-            Returns the not found image.
-            </summary>
-            <returns>Not found image.</returns>
-        </member>
-        <member name="M:Pezza.Api.Controllers.ProductController.Get(System.Int32)">
-            <summary>
-            Get Product by Id.
-            </summary>
-            <param name="id">int.</param>
-            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
-        </member>
-        <member name="M:Pezza.Api.Controllers.ProductController.Search">
-            <summary>
-            Get all Products.
-            </summary>
-            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
-        </member>
-        <member name="M:Pezza.Api.Controllers.ProductController.Create(Pezza.Common.DTO.ProductDTO)">
-            <summary>
-            Create Product.
-            </summary>
-            <remarks>
-            Sample request:
-                POST api/Product
-                {
-                  "name": "Tomatoes",
-                  "description": "",
-                  "pictureUrl": "Base64",
-                  "price": "50.00",
-                  "special": false,
-                  "isActive": true
-                }.
-            </remarks>
-            <param name="data">ProductDTO.</param>
-            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
-        </member>
-        <member name="M:Pezza.Api.Controllers.ProductController.Update(Pezza.Common.DTO.ProductDTO)">
-            <summary>
-            Update Product.
-            </summary>
-            <remarks>
-            Sample request:
-                PUT api/Product
-                {
-                  "id": 1,
-                  "special": true
-                }.
-            </remarks>
-            <param name="data">ProductDTO.</param>
-            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
-        </member>
-        <member name="M:Pezza.Api.Controllers.ProductController.Delete(System.Int32)">
-            <summary>
-            Remove Product by Id.
-            </summary>
-            <param name="id">int.</param>
-            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
-        </member>
-        <member name="M:Pezza.Api.Controllers.RestaurantController.Get(System.Int32)">
-            <summary>
-            Get Restaurant by Id.
-            </summary>
-            <param name="id">int.</param>
-            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
-        </member>
-        <member name="M:Pezza.Api.Controllers.RestaurantController.Search">
-            <summary>
-            Get all Restaurants.
-            </summary>
-            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
-        </member>
-        <member name="M:Pezza.Api.Controllers.RestaurantController.Create(Pezza.Common.DTO.RestaurantDTO)">
-             <summary>
-             Create Stock.
-             </summary>
-             <remarks>
-             Sample request:
-            
-                 POST api/Restaurant
-                 {
-                   "name": "Restaurant 1",
-                   "description": "",
-                   "pictureUrl": "base64",
-                   "isActive": true
-                   "Address": {
-                     "city": "Pretoria",
-                     "province": "Gauteng",
-                     "PostalCode": "0000"
-                   }
-                 }.
-             </remarks>
-             <param name="data">RestaurantDTO.</param>
-             <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
-        </member>
-        <member name="M:Pezza.Api.Controllers.RestaurantController.Update(Pezza.Common.DTO.RestaurantDTO)">
-             <summary>
-             Update Restaurant.
-             </summary>
-             <remarks>
-             Sample request:
-            
-                 PUT api/Restaurant
-                 {
-                   "id": 1,
-                   "name": "New Restaurant"
-                 }.
-             </remarks>
-             <param name="data">RestaurantDTO.</param>
-             <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
-        </member>
-        <member name="M:Pezza.Api.Controllers.RestaurantController.Delete(System.Int32)">
-            <summary>
-            Remove Restaurant by Id.
-            </summary>
-            <param name="id">int.</param>
-            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
-        </member>
         <member name="M:Pezza.Api.Controllers.StockController.Get(System.Int32)">
             <summary>
             Get Stock by Id.
             </summary>
-            <param name="id">id.</param>
-            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
+            <param name="id"></param> 
         </member>
         <member name="M:Pezza.Api.Controllers.StockController.Search">
             <summary>
             Get all Stock.
             </summary>
-            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
         </member>
-        <member name="M:Pezza.Api.Controllers.StockController.Create(Pezza.Common.DTO.StockDTO)">
+        <member name="M:Pezza.Api.Controllers.StockController.Create(Pezza.Common.Entities.Stock)">
             <summary>
             Create Stock.
             </summary>
             <remarks>
             Sample request:
-                POST api/Stock
-                {
-                  "name": "Tomatoes",
-                  "unitOfMeasure": "Kg",
-                  "valueOfMeasure": "1",
-                  "quantity": "50"
-                  "comment": ""
-                }.
-            </remarks>
-            <param name="data">StockDTO.</param>
-            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
-        </member>
-        <member name="M:Pezza.Api.Controllers.StockController.Update(Pezza.Common.DTO.StockDTO)">
-             <summary>
-             Update Stock.
-             </summary>
-             <remarks>
-             Sample request:
             
-                 PUT api/Stock
-                 {
-                   "id": 1
-                   "quantity": 30
-                 }.
-             </remarks>
-             <param name="data">StockDTO.</param>
-             <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
+                POST api/Stock
+                {        
+                  "name": "Tomatoes",
+                  "UnitOfMeasure": "Kg",
+                  "ValueOfMeasure": "1",
+                  "Quantity": "50"
+                }
+            </remarks>
+            <param name="stock"></param> 
+        </member>
+        <member name="M:Pezza.Api.Controllers.StockController.Update(System.Int32,Pezza.Common.DTO.StockDTO)">
+            <summary>
+            Update Stock.
+            </summary>
+            <remarks>
+            Sample request:
+            
+                PUT api/Stock/1
+                {        
+                  "Quantity": "30"
+                }
+            </remarks>
+            <param name="id"></param>
+            <param name="stock"></param>
         </member>
         <member name="M:Pezza.Api.Controllers.StockController.Delete(System.Int32)">
             <summary>
             Remove Stock by Id.
             </summary>
-            <param name="id">int.</param>
-            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
+            <param name="id"></param> 
         </member>
     </members>
 </doc>

@@ -32,7 +32,7 @@
             RestaurantId = 1,
             DateCreated = DateTime.Now,
             Completed = false,
-           // OrderItems = OrderItemsDTO()
+            OrderItems = OrderItemsDTO()
         };
 
         public static List<OrderItemDTO> OrderItemsDTO()

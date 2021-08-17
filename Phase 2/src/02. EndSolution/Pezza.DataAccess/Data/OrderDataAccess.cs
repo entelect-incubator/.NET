@@ -31,19 +31,12 @@
 
         public async Task<OrderDTO> SaveAsync(OrderDTO dto)
         {
-            try
-            {
-                var entity = this.mapper.Map<Order>(dto);
-                this.databaseContext.Orders.Add(entity);
-                await this.databaseContext.SaveChangesAsync();
-                dto.Id = entity.Id;
+            var entity = this.mapper.Map<Order>(dto);
+            this.databaseContext.Orders.Add(entity);
+            await this.databaseContext.SaveChangesAsync();
+            dto.Id = entity.Id;
 
-                return dto;
-            }
-            catch(Exception e)
-            {
-                throw;
-            }
+            return dto;
         }
 
         public async Task<OrderDTO> UpdateAsync(OrderDTO dto)

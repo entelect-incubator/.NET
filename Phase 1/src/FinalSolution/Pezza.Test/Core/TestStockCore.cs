@@ -10,12 +10,14 @@ namespace Pezza.Test.Core
     using Pezza.Test.Setup;
     using Pezza.Test.Setup.TestData.Stock;
 
+    [TestFixture]
     public class TestStockCore : QueryTestBase
     {
+
         [Test]
         public async Task GetAsync()
         {
-            var handler = new StockCore(new StockDataAccess(this.Context));
+            var handler = new StockCore(new StockDataAccess(this.Context), Mapper());
             var stock = StockTestData.Stock;
             await handler.SaveAsync(stock);
 
@@ -27,7 +29,7 @@ namespace Pezza.Test.Core
         [Test]
         public async Task GetAllAsync()
         {
-            var handler = new StockCore(new StockDataAccess(this.Context));
+            var handler = new StockCore(new StockDataAccess(this.Context), Mapper());
             var stock = StockTestData.Stock;
             await handler.SaveAsync(stock);
 
@@ -40,7 +42,7 @@ namespace Pezza.Test.Core
         [Test]
         public async Task SaveAsync()
         {
-            var handler = new StockCore(new StockDataAccess(this.Context));
+            var handler = new StockCore(new StockDataAccess(this.Context), Mapper());
             var stock = StockTestData.Stock;
             var result = await handler.SaveAsync(stock);
             var outcome = result.Id != 0;
@@ -51,7 +53,7 @@ namespace Pezza.Test.Core
         [Test]
         public async Task UpdateAsync()
         {
-            var handler = new StockCore(new StockDataAccess(this.Context));
+            var handler = new StockCore(new StockDataAccess(this.Context), Mapper());
             var stock = StockTestData.Stock;
             var originalStock = stock;
             await handler.SaveAsync(stock);
@@ -67,7 +69,7 @@ namespace Pezza.Test.Core
         [Test]
         public async Task DeleteAsync()
         {
-            var handler = new StockCore(new StockDataAccess(this.Context));
+            var handler = new StockCore(new StockDataAccess(this.Context), Mapper());
             var stock = StockTestData.Stock;
             await handler.SaveAsync(stock);
             
