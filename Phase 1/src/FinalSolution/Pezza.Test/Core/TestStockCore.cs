@@ -4,7 +4,6 @@ namespace Pezza.Test.Core
     using System.Threading.Tasks;
     using Bogus;
     using NUnit.Framework;
-    using Pezza.Common.DTO;
     using Pezza.Core;
     using Pezza.DataAccess.Data;
     using Pezza.Test.Setup;
@@ -17,7 +16,7 @@ namespace Pezza.Test.Core
         [Test]
         public async Task GetAsync()
         {
-            var handler = new StockCore(new StockDataAccess(this.Context), Mapper());
+            var handler = new StockCore(new StockDataAccess(this.Context, Mapper()));
             var stockDTO = StockTestData.StockDTO;
             await handler.SaveAsync(stockDTO);
 
@@ -29,7 +28,7 @@ namespace Pezza.Test.Core
         [Test]
         public async Task GetAllAsync()
         {
-            var handler = new StockCore(new StockDataAccess(this.Context), Mapper());
+            var handler = new StockCore(new StockDataAccess(this.Context, Mapper()));
             var stockDTO = StockTestData.StockDTO;
             await handler.SaveAsync(stockDTO);
 
@@ -42,7 +41,7 @@ namespace Pezza.Test.Core
         [Test]
         public async Task SaveAsync()
         {
-            var handler = new StockCore(new StockDataAccess(this.Context), Mapper());
+            var handler = new StockCore(new StockDataAccess(this.Context, Mapper()));
             var stockDTO = StockTestData.StockDTO;
             var result = await handler.SaveAsync(stockDTO);
             var outcome = result.Id != 0;
@@ -53,7 +52,7 @@ namespace Pezza.Test.Core
         [Test]
         public async Task UpdateAsync()
         {
-            var handler = new StockCore(new StockDataAccess(this.Context), Mapper());
+            var handler = new StockCore(new StockDataAccess(this.Context, Mapper()));
             var stockDTO = StockTestData.StockDTO;
             var originalStock = stockDTO;
             await handler.SaveAsync(stockDTO);
@@ -68,10 +67,10 @@ namespace Pezza.Test.Core
         [Test]
         public async Task DeleteAsync()
         {
-            var handler = new StockCore(new StockDataAccess(this.Context), Mapper());
+            var handler = new StockCore(new StockDataAccess(this.Context, Mapper()));
             var stockDTO = StockTestData.StockDTO;
             await handler.SaveAsync(stockDTO);
-            
+
             var response = await handler.DeleteAsync(stockDTO.Id);
 
             Assert.IsTrue(response);
