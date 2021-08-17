@@ -31,12 +31,13 @@
             return this.mapper.Map<List<StockDTO>>(search);
         }
 
-        public async Task<StockDTO> SaveAsync(Stock model)
+        public async Task<StockDTO> SaveAsync(StockDTO dto)
         {
+            var entity = this.mapper.Map<Stock>(dto);
+            var outcome = await this.DataAccess.SaveAsync(entity);
+            dto.Id = entity.Id;
 
-            var outcome = await this.DataAccess.SaveAsync(model);
-
-            return this.mapper.Map<StockDTO>(outcome);
+            return dto;
         }
 
         public async Task<StockDTO> UpdateAsync(StockDTO model)

@@ -58,9 +58,9 @@
         [HttpPost]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public async Task<ActionResult<Stock>> Create([FromBody] Stock stock)
+        public async Task<ActionResult<Stock>> Create([FromBody] StockDTO dto)
         {
-            var result = await this.StockCore.SaveAsync(stock);
+            var result = await this.StockCore.SaveAsync(dto);
 
             return (result == null) ? this.BadRequest() : this.Ok(result);
         }

@@ -8,6 +8,7 @@ namespace Pezza.Test
     using Pezza.Test.Setup;
     using Pezza.Test.Setup.TestData.Stock;
 
+    [TestFixture]
     public class TestStockDataAccess : QueryTestBase
     {
         [Test]
