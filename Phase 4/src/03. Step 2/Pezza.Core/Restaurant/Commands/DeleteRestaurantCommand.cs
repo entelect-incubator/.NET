@@ -7,21 +7,21 @@
     using Pezza.Common.Models;
     using Pezza.DataAccess.Contracts;
 
-    public partial class DeleteRestaurantCommand : IRequest<Result>
+    public class DeleteRestaurantCommand : IRequest<Result>
     {
         public int Id { get; set; }
     }
 
     public class DeleteRestaurantCommandHandler : IRequestHandler<DeleteRestaurantCommand, Result>
     {
-        private readonly IDataAccess<RestaurantDTO> DataAccess;
+        private readonly IDataAccess<RestaurantDTO> dto;
 
-        public DeleteRestaurantCommandHandler(IDataAccess<RestaurantDTO> DataAccess)
-            => this.DataAccess = DataAccess;
+        public DeleteRestaurantCommandHandler(IDataAccess<RestaurantDTO> dto)
+            => this.dto = dto;
 
         public async Task<Result> Handle(DeleteRestaurantCommand request, CancellationToken cancellationToken)
         {
-            var outcome = await this.DataAccess.DeleteAsync(request.Id);
+            var outcome = await this.dto.DeleteAsync(request.Id);
             return outcome ? Result.Success() : Result.Failure("Error deleting a Restaurant");
         }
     }

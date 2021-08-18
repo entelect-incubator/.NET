@@ -1,23 +1,22 @@
 namespace Pezza.Test.DataAccess
 {
     using System.Threading.Tasks;
-    using Bogus;
     using NUnit.Framework;
     using Pezza.Common.DTO;
     using Pezza.DataAccess.Data;
 
     [TestFixture]
-    public class TestOrderDataAccess : QueryTestBase
+    public class TestOrderItemDataAccess : QueryTestBase
     {
-        private OrderDataAccess handler;
+        private OrderItemDataAccess handler;
 
-        private OrderDTO dto;
+        private OrderItemDTO dto;
 
         [SetUp]
         public async Task Init()
         {
-            this.handler = new OrderDataAccess(this.Context, Mapper());
-            this.dto = OrderTestData.OrderDTO;
+            this.handler = new OrderItemDataAccess(this.Context, Mapper());
+            this.dto = OrderTestData.OrderItemDTO;
             this.dto = await this.handler.SaveAsync(this.dto);
         }
 
@@ -32,9 +31,9 @@ namespace Pezza.Test.DataAccess
         [Test]
         public async Task GetAllAsync()
         {
-            var response = await this.handler.GetAllAsync(new OrderDTO
+            var response = await this.handler.GetAllAsync(new OrderItemDTO
             {
-                CustomerId = this.dto.CustomerId
+                OrderId = this.dto.OrderId
             });
             var outcome = response.Count;
 
@@ -50,9 +49,13 @@ namespace Pezza.Test.DataAccess
         [Test]
         public async Task UpdateAsync()
         {
-            this.dto.Amount = new Faker().Finance.Amount();
+            var productHandler = new ProductDataAccess(this.Context, Mapper());
+            var product = ProductTestData.ProductDTO;
+            await productHandler.SaveAsync(product);
+
+            this.dto.ProductId = product.Id;
             var response = await this.handler.UpdateAsync(this.dto);
-            var outcome = response.Amount.Equals(this.dto.Amount);
+            var outcome = response.ProductId.Equals(this.dto.ProductId);
 
             Assert.IsTrue(outcome);
         }

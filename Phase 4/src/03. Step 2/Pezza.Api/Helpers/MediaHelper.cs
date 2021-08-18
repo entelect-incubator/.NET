@@ -65,16 +65,6 @@
             return Result<UploadMediaResult>.Failure("No image to upload");
         }
 
-        private static void CreateThumbnail(Stream stream, string thumbnailPath)
-        {
-            using var mImage = new MagickImage(stream);
-            mImage.Sample(new Percentage(10.0));
-            mImage.Quality = 60;
-            mImage.Density = new Density(60);
-
-            mImage.Write(thumbnailPath);
-        }
-
         public static string GetMimeFromBase64(this string value)
         {
             var match = Regex.Match(value, @"data:(?<type>.+?);base64,(?<data>.+)");
@@ -91,6 +81,16 @@
             }
 
             return new MemoryStream(imageData);
+        }
+
+        private static void CreateThumbnail(Stream stream, string thumbnailPath)
+        {
+            using var mImage = new MagickImage(stream);
+            mImage.Sample(new Percentage(10.0));
+            mImage.Quality = 60;
+            mImage.Density = new Density(60);
+
+            mImage.Write(thumbnailPath);
         }
     }
 }

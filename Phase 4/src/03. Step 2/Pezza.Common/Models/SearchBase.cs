@@ -2,7 +2,7 @@
 {
     using Pezza.Common.Models;
 
-    public interface ISearchBase
+    public class SearchBase
     {
         public string OrderBy { get; set; }
 
