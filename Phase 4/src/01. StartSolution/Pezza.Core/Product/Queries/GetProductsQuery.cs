@@ -9,7 +9,7 @@
 
     public class GetProductsQuery : IRequest<ListResult<ProductDTO>>
     {
-        public ProductDTO SearchModel { get; set; }
+        public ProductDTO dto;
     }
 
     public class GetProductsQueryHandler : IRequestHandler<GetProductsQuery, ListResult<ProductDTO>>
@@ -19,6 +19,9 @@
         public GetProductsQueryHandler(IDataAccess<ProductDTO> DataAccess) => this.DataAccess = DataAccess;
 
         public async Task<ListResult<ProductDTO>> Handle(GetProductsQuery request, CancellationToken cancellationToken)
-            => await this.DataAccess.GetAllAsync(request.SearchModel);
+        {
+            var search = await this.DataAccess.GetAllAsync(request.dto);
+            return search;
+        }
     }
 }

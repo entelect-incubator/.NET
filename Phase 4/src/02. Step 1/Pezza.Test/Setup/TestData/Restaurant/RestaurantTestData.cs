@@ -18,12 +18,11 @@
             {
                 Address = faker.Address.FullAddress(),
                 City = faker.Address.City(),
-                PostalCode = faker.Address.PostalCode(),
+                PostalCode = faker.Address.ZipCode(),
                 Province = faker.Address.State(),
             },
             DateCreated = DateTime.Now,
             IsActive = true
         };
     }
-
 }

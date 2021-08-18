@@ -20,11 +20,12 @@ Install StyleCop.Analyzers Nuget Package to all Projects
 
 Add the StyleCop Rule Set in every project file.
 
-![](Assets/2021-01-15-10-30-33.png)
+
 
 ```
 <CodeAnalysisRuleSet>$(SolutionDir)\StyleCopRuleSet.ruleset</CodeAnalysisRuleSet>
 ```
+![](./Assets/2021-08-18-09-37-06.png)
 
 Fix build errors
 

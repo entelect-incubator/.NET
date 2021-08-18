@@ -1,4 +1,4 @@
-namespace Pezza.Test
+namespace Pezza.Test.Core
 {
     using System.Threading;
     using System.Threading.Tasks;
@@ -8,25 +8,40 @@ namespace Pezza.Test
     using Pezza.Core.Stock.Queries;
     using Pezza.DataAccess.Data;
 
+    [TestFixture]
+
     public class TestStockCore : QueryTestBase
     {
+        private StockDataAccess dataAccess;
+
+        private StockDTO dto;
+
+        [SetUp]
+        public async Task Init()
+        {
+            this.dataAccess = new StockDataAccess(this.Context, Mapper());
+            this.dto = StockTestData.StockDTO;
+            var sutCreate = new CreateStockCommandHandler(this.dataAccess);
+            var resultCreate = await sutCreate.Handle(new CreateStockCommand
+            {
+                Data = this.dto
+            }, CancellationToken.None);
+
+            if (!resultCreate.Succeeded)
+            {
+                Assert.IsTrue(false);
+            }
+
+            this.dto = resultCreate.Data;
+        }
+
         [Test]
         public async Task GetAsync()
         {
-            var dataAccess = new StockDataAccess(this.Context, Mapper());
-
-            //Act
-            var sutCreate = new CreateStockCommandHandler(dataAccess);
-            var resultCreate = await sutCreate.Handle(new CreateStockCommand
-            {
-                Data = StockTestData.StockDTO
-            }, CancellationToken.None);
-
-            //Act
-            var sutGet = new GetStockQueryHandler(dataAccess);
+            var sutGet = new GetStockQueryHandler(this.dataAccess);
             var resultGet = await sutGet.Handle(new GetStockQuery
             {
-                Id = resultCreate.Data.Id
+                Id = this.dto.Id
             }, CancellationToken.None);
 
             Assert.IsTrue(resultGet?.Data != null);
@@ -35,84 +50,49 @@ namespace Pezza.Test
         [Test]
         public async Task GetAllAsync()
         {
-            var dataAccess = new StockDataAccess(this.Context, Mapper());
-
-            //Act
-            var sutCreate = new CreateStockCommandHandler(dataAccess);
-            var resultCreate = await sutCreate.Handle(new CreateStockCommand
+            var sutGetAll = new GetStocksQueryHandler(this.dataAccess);
+            var resultGetAll = await sutGetAll.Handle(new GetStocksQuery
             {
-                Data = StockTestData.StockDTO
+                dto = new StockDTO
+                {
+                    Name = this.dto.Name
+                }
             }, CancellationToken.None);
-
-            //Act
-            var sutGetAll = new GetStocksQueryHandler(dataAccess);
-            var resultGetAll = await sutGetAll.Handle(new GetStocksQuery(), CancellationToken.None);
 
             Assert.IsTrue(resultGetAll?.Data.Count == 1);
         }
 
         [Test]
-        public async Task SaveAsync()
+        public void SaveAsync()
         {
-            var dataAccess = new StockDataAccess(this.Context, Mapper());
-
-            //Act
-            var sutCreate = new CreateStockCommandHandler(dataAccess);
-            var resultCreate = await sutCreate.Handle(new CreateStockCommand
-            {
-                Data = StockTestData.StockDTO
-            }, CancellationToken.None);
-
-            Assert.IsTrue(resultCreate.Succeeded);
+            Assert.IsTrue(this.dto != null);
         }
 
         [Test]
         public async Task UpdateAsync()
         {
-            var dataAccess = new StockDataAccess(this.Context, Mapper());
-
-            //Act
-            var sutCreate = new CreateStockCommandHandler(dataAccess);
-            var resultCreate = await sutCreate.Handle(new CreateStockCommand
-            {
-                Data = StockTestData.StockDTO
-            }, CancellationToken.None);
-
-            //Act
-            var sutUpdate = new UpdateStockCommandHandler(dataAccess);
+            var sutUpdate = new UpdateStockCommandHandler(this.dataAccess);
             var resultUpdate = await sutUpdate.Handle(new UpdateStockCommand
             {
                 Data = new StockDTO
                 {
-                    Id = resultCreate.Data.Id,
+                    Id = this.dto.Id,
                     Quantity = 50
                 }
             }, CancellationToken.None);
 
-            //Assert
             Assert.IsTrue(resultUpdate.Succeeded);
         }
 
         [Test]
         public async Task DeleteAsync()
         {
-            var dataAccess = new StockDataAccess(this.Context, Mapper());
-            //Act
-            var sutCreate = new CreateStockCommandHandler(dataAccess);
-            var resultCreate = await sutCreate.Handle(new CreateStockCommand
-            {
-                Data = StockTestData.StockDTO
-            }, CancellationToken.None);
-
-
-            //Act
-            var sutDelete = new DeleteStockCommandHandler(dataAccess);
+            var sutDelete = new DeleteStockCommandHandler(this.dataAccess);
             var outcomeDelete = await sutDelete.Handle(new DeleteStockCommand
             {
-                Id = resultCreate.Data.Id
+                Id = this.dto.Id
             }, CancellationToken.None);
 
-            //Assert
             Assert.IsTrue(outcomeDelete.Succeeded);
         }
     }

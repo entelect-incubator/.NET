@@ -9,7 +9,7 @@
 
     public class GetNotifiesQuery : IRequest<ListResult<NotifyDTO>>
     {
-        public NotifyDTO SearchModel { get; set; }
+        public NotifyDTO dto;
     }
 
     public class GetNotifiesQueryHandler : IRequestHandler<GetNotifiesQuery, ListResult<NotifyDTO>>
@@ -19,6 +19,9 @@
         public GetNotifiesQueryHandler(IDataAccess<NotifyDTO> DataAccess) => this.DataAccess = DataAccess;
 
         public async Task<ListResult<NotifyDTO>> Handle(GetNotifiesQuery request, CancellationToken cancellationToken)
-            => await this.DataAccess.GetAllAsync(request.SearchModel);
+        {
+            var search = await this.DataAccess.GetAllAsync(request.dto);
+            return search;
+        }
     }
 }
