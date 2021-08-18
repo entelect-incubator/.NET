@@ -9,9 +9,9 @@ namespace Pezza.Test
 
     public class QueryTestBase : IDisposable
     {
-        public DatabaseContext Context => Create();
-
         public CachingService CachingService = new CachingService();
+
+        public DatabaseContext Context => Create();
 
         public static IMapper Mapper()
         {

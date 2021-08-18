@@ -54,11 +54,11 @@ namespace Pezza.DataAccess.Data
         private readonly IAppCache cache;
         private readonly string cacheKey = "RestaurantList";
         private readonly TimeSpan cacheExpiry = new TimeSpan(12, 0, 0);
-        private readonly IDatabaseContext databaseContext;
+        private readonly DatabaseContext databaseContext;
         private readonly IMapper mapper;
         private int count = 0;
 
-        public RestaurantDataAccess(IDatabaseContext databaseContext, IMapper mapper, IAppCache cache)
+        public RestaurantDataAccess(DatabaseContext databaseContext, IMapper mapper, IAppCache cache)
             => (this.databaseContext, this.mapper, this.cache) = (databaseContext, mapper, cache);
 
         public async Task<RestaurantDTO> GetAsync(int id)
@@ -151,9 +151,9 @@ namespace Pezza.Test
 
     public class QueryTestBase : IDisposable
     {
-        public DatabaseContext Context => Create();
-
         public CachingService CachingService = new CachingService();
+
+        public DatabaseContext Context => Create();
 
         public static IMapper Mapper()
         {

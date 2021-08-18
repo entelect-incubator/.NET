@@ -1,60 +1,58 @@
-namespace Pezza.Test
+namespace Pezza.Test.DataAccess
 {
-    using System.Linq;
     using System.Threading.Tasks;
     using Bogus;
     using NUnit.Framework;
     using Pezza.Common.DTO;
     using Pezza.DataAccess.Data;
 
+    [TestFixture]
+
     public class TestCustomerDataAccess : QueryTestBase
     {
+        private CustomerDataAccess handler;
+
+        private CustomerDTO dto;
+
+        [SetUp]
+        public async Task Init()
+        {
+            this.handler = new CustomerDataAccess(this.Context, Mapper());
+            this.dto = CustomerTestData.CustomerDTO;
+            this.dto = await this.handler.SaveAsync(this.dto);
+        }
+
         [Test]
         public async Task GetAsync()
         {
-            var handler = new CustomerDataAccess(this.Context, Mapper());
-            var entity = CustomerTestData.CustomerDTO;
-            await handler.SaveAsync(entity);
-
-            var response = await handler.GetAsync(entity.Id);
-
+            var response = await this.handler.GetAsync(this.dto.Id);
             Assert.IsTrue(response != null);
         }
 
         [Test]
         public async Task GetAllAsync()
         {
-            var handler = new CustomerDataAccess(this.Context, Mapper());
-            var entity = CustomerTestData.CustomerDTO;
-            await handler.SaveAsync(entity);
-
-            var response = await handler.GetAllAsync(new CustomerDTO());
+            var response = await this.handler.GetAllAsync(new CustomerDTO
+            {
+                Name = this.dto.Name
+            });
             var outcome = response.Count;
 
             Assert.IsTrue(outcome == 1);
         }
 
         [Test]
-        public async Task SaveAsync()
+        public void SaveAsync()
         {
-            var handler = new CustomerDataAccess(this.Context, Mapper());
-            var entity = CustomerTestData.CustomerDTO;
-            var result = await handler.SaveAsync(entity);
-            var outcome = result.Id != 0;
-
-            Assert.IsTrue(outcome);
+            Assert.IsTrue(this.dto.Id != 0);
         }
 
         [Test]
         public async Task UpdateAsync()
         {
-            var handler = new CustomerDataAccess(this.Context, Mapper());
-            var entity = CustomerTestData.CustomerDTO;
-            var originalCustomer = entity;
-            await handler.SaveAsync(entity);
-
-            entity.Name = new Faker().Person.FirstName;
-            var response = await handler.UpdateAsync(entity);
+            var originalCustomer = this.dto;
+            this.dto.Name = new Faker().Person.FirstName;
+            var response = await this.handler.UpdateAsync(this.dto);
             var outcome = response.Name.Equals(originalCustomer.Name);
 
             Assert.IsTrue(outcome);
@@ -63,12 +61,7 @@ namespace Pezza.Test
         [Test]
         public async Task DeleteAsync()
         {
-            var handler = new CustomerDataAccess(this.Context, Mapper());
-            var entity = CustomerTestData.CustomerDTO;
-            await handler.SaveAsync(entity);
-
-            var response = await handler.DeleteAsync(entity.Id);
-
+            var response = await this.handler.DeleteAsync(this.dto.Id);
             Assert.IsTrue(response);
         }
     }

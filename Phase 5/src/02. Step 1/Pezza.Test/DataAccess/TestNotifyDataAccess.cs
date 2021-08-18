@@ -1,4 +1,4 @@
-namespace Pezza.Test
+namespace Pezza.Test.DataAccess
 {
     using System.Threading.Tasks;
     using Bogus;
@@ -6,16 +6,25 @@ namespace Pezza.Test
     using Pezza.Common.DTO;
     using Pezza.DataAccess.Data;
 
+    [TestFixture]
     public class TestNotifyDataAccess : QueryTestBase
     {
+        private NotifyDataAccess handler;
+
+        private NotifyDTO dto;
+
+        [SetUp]
+        public async Task Init()
+        {
+            this.handler = new NotifyDataAccess(this.Context, Mapper());
+            this.dto = NotifyTestData.NotifyDTO;
+            this.dto = await this.handler.SaveAsync(this.dto);
+        }
+
         [Test]
         public async Task GetAsync()
         {
-            var handler = new NotifyDataAccess(this.Context, Mapper());
-            var entity = NotifyTestData.NotifyDTO;
-            await handler.SaveAsync(entity);
-
-            var response = await handler.GetAsync(entity.Id);
+            var response = await this.handler.GetAsync(this.dto.Id);
 
             Assert.IsTrue(response != null);
         }
@@ -23,38 +32,27 @@ namespace Pezza.Test
         [Test]
         public async Task GetAllAsync()
         {
-            var handler = new NotifyDataAccess(this.Context, Mapper());
-            var entity = NotifyTestData.NotifyDTO;
-            await handler.SaveAsync(entity);
-
-            var response = await handler.GetAllAsync(new NotifyDTO());
+            var response = await this.handler.GetAllAsync(new NotifyDTO
+            {
+                Email = this.dto.Email
+            });
             var outcome = response.Count;
 
             Assert.IsTrue(outcome == 1);
         }
 
         [Test]
-        public async Task SaveAsync()
+        public void SaveAsync()
         {
-            var handler = new NotifyDataAccess(this.Context, Mapper());
-            var entity = NotifyTestData.NotifyDTO;
-            var result = await handler.SaveAsync(entity);
-            var outcome = result.Id != 0;
-
-            Assert.IsTrue(outcome);
+            Assert.IsTrue(this.dto != null);
         }
 
         [Test]
         public async Task UpdateAsync()
         {
-            var handler = new NotifyDataAccess(this.Context, Mapper());
-            var entity = NotifyTestData.NotifyDTO;
-            var originalNotify = entity;
-            await handler.SaveAsync(entity);
-
-            entity.Email = new Faker().Person.Email;
-            var response = await handler.UpdateAsync(entity);
-            var outcome = response.Email.Equals(originalNotify.Email);
+            this.dto.Email = new Faker().Person.Email;
+            var response = await this.handler.UpdateAsync(this.dto);
+            var outcome = response.Email.Equals(this.dto.Email);
 
             Assert.IsTrue(outcome);
         }
@@ -62,11 +60,7 @@ namespace Pezza.Test
         [Test]
         public async Task DeleteAsync()
         {
-            var handler = new NotifyDataAccess(this.Context, Mapper());
-            var entity = NotifyTestData.NotifyDTO;
-            await handler.SaveAsync(entity);
-
-            var response = await handler.DeleteAsync(entity.Id);
+            var response = await this.handler.DeleteAsync(this.dto.Id);
 
             Assert.IsTrue(response);
         }

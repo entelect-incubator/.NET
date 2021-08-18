@@ -2,8 +2,10 @@ namespace Pezza.Common.Entities
 {
     using System;
 
-    public class Notify : Entity
+    public class Notify
     {
+        public int Id { get; set; }
+
         public int CustomerId { get; set; }
 
         public string Email { get; set; }
