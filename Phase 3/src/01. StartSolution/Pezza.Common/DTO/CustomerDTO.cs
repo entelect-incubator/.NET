@@ -3,13 +3,15 @@
     using System;
     using Pezza.Common.Entities;
 
-    public class CustomerDTO : Entity
+    public class CustomerDTO
     {
         public CustomerDTO()
         {
             this.Address = new AddressBase();
             this.DateCreated = DateTime.Now;
         }
+
+        public int Id { get; set; }
 
         public string Name { get; set; }
 

@@ -12,11 +12,11 @@
 
     public class OrderItemDataAccess : IDataAccess<OrderItemDTO>
     {
-        private readonly IDatabaseContext databaseContext;
+        private readonly DatabaseContext databaseContext;
 
         private readonly IMapper mapper;
 
-        public OrderItemDataAccess(IDatabaseContext databaseContext, IMapper mapper)
+        public OrderItemDataAccess(DatabaseContext databaseContext, IMapper mapper)
             => (this.databaseContext, this.mapper) = (databaseContext, mapper);
 
         public async Task<OrderItemDTO> GetAsync(int id)
@@ -28,19 +28,26 @@
             return this.mapper.Map<List<OrderItemDTO>>(entities);
         }
 
-        public async Task<OrderItemDTO> SaveAsync(OrderItemDTO entity)
+        public async Task<OrderItemDTO> SaveAsync(OrderItemDTO dto)
         {
-            this.databaseContext.OrderItems.Add(this.mapper.Map<OrderItem>(entity));
+            var entity = this.mapper.Map<OrderItem>(dto);
+            this.databaseContext.OrderItems.Add(entity);
             await this.databaseContext.SaveChangesAsync();
+            dto.Id = entity.Id;
 
-            return entity;
+            return dto;
         }
 
-        public async Task<OrderItemDTO> UpdateAsync(OrderItemDTO entity)
+        public async Task<OrderItemDTO> UpdateAsync(OrderItemDTO dto)
         {
-            var findEntity = await this.databaseContext.OrderItems.FirstOrDefaultAsync(x => x.Id == entity.Id);
-            findEntity.Quantity = entity.Quantity ?? findEntity.Quantity;
-            findEntity.ProductId = entity.ProductId ?? findEntity.ProductId;
+            var findEntity = await this.databaseContext.OrderItems.FirstOrDefaultAsync(x => x.Id == dto.Id);
+            if (findEntity == null)
+            {
+                return null;
+            }
+
+            findEntity.Quantity = dto.Quantity ?? findEntity.Quantity;
+            findEntity.ProductId = dto.ProductId ?? findEntity.ProductId;
 
             this.databaseContext.OrderItems.Update(findEntity);
             await this.databaseContext.SaveChangesAsync();
@@ -51,10 +58,15 @@
         public async Task<bool> DeleteAsync(int id)
         {
             var entity = await this.databaseContext.OrderItems.FirstOrDefaultAsync(x => x.Id == id);
+            if (entity == null)
+            {
+                return false;
+            }
+
             this.databaseContext.OrderItems.Remove(entity);
             var result = await this.databaseContext.SaveChangesAsync();
 
-            return result == 1;
+            return (result == 1);
         }
     }
 }

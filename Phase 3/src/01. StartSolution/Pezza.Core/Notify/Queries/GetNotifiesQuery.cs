@@ -20,7 +20,7 @@
         public async Task<ListResult<NotifyDTO>> Handle(GetNotifiesQuery request, CancellationToken cancellationToken)
         {
             var search = await this.DataAccess.GetAllAsync();
-            return ListResult<NotifyDTO>.Success(search);
+            return ListResult<NotifyDTO>.Success(search, search.Count);
         }
     }
 }
