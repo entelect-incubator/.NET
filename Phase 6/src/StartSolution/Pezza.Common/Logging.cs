@@ -1,4 +1,4 @@
-﻿namespace Pezza.Common.Logging
+﻿namespace Pezza.Common
 {
     using System;
     using Serilog;

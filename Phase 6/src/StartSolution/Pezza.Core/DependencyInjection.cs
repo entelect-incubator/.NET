@@ -1,7 +1,6 @@
 namespace Pezza.Core
 {
     using System.Reflection;
-    using AutoMapper;
     using FluentValidation;
     using MediatR;
     using Microsoft.Extensions.DependencyInjection;
@@ -33,7 +32,6 @@ namespace Pezza.Core
             services.AddTransient(typeof(IDataAccess<RestaurantDTO>), typeof(RestaurantDataAccess));
 
             services.AddAutoMapper(typeof(MappingProfile));
-            services.AddLazyCache();
 
             return services;
         }

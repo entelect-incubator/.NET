@@ -3,13 +3,12 @@ namespace Pezza.DataAccess.Map
     using Microsoft.EntityFrameworkCore;
     using Pezza.Common.Entities;
 
-    public partial class ProductMap
-        : IEntityTypeConfiguration<Product>
+    public class RestaurantMap : IEntityTypeConfiguration<Restaurant>
     {
-        public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Product> builder)
+        public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Restaurant> builder)
         {
             // table
-            builder.ToTable("Product", "dbo");
+            builder.ToTable("Restaurant", "dbo");
 
             // key
             builder.HasKey(t => t.Id);
@@ -24,8 +23,8 @@ namespace Pezza.DataAccess.Map
             builder.Property(t => t.Name)
                 .IsRequired()
                 .HasColumnName("Name")
-                .HasColumnType("varchar(150)")
-                .HasMaxLength(150);
+                .HasColumnType("varchar(100)")
+                .HasMaxLength(100);
 
             builder.Property(t => t.Description)
                 .IsRequired()
@@ -39,23 +38,29 @@ namespace Pezza.DataAccess.Map
                 .HasColumnType("varchar(1000)")
                 .HasMaxLength(1000);
 
-            builder.Property(t => t.Price)
+            builder.Property(t => t.Address)
                 .IsRequired()
-                .HasColumnName("Price")
-                .HasColumnType("decimal(17, 2)");
+                .HasColumnName("Address")
+                .HasColumnType("varchar(500)")
+                .HasMaxLength(500);
 
-            builder.Property(t => t.Special)
+            builder.Property(t => t.City)
                 .IsRequired()
-                .HasColumnName("Special")
-                .HasColumnType("bit");
+                .HasColumnName("City")
+                .HasColumnType("varchar(100)")
+                .HasMaxLength(100);
 
-            builder.Property(t => t.OfferEndDate)
-                .HasColumnName("OfferEndDate")
-                .HasColumnType("datetime");
+            builder.Property(t => t.Province)
+                .IsRequired()
+                .HasColumnName("Province")
+                .HasColumnType("varchar(100)")
+                .HasMaxLength(100);
 
-            builder.Property(t => t.OfferPrice)
-                .HasColumnName("OfferPrice")
-                .HasColumnType("decimal(17, 2)");
+            builder.Property(t => t.PostalCode)
+                .IsRequired()
+                .HasColumnName("PostalCode")
+                .HasColumnType("varchar(8)")
+                .HasMaxLength(8);
 
             builder.Property(t => t.IsActive)
                 .IsRequired()

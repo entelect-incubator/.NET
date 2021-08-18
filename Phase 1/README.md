@@ -388,7 +388,7 @@ namespace Pezza.Test
 - [ ] Create a new folder DataAccess, that will be used to test Stock Data Access. Create TestStockDataAccess.cs class. <br/> ![](Assets/2020-09-14-06-01-45.png)
 
 ```cs
-namespace Pezza.Test
+namespace Pezza.Test.DataAccess
 {
     using System.Threading.Tasks;
     using Bogus;

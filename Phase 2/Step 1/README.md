@@ -680,7 +680,6 @@ namespace Pezza.Common.Behaviours
     using System.Diagnostics;
     using System.Threading;
     using System.Threading.Tasks;
-    using Pezza.Common.Interfaces;
     using MediatR;
     using Microsoft.Extensions.Logging;
 
@@ -688,19 +687,11 @@ namespace Pezza.Common.Behaviours
     {
         private readonly Stopwatch timer;
         private readonly ILogger<TRequest> logger;
-        private readonly ICurrentUserService currentUserService;
-        private readonly IIdentityService identityService;
 
-        public PerformanceBehaviour(
-            ILogger<TRequest> logger,
-            ICurrentUserService currentUserService,
-            IIdentityService identityService)
+        public PerformanceBehaviour(ILogger<TRequest> logger)
         {
             this.timer = new Stopwatch();
-
             this.logger = logger;
-            this.currentUserService = currentUserService;
-            this.identityService = identityService;
         }
 
         public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
@@ -716,16 +707,7 @@ namespace Pezza.Common.Behaviours
             if (elapsedMilliseconds > 500)
             {
                 var requestName = typeof(TRequest).Name;
-                var userId = this.currentUserService.UserId ?? string.Empty;
-                var userName = string.Empty;
-
-                if (!string.IsNullOrEmpty(userId))
-                {
-                    userName = await this.identityService.GetUserNameAsync(userId);
-                }
-
-                this.logger.LogWarning("Pezza Long Running Request: {Name} ({ElapsedMilliseconds} milliseconds) {@UserId} {@UserName} {@Request}",
-                    requestName, elapsedMilliseconds, userId, userName, request);
+                this.logger.LogInformation($"CleanArchitecture Long Running Request: {requestName} ({elapsedMilliseconds} milliseconds)", request);
             }
 
             return response;
