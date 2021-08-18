@@ -14,13 +14,15 @@ Install FluentValidation on the Core Project.
 
 ## **Install Newtonsoft.Json**
 
+Newtonsoft.Json is a popular high-performance JSON framework typically used to serialize and deserialize .Net objects. Install it on the Api project."
+
 ![Newtonsoft.Json](Assets/2021-01-17-15-36-25.png)
 
 ### **Add Validators to your Commands**
 
 For every Command create a CommandNamevalidator.cs, because you only want to validate the data that gets send into the Command.
 
-Create AddressValidator.cs in Pezza.COmmon/Validators
+Create AddressValidator.cs in Pezza.Common/Validators
 
 ```cs
 namespace Pezza.Common.Validators
@@ -74,7 +76,7 @@ namespace Pezza.Common.Validators
 
 Let's start with creating Validators for Customer Commands.
 
-Add a new class in Customer/Commands CreateCustomerCommandValidator.cs
+Add a new class in the folder Customer/Commands CreateCustomerCommandValidator.cs
 
 ```cs
 namespace Pezza.Core.Customer.Commands
@@ -263,7 +265,7 @@ namespace Pezza.Core
 
 ## Exception Handler Middleware
 
-In Pezza.Api create a new folder Middleware and create a new class inside of it ExceptionHandlerMiddleware.cs.
+In Pezza.Common create a new class inside Behaviours called ExceptionHandlerMiddleware.cs.
 
 ![ExceptionHandlerMiddleware](Assets/2021-04-15-21-23-31.png)
 

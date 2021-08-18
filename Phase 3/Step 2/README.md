@@ -81,7 +81,7 @@ namespace Pezza.Common.DTO.Data
 {
     using Pezza.Common.Models;
 
-    public interface ISearchBase
+    public class SearchBase
     {
         public string OrderBy { get; set; }
 
@@ -90,21 +90,22 @@ namespace Pezza.Common.DTO.Data
 }
 ```
 
-Extend all DTO's with ISearchBase.
+Extend all DTO's with SearchBase for Product and Restaurant add it to ImageDataBase.
 
 ```cs
 namespace Pezza.Common.DTO
 {
     using System;
     using Pezza.Common.Entities;
-    using Pezza.Common.Models;
 
-    public class CustomerDTO : Entity, Data.ISearchBase
+    public class CustomerDTO : SearchBase
     {
         public CustomerDTO()
         {
             this.Address = new AddressBase();
         }
+
+        public int Id { get; set; }
 
         public string Name { get; set; }
 
@@ -117,20 +118,57 @@ namespace Pezza.Common.DTO
         public AddressBase Address { get; set; }
 
         public DateTime? DateCreated { get; set; }
-
-        public string OrderBy { get; set; }
-
-        public PagingArgs PagingArgs { get; set; }
     }
 }
 ```
 
-Add Paging Properties as well to all DTO's
+ImageDataBase
 
 ```cs
-public string OrderBy { get; set; }
+namespace Pezza.Common.Entities
+{
+    using Pezza.Common.DTO.Data;
 
-public PagingArgs PagingArgs { get; set; }
+    public class ImageDataBase : SearchBase
+    {
+        public string ImageData { get; set; }
+    }
+}
+
+```
+
+Product DTO
+
+```cs
+namespace Pezza.Common.DTO
+{
+    using System;
+    using Pezza.Common.Entities;
+
+    public class ProductDTO : ImageDataBase
+    {
+        public int Id { get; set; }
+
+        public string Name { get; set; }
+
+        public string Description { get; set; }
+
+        public string PictureUrl { get; set; }
+
+        public decimal? Price { get; set; }
+
+        public bool? Special { get; set; }
+
+        public DateTime? OfferEndDate { get; set; }
+
+        public decimal? OfferPrice { get; set; }
+
+        public bool? IsActive { get; set; }
+
+        public DateTime DateCreated { get; set; }
+    }
+}
+
 ```
 
 ![](2021-01-18-09-58-18.png)
@@ -294,41 +332,43 @@ The only exception will be on Restaurant GetAllAsync(). We don't want to add any
 ```cs
 public async Task<ListResult<RestaurantDTO>> GetAllAsync(Entity searchBase)
 {
-    var entities = this.mapper.Map<List<RestaurantDTO>>(await this.databaseContext.Restaurants.Select(x => x).AsNoTracking().ToListAsync());
-    return ListResult<RestaurantDTO>.Success(entities, entities.Count);
+    var entities = this.databaseContext.Restaurants.Select(x => x)
+        .AsNoTracking();
+
+    var count = entities.Count();
+    var paged = await entities.ApplyPaging(dto.PagingArgs).ToListAsync();
+
+    return ListResult<RestaurantDTO>.Success(this.mapper.Map<List<RestaurantDTO>>(paged), count);
 }
 ``
 
 Open CustomerDataAccess
 
 ```cs
-public async Task<ListResult<CustomerDTO>> GetAllAsync(Entity searchBase)
-        {
-            var searchModel = (CustomerDTO)searchBase;
-            if (string.IsNullOrEmpty(searchModel.OrderBy))
-            {
-                searchModel.OrderBy = "DateCreated desc";
-            }
+public async Task<ListResult<CustomerDTO>> GetAllAsync(CustomerDTO dto)
+{
+    if (string.IsNullOrEmpty(dto.OrderBy))
+    {
+        dto.OrderBy = "DateCreated desc";
+    }
 
-            var entities = this.databaseContext.Customers.Select(x => x)
-                .AsNoTracking()
-                .FilterByName(searchModel.Name)
-                .FilterByAddress(searchModel.Address?.Address)
-                .FilterByCity(searchModel.Address?.City)
-                .FilterByProvince(searchModel.Address?.Province)
-                .FilterByPostalCode(searchModel.Address?.PostalCode)
-                .FilterByPhone(searchModel.Phone)
-                .FilterByEmail(searchModel.Email)
-                .FilterByContactPerson(searchModel.ContactPerson)
-                .FilterByDateCreated(searchModel.DateCreated)
+    var entities = this.databaseContext.Customers.Select(x => x)
+        .AsNoTracking()
+        .FilterByName(dto.Name)
+        .FilterByAddress(dto.Address?.Address)
+        .FilterByCity(dto.Address?.City)
+        .FilterByProvince(dto.Address?.Province)
+        .FilterByPostalCode(dto.Address?.PostalCode)
+        .FilterByPhone(dto.Phone)
+        .FilterByEmail(dto.Email)
+        .FilterByContactPerson(dto.ContactPerson)
 
-                .OrderBy(searchModel.OrderBy);
+        .OrderBy(dto.OrderBy);
 
-            var count = entities.Count();
-            var paged = this.mapper.Map<List<CustomerDTO>>(await entities.ApplyPaging(searchModel.PagingArgs).ToListAsync());
-
-            return ListResult<CustomerDTO>.Success(paged, count);
-        }
+    var count = entities.Count();
+    var paged = this.mapper.Map<List<CustomerDTO>>(await entities.ApplyPaging(dto.PagingArgs).ToListAsync());
+    return ListResult<CustomerDTO>.Success(paged, count);
+}
 ```
 
 Add all the Filters to the other DataAccess as well or can copy it from Phase 3/Data/DataAccess
@@ -346,23 +386,26 @@ namespace Pezza.Core.Customer.Queries
     using System.Threading.Tasks;
     using MediatR;
     using Pezza.Common.DTO;
-    using Pezza.Common.Mapping;
     using Pezza.Common.Models;
     using Pezza.DataAccess.Contracts;
 
     public class GetCustomersQuery : IRequest<ListResult<CustomerDTO>>
     {
-        public CustomerDTO SearchModel { get; set; }
+        public CustomerDTO dto;
     }
 
     public class GetCustomersQueryHandler : IRequestHandler<GetCustomersQuery, ListResult<CustomerDTO>>
     {
-        private readonly IDataAccess<Common.Entities.Customer> DataAccess;
+        private readonly IDataAccess<CustomerDTO> DataAccess;
 
-        public GetCustomersQueryHandler(IDataAccess<Common.Entities.Customer> DataAccess) => this.DataAccess = DataAccess;
+        public GetCustomersQueryHandler(IDataAccess<CustomerDTO> DataAccess) => this.DataAccess = DataAccess;
 
         public async Task<ListResult<CustomerDTO>> Handle(GetCustomersQuery request, CancellationToken cancellationToken)
-          => await this.DataAccess.GetAllAsync(request.SearchModel);
+        {
+            var search = await this.DataAccess.GetAllAsync(request.dto);
+
+            return search;
+        }
     }
 }
 ```
@@ -377,19 +420,21 @@ Example Customer Controller
 /// <summary>
 /// Get all Customers.
 /// </summary>
-/// <param name="searchModel"></param> 
+/// <returns>A <see cref="Task"/> repres
+/// enting the asynchronous operation.</returns>
+/// <response code="200">Customer Search</response>
+/// <response code="400">Error searching for customers</response>
 [HttpPost]
-[ProducesResponseType(200)]
-[ProducesResponseType(400)]
+[ProducesResponseType(typeof(ListResult<CustomerDTO>), 200)]
+[ProducesResponseType(typeof(Result), 400)]
 [Route("Search")]
-public async Task<ActionResult> Search(CustomerDataDTO searchModel)
+public async Task<ActionResult> Search(CustomerDTO dto)
 {
     var result = await this.Mediator.Send(new GetCustomersQuery
     {
-        SearchModel = searchModel
+        dto = dto
     });
-
-    return ResponseHelper.ResponseOutcome<CustomerDTO>(result, this);
+    return ResponseHelper.ResponseOutcome(result, this);
 }
 ```
 
@@ -401,15 +446,32 @@ Add Search Model to all GetAllAsync Unit Tests
 [Test]
 public async Task GetAllAsync()
 {
-    var handler = new CustomerDataAccess(this.Context);
-    var entity = CustomerTestData.Customer;
-    await handler.SaveAsync(entity);
-
-    var searchModel = new OrderDataDTO();
-    var response = await handler.GetAllAsync(searchModel);
+    var response = await this.handler.GetAllAsync(new CustomerDTO
+    {
+        Name = this.dto.Name
+    });
     var outcome = response.Count;
 
     Assert.IsTrue(outcome == 1);
+}
+```
+
+Test Customer Core
+
+```cs
+[Test]
+public async Task GetAllAsync()
+{
+    var sutGetAll = new GetCustomersQueryHandler(this.dataAccess);
+    var resultGetAll = await sutGetAll.Handle(new GetCustomersQuery
+    {
+        dto = new CustomerDTO
+        {
+            Name = this.dto.Name
+        }
+    }, CancellationToken.None);
+
+    Assert.IsTrue(resultGetAll?.Data.Count == 1);
 }
 ```
 

@@ -5,7 +5,7 @@ namespace Pezza.DataAccess
     using Pezza.DataAccess.Contracts;
     using Pezza.DataAccess.Map;
 
-    public class DatabaseContext : DbContext, IDatabaseContext
+    public class DatabaseContext : DbContext
     {
         public DatabaseContext()
         {

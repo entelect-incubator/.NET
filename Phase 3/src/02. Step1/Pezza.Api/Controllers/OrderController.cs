@@ -5,6 +5,7 @@
     using Pezza.Api.Helpers;
     using Pezza.Common.DTO;
     using Pezza.Common.Entities;
+    using Pezza.Common.Models;
     using Pezza.Core.Order.Commands;
     using Pezza.Core.Order.Queries;
 
@@ -16,31 +17,33 @@
         /// </summary>
         /// <param name="id">int.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        /// <response code="200">Get a product</response>
+        /// <response code="400">Error getting a product</response>
+        /// <response code="404">Product not found</response>
         [HttpGet("{id}")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(404)]
+        [ProducesResponseType(typeof(Result<OrderDTO>), 200)]
+        [ProducesResponseType(typeof(ErrorResult), 400)]
+        [ProducesResponseType(typeof(ErrorResult), 404)]
         public async Task<ActionResult> Get(int id)
         {
             var result = await this.Mediator.Send(new GetOrderQuery { Id = id });
-            return ResponseHelper.ResponseOutcome<OrderDTO>(result, this);
+            return ResponseHelper.ResponseOutcome(result, this);
         }
 
         /// <summary>
         /// Get all Orders.
         /// </summary>
-        /// <param name="searchModel">The search model.</param>
-        /// <returns>
-        /// A <see cref="Task" /> representing the asynchronous operation.
-        /// </returns>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        /// <response code="200">Order Search</response>
+        /// <response code="400">Error searching for orders</response>
         [HttpPost]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
+        [ProducesResponseType(typeof(ListResult<OrderDTO>), 200)]
+        [ProducesResponseType(typeof(Result), 400)]
         [Route("Search")]
-        public async Task<ActionResult> Search([FromBody] OrderDTO searchModel)
+        public async Task<ActionResult> Search()
         {
             var result = await this.Mediator.Send(new GetOrdersQuery());
-            return ResponseHelper.ResponseOutcome<OrderDTO>(result, this);
+            return ResponseHelper.ResponseOutcome(result, this);
         }
 
         /// <summary>
@@ -57,9 +60,11 @@
         /// </remarks>
         /// <param name="data">OrderDTO.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        /// <response code="200">Order created</response>
+        /// <response code="400">Error creating a order</response>
         [HttpPost]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
+        [ProducesResponseType(typeof(Result<OrderDTO>), 200)]
+        [ProducesResponseType(typeof(Result), 400)]
         public async Task<ActionResult<Order>> Create(OrderDTO data)
         {
             data.Customer = null;
@@ -68,7 +73,7 @@
                 Data = data
             });
 
-            return ResponseHelper.ResponseOutcome<OrderDTO>(result, this);
+            return ResponseHelper.ResponseOutcome(result, this);
         }
 
         /// <summary>
@@ -84,10 +89,13 @@
         /// </remarks>
         /// <param name="data">OrderDTO.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        /// <response code="200">Order updated</response>
+        /// <response code="400">Error updating a order</response>
+        /// <response code="404">Order not found</response>
         [HttpPut]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(404)]
+        [ProducesResponseType(typeof(Result<OrderDTO>), 200)]
+        [ProducesResponseType(typeof(Result), 400)]
+        [ProducesResponseType(typeof(Result), 404)]
         public async Task<ActionResult> Update(OrderDTO data)
         {
             var result = await this.Mediator.Send(new UpdateOrderCommand
@@ -95,7 +103,7 @@
                 Data = data
             });
 
-            return ResponseHelper.ResponseOutcome<OrderDTO>(result, this);
+            return ResponseHelper.ResponseOutcome(result, this);
         }
 
         /// <summary>
@@ -103,9 +111,11 @@
         /// </summary>
         /// <param name="id">int.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        /// <response code="200">Order deleted</response>
+        /// <response code="400">Error deleting a order</response>
         [HttpDelete("{id}")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
+        [ProducesResponseType(typeof(Result), 200)]
+        [ProducesResponseType(typeof(Result), 400)]
         public async Task<ActionResult> Delete(int id)
         {
             var result = await this.Mediator.Send(new DeleteOrderCommand { Id = id });

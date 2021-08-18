@@ -5,6 +5,10 @@ namespace Pezza.Common.Models
 
     public class Result
     {
+        public Result()
+        {
+        }
+
         internal Result(bool succeeded, string error)
         {
             this.Succeeded = succeeded;
@@ -94,18 +98,20 @@ namespace Pezza.Common.Models
             this.Errors = errors;
         }
 
-        internal ListResult(bool succeeded, List<T> data, List<object> errors)
+        internal ListResult(bool succeeded, List<T> data, int count, List<object> errors)
         {
             this.Succeeded = succeeded;
             this.Errors = errors;
             this.Data = data;
+            this.Count = count;
         }
 
-        internal ListResult(bool succeeded, IEnumerable<T> data, List<object> errors)
+        internal ListResult(bool succeeded, IEnumerable<T> data, int count, List<object> errors)
         {
             this.Succeeded = succeeded;
             this.Errors = errors;
             this.Data = data.ToList();
+            this.Count = count;
         }
 
         public bool Succeeded { get; set; }
@@ -114,12 +120,23 @@ namespace Pezza.Common.Models
 
         public List<object> Errors { get; set; }
 
-        public static ListResult<T> Success(List<T> data) => new ListResult<T>(true, data, new List<object> { });
+        public int Count { get; set; }
 
-        public static ListResult<T> Success(IEnumerable<T> data) => new ListResult<T>(true, data, new List<object> { });
+        public static ListResult<T> Success(List<T> data, int count) => new ListResult<T>(true, data, count, new List<object> { });
+
+        public static ListResult<T> Success(IEnumerable<T> data, int count) => new ListResult<T>(true, data, count, new List<object> { });
 
         public static ListResult<T> Failure(string error) => new ListResult<T>(false, error);
 
         public static ListResult<T> Failure(List<object> errors) => new ListResult<T>(false, errors);
+    }
+
+    public class ListOutcome<T>
+    {
+        public List<T> Data { get; set; }
+
+        public int Count { get; set; }
+
+        public List<string> Errors { get; set; }
     }
 }

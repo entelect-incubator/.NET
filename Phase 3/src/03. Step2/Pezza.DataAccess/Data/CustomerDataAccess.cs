@@ -15,61 +15,66 @@
 
     public class CustomerDataAccess : IDataAccess<CustomerDTO>
     {
-        private readonly IDatabaseContext databaseContext;
+        private readonly DatabaseContext databaseContext;
 
         private readonly IMapper mapper;
 
-        public CustomerDataAccess(IDatabaseContext databaseContext, IMapper mapper)
+        public CustomerDataAccess(DatabaseContext databaseContext, IMapper mapper)
             => (this.databaseContext, this.mapper) = (databaseContext, mapper);
 
         public async Task<CustomerDTO> GetAsync(int id)
             => this.mapper.Map<CustomerDTO>(await this.databaseContext.Customers.FirstOrDefaultAsync(x => x.Id == id));
 
-        public async Task<ListResult<CustomerDTO>> GetAllAsync(Entity searchBase)
+        public async Task<ListResult<CustomerDTO>> GetAllAsync(CustomerDTO dto)
         {
-            var searchModel = (CustomerDTO)searchBase;
-            if (string.IsNullOrEmpty(searchModel.OrderBy))
+            if (string.IsNullOrEmpty(dto.OrderBy))
             {
-                searchModel.OrderBy = "DateCreated desc";
+                dto.OrderBy = "DateCreated desc";
             }
 
             var entities = this.databaseContext.Customers.Select(x => x)
                 .AsNoTracking()
-                .FilterByName(searchModel.Name)
-                .FilterByAddress(searchModel.Address?.Address)
-                .FilterByCity(searchModel.Address?.City)
-                .FilterByProvince(searchModel.Address?.Province)
-                .FilterByPostalCode(searchModel.Address?.PostalCode)
-                .FilterByPhone(searchModel.Phone)
-                .FilterByEmail(searchModel.Email)
-                .FilterByContactPerson(searchModel.ContactPerson)
+                .FilterByName(dto.Name)
+                .FilterByAddress(dto.Address?.Address)
+                .FilterByCity(dto.Address?.City)
+                .FilterByProvince(dto.Address?.Province)
+                .FilterByPostalCode(dto.Address?.PostalCode)
+                .FilterByPhone(dto.Phone)
+                .FilterByEmail(dto.Email)
+                .FilterByContactPerson(dto.ContactPerson)
 
-                .OrderBy(searchModel.OrderBy);
+                .OrderBy(dto.OrderBy);
 
             var count = entities.Count();
-            var paged = this.mapper.Map<List<CustomerDTO>>(await entities.ApplyPaging(searchModel.PagingArgs).ToListAsync());
-
+            var paged = this.mapper.Map<List<CustomerDTO>>(await entities.ApplyPaging(dto.PagingArgs).ToListAsync());
             return ListResult<CustomerDTO>.Success(paged, count);
         }
 
-        public async Task<CustomerDTO> SaveAsync(CustomerDTO entity)
+        public async Task<CustomerDTO> SaveAsync(CustomerDTO dto)
         {
-            this.databaseContext.Customers.Add(this.mapper.Map<Customer>(entity));
+            var entity = this.mapper.Map<Customer>(dto);
+            this.databaseContext.Customers.Add(entity);
             await this.databaseContext.SaveChangesAsync();
+            dto.Id = entity.Id;
 
-            return entity;
+            return dto;
         }
 
-        public async Task<CustomerDTO> UpdateAsync(CustomerDTO entity)
+        public async Task<CustomerDTO> UpdateAsync(CustomerDTO dto)
         {
-            var findEntity = await this.databaseContext.Customers.FirstOrDefaultAsync(x => x.Id == entity.Id);
-            findEntity.Name = !string.IsNullOrEmpty(entity?.Name) ? entity?.Name : findEntity.Name;
-            findEntity.Address = !string.IsNullOrEmpty(entity?.Address?.Address) ? entity?.Address?.Address : findEntity.Address;
-            findEntity.City = !string.IsNullOrEmpty(entity?.Address?.City) ? entity?.Address?.City : findEntity.City;
-            findEntity.Province = !string.IsNullOrEmpty(entity?.Address?.Province) ? entity?.Address?.Province : findEntity.Province;
-            findEntity.PostalCode = !string.IsNullOrEmpty(entity?.Address?.PostalCode) ? entity?.Address?.PostalCode : findEntity.PostalCode;
-            findEntity.Phone = !string.IsNullOrEmpty(entity?.Phone) ? entity?.Phone : findEntity.Phone;
-            findEntity.ContactPerson = !string.IsNullOrEmpty(entity?.ContactPerson) ? entity?.ContactPerson : findEntity.ContactPerson;
+            var findEntity = await this.databaseContext.Customers.FirstOrDefaultAsync(x => x.Id == dto.Id);
+            if (findEntity == null)
+            {
+                return null;
+            }
+
+            findEntity.Name = !string.IsNullOrEmpty(dto?.Name) ? dto?.Name : findEntity.Name;
+            findEntity.Address = !string.IsNullOrEmpty(dto?.Address?.Address) ? dto?.Address?.Address : findEntity.Address;
+            findEntity.City = !string.IsNullOrEmpty(dto?.Address?.City) ? dto?.Address?.City : findEntity.City;
+            findEntity.Province = !string.IsNullOrEmpty(dto?.Address?.Province) ? dto?.Address?.Province : findEntity.Province;
+            findEntity.PostalCode = !string.IsNullOrEmpty(dto?.Address?.PostalCode) ? dto?.Address?.PostalCode : findEntity.PostalCode;
+            findEntity.Phone = !string.IsNullOrEmpty(dto?.Phone) ? dto?.Phone : findEntity.Phone;
+            findEntity.ContactPerson = !string.IsNullOrEmpty(dto?.ContactPerson) ? dto?.ContactPerson : findEntity.ContactPerson;
             this.databaseContext.Customers.Update(findEntity);
             await this.databaseContext.SaveChangesAsync();
 
@@ -79,10 +84,15 @@
         public async Task<bool> DeleteAsync(int id)
         {
             var entity = await this.databaseContext.Customers.FirstOrDefaultAsync(x => x.Id == id);
+            if (entity == null)
+            {
+                return false;
+            }
+
             this.databaseContext.Customers.Remove(entity);
             var result = await this.databaseContext.SaveChangesAsync();
 
-            return result == 1;
+            return (result == 1);
         }
     }
 }
