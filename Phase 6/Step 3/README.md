@@ -146,59 +146,54 @@ var entities = this.databaseContext.Notify.Include(x => x.Customer).Select(x => 
 OrderCompletedEvent.cs
 
 ```cs
-namespace Pezza.Core.Order.Events
+namespace Pezza.Scheduler.Jobs
 {
-    using System;
-    using System.IO;
-    using System.Threading;
     using System.Threading.Tasks;
     using MediatR;
     using Pezza.Common.DTO;
-    using Pezza.Core.Customer.Queries;
+    using Pezza.Common.Models;
+using Pezza.Core.Customer.Queries;
     using Pezza.Core.Email;
-    using Pezza.Core.Notify.Commands;
+    using Pezza.Core.Notify.Queries;
 
-    public class OrderCompletedEvent : INotification
+    public class OrderCompleteJob : IOrderCompleteJob
     {
-        public OrderDTO CompletedOrder { get; set; }
+        private IMediator mediator;
 
-        public class ArrivalNotificationEventHandler : INotificationHandler<OrderCompletedEvent>
+        public OrderCompleteJob(IMediator mediator) => this.mediator = mediator;
+
+        public async Task SendNotficationAsync()
         {
-            private readonly IMediator mediator;
-
-            public ArrivalNotificationEventHandler(IMediator mediator) => this.mediator = mediator;
-
-            public async Task Handle(OrderCompletedEvent notification, CancellationToken cancellationToken)
+            var result = await this.mediator.Send(new GetNotifiesQuery
             {
-                try
+                dto = new NotifyDTO
                 {
-                    var path = AppDomain.CurrentDomain.BaseDirectory + "\\Email\\Templates\\OrderCompleted.html";
-                    var html = File.ReadAllText(path);
-
-                    html = html.Replace("<%% ORDER %%>", notification.CompletedOrder.Id.ToString());
-                    if (notification.CompletedOrder.CustomerId.HasValue)
+                    Sent = false,
+                    PagingArgs = PagingArgs.Default
+                }
+            });
+            if (result.Succeeded)
+            {
+                foreach (var notification in result.Data)
+                {
+                    if (notification.CustomerId.HasValue)
                     {
-                        var customer = await this.mediator.Send(new GetCustomerQuery { Id = notification.CompletedOrder.CustomerId.Value });
+                        var customer = await this.mediator.Send(new GetCustomerQuery
+                        {
+                            Id = notification.CustomerId.Value
+                        });
+
                         if (customer.Succeeded)
                         {
-                            var notify = await this.mediator.Send(new CreateNotifyCommand
+                            var emailService = new EmailService
                             {
-                                Data = new Common.DTO.NotifyDTO
-                                {
-                                    CustomerId = customer.Data.Id,
-                                    DateSent = DateTime.Now,
-                                    Email = html,
-                                    Sent = false,
-                                    Retry = 0
-                                }
-                            });
+                                Customer = customer.Data,
+                                HtmlContent = notification.Email
+                            };
+
+                            var send = await emailService.SendEmail();
                         }
                     }
-                }
-                catch (Exception e)
-                {
-                    Common.Logging.Logging.LogException(e);
-                    throw;
                 }
             }
         }
@@ -209,7 +204,7 @@ namespace Pezza.Core.Order.Events
 Startup.cs
 
 ```cs
- services.AddDbContext<IDatabaseContext, DatabaseContext>(options =>
+ services.AddDbContext<DatabaseContext>(options =>
     options.UseSqlServer(this.Configuration.GetConnectionString("PezzaDatabase")));
 ```
 

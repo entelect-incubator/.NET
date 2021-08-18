@@ -8,23 +8,23 @@
     using Pezza.Core.Order.Events;
     using Pezza.DataAccess.Contracts;
 
-    public partial class UpdateOrderCommand : IRequest<Result<OrderDTO>>
+    public class UpdateOrderCommand : IRequest<Result<OrderDTO>>
     {
         public OrderDTO Data { get; set; }
     }
 
     public class UpdateOrderCommandHandler : IRequestHandler<UpdateOrderCommand, Result<OrderDTO>>
     {
-        private readonly IDataAccess<OrderDTO> DataAccess;
+        private readonly IDataAccess<OrderDTO> dto;
 
         private readonly IMediator mediator;
 
-        public UpdateOrderCommandHandler(IDataAccess<OrderDTO> DataAccess, IMediator mediator)
-            => (this.DataAccess, this.mediator) = (DataAccess, mediator);
+        public UpdateOrderCommandHandler(IDataAccess<OrderDTO> dto, IMediator mediator)
+            => (this.dto, this.mediator) = (dto, mediator);
 
         public async Task<Result<OrderDTO>> Handle(UpdateOrderCommand request, CancellationToken cancellationToken)
         {
-            var outcome = await this.DataAccess.UpdateAsync(request.Data);
+            var outcome = await this.dto.UpdateAsync(request.Data);
             if (request.Data.Completed.HasValue)
             {
                 await this.mediator.Publish(new OrderCompletedEvent { CompletedOrder = outcome }, cancellationToken);

@@ -8,7 +8,7 @@ We are going to create a basic Email Service using Fluent Email and SendGrid.
 
 ## **FluentEmail**
 
-Install FluentEmail.Core and FluentEmail.SendGrid
+Install FluentEmail.Core, HtmlAgilityPack and FluentEmail.SendGrid on Pezza.Core.
 
 ![FluentEmail](Assets/2021-01-17-22-57-42.png)
 
@@ -24,6 +24,7 @@ namespace Pezza.Core.Email
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
     using HtmlAgilityPack;
+    using Pezza.Common.DTO;
     using Pezza.Common.Models;
     using SendGrid;
     using SendGrid.Helpers.Mail;
@@ -32,7 +33,7 @@ namespace Pezza.Core.Email
     {
         public string HtmlContent { get; set; }
 
-        public Common.Entities.Customer Customer { get; set; }
+        public CustomerDTO Customer { get; set; }
 
         public async Task<Result> SendEmail()
         {
@@ -63,7 +64,7 @@ Create a new Folder in Email called Templates - Side note - of you have a lot of
 
 Create OrderCompleted.html. The HTML might look a bit strange to you, it's because it is made for email client support.
 
-Look in Phase 6/Data/OrderCompleted.html and Copy it into Email/Templates.
+Look in Phase 6/Data/Templates/OrderCompleted.html and Copy it into Email/Templates.
 
 Right-click on OrderCompleted.html and Choose Copy always for Copy to Output.
 

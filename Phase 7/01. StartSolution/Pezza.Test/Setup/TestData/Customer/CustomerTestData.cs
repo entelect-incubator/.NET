@@ -9,7 +9,7 @@
     {
         public static Faker faker = new Faker();
 
-        public static Common.DTO.CustomerDTO CustomerDTO = new Common.DTO.CustomerDTO()
+        public static CustomerDTO CustomerDTO = new CustomerDTO()
         {
             ContactPerson = faker.Person.FullName,
             Email = faker.Person.Email,
@@ -19,10 +19,9 @@
                 Address = faker.Address.FullAddress(),
                 City = faker.Address.City(),
                 Province = faker.Address.State(),
-                PostalCode = faker.Address.PostalCode(),
+                PostalCode = faker.Address.ZipCode(),
             },
             DateCreated = DateTime.Now
         };
     }
-
 }

@@ -24,13 +24,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pezza.Test", "Pezza.Test\Pe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pezza.Api", "Pezza.Api\Pezza.Api.csproj", "{9F59AFC2-4EF6-4954-967B-2B45124491BA}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6DAF1340-D067-4FC6-8E74-675BC8CFC5F6}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{30EA8D6A-A152-441E-85AB-A39B51011B5E}"
 	ProjectSection(SolutionItems) = preProject
-		.editorconfig = .editorconfig
 		StyleCopRuleSet.ruleset = StyleCopRuleSet.ruleset
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pezza.Scheduler", "Pezza.Scheduler\Pezza.Scheduler.csproj", "{0AA4DCF2-6A7F-4B5C-BF54-CFCD7C790BAF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pezza.Scheduler", "Pezza.Scheduler\Pezza.Scheduler.csproj", "{9F082ECC-4594-49FC-AAD1-117F6F6E253B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -62,10 +61,10 @@ Global
 		{9F59AFC2-4EF6-4954-967B-2B45124491BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9F59AFC2-4EF6-4954-967B-2B45124491BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9F59AFC2-4EF6-4954-967B-2B45124491BA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0AA4DCF2-6A7F-4B5C-BF54-CFCD7C790BAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0AA4DCF2-6A7F-4B5C-BF54-CFCD7C790BAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0AA4DCF2-6A7F-4B5C-BF54-CFCD7C790BAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0AA4DCF2-6A7F-4B5C-BF54-CFCD7C790BAF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F082ECC-4594-49FC-AAD1-117F6F6E253B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F082ECC-4594-49FC-AAD1-117F6F6E253B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F082ECC-4594-49FC-AAD1-117F6F6E253B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F082ECC-4594-49FC-AAD1-117F6F6E253B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -77,7 +76,7 @@ Global
 		{863C4B29-22B7-4029-81C9-76D109A9CB10} = {64BEE539-3166-40B4-A75F-71DC40D29A61}
 		{0EECBAFB-4CE5-4FC7-A883-3CFE86F732C5} = {2446A02E-3196-4A9D-93FE-2F18F093A466}
 		{9F59AFC2-4EF6-4954-967B-2B45124491BA} = {62BBBDBE-A110-4A76-AD08-520728FE86E0}
-		{0AA4DCF2-6A7F-4B5C-BF54-CFCD7C790BAF} = {62BBBDBE-A110-4A76-AD08-520728FE86E0}
+		{9F082ECC-4594-49FC-AAD1-117F6F6E253B} = {62BBBDBE-A110-4A76-AD08-520728FE86E0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {57A0043C-1F66-4E43-8043-3160E3101416}

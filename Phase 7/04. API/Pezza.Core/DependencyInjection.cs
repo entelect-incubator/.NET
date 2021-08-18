@@ -1,13 +1,13 @@
 namespace Pezza.Core
 {
     using System.Reflection;
-    using AutoMapper;
     using FluentValidation;
     using MediatR;
     using Microsoft.Extensions.DependencyInjection;
     using Pezza.Common.Behaviours;
     using Pezza.Common.DTO;
     using Pezza.Common.Profiles;
+    using Pezza.Core.Stock.Commands;
     using Pezza.DataAccess.Contracts;
     using Pezza.DataAccess.Data;
 
@@ -15,8 +15,11 @@ namespace Pezza.Core
     {
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
-            services.AddMediatR(Assembly.GetExecutingAssembly());
+            services.AddMediatR(typeof(CreateStockCommand).GetTypeInfo().Assembly);
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
+            AssemblyScanner.FindValidatorsInAssembly(typeof(CreateStockCommand).Assembly)
+                .ForEach(item => services.AddScoped(item.InterfaceType, item.ValidatorType));
 
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
@@ -29,7 +32,6 @@ namespace Pezza.Core
             services.AddTransient(typeof(IDataAccess<RestaurantDTO>), typeof(RestaurantDataAccess));
 
             services.AddAutoMapper(typeof(MappingProfile));
-            services.AddLazyCache();
 
             return services;
         }

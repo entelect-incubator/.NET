@@ -15,55 +15,60 @@
 
     public class NotifyDataAccess : IDataAccess<NotifyDTO>
     {
-        private readonly IDatabaseContext databaseContext;
+        private readonly DatabaseContext databaseContext;
 
         private readonly IMapper mapper;
 
-        public NotifyDataAccess(IDatabaseContext databaseContext, IMapper mapper)
+        public NotifyDataAccess(DatabaseContext databaseContext, IMapper mapper)
             => (this.databaseContext, this.mapper) = (databaseContext, mapper);
 
         public async Task<NotifyDTO> GetAsync(int id)
             => this.mapper.Map<NotifyDTO>(await this.databaseContext.Notify.FirstOrDefaultAsync(x => x.Id == id));
 
-        public async Task<ListResult<NotifyDTO>> GetAllAsync(Entity searchBase)
+        public async Task<ListResult<NotifyDTO>> GetAllAsync(NotifyDTO dto)
         {
-            var searchModel = (NotifyDTO)searchBase;
-            if (string.IsNullOrEmpty(searchModel.OrderBy))
+            if (string.IsNullOrEmpty(dto.OrderBy))
             {
-                searchModel.OrderBy = "DateSent desc";
+                dto.OrderBy = "DateSent desc";
             }
 
             var entities = this.databaseContext.Notify.Select(x => x)
                 .AsNoTracking()
-                .FilterByCustomerId(searchModel.CustomerId)
-                .FilterByEmail(searchModel.Email)
-                .FilterBySent(searchModel.Sent)
-                .FilterByRetry(searchModel.Retry)
+                .FilterByCustomerId(dto.CustomerId)
+                .FilterByEmail(dto.Email)
+                .FilterBySent(dto.Sent)
+                .FilterByRetry(dto.Retry)
 
-                .OrderBy(searchModel.OrderBy);
+                .OrderBy(dto.OrderBy);
 
             var count = entities.Count();
-            var paged = this.mapper.Map<List<NotifyDTO>>(await entities.ApplyPaging(searchModel.PagingArgs).ToListAsync());
+            var paged = this.mapper.Map<List<NotifyDTO>>(await entities.ApplyPaging(dto.PagingArgs).ToListAsync());
 
             return ListResult<NotifyDTO>.Success(paged, count);
         }
 
-        public async Task<NotifyDTO> SaveAsync(NotifyDTO entity)
+        public async Task<NotifyDTO> SaveAsync(NotifyDTO dto)
         {
-            this.databaseContext.Notify.Add(this.mapper.Map<Notify>(entity));
+            var entity = this.mapper.Map<Notify>(dto);
+            this.databaseContext.Notify.Add(entity);
             await this.databaseContext.SaveChangesAsync();
+            dto.Id = entity.Id;
 
-            return entity;
+            return dto;
         }
 
-        public async Task<NotifyDTO> UpdateAsync(NotifyDTO entity)
+        public async Task<NotifyDTO> UpdateAsync(NotifyDTO dto)
         {
-            var findEntity = await this.databaseContext.Notify.FirstOrDefaultAsync(x => x.Id == entity.Id);
+            var findEntity = await this.databaseContext.Notify.FirstOrDefaultAsync(x => x.Id == dto.Id);
+            if (findEntity == null)
+            {
+                return null;
+            }
 
-            findEntity.CustomerId = entity.CustomerId ?? findEntity.CustomerId;
-            findEntity.Email = !string.IsNullOrEmpty(entity.Email) ? entity.Email : findEntity.Email;
-            findEntity.Sent = entity.Sent ?? findEntity.Sent;
-            findEntity.Retry = entity.Retry ?? findEntity.Retry;
+            findEntity.CustomerId = dto.CustomerId ?? findEntity.CustomerId;
+            findEntity.Email = !string.IsNullOrEmpty(dto.Email) ? dto.Email : findEntity.Email;
+            findEntity.Sent = dto.Sent ?? findEntity.Sent;
+            findEntity.Retry = dto.Retry ?? findEntity.Retry;
 
             this.databaseContext.Notify.Update(findEntity);
             await this.databaseContext.SaveChangesAsync();
@@ -74,6 +79,11 @@
         public async Task<bool> DeleteAsync(int id)
         {
             var entity = await this.databaseContext.Notify.FirstOrDefaultAsync(x => x.Id == id);
+            if (entity == null)
+            {
+                return false;
+            }
+
             this.databaseContext.Notify.Remove(entity);
             var result = await this.databaseContext.SaveChangesAsync();
 

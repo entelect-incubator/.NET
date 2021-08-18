@@ -34,7 +34,7 @@ namespace Pezza.Scheduler
                     .UseDefaultTypeSerializer()
                     .UseSqlServerStorage(this.Configuration.GetConnectionString("PezzaDatabase")));
 
-            services.AddDbContext<IDatabaseContext, DatabaseContext>(options =>
+            services.AddDbContext<DatabaseContext>(options =>
                options.UseSqlServer(this.Configuration.GetConnectionString("PezzaDatabase")));
 
             services.AddSingleton<IOrderCompleteJob, OrderCompleteJob>();

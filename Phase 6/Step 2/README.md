@@ -53,7 +53,7 @@ namespace Pezza.Core.Order.Events
                 var customer = notification.CompletedOrder?.Customer;
                 var notify = await this.mediator.Send(new CreateNotifyCommand
                 {
-                    Data = new Common.DTO.NotifyDTO
+                    Data = new NotifyDTO
                     {
                         CustomerId = customer.Id,
                         DateSent = DateTime.Now,
@@ -73,15 +73,41 @@ namespace Pezza.Core.Order.Events
 We want to trigger the event if the DTO Completed property that gets send is true.
 
 ```cs
-public async Task<Result<OrderDTO>> Handle(UpdateOrderCommand request, CancellationToken cancellationToken)
+namespace Pezza.Core.Order.Commands
 {
-    var outcome = await this.DataAccess.UpdateAsync(request.Data);
-    if (request.Data.Completed.HasValue)
+    using System.Threading;
+    using System.Threading.Tasks;
+    using MediatR;
+    using Pezza.Common.DTO;
+    using Pezza.Common.Models;
+    using Pezza.Core.Order.Events;
+    using Pezza.DataAccess.Contracts;
+
+    public class UpdateOrderCommand : IRequest<Result<OrderDTO>>
     {
-        await this.mediator.Publish(new OrderCompletedEvent { CompletedOrder = outcome }, cancellationToken);
+        public OrderDTO Data { get; set; }
     }
 
-    return (outcome != null) ? Result<OrderDTO>.Success(outcome) : Result<OrderDTO>.Failure("Error updating a Order");
+    public class UpdateOrderCommandHandler : IRequestHandler<UpdateOrderCommand, Result<OrderDTO>>
+    {
+        private readonly IDataAccess<OrderDTO> dto;
+
+        private readonly IMediator mediator;
+
+        public UpdateOrderCommandHandler(IDataAccess<OrderDTO> dto, IMediator mediator)
+            => (this.dto, this.mediator) = (dto, mediator);
+
+        public async Task<Result<OrderDTO>> Handle(UpdateOrderCommand request, CancellationToken cancellationToken)
+        {
+            var outcome = await this.dto.UpdateAsync(request.Data);
+            if (request.Data.Completed.HasValue)
+            {
+                await this.mediator.Publish(new OrderCompletedEvent { CompletedOrder = outcome }, cancellationToken);
+            }
+
+            return (outcome != null) ? Result<OrderDTO>.Success(outcome) : Result<OrderDTO>.Failure("Error updating a Order");
+        }
+    }
 }
 ```
 
