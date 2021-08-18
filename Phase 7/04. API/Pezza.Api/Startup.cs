@@ -55,6 +55,15 @@ namespace Pezza.Api
             });
             services.AddResponseCompression();
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy(
+                    "CorsPolicy",
+                    builder => builder.AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader());
+            });
+
             DependencyInjection.AddApplication(services);
         }
 
@@ -65,6 +74,7 @@ namespace Pezza.Api
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseCors("CorsPolicy");
             app.UseMiddleware(typeof(ExceptionHandlerMiddleware));
             app.UseSwagger();
             app.UseSwaggerUI(c =>

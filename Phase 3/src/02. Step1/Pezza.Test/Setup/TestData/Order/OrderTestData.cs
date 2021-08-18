@@ -9,6 +9,12 @@
     {
         public static Faker faker = new Faker();
 
+        public static OrderItemDTO OrderItemDTO = new OrderItemDTO()
+        {
+            OrderId = 1,
+            Product = ProductTestData.ProductDTO
+        };
+
         public static List<OrderDTO> OrdersDTO()
         {
             var orders = new List<OrderDTO>
@@ -34,18 +40,8 @@
             Completed = false,
             OrderItems = new List<OrderItemDTO>
             {
-                new OrderItemDTO()
-                {
-                    OrderId = 1,
-                    Product = ProductTestData.ProductDTO
-                }
+                OrderItemDTO
             }
-        };
-
-        public static OrderItemDTO OrderItemDTO = new OrderItemDTO()
-        {
-            OrderId = 1,
-            Product = ProductTestData.ProductDTO
         };
     }
 

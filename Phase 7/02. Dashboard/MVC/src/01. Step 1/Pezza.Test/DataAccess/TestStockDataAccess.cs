@@ -1,4 +1,4 @@
-namespace Pezza.Test
+namespace Pezza.Test.DataAccess
 {
     using System.Linq;
     using System.Threading.Tasks;
@@ -7,16 +7,25 @@ namespace Pezza.Test
     using Pezza.Common.DTO;
     using Pezza.DataAccess.Data;
 
+    [TestFixture]
     public class TestStockDataAccess : QueryTestBase
     {
+        private StockDataAccess handler;
+
+        private StockDTO dto;
+
+        [SetUp]
+        public async Task Init()
+        {
+            this.handler = new StockDataAccess(this.Context, Mapper());
+            this.dto = StockTestData.StockDTO;
+            this.dto = await this.handler.SaveAsync(this.dto);
+        }
+
         [Test]
         public async Task GetAsync()
         {
-            var handler = new StockDataAccess(this.Context, Mapper());
-            var stock = StockTestData.StockDTO;
-            await handler.SaveAsync(stock);
-
-            var response = await handler.GetAsync(stock.Id);
+            var response = await this.handler.GetAsync(this.dto.Id);
 
             Assert.IsTrue(response != null);
         }
@@ -24,38 +33,28 @@ namespace Pezza.Test
         [Test]
         public async Task GetAllAsync()
         {
-            var handler = new StockDataAccess(this.Context, Mapper());
-            var stock = StockTestData.StockDTO;
-            await handler.SaveAsync(stock);
-
-            var response = await handler.GetAllAsync(new StockDTO());
+            var response = await this.handler.GetAllAsync(new StockDTO
+            {
+                Name = this.dto.Name
+            });
             var outcome = response.Count;
 
             Assert.IsTrue(outcome == 1);
         }
 
         [Test]
-        public async Task SaveAsync()
+        public void SaveAsync()
         {
-            var handler = new StockDataAccess(this.Context, Mapper());
-            var stock = StockTestData.StockDTO;
-            var result = await handler.SaveAsync(stock);
-            var outcome = result.Id != 0;
-
-            Assert.IsTrue(outcome);
+            Assert.IsTrue(this.dto != null);
         }
 
         [Test]
         public async Task UpdateAsync()
         {
-            var handler = new StockDataAccess(this.Context, Mapper());
-            var stock = StockTestData.StockDTO;
-            var originalStock = stock;
-            await handler.SaveAsync(stock);
-
-            stock.Name = new Faker().Commerce.Product();
-            var response = await handler.UpdateAsync(stock);
-            var outcome = response.Name.Equals(originalStock.Name);
+            var originalDTO = this.dto;
+            this.dto.Name = new Faker().Commerce.Product();
+            var response = await this.handler.UpdateAsync(this.dto);
+            var outcome = response.Name.Equals(originalDTO.Name);
 
             Assert.IsTrue(outcome);
         }
@@ -63,11 +62,7 @@ namespace Pezza.Test
         [Test]
         public async Task DeleteAsync()
         {
-            var handler = new StockDataAccess(this.Context, Mapper());
-            var stock = StockTestData.StockDTO;
-            await handler.SaveAsync(stock);
-
-            var response = await handler.DeleteAsync(stock.Id);
+            var response = await this.handler.DeleteAsync(this.dto.Id);
 
             Assert.IsTrue(response);
         }

@@ -1,4 +1,4 @@
-namespace Pezza.Test
+namespace Pezza.Test.DataAccess
 {
     using System.Threading.Tasks;
     using Bogus;
@@ -6,16 +6,25 @@ namespace Pezza.Test
     using Pezza.Common.DTO;
     using Pezza.DataAccess.Data;
 
+    [TestFixture]
     public class TestRestaurantDataAccess : QueryTestBase
     {
+        private RestaurantDataAccess handler;
+
+        private RestaurantDTO dto;
+
+        [SetUp]
+        public async Task Init()
+        {
+            this.handler = new RestaurantDataAccess(this.Context, Mapper(), this.CachingService);
+            this.dto = RestaurantTestData.RestaurantDTO;
+            this.dto = await this.handler.SaveAsync(this.dto);
+        }
+
         [Test]
         public async Task GetAsync()
         {
-            var handler = new RestaurantDataAccess(this.Context, Mapper(), this.CachingService);
-            var entity = RestaurantTestData.RestaurantDTO;
-            await handler.SaveAsync(entity);
-
-            var response = await handler.GetAsync(entity.Id);
+            var response = await this.handler.GetAsync(this.dto.Id);
 
             Assert.IsTrue(response != null);
         }
@@ -23,38 +32,27 @@ namespace Pezza.Test
         [Test]
         public async Task GetAllAsync()
         {
-            var handler = new RestaurantDataAccess(this.Context, Mapper(), this.CachingService);
-            var entity = RestaurantTestData.RestaurantDTO;
-            await handler.SaveAsync(entity);
-
-            var response = await handler.GetAllAsync(new RestaurantDTO());
+            var response = await this.handler.GetAllAsync(new RestaurantDTO
+            {
+                Name = this.dto.Name
+            });
             var outcome = response.Count;
 
             Assert.IsTrue(outcome == 1);
         }
 
         [Test]
-        public async Task SaveAsync()
+        public void SaveAsync()
         {
-            var handler = new RestaurantDataAccess(this.Context, Mapper(), this.CachingService);
-            var entity = RestaurantTestData.RestaurantDTO;
-            var result = await handler.SaveAsync(entity);
-            var outcome = result.Id != 0;
-
-            Assert.IsTrue(outcome);
+            Assert.IsTrue(this.dto != null);
         }
 
         [Test]
         public async Task UpdateAsync()
         {
-            var handler = new RestaurantDataAccess(this.Context, Mapper(), this.CachingService);
-            var entity = RestaurantTestData.RestaurantDTO;
-            var originalRestaurant = entity;
-            await handler.SaveAsync(entity);
-
-            entity.Name = new Faker().Commerce.Department();
-            var response = await handler.UpdateAsync(entity);
-            var outcome = response.Name.Equals(originalRestaurant.Name);
+            this.dto.Name = new Faker().Commerce.Department();
+            var response = await this.handler.UpdateAsync(this.dto);
+            var outcome = response.Name.Equals(this.dto.Name);
 
             Assert.IsTrue(outcome);
         }
@@ -62,11 +60,7 @@ namespace Pezza.Test
         [Test]
         public async Task DeleteAsync()
         {
-            var handler = new RestaurantDataAccess(this.Context, Mapper(), this.CachingService);
-            var entity = RestaurantTestData.RestaurantDTO;
-            await handler.SaveAsync(entity);
-
-            var response = await handler.DeleteAsync(entity.Id);
+            var response = await this.handler.DeleteAsync(this.dto.Id);
 
             Assert.IsTrue(response);
         }

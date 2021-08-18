@@ -658,7 +658,8 @@ namespace Pezza.Core
             services.AddTransient(typeof(IStockCore), typeof(StockCore));
             services.AddTransient(typeof(IStockDataAccess), typeof(StockDataAccess));
             services.AddAutoMapper(typeof(MappingProfile));
-
+            
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));
             return services;
         }
     }

@@ -6,6 +6,8 @@
 
     public static class MimeTypeMap
     {
+        private static readonly Lazy<IDictionary<string, string>> Mappings = new Lazy<IDictionary<string, string>>(BuildMappings);
+
         public static string GetMimeType(string extension)
         {
             if (extension == null)
@@ -40,8 +42,6 @@
 
             throw new ArgumentException("Requested mime type is not registered: " + mimeType);
         }
-
-        private static readonly Lazy<IDictionary<string, string>> Mappings = new Lazy<IDictionary<string, string>>(BuildMappings);
 
         private static IDictionary<string, string> BuildMappings()
         {

@@ -11,13 +11,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Include="obj\Debug\netcoreapp3.1\Pezza.Core.AssemblyInfoInputs.cache" />
-        <None Include="obj\Debug\netcoreapp3.1\Pezza.Core.assets.cache" />
-        <None Include="obj\Debug\netcoreapp3.1\Pezza.Core.csproj.CopyComplete" />
-        <None Include="obj\Debug\netcoreapp3.1\Pezza.Core.csproj.CoreCompileInputs.cache" />
-        <None Include="obj\Debug\netcoreapp3.1\Pezza.Core.csprojAssemblyReference.cache" />
-        <None Include="obj\Debug\netcoreapp3.1\Pezza.Core.dll" />
-        <None Include="obj\Debug\netcoreapp3.1\Pezza.Core.pdb" />
         <None Include="obj\Pezza.Core.csproj.nuget.g.props" />
         <None Include="obj\Pezza.Core.csproj.nuget.g.targets" />
         <None Include="obj\project.nuget.cache" />
@@ -32,7 +25,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Pezza.Core.Contracts\Pezza.Core.Contracts.csproj" />
         <ProjectReference Include="..\Pezza.DataAccess\Pezza.DataAccess.csproj" />
     </ItemGroup>
 

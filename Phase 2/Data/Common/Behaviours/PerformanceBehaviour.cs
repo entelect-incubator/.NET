@@ -11,16 +11,12 @@
     {
         private readonly Stopwatch timer;
         private readonly ILogger<TRequest> logger;
-        private readonly ICurrentUserService currentUserService;
-        private readonly IIdentityService identityService;
 
-        public PerformanceBehaviour(ILogger<TRequest> logger, ICurrentUserService currentUserService, IIdentityService identityService)
+        public PerformanceBehaviour(ILogger<TRequest> logger)
         {
             this.timer = new Stopwatch();
 
             this.logger = logger;
-            this.currentUserService = currentUserService;
-            this.identityService = identityService;
         }
 
         public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
@@ -36,15 +32,8 @@
             if (elapsedMilliseconds > 500)
             {
                 var requestName = typeof(TRequest).Name;
-                var userId = this.currentUserService.UserId ?? string.Empty;
-                var userName = string.Empty;
 
-                if (!string.IsNullOrEmpty(userId))
-                {
-                    userName = await this.identityService.GetUserNameAsync(userId);
-                }
-
-                this.logger.LogInformation($"CleanArchitecture Long Running Request: {requestName} ({elapsedMilliseconds} milliseconds) {userId} {userName}", request);
+                this.logger.LogInformation($"CleanArchitecture Long Running Request: {requestName} ({elapsedMilliseconds} milliseconds)", request);
             }
 
             return response;
