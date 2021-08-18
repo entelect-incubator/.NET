@@ -28,24 +28,31 @@
             return this.mapper.Map<List<CustomerDTO>>(entities);
         }
 
-        public async Task<CustomerDTO> SaveAsync(CustomerDTO entity)
+        public async Task<CustomerDTO> SaveAsync(CustomerDTO dto)
         {
-            this.databaseContext.Customers.Add(this.mapper.Map<Customer>(entity));
+            var entity = this.mapper.Map<Customer>(dto);
+            this.databaseContext.Customers.Add(entity);
             await this.databaseContext.SaveChangesAsync();
+            dto.Id = entity.Id;
 
-            return entity;
+            return dto;
         }
 
-        public async Task<CustomerDTO> UpdateAsync(CustomerDTO entity)
+        public async Task<CustomerDTO> UpdateAsync(CustomerDTO dto)
         { 
-            var findEntity = await this.databaseContext.Customers.FirstOrDefaultAsync(x => x.Id == entity.Id);
-            findEntity.Name = !string.IsNullOrEmpty(entity?.Name) ? entity?.Name : findEntity.Name;
-            findEntity.Address = !string.IsNullOrEmpty(entity?.Address?.Address) ? entity?.Address?.Address : findEntity.Address;
-            findEntity.City = !string.IsNullOrEmpty(entity?.Address?.City) ? entity?.Address?.City : findEntity.City;
-            findEntity.Province = !string.IsNullOrEmpty(entity?.Address?.Province) ? entity?.Address?.Province : findEntity.Province;
-            findEntity.PostalCode = !string.IsNullOrEmpty(entity?.Address?.PostalCode) ? entity?.Address?.PostalCode : findEntity.PostalCode;
-            findEntity.Phone = !string.IsNullOrEmpty(entity?.Phone) ? entity?.Phone : findEntity.Phone;
-            findEntity.ContactPerson = !string.IsNullOrEmpty(entity?.ContactPerson) ? entity?.ContactPerson : findEntity.ContactPerson;
+            var findEntity = await this.databaseContext.Customers.FirstOrDefaultAsync(x => x.Id == dto.Id);
+            if (findEntity == null)
+            {
+                return null;
+            }
+
+            findEntity.Name = !string.IsNullOrEmpty(dto?.Name) ? dto?.Name : findEntity.Name;
+            findEntity.Address = !string.IsNullOrEmpty(dto?.Address?.Address) ? dto?.Address?.Address : findEntity.Address;
+            findEntity.City = !string.IsNullOrEmpty(dto?.Address?.City) ? dto?.Address?.City : findEntity.City;
+            findEntity.Province = !string.IsNullOrEmpty(dto?.Address?.Province) ? dto?.Address?.Province : findEntity.Province;
+            findEntity.PostalCode = !string.IsNullOrEmpty(dto?.Address?.PostalCode) ? dto?.Address?.PostalCode : findEntity.PostalCode;
+            findEntity.Phone = !string.IsNullOrEmpty(dto?.Phone) ? dto?.Phone : findEntity.Phone;
+            findEntity.ContactPerson = !string.IsNullOrEmpty(dto?.ContactPerson) ? dto?.ContactPerson : findEntity.ContactPerson;
             this.databaseContext.Customers.Update(findEntity);
             await this.databaseContext.SaveChangesAsync();
 
@@ -55,6 +62,11 @@
         public async Task<bool> DeleteAsync(int id)
         {
             var entity = await this.databaseContext.Customers.FirstOrDefaultAsync(x => x.Id == id);
+            if (entity == null)
+            {
+                return false;
+            }
+
             this.databaseContext.Customers.Remove(entity);
             var result = await this.databaseContext.SaveChangesAsync();
 

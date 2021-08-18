@@ -11,9 +11,9 @@
 
         Task<IEnumerable<StockDTO>> GetAllAsync();
 
-        Task<StockDTO> UpdateAsync(StockDTO model);
+        Task<StockDTO> UpdateAsync(StockDTO dto);
 
-        Task<StockDTO> SaveAsync(Stock model);
+        Task<StockDTO> SaveAsync(StockDTO dto);
 
         Task<bool> DeleteAsync(int id);
     }

@@ -1,5 +1,6 @@
 ﻿namespace Pezza.DataAccess.Data
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Linq.Dynamic.Core;
@@ -28,20 +29,29 @@
             return this.mapper.Map<List<OrderDTO>>(entities);
         }
 
-        public async Task<OrderDTO> SaveAsync(OrderDTO entity)
+        public async Task<OrderDTO> SaveAsync(OrderDTO dto)
         {
-            this.databaseContext.Orders.Add(this.mapper.Map<Order>(entity));
-            await this.databaseContext.SaveChangesAsync();
+            var entity = this.mapper.Map<Order>(dto);
 
-            return entity;
+            this.databaseContext.Orders.Add(entity);
+            await this.databaseContext.SaveChangesAsync();
+            dto.Id = entity.Id;
+
+            return dto;
         }
 
-        public async Task<OrderDTO> UpdateAsync(OrderDTO entity)
+        public async Task<OrderDTO> UpdateAsync(OrderDTO dto)
         {
-            var findEntity = await this.databaseContext.Orders.FirstOrDefaultAsync(x => x.Id == entity.Id);
-            findEntity.Completed = entity.Completed ?? findEntity.Completed;
-            findEntity.RestaurantId = entity.RestaurantId ?? findEntity.RestaurantId;
-            findEntity.CustomerId = entity.CustomerId ?? findEntity.CustomerId;
+            var findEntity = await this.databaseContext.Orders.FirstOrDefaultAsync(x => x.Id == dto.Id);
+            if (findEntity == null)
+            {
+                return null;
+            }
+
+            findEntity.Completed = dto.Completed ?? findEntity.Completed;
+            findEntity.RestaurantId = dto.RestaurantId ?? findEntity.RestaurantId;
+            findEntity.CustomerId = dto.CustomerId ?? findEntity.CustomerId;
+            findEntity.Amount = dto.Amount ?? findEntity.Amount;
 
             this.databaseContext.Orders.Update(findEntity);
             await this.databaseContext.SaveChangesAsync();
@@ -52,6 +62,11 @@
         public async Task<bool> DeleteAsync(int id)
         {
             var entity = await this.databaseContext.Orders.FirstOrDefaultAsync(x => x.Id == id);
+            if (entity == null)
+            {
+                return false;
+            }
+
             this.databaseContext.Orders.Remove(entity);
             var result = await this.databaseContext.SaveChangesAsync();
 

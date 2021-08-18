@@ -3,7 +3,6 @@ namespace Pezza.Api
     using System;
     using System.IO;
     using System.Reflection;
-    using AutoMapper;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
@@ -15,7 +14,6 @@ namespace Pezza.Api
     using Microsoft.OpenApi.Models;
     using Pezza.Core;
     using Pezza.DataAccess;
-    using Pezza.DataAccess.Contracts;
 
     public class Startup
     {
@@ -29,6 +27,7 @@ namespace Pezza.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo

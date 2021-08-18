@@ -9,12 +9,13 @@
         /// <summary>
         /// Uploads the specified dto.
         /// </summary>
-        /// <param name="file"></param>
-        /// <param name="folder"></param>
+        /// <param name="file">File.</param>
+        /// <param name="folder">Folder.</param>
         /// <param name="thumbnail">Return thumbnail or not.</param>
         /// <returns>HttpResponseMessage.</returns>
+        /// <response code="200">Picture</response>
         [HttpGet]
-        [ProducesResponseType(200)]
+        [ProducesResponseType(typeof(FileStreamResult), 200)]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Get(string file, string folder = "", bool thumbnail = false)
         {
@@ -28,32 +29,31 @@
                 return this.ReturnNotFoundImage();
             }
 
-            var imageFolder = Path.Combine(Directory.GetCurrentDirectory(), Path.Combine("Media", file));
-
+            var path = Path.Combine(Directory.GetCurrentDirectory(), Path.Combine("Media", file));
 
             if (thumbnail)
             {
-                var extension = Path.GetExtension(imageFolder);
-                imageFolder = imageFolder.Replace(extension, extension.Replace(".", "_Thumbnail."));
+                var extension = Path.GetExtension(path);
+                path = path.Replace(extension, extension.Replace(".", "_Thumbnail."));
             }
 
-            if (!System.IO.File.Exists(imageFolder))
+            if (!System.IO.File.Exists(path))
             {
                 return this.ReturnNotFoundImage();
             }
             else
             {
-                imageFolder = imageFolder.Replace("_Thumbnail", "");
+                path = path.Replace("_Thumbnail", string.Empty);
             }
 
-            if (!System.IO.File.Exists(imageFolder))
+            if (!System.IO.File.Exists(path))
             {
                 return this.ReturnNotFoundImage();
             }
 
-            var mimetype = MimeTypeMap.GetMimeType(Path.GetExtension(imageFolder));
+            var mimetype = MimeTypeMap.GetMimeType(Path.GetExtension(path));
 
-            var stream = new FileStream(imageFolder, FileMode.Open);
+            var stream = new FileStream(path, FileMode.Open);
             return new FileStreamResult(stream, mimetype);
         }
 

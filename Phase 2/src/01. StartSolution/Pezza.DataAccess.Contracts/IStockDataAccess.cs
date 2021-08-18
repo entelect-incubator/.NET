@@ -2,17 +2,18 @@ namespace Pezza.DataAccess.Contracts
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using Pezza.Common.DTO;
     using Pezza.Common.Entities;
 
-    public interface IStockDataAccess 
+    public interface IStockDataAccess
     {
-        Task<Stock> GetAsync(int id);
+        Task<StockDTO> GetAsync(int id);
 
-        Task<List<Stock>> GetAllAsync();
+        Task<List<StockDTO>> GetAllAsync();
 
-        Task<Stock> UpdateAsync(Stock entity);
+        Task<StockDTO> UpdateAsync(StockDTO dto);
 
-        Task<Stock> SaveAsync(Stock entity);
+        Task<StockDTO> SaveAsync(StockDTO dto);
 
         Task<bool> DeleteAsync(int id);
     }

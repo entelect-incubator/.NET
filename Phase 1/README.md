@@ -390,62 +390,56 @@ namespace Pezza.Test
 ```cs
 namespace Pezza.Test
 {
-    using System.Linq;
     using System.Threading.Tasks;
     using Bogus;
     using NUnit.Framework;
+    using Pezza.Common.DTO;
     using Pezza.DataAccess.Data;
     using Pezza.Test.Setup;
     using Pezza.Test.Setup.TestData.Stock;
 
+    [TestFixture]
     public class TestStockDataAccess : QueryTestBase
     {
+        private StockDataAccess handler;
+
+        private StockDTO stock;
+
+        [SetUp]
+        public async Task Init()
+        {
+            this.handler = new StockDataAccess(this.Context, Mapper());
+            this.stock = StockTestData.StockDTO;
+            this.stock = await this.handler.SaveAsync(this.stock);
+        }
+
         [Test]
         public async Task GetAsync()
         {
-            var handler = new StockDataAccess(this.Context);
-            var stock = StockTestData.Stock;
-            await handler.SaveAsync(stock);
-
-            var response = await handler.GetAsync(stock.Id);
-
+            var response = await this.handler.GetAsync(this.stock.Id);
             Assert.IsTrue(response != null);
         }
 
         [Test]
         public async Task GetAllAsync()
         {
-            var handler = new StockDataAccess(this.Context);
-            var stock = StockTestData.Stock;
-            await handler.SaveAsync(stock);
-
-            var response = await handler.GetAllAsync();
-            var outcome = response.Any();
-
-            Assert.IsTrue(outcome);
+            var response = await this.handler.GetAllAsync();
+            Assert.IsTrue(response.Count == 1);
         }
 
         [Test]
-        public async Task SaveAsync()
+        public void SaveAsync()
         {
-            var handler = new StockDataAccess(this.Context);
-            var stock = StockTestData.Stock;
-            var result = await handler.SaveAsync(stock);
-            var outcome = result.Id != 0;
-
+            var outcome = this.stock.Id != 0;
             Assert.IsTrue(outcome);
         }
 
         [Test]
         public async Task UpdateAsync()
         {
-            var handler = new StockDataAccess(this.Context);
-            var stock = StockTestData.Stock;
-            var originalStock = stock;
-            await handler.SaveAsync(stock);
-
-            stock.Name = new Faker().Commerce.Product();
-            var response = await handler.UpdateAsync(stock);
+            var originalStock = this.stock;
+            this.stock.Name = new Faker().Commerce.Product();
+            var response = await this.handler.UpdateAsync(this.stock);
             var outcome = response.Name.Equals(originalStock.Name);
 
             Assert.IsTrue(outcome);
@@ -454,12 +448,7 @@ namespace Pezza.Test
         [Test]
         public async Task DeleteAsync()
         {
-            var handler = new StockDataAccess(this.Context);
-            var stock = StockTestData.Stock;
-            await handler.SaveAsync(stock);
-
-            var response = await handler.DeleteAsync(stock.Id);
-
+            var response = await this.handler.DeleteAsync(this.stock.Id);
             Assert.IsTrue(response);
         }
     }
@@ -701,64 +690,56 @@ public static StockDTO StockDTO = new StockDTO()
 ```cs
 namespace Pezza.Test.Core
 {
-    using System.Linq;
     using System.Threading.Tasks;
     using Bogus;
     using NUnit.Framework;
-    using Pezza.Core;
+    using Pezza.Common.DTO;
     using Pezza.DataAccess.Data;
     using Pezza.Test.Setup;
     using Pezza.Test.Setup.TestData.Stock;
 
+    [TestFixture]
     public class TestStockCore : QueryTestBase
     {
+        private StockDataAccess handler;
+
+        private StockDTO stock;
+
+        [SetUp]
+        public async Task Init()
+        {
+            this.handler = new StockDataAccess(this.Context, Mapper());
+            this.stock = StockTestData.StockDTO;
+            this.stock = await this.handler.SaveAsync(this.stock);
+        }
+
         [Test]
         public async Task GetAsync()
         {
-            var handler = new StockCore(new StockDataAccess(this.Context));
-            var stock = StockTestData.Stock;
-            await handler.SaveAsync(stock);
-
-            var response = await handler.GetAsync(stock.Id);
-
+            var response = await this.handler.GetAsync(this.stock.Id);
             Assert.IsTrue(response != null);
         }
 
         [Test]
         public async Task GetAllAsync()
         {
-            var handler = new StockCore(new StockDataAccess(this.Context));
-            var stock = StockTestData.Stock;
-            await handler.SaveAsync(stock);
-
-            var response = await handler.GetAllAsync();
-            var outcome = response.Count();
-
-            Assert.IsTrue(outcome == 1);
+            var response = await this.handler.GetAllAsync();
+            Assert.IsTrue(response.Count == 1);
         }
 
         [Test]
-        public async Task SaveAsync()
+        public void SaveAsync()
         {
-            var handler = new StockCore(new StockDataAccess(this.Context));
-            var stock = StockTestData.Stock;
-            var result = await handler.SaveAsync(stock);
-            var outcome = result.Id != 0;
-
+            var outcome = this.stock.Id != 0;
             Assert.IsTrue(outcome);
         }
 
         [Test]
         public async Task UpdateAsync()
         {
-            var handler = new StockCore(new StockDataAccess(this.Context));
-            var stock = StockTestData.Stock;
-            var originalStock = stock;
-            await handler.SaveAsync(stock);
-
-            stock.Name = new Faker().Commerce.Product();
-            var stockDTO = Mapper().Map<StockDTO>(stock);
-            var response = await handler.UpdateAsync(stockDTO);
+            var originalStock = this.stock;
+            this.stock.Name = new Faker().Commerce.Product();
+            var response = await this.handler.UpdateAsync(this.stock);
             var outcome = response.Name.Equals(originalStock.Name);
 
             Assert.IsTrue(outcome);
@@ -767,17 +748,13 @@ namespace Pezza.Test.Core
         [Test]
         public async Task DeleteAsync()
         {
-            var handler = new StockCore(new StockDataAccess(this.Context));
-            var stock = StockTestData.Stock;
-            await handler.SaveAsync(stock);
-            
-            var response = await handler.DeleteAsync(stock.Id);
-
+            var response = await this.handler.DeleteAsync(this.stock.Id);
             Assert.IsTrue(response);
         }
     }
 }
 ```
+
 Currently, the Unit test will be very similar to that of Data Access. When new Business Logic gets added to the Core layer, you will then add Unit Test for that specific criteria. We are currently focussing on putting down foundations.
 
 ## **API Layer**

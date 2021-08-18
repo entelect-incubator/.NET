@@ -83,6 +83,11 @@ Representing Database Tables Entities
 
 Create a Data Transfer Object with only the information the consumer of the data will need. This allows you to hide any sensitive data.
 
+Remeber some of the DTO's needs to inherit from AddressBase and ImageDataBase.
+- [ ] CustomerDTO
+- [ ] RestaurantDTO
+- [ ] ProductDTO
+
 ![](Assets/2020-09-16-08-24-51.png)
 ### **Unit Tests Test Data**
 
@@ -168,6 +173,10 @@ namespace Pezza.DataAccess.Data
         public async Task<StockDTO> UpdateAsync(StockDTO dto)
         {
             var findEntity = await this.databaseContext.Stocks.FirstOrDefaultAsync(x => x.Id == dto.Id);
+            if (findEntity == null)
+            {
+                return null;
+            }
 
             findEntity.Name = !string.IsNullOrEmpty(dto.Name) ? dto.Name : findEntity.Name;
             findEntity.UnitOfMeasure = !string.IsNullOrEmpty(dto.UnitOfMeasure) ? dto.UnitOfMeasure : findEntity.UnitOfMeasure;
@@ -184,6 +193,11 @@ namespace Pezza.DataAccess.Data
         public async Task<bool> DeleteAsync(int id)
         {
             var entity = await this.databaseContext.Stocks.FirstOrDefaultAsync(x => x.Id == id);
+            if (entity == null)
+            {
+                return false;
+            }
+
             this.databaseContext.Stocks.Remove(entity);
             var result = await this.databaseContext.SaveChangesAsync();
 
@@ -362,42 +376,6 @@ namespace Pezza.Common.Models
 }
 ```
 
-Move Address Data and ImageDataBase into Pezza.Common\Entities.
-
-AddressBase.cs
-
-```cs
-namespace Pezza.Common.Entities
-{
-    public class AddressBase
-    {
-        public string Address { get; set; }
-
-        public string City { get; set; }
-
-        public string Province { get; set; }
-
-        public string PostalCode { get; set; }
-    }
-}
-```
-
- ImageDataBase.cs
-
-```cs
-namespace Pezza.Common.Entities
-{
-    public class ImageDataBase : Entity
-    {
-        public string ImageData { get; set; }
-    }
-}
-```
-
-Change 
-- [ ] CustomerDTO
-- [ ] RestaurantDTO
-- [ ] ProductDTO
 
 To something like this. Can also look at Phase 2\Data on how it suppose to look like.
 
@@ -470,8 +448,10 @@ namespace Pezza.Common.Profiles
             this.CreateMap<Notify, NotifyDTO>();
             this.CreateMap<NotifyDTO, Notify>();
 
-            this.CreateMap<Order, OrderDTO>();
-            this.CreateMap<OrderDTO, Order>();
+            this.CreateMap<Order, OrderDTO>()
+                .ForMember(vm => vm.OrderItems, m => m.MapFrom(u => u.OrderItems));            
+            this.CreateMap<OrderDTO, Order>()
+                .ForMember(vm => vm.OrderItems, m => m.MapFrom(u => u.OrderItems));
 
             this.CreateMap<OrderItem, OrderItemDTO>();
             this.CreateMap<OrderItemDTO, OrderItem>();

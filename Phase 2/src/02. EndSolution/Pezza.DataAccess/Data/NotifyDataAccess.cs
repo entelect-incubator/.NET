@@ -41,6 +41,10 @@
         public async Task<NotifyDTO> UpdateAsync(NotifyDTO dto)
         {
             var findEntity = await this.databaseContext.Notify.FirstOrDefaultAsync(x => x.Id == dto.Id);
+            if (findEntity == null)
+            {
+                return null;
+            }
 
             findEntity.CustomerId = dto.CustomerId ?? findEntity.CustomerId;
             findEntity.Email = !string.IsNullOrEmpty(dto.Email) ? dto.Email : findEntity.Email;
@@ -56,6 +60,11 @@
         public async Task<bool> DeleteAsync(int id)
         {
             var entity = await this.databaseContext.Notify.FirstOrDefaultAsync(x => x.Id == id);
+            if (entity == null)
+            {
+                return false;
+            }
+
             this.databaseContext.Notify.Remove(entity);
             var result = await this.databaseContext.SaveChangesAsync();
 

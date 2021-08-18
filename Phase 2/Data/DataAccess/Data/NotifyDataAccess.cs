@@ -28,22 +28,28 @@
             return this.mapper.Map<List<NotifyDTO>>(entities);
         }
 
-        public async Task<NotifyDTO> SaveAsync(NotifyDTO entity)
+        public async Task<NotifyDTO> SaveAsync(NotifyDTO dto)
         {
-            this.databaseContext.Notify.Add(this.mapper.Map<Notify>(entity));
+            var entity = this.mapper.Map<Notify>(dto);
+            this.databaseContext.Notify.Add(entity);
             await this.databaseContext.SaveChangesAsync();
+            dto.Id = entity.Id;
 
-            return entity;
+            return dto;
         }
 
-        public async Task<NotifyDTO> UpdateAsync(NotifyDTO entity)
+        public async Task<NotifyDTO> UpdateAsync(NotifyDTO dto)
         {
-            var findEntity = await this.databaseContext.Notify.FirstOrDefaultAsync(x => x.Id == entity.Id);
+            var findEntity = await this.databaseContext.Notify.FirstOrDefaultAsync(x => x.Id == dto.Id);
+            if (findEntity == null)
+            {
+                return null;
+            }
 
-            findEntity.CustomerId = entity.CustomerId ?? findEntity.CustomerId;
-            findEntity.Email = !string.IsNullOrEmpty(entity.Email) ? entity.Email : findEntity.Email;
-            findEntity.Sent = entity.Sent ?? findEntity.Sent;
-            findEntity.Retry = entity.Retry ?? findEntity.Retry;
+            findEntity.CustomerId = dto.CustomerId ?? findEntity.CustomerId;
+            findEntity.Email = !string.IsNullOrEmpty(dto.Email) ? dto.Email : findEntity.Email;
+            findEntity.Sent = dto.Sent ?? findEntity.Sent;
+            findEntity.Retry = dto.Retry ?? findEntity.Retry;
 
             this.databaseContext.Notify.Update(findEntity);
             await this.databaseContext.SaveChangesAsync();
@@ -54,6 +60,11 @@
         public async Task<bool> DeleteAsync(int id)
         {
             var entity = await this.databaseContext.Notify.FirstOrDefaultAsync(x => x.Id == id);
+            if (entity == null)
+            {
+                return false;
+            }
+
             this.databaseContext.Notify.Remove(entity);
             var result = await this.databaseContext.SaveChangesAsync();
 

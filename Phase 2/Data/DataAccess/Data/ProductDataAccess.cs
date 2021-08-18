@@ -28,25 +28,32 @@
             return this.mapper.Map<List<ProductDTO>>(entities);
         }
 
-        public async Task<ProductDTO> SaveAsync(ProductDTO entity)
+        public async Task<ProductDTO> SaveAsync(ProductDTO dto)
         {
-            this.databaseContext.Products.Add(this.mapper.Map<Product>(entity));
+            var entity = this.mapper.Map<Product>(dto);
+            this.databaseContext.Products.Add(entity);
             await this.databaseContext.SaveChangesAsync();
+            dto.Id = entity.Id;
 
-            return entity;
+            return dto;
         }
 
-        public async Task<ProductDTO> UpdateAsync(ProductDTO entity)
+        public async Task<ProductDTO> UpdateAsync(ProductDTO dto)
         {
-            var findEntity = await this.databaseContext.Products.FirstOrDefaultAsync(x => x.Id == entity.Id);
-            findEntity.Name = !string.IsNullOrEmpty(entity.Name) ? entity.Name : findEntity.Name;
-            findEntity.Description = !string.IsNullOrEmpty(entity.Description) ? entity.Description : findEntity.Description;
-            findEntity.PictureUrl = !string.IsNullOrEmpty(entity.PictureUrl) ? entity.PictureUrl : findEntity.PictureUrl;
-            findEntity.Price = entity.Price ?? findEntity.Price;
-            findEntity.Special = entity.Special ?? findEntity.Special;
-            findEntity.OfferEndDate = entity.OfferEndDate ?? findEntity.OfferEndDate;
-            findEntity.OfferPrice = entity.OfferPrice ?? findEntity.OfferPrice;
-            findEntity.IsActive = entity.IsActive ?? findEntity.IsActive;
+            var findEntity = await this.databaseContext.Products.FirstOrDefaultAsync(x => x.Id == dto.Id);
+            if(findEntity == null)
+            {
+                return null;
+            }
+
+            findEntity.Name = !string.IsNullOrEmpty(dto.Name) ? dto.Name : findEntity.Name;
+            findEntity.Description = !string.IsNullOrEmpty(dto.Description) ? dto.Description : findEntity.Description;
+            findEntity.PictureUrl = !string.IsNullOrEmpty(dto.PictureUrl) ? dto.PictureUrl : findEntity.PictureUrl;
+            findEntity.Price = dto.Price ?? findEntity.Price;
+            findEntity.Special = dto.Special ?? findEntity.Special;
+            findEntity.OfferEndDate = dto.OfferEndDate ?? findEntity.OfferEndDate;
+            findEntity.OfferPrice = dto.OfferPrice ?? findEntity.OfferPrice;
+            findEntity.IsActive = dto.IsActive ?? findEntity.IsActive;
 
             this.databaseContext.Products.Update(findEntity);
             await this.databaseContext.SaveChangesAsync();
@@ -57,6 +64,11 @@
         public async Task<bool> DeleteAsync(int id)
         {
             var entity = await this.databaseContext.Products.FirstOrDefaultAsync(x => x.Id == id);
+            if (entity == null)
+            {
+                return false;
+            }
+
             this.databaseContext.Products.Remove(entity);
             var result = await this.databaseContext.SaveChangesAsync();
 

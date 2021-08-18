@@ -5,6 +5,7 @@
     using Pezza.Api.Helpers;
     using Pezza.Common.DTO;
     using Pezza.Common.Entities;
+    using Pezza.Common.Models;
     using Pezza.Core.Restaurant.Commands;
     using Pezza.Core.Restaurant.Queries;
 
@@ -14,30 +15,35 @@
         /// <summary>
         /// Get Restaurant by Id.
         /// </summary>
-        /// <param name="id"></param> 
+        /// <param name="id">int.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        /// <response code="200">Get a restaurant</response>
+        /// <response code="400">Error getting a restaurant</response>
+        /// <response code="404">Restaurant not found</response>
         [HttpGet("{id}")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(404)]
+        [ProducesResponseType(typeof(Result<RestaurantDTO>), 200)]
+        [ProducesResponseType(typeof(ErrorResult), 400)]
+        [ProducesResponseType(typeof(ErrorResult), 404)]
         public async Task<ActionResult> Get(int id)
         {
             var result = await this.Mediator.Send(new GetRestaurantQuery { Id = id });
-
-            return ResponseHelper.ResponseOutcome<Restaurant>(result, this);
+            return ResponseHelper.ResponseOutcome(result, this);
         }
 
         /// <summary>
         /// Get all Restaurants.
         /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        /// <response code="200">Restaurant Search</response>
+        /// <response code="400">Error searching for restaurants</response>
         [HttpPost]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
+        [ProducesResponseType(typeof(ListResult<RestaurantDTO>), 200)]
+        [ProducesResponseType(typeof(Result), 400)]
         [Route("Search")]
         public async Task<ActionResult> Search()
         {
             var result = await this.Mediator.Send(new GetRestaurantsQuery());
-
-            return ResponseHelper.ResponseOutcome<Restaurant>(result, this);
+            return ResponseHelper.ResponseOutcome(result, this);
         }
 
         /// <summary>
@@ -45,9 +51,9 @@
         /// </summary>
         /// <remarks>
         /// Sample request:
-        /// 
+        ///
         ///     POST api/Restaurant
-        ///     {        
+        ///     {
         ///       "name": "Restaurant 1",
         ///       "description": "",
         ///       "pictureUrl": "base64",
@@ -57,13 +63,16 @@
         ///         "province": "Gauteng",
         ///         "PostalCode": "0000"
         ///       }
-        ///     }
+        ///     }.
         /// </remarks>
-        /// <param name="data"></param> 
+        /// <param name="data">RestaurantDTO.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        /// <response code="200">Restaurant created</response>
+        /// <response code="400">Error creating a restaurant</response>
         [HttpPost]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        public async Task<ActionResult<Restaurant>> Create(RestaurantDataDTO data)
+        [ProducesResponseType(typeof(Result<RestaurantDTO>), 200)]
+        [ProducesResponseType(typeof(Result), 400)]
+        public async Task<ActionResult<Restaurant>> Create(RestaurantDTO data)
         {
             if (!string.IsNullOrEmpty(data.ImageData))
             {
@@ -79,7 +88,7 @@
                 Data = data
             });
 
-            return ResponseHelper.ResponseOutcome<Restaurant>(result, this);
+            return ResponseHelper.ResponseOutcome(result, this);
         }
 
         /// <summary>
@@ -87,19 +96,23 @@
         /// </summary>
         /// <remarks>
         /// Sample request:
-        /// 
-        ///     PUT api/Restaurant/1
-        ///     {        
+        ///
+        ///     PUT api/Restaurant
+        ///     {
+        ///       "id": 1,
         ///       "name": "New Restaurant"
-        ///     }
+        ///     }.
         /// </remarks>
-        /// <param name="id"></param>
-        /// <param name="data"></param>
-        [HttpPut("{id}")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(404)]
-        public async Task<ActionResult> Update(int id, RestaurantDataDTO data)
+        /// <param name="data">RestaurantDTO.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        /// <response code="200">Restaurant updated</response>
+        /// <response code="400">Error updating a restaurant</response>
+        /// <response code="404">Restaurant not found</response>
+        [HttpPut]
+        [ProducesResponseType(typeof(Result<RestaurantDTO>), 200)]
+        [ProducesResponseType(typeof(Result), 400)]
+        [ProducesResponseType(typeof(Result), 404)]
+        public async Task<ActionResult> Update(RestaurantDTO data)
         {
             if (!string.IsNullOrEmpty(data.ImageData))
             {
@@ -112,24 +125,25 @@
 
             var result = await this.Mediator.Send(new UpdateRestaurantCommand
             {
-                Id = id,
                 Data = data
             });
 
-            return ResponseHelper.ResponseOutcome<Restaurant>(result, this);
+            return ResponseHelper.ResponseOutcome(result, this);
         }
 
         /// <summary>
         /// Remove Restaurant by Id.
         /// </summary>
-        /// <param name="id"></param> 
+        /// <param name="id">int.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        /// <response code="200">Restaurant deleted</response>
+        /// <response code="400">Error deleting a restaurant</response>
         [HttpDelete("{id}")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
+        [ProducesResponseType(typeof(Result), 200)]
+        [ProducesResponseType(typeof(Result), 400)]
         public async Task<ActionResult> Delete(int id)
         {
             var result = await this.Mediator.Send(new DeleteRestaurantCommand { Id = id });
-
             return ResponseHelper.ResponseOutcome(result, this);
         }
     }

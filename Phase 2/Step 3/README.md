@@ -12,13 +12,15 @@ Create helper class for you API Project.
 
 Returning clean unified responses to the consumer of your API will be creating an Action Result Helper. Depending on the data retrieve from your Core layer it will cater for the HTTP Response and don't have duplicate code all over the Controllers.
 
+This ensure we always return the same Result Object back to the consumer.
+
 ActionResultHelper.cs
 
 ```cs
 namespace Pezza.Api.Helpers
 {
     using Microsoft.AspNetCore.Mvc;
-    using Pezza.Api.Controllers.CleanArchitecture.WebUI.Controllers;
+    using Pezza.Api.Controllers;
     using Pezza.Common.Models;
 
     public static class ResponseHelper
@@ -27,35 +29,35 @@ namespace Pezza.Api.Helpers
         {
             if (result.Data == null)
             {
-                return controller.NotFound();
+                return controller.NotFound(Result.Failure( $"{typeof(T).Name.Replace("DTO","")} not found"));
             }
 
             if (!result.Succeeded)
             {
-                return controller.BadRequest(result.Errors);
+                return controller.BadRequest(result);
             }
 
-            return controller.Ok(result.Data);
+            return controller.Ok(result);
         }
 
         public static ActionResult ResponseOutcome<T>(ListResult<T> result, ApiController controller)
         {
             if (!result.Succeeded)
             {
-                return controller.BadRequest(result.Errors);
+                return controller.BadRequest(result);
             }
 
-            return controller.Ok(result.Data);
+            return controller.Ok(result);
         }
 
         public static ActionResult ResponseOutcome(Result result, ApiController controller)
         {
             if (!result.Succeeded)
             {
-                return controller.BadRequest(result.Errors);
+                return controller.BadRequest(result);
             }
 
-            return controller.Ok(result.Succeeded);
+            return controller.Ok(result);
         }
     }
 }
@@ -163,27 +165,33 @@ namespace Pezza.Api.Helpers
 }
 ```
 
-UploadMediaResult.cs is a model used by MediaHelper.cs add it in the 04 Common\Models
+MimeTypes.cs copy from Phase2\Data is a Helper Class handling file mime types.
+
+To show negative errors results inside of Swagger UI we need to create ErrorResult class overwriting the Succeeded property with a default value. This helps if and external person integrated with you to see the negative journeys more clearly.
+
+ErrorResult.cs
 
 ```cs
 namespace Pezza.Api.Helpers
 {
-    public class UploadMediaResult
+    using System.ComponentModel;
+    using Pezza.Common.Models;
+
+    public class ErrorResult : Result
     {
-        public string FullPath { get; set; }
 
-        public string Path { get; set; }
+        public ErrorResult() => this.Succeeded = false;
 
-        public string Thumbnail { get; set; }
+        [DefaultValue(false)]
+        public new bool Succeeded { get; set; }
     }
 }
-```
 
-MimeTypes.cs copy from Phase2\Data is a Helper Class handling file mime types.
+```
 
 Helpers should like this when you are.
 
-![Helpers Structure!](Assets/2020-11-20-11-14-12.png)
+![Helpers Structure!](./Assets/2021-08-18-06-53-07.png)
 
 ## **STEP 3 - Finishing the API Controller**
 
@@ -202,6 +210,7 @@ namespace Pezza.Api.Controllers
     
     [ApiController]
     [Route("api/[controller]")]
+    [Produces("application/json")]
     public abstract class ApiController : ControllerBase
     {
         private IMediator mediator;
@@ -228,6 +237,7 @@ namespace Pezza.Api.Controllers
     using Microsoft.AspNetCore.Mvc;
     using Pezza.Api.Helpers;
     using Pezza.Common.DTO;
+    using Pezza.Common.Models;
     using Pezza.Core.Customer.Commands;
     using Pezza.Core.Customer.Queries;
 
@@ -239,14 +249,17 @@ namespace Pezza.Api.Controllers
         /// </summary>
         /// <param name="id">int.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        /// <response code="200">Get a customer</response>
+        /// <response code="400">Error getting a customer</response>
+        /// <response code="404">Customer not found</response>
         [HttpGet("{id}")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(404)]
+        [ProducesResponseType(typeof(Result<CustomerDTO>), 200)]
+        [ProducesResponseType(typeof(ErrorResult), 400)]
+        [ProducesResponseType(typeof(ErrorResult), 404)]
         public async Task<ActionResult> GetCustomer(int id)
         {
             var result = await this.Mediator.Send(new GetCustomerQuery { Id = id });
-            return ResponseHelper.ResponseOutcome<CustomerDTO>(result, this);
+            return ResponseHelper.ResponseOutcome(result, this);
         }
 
         /// <summary>
@@ -254,14 +267,16 @@ namespace Pezza.Api.Controllers
         /// </summary>
         /// <returns>A <see cref="Task"/> repres
         /// enting the asynchronous operation.</returns>
+        /// <response code="200">Customer Search</response>
+        /// <response code="400">Error searching for customers</response>
         [HttpPost]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
+        [ProducesResponseType(typeof(ListResult<CustomerDTO>), 200)]
+        [ProducesResponseType(typeof(Result), 400)]
         [Route("Search")]
         public async Task<ActionResult> Search()
         {
             var result = await this.Mediator.Send(new GetCustomersQuery());
-            return ResponseHelper.ResponseOutcome<CustomerDTO>(result, this);
+            return ResponseHelper.ResponseOutcome(result, this);
         }
 
         /// <summary>
@@ -283,9 +298,11 @@ namespace Pezza.Api.Controllers
         /// </remarks>
         /// <param name="customer">CustomerDTO.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        /// <response code="200">Customer created</response>
+        /// <response code="400">Error creating a customer</response>
         [HttpPost]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
+        [ProducesResponseType(typeof(Result<CustomerDTO>), 200)]
+        [ProducesResponseType(typeof(Result), 400)]
         public async Task<ActionResult<CustomerDTO>> Create(CustomerDTO customer)
         {
             var result = await this.Mediator.Send(new CreateCustomerCommand
@@ -293,7 +310,7 @@ namespace Pezza.Api.Controllers
                 Data = customer
             });
 
-            return ResponseHelper.ResponseOutcome<CustomerDTO>(result, this);
+            return ResponseHelper.ResponseOutcome(result, this);
         }
 
         /// <summary>
@@ -316,10 +333,13 @@ namespace Pezza.Api.Controllers
         /// </remarks>
         /// <param name="customer">CustomerDTO.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        /// <response code="200">Customer updated</response>
+        /// <response code="400">Error updating a customer</response>
+        /// <response code="404">Customer not found</response>
         [HttpPut]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(404)]
+        [ProducesResponseType(typeof(Result<CustomerDTO>), 200)]
+        [ProducesResponseType(typeof(Result), 400)]
+        [ProducesResponseType(typeof(Result), 404)]
         public async Task<ActionResult> Update(CustomerDTO customer)
         {
             var result = await this.Mediator.Send(new UpdateCustomerCommand
@@ -327,7 +347,7 @@ namespace Pezza.Api.Controllers
                 Data = customer
             });
 
-            return ResponseHelper.ResponseOutcome<CustomerDTO>(result, this);
+            return ResponseHelper.ResponseOutcome(result, this);
         }
 
         /// <summary>
@@ -335,9 +355,11 @@ namespace Pezza.Api.Controllers
         /// </summary>
         /// <param name="id">int.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        /// <response code="200">Customer deleted</response>
+        /// <response code="400">Error deleting a customer</response>
         [HttpDelete("{id}")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
+        [ProducesResponseType(typeof(Result), 200)]
+        [ProducesResponseType(typeof(Result), 400)]
         public async Task<ActionResult> Delete(int id)
         {
             var result = await this.Mediator.Send(new DeleteCustomerCommand { Id = id });
@@ -380,8 +402,8 @@ namespace Pezza.Api.Controllers
         /// <summary>
         /// Uploads the specified dto.
         /// </summary>
-        /// <param name="file"></param>
-        /// <param name="folder"></param>
+        /// <param name="file">File.</param>
+        /// <param name="folder">Folder.</param>
         /// <param name="thumbnail">Return thumbnail or not.</param>
         /// <returns>HttpResponseMessage.</returns>
         [HttpGet]
@@ -399,32 +421,31 @@ namespace Pezza.Api.Controllers
                 return this.ReturnNotFoundImage();
             }
 
-            var imageFolder = Path.Combine(Directory.GetCurrentDirectory(), Path.Combine("Media", file));
-
+            var path = Path.Combine(Directory.GetCurrentDirectory(), Path.Combine("Media", file));
 
             if (thumbnail)
             {
-                var extension = Path.GetExtension(imageFolder);
-                imageFolder = imageFolder.Replace(extension, extension.Replace(".", "_Thumbnail."));
+                var extension = Path.GetExtension(path);
+                path = path.Replace(extension, extension.Replace(".", "_Thumbnail."));
             }
 
-            if (!System.IO.File.Exists(imageFolder))
+            if (!System.IO.File.Exists(path))
             {
                 return this.ReturnNotFoundImage();
             }
             else
             {
-                imageFolder = imageFolder.Replace("_Thumbnail", "");
+                path = path.Replace("_Thumbnail", string.Empty);
             }
 
-            if (!System.IO.File.Exists(imageFolder))
+            if (!System.IO.File.Exists(path))
             {
                 return this.ReturnNotFoundImage();
             }
 
-            var mimetype = MimeTypeMap.GetMimeType(Path.GetExtension(imageFolder));
+            var mimetype = MimeTypeMap.GetMimeType(Path.GetExtension(path));
 
-            var stream = new FileStream(imageFolder, FileMode.Open);
+            var stream = new FileStream(path, FileMode.Open);
             return new FileStreamResult(stream, mimetype);
         }
 
@@ -446,7 +467,7 @@ Complete all the other Controllers
 
 ![Controllers Structure!](Assets/2020-12-23-23-26-10.png)
 
-Right-Click on you Pezza.Api project -> Debug.
+Right-Click on you Pezza.Api project -> Properties -> Debug.
 
 Change Launch Browser to Open "swagger"
 
@@ -462,15 +483,15 @@ namespace Pezza.Api
     using System.Reflection;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
-    using Microsoft.AspNetCore.ResponseCompression;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.FileProviders;
     using Microsoft.Extensions.Hosting;
     using Microsoft.OpenApi.Models;
     using Pezza.Core;
     using Pezza.DataAccess;
-    using Pezza.DataAccess.Contracts;
 
     public class Startup
     {
@@ -483,21 +504,12 @@ namespace Pezza.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddResponseCompression(options =>
-            {
-                options.Providers.Add<BrotliCompressionProvider>();
-                options.Providers.Add<GzipCompressionProvider>();
-            });
-            services.AddResponseCompression();
-
             services.AddControllers();
-
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerGeneratorOptions.IgnoreObsoleteActions = true;
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Title = "Pezza API",
+                    Title = "Stock API",
                     Version = "v1"
                 });
 
@@ -507,17 +519,9 @@ namespace Pezza.Api
             });
 
             // Add DbContext using SQL Server Provider
-            services.AddDbContext<IDatabaseContext, DatabaseContext>(options =>
+            services.AddDbContext<DatabaseContext>(options =>
                 options.UseSqlServer(this.Configuration.GetConnectionString("PezzaDatabase"))
             );
-
-            services.AddCors(options =>
-            {
-                options.AddPolicy("CorsPolicy",
-                    builder => builder.AllowAnyOrigin()
-                        .AllowAnyMethod()
-                        .AllowAnyHeader());
-            });
 
             DependencyInjection.AddApplication(services);
         }
@@ -529,11 +533,13 @@ namespace Pezza.Api
                 app.UseDeveloperExceptionPage();
             }
 
+            // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
-
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+            // specifying the Swagger JSON endpoint.
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Pezza API V1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Stock API V1");
             });
 
             app.UseHttpsRedirection();
@@ -545,6 +551,12 @@ namespace Pezza.Api
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+            });
+
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"Media")),
+                RequestPath = new PathString("/Media"),
             });
         }
     }

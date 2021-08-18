@@ -32,6 +32,7 @@
         public async Task<OrderDTO> SaveAsync(OrderDTO dto)
         {
             var entity = this.mapper.Map<Order>(dto);
+
             this.databaseContext.Orders.Add(entity);
             await this.databaseContext.SaveChangesAsync();
             dto.Id = entity.Id;
@@ -42,6 +43,11 @@
         public async Task<OrderDTO> UpdateAsync(OrderDTO dto)
         {
             var findEntity = await this.databaseContext.Orders.FirstOrDefaultAsync(x => x.Id == dto.Id);
+            if (findEntity == null)
+            {
+                return null;
+            }
+
             findEntity.Completed = dto.Completed ?? findEntity.Completed;
             findEntity.RestaurantId = dto.RestaurantId ?? findEntity.RestaurantId;
             findEntity.CustomerId = dto.CustomerId ?? findEntity.CustomerId;
@@ -56,6 +62,11 @@
         public async Task<bool> DeleteAsync(int id)
         {
             var entity = await this.databaseContext.Orders.FirstOrDefaultAsync(x => x.Id == id);
+            if (entity == null)
+            {
+                return false;
+            }
+
             this.databaseContext.Orders.Remove(entity);
             var result = await this.databaseContext.SaveChangesAsync();
 

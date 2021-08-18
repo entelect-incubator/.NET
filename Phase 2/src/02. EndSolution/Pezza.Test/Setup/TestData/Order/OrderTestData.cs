@@ -32,22 +32,15 @@
             RestaurantId = 1,
             DateCreated = DateTime.Now,
             Completed = false,
-            OrderItems = OrderItemsDTO()
-        };
-
-        public static List<OrderItemDTO> OrderItemsDTO()
-        {
-            var orderItems = new List<OrderItemDTO>
+            OrderItems = new List<OrderItemDTO>
             {
-                OrderItemDTO,
-                OrderItemDTO,
-                OrderItemDTO,
-                OrderItemDTO,
-                OrderItemDTO
-            };
-
-            return orderItems;
-        }
+                new OrderItemDTO()
+                {
+                    OrderId = 1,
+                    Product = ProductTestData.ProductDTO
+                }
+            }
+        };
 
         public static OrderItemDTO OrderItemDTO = new OrderItemDTO()
         {

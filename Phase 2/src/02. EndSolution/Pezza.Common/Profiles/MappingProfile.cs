@@ -25,13 +25,13 @@
             this.CreateMap<Notify, NotifyDTO>();
             this.CreateMap<NotifyDTO, Notify>();
 
+            this.CreateMap<OrderItem, OrderItemDTO>();
+            this.CreateMap<OrderItemDTO, OrderItem>();
+
             this.CreateMap<Order, OrderDTO>()
                 .ForMember(vm => vm.OrderItems, m => m.MapFrom(u => u.OrderItems));            
             this.CreateMap<OrderDTO, Order>()
                 .ForMember(vm => vm.OrderItems, m => m.MapFrom(u => u.OrderItems));
-
-            this.CreateMap<OrderItem, OrderItemDTO>();
-            this.CreateMap<OrderItemDTO, OrderItem>();
 
             this.CreateMap<Product, ProductDTO>();
             this.CreateMap<ProductDTO, Product>();

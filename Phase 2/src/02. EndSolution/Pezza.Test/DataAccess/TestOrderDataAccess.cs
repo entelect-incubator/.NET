@@ -3,18 +3,28 @@ namespace Pezza.Test.DataAccess
     using System.Threading.Tasks;
     using Bogus;
     using NUnit.Framework;
+    using Pezza.Common.DTO;
     using Pezza.DataAccess.Data;
 
+    [TestFixture]
     public class TestOrderDataAccess : QueryTestBase
     {
+        private OrderDataAccess handler;
+
+        private OrderDTO dto;
+
+        [SetUp]
+        public async Task Init()
+        {
+            this.handler = new OrderDataAccess(this.Context, Mapper());
+            this.dto = OrderTestData.OrderDTO;
+            this.dto = await this.handler.SaveAsync(this.dto);
+        }
+
         [Test]
         public async Task GetAsync()
         {
-            var handler = new OrderDataAccess(this.Context, Mapper());
-            var dto = OrderTestData.OrderDTO;
-            await handler.SaveAsync(dto);
-
-            var response = await handler.GetAsync(dto.Id);
+            var response = await this.handler.GetAsync(this.dto.Id);
 
             Assert.IsTrue(response != null);
         }
@@ -22,38 +32,24 @@ namespace Pezza.Test.DataAccess
         [Test]
         public async Task GetAllAsync()
         {
-            var handler = new OrderDataAccess(this.Context, Mapper());
-            var dto = OrderTestData.OrderDTO;
-            await handler.SaveAsync(dto);
-
-            var response = await handler.GetAllAsync();
+            var response = await this.handler.GetAllAsync();
             var outcome = response.Count;
 
             Assert.IsTrue(outcome == 1);
         }
 
         [Test]
-        public async Task SaveAsync()
+        public void SaveAsync()
         {
-            var handler = new OrderDataAccess(this.Context, Mapper());
-            var dto = OrderTestData.OrderDTO;
-            var result = await handler.SaveAsync(dto);
-            var outcome = result.Id != 0;
-
-            Assert.IsTrue(outcome);
+            Assert.IsTrue(this.dto != null);
         }
 
         [Test]
         public async Task UpdateAsync()
         {
-            var handler = new OrderDataAccess(this.Context, Mapper());
-            var dto = OrderTestData.OrderDTO;
-            var originalOrder = dto;
-            await handler.SaveAsync(dto);
-
-            dto.Amount = new Faker().Finance.Amount();
-            var response = await handler.UpdateAsync(dto);
-            var outcome = response.Amount.Equals(originalOrder.Amount);
+            this.dto.Amount = new Faker().Finance.Amount();
+            var response = await this.handler.UpdateAsync(this.dto);
+            var outcome = response.Amount.Equals(this.dto.Amount);
 
             Assert.IsTrue(outcome);
         }
@@ -61,11 +57,7 @@ namespace Pezza.Test.DataAccess
         [Test]
         public async Task DeleteAsync()
         {
-            var handler = new OrderDataAccess(this.Context, Mapper());
-            var dto = OrderTestData.OrderDTO;
-            await handler.SaveAsync(dto);
-
-            var response = await handler.DeleteAsync(dto.Id);
+            var response = await this.handler.DeleteAsync(this.dto.Id);
 
             Assert.IsTrue(response);
         }

@@ -1,0 +1,255 @@
+﻿@page
+@model IndexModel
+@{
+	ViewData["Title"] = "Home page";
+}
+@using Pezza.Common.DTO;
+@using System.Collections.Generic;
+@* 
+<div class="text-center">
+	<h1 class="display-4">Welcome</h1>
+	<p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+*@
+<div class="page-header clear-filter">
+	<div class="page-header-image" style="background-image: url('./assets/img/pexels-vinicius-benedit-1082342.jpg')"></div>
+	<!--Photo by Vinicius Benedit from Pexels -->
+	<div class="content-center text-center">
+		<div class="col-md-8 ml-auto mr-auto">
+			<div class="brand">
+				<h1 class="title"><span>Pezza•</span> Pizzeria</h1>
+				<h2 class="description">Pizzeria | While it's hot</h2>
+				<br />
+				<a href="/#carouselExampleIndicators" class="btn btn-primary btn-round btn-lg">Order Online</a>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="wrapper">
+	<div id="about-us" class="page-header">
+		<img src="./assets/img/blob.png" class="path" />
+		<img src="./assets/img/path2.png" class="path2" />
+		<img src="./assets/img/triunghiuri.png" class="shapes triangle" />
+		<img src="./assets/img/waves.png" class="shapes wave" />
+		<img src="./assets/img/patrat.png" class="shapes squares" />
+		<img src="./assets/img/cercuri.png" class="shapes circle" />
+		<div class="content-center">
+			<div class="row row-grid justify-content-between align-items-center text-left">
+				<div class="col-lg-6 col-md-6">
+					<h1 class="text-white">While it's hot!</h1>
+					<p class="text-white mb-3">Established in 1940, Pezza has been a small family run restaurant for many generations. In 2020, they decided to expand and open more branches, to share their amazing family secret pizza's with more people.</p>
+					<div class="btn-wrapper mb-3">
+						<p class="category text-primary d-inline">best italian pizza's</p>
+						<a href="#" class="btn btn-primary btn-link btn-sm"><i class="tim-icons icon-minimal-right"></i></a>
+					</div>
+				</div>
+				<div class="col-lg-4 col-md-5">
+					<img src="./assets/img/photo-1567363607237-5d186116333c.webp" alt="Circle image" class="img-fluid rounded-circle" />
+				</div>
+			</div>
+		</div>
+	</div>
+	<section class="section" id="menu">
+		<div class="content-center">
+			<div class="row justify-content-between align-items-center">
+				<div class="col-10">
+					<div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+						<ol class="carousel-indicators">
+							<li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+							<li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+							<li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+						</ol>
+						<div class="carousel-inner">
+							<div class="carousel-item active">
+								<div class="col-12 text-center">
+									<h2>What do feel like tonight?</h2>
+								</div>
+								<div class="container">
+									<div class="row row-grid justify-content-between">
+										<div class="col-md-8 mt-lg-8">
+											<div class="row" id="productDiv">
+											 	@foreach (var product in TempData["ProductData"] as List<ProductDTO>)
+												{
+													@*  <div class="col-lg-4 col-sm-12 px-2 py-2">
+														<div class="card card-stats @(product.Special == true ?  " bg-default":"")">
+															<div class='card-body pizza-card'>
+																<div class='row'>
+																	<div class='col-12'>
+																		<div class='numbers'>
+																			<p class='card-title'>R@(product.Price)</p>
+																			<p></p>
+																			<p class='card-category'>@(product.Name)<br /><small>@(product.Description)</small></p>
+																		</div>
+																	</div>
+																</div>
+																<div class='row'>
+																	<div class='col-12'>
+																		<input class="form-control qty" type="number" />
+																		<input type="hidden" value="@(product.Id)" id="Id" />
+																		<input type="hidden" value="@(product.Name)" id="Name" />
+																		<input type="hidden" value="@(product.Price)" id="Price" />
+																	</div>
+																</div>
+															</div>
+														</div>
+													</div>*@
+												}
+											</div>
+										</div>
+									</div>
+									<div class="row row-grid justify-content-between">
+										<div class="col-md-12">
+											<div class="alert alert-danger product-error" role="alert" style="display:none"></div>
+											<br />
+											<button id="btnPizzaNext" class="btn btn-primary pull-right">Next</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<input type="hidden" id="Products" />
+							<input type="hidden" id="Total" />
+
+							<br><br><br>
+							<div class="carousel-item">
+								<div class="col-12 text-center">
+									<h2>Where do you stay?</h2>
+								</div>
+								<div class="container">
+									<div class="row justify-content-center">
+										<div class="text-center col-lg-12">
+											<h1 class="text-center">Restaurants</h1>
+											<div class="row row-grid justify-content-center" id="restaurantDiv">
+												@foreach (var restaurant in TempData["RestaurantData"] as List<RestaurantDTO>)
+												{
+													<div class='col-lg-3'>
+														<div class='info'>
+															<h4 class='info-title'>@(restaurant.Address?.City)</h4>
+															<hr class='line-primary-center' />
+															<h3>@(restaurant.Name)</h3>
+															<br />
+															<a class='btn btn-primary'>Choose Restaurant</a>
+														</div>
+													</div>
+												}
+											 </div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<br><br><br>
+							<div class="carousel-item">
+								<div class="col-12 text-center">
+									<h2>Tell us about you...</h2>
+								</div>
+								<div class="container">
+									<div class="row row-grid justify-content-between">
+										<div class="col-md-3"></div>
+										<div class="col-md-6">
+											<div class="card card-register">
+												<div class="card-header">
+													<h4 class="card-title">Order</h4>
+												</div>
+												<div class="card-body">
+													<div class="form-group">
+														<div class="row">
+															<div class="col">
+																<label class="label-control">Name</label>
+																<input type="text" name="Name" id="CustomerName" class="form-control" />
+															</div>
+															<div class="col">
+																<label class="label-control">Phone</label>
+																<input type="tel" name="Phone" id="CustomerPhone" class="form-control" />
+															</div>
+														</div>
+														<br />
+
+														<div class="row">
+															<div class="col">
+																<label class="label-control">Email</label>
+																<input type="email" name="Email" id="CustomerEmail" class="form-control" />
+															</div>
+															<div class="col">
+																<label class="label-control">Contact Person</label>
+																<input type="text" name="ContactPerson" id="CustomerContactPerson" class="form-control" />
+															</div>
+														</div>
+														<br />
+
+														<br />
+														<fieldset>
+															<legend>Delivery</legend>
+															<div class="row">
+																<div class="col">
+																	<label class="label-control">Street Address</label>
+																	<input type="text" name="Address" id="Address" class="form-control" />
+																</div>
+															</div>
+
+															<div class="row">
+																<div class="col">
+																	<label class="label-control">City</label>
+																	<select name="City" id="City" class="form-control"></select>
+																</div>
+															</div>
+
+															<div class="row">
+																<div class="col">
+																	<label class="label-control">Province</label>
+																	<select name="Address.Province" id="Province" class="form-control"></select>
+																</div>
+															</div>
+
+															<div class="row">
+																<div class="col-xs-12 col-lg-4">
+																	<label class="label-control">PostalCode</label>
+																	<input type="number" name="PostalCode" id="AddrePostalCodess" class="form-control" />
+																</div>
+															</div>
+															<br />
+														</fieldset>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="col-md-3"></div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<br><br><br>
+						<a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+							<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+							<span class="sr-only">Previous</span>
+						</a>
+						<a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+							<span class="carousel-control-next-icon" aria-hidden="true"></span>
+							<span class="sr-only">Next</span>
+						</a>
+					</div>
+				</div>
+				<div class="col-2">
+					<div class="card card-stats">
+						<div class="card-body pizza-card">
+							<div class="row">
+								<div align="center" class="col-12">
+									<h3 class="card-title">Your order</h3>
+									<p></p>
+									<p class="order-summary">Looks like you need some Pezza...</p>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div align="center" class="input-group product-input-group ">
+						<p class="text-center">
+							Total R<span id="order-total">0</span>
+						</p>
+					</div>
+					<div class="card-footer">
+						<a href="javascript:void(0)" class="btn btn-default btn-lg pull-right">Place your order</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+</div>

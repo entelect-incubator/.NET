@@ -41,6 +41,11 @@
         public async Task<OrderItemDTO> UpdateAsync(OrderItemDTO dto)
         {
             var findEntity = await this.databaseContext.OrderItems.FirstOrDefaultAsync(x => x.Id == dto.Id);
+            if (findEntity == null)
+            {
+                return null;
+            }
+
             findEntity.Quantity = dto.Quantity ?? findEntity.Quantity;
             findEntity.ProductId = dto.ProductId ?? findEntity.ProductId;
 
@@ -53,6 +58,11 @@
         public async Task<bool> DeleteAsync(int id)
         {
             var entity = await this.databaseContext.OrderItems.FirstOrDefaultAsync(x => x.Id == id);
+            if (entity == null)
+            {
+                return false;
+            }
+
             this.databaseContext.OrderItems.Remove(entity);
             var result = await this.databaseContext.SaveChangesAsync();
 

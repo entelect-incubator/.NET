@@ -41,6 +41,11 @@
         public async Task<ProductDTO> UpdateAsync(ProductDTO dto)
         {
             var findEntity = await this.databaseContext.Products.FirstOrDefaultAsync(x => x.Id == dto.Id);
+            if(findEntity == null)
+            {
+                return null;
+            }
+
             findEntity.Name = !string.IsNullOrEmpty(dto.Name) ? dto.Name : findEntity.Name;
             findEntity.Description = !string.IsNullOrEmpty(dto.Description) ? dto.Description : findEntity.Description;
             findEntity.PictureUrl = !string.IsNullOrEmpty(dto.PictureUrl) ? dto.PictureUrl : findEntity.PictureUrl;
@@ -59,6 +64,11 @@
         public async Task<bool> DeleteAsync(int id)
         {
             var entity = await this.databaseContext.Products.FirstOrDefaultAsync(x => x.Id == id);
+            if (entity == null)
+            {
+                return false;
+            }
+
             this.databaseContext.Products.Remove(entity);
             var result = await this.databaseContext.SaveChangesAsync();
 
