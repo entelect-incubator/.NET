@@ -14,7 +14,7 @@ Install FluentValidation on the Core Project.
 
 ## **Install Newtonsoft.Json**
 
-Newtonsoft.Json is a popular high-performance JSON framework typically used to serialize and deserialize .Net objects. Install it on the Api project."
+Newtonsoft.Json is a popular high-performance JSON framework typically used to serialize and deserialize .Net objects. Install it on the Api project.
 
 ![Newtonsoft.Json](Assets/2021-01-17-15-36-25.png)
 
