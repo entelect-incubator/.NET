@@ -56,7 +56,7 @@ namespace Pezza.Common.Filter
             return query.Where(x => x.Special == special.Value);
         }
 
-        public static IQueryable<Product> FilterByOfferEndDate(this IQueryable<Product> query, DateTime?? offerEndDate)
+        public static IQueryable<Product> FilterByOfferEndDate(this IQueryable<Product> query, DateTime? offerEndDate)
         {
             if (!offerEndDate.HasValue)
             {
@@ -66,7 +66,7 @@ namespace Pezza.Common.Filter
             return query.Where(x => x.OfferEndDate == offerEndDate.Value);
         }
 
-        public static IQueryable<Product> FilterByOfferPrice(this IQueryable<Product> query, decimal?? offerPrice)
+        public static IQueryable<Product> FilterByOfferPrice(this IQueryable<Product> query, decimal? offerPrice)
         {
             if (!offerPrice.HasValue)
             {

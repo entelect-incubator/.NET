@@ -1,4 +1,4 @@
-namespace Test.DataAccess.Filter
+namespace Pezza.Common.Filter
 {
     using System;
     using System.Linq;
