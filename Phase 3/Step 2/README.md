@@ -48,11 +48,11 @@ namespace Pezza.Common.Models
 Add Extensions method in Pezza.Common to do the Pagination. Create a new Folder Extension in Pezza.Common with Extensions.cs
 
 ```cs
-using System.Linq;
-using Park.Entities.Model;
-
-namespace Park.Common.Extensions
+namespace Pezza.Common.Extensions
 {
+    using System.Linq;
+    using Pezza.Common.Models;
+
     public static class Extensions
     {
         public static IQueryable<T> ApplyPaging<T>(this IQueryable<T> query, PagingArgs pagingArgs)
@@ -70,11 +70,11 @@ namespace Park.Common.Extensions
 }
 ```
 
-Every DataDTO in Pezza.Common extends to include OrdeBy and PagingArgs.
+Extend the DTO's in Pezza.Common\Models by inheriting from SearchBase. In the cases of RestaurantDTO and ProductDTO  that already inherit from ImageDataBase, let ImageDataBase derive from SearchBase.
 
 ![](2021-01-15-07-08-27.png)
 
-Create a new ISearchBase.cs in Pezza.Common\Models
+Create a new SearchBase.cs in Pezza.Common\Models
 
 ```cs
 namespace Pezza.Common.DTO.Data
@@ -89,8 +89,6 @@ namespace Pezza.Common.DTO.Data
     }
 }
 ```
-
-Extend all DTO's with SearchBase for Product and Restaurant add it to ImageDataBase.
 
 ```cs
 namespace Pezza.Common.DTO
@@ -177,10 +175,10 @@ namespace Pezza.Common.DTO
 
 Create a Filter class for every entity, these filters use fluent design for readability. In each filter, you create a rule for every property that you want to filter on. If that property has a value it builds up a query before executing it to the database. See it as building up a SQL WHERE clause.
 
-Create a CustomerFilter.cs in Pezza.Common Filter
+Create a CustomerFilter.cs in Pezza.Common\Filter
 
 ```cs
-namespace Test.DataAccess.Filter
+namespace Pezza.Common.Filter
 {
     using System;
     using System.Linq;
@@ -228,14 +226,14 @@ namespace Test.DataAccess.Filter
             return query.Where(x => x.Province.Contains(province));
         }
 
-        public static IQueryable<Customer> FilterByPostalCode(this IQueryable<Customer> query, string PostalCode)
+        public static IQueryable<Customer> FilterByPostalCode(this IQueryable<Customer> query, string postalCode)
         {
-            if (string.IsNullOrWhiteSpace(PostalCode))
+            if (string.IsNullOrWhiteSpace(postalCode))
             {
                 return query;
             }
 
-            return query.Where(x => x.PostalCode.Contains(PostalCode));
+            return query.Where(x => x.PostalCode.Contains(postalCode));
         }
 
         public static IQueryable<Customer> FilterByPhone(this IQueryable<Customer> query, string phone)
@@ -287,35 +285,9 @@ You can also copy the other Filters from Step3\Data\Filter
 
 ![Filters](Assets/2021-01-15-07-13-03.png)
 
-### **Extend Lst Result**
+### **Add Filters to the DataAccess**
 
-In Pezza.Commmon Models Result.cs add a new Count Property to List Result.
-
-```cs
- public int Count { get; set; }
-```
-
-And the constructor
-
-```cs
-internal ListResult(bool succeeded, IEnumerable<T> data, int count, List<string> errors)
-{
-    this.Succeeded = succeeded;
-    this.Errors = errors;
-    this.Data = data.ToList();
-    this.Count = count;
-}
-```
-
-And Success
-
-```cs
-public static ListResult<T> Success(IEnumerable<T> data, int count) => new ListResult<T>(true, data, count, new List<string> { });
-```
-
-### **Add Filters to the Data Access**
-
-Change the Data Access Interface to include the Search Model in GetAllAsync.
+Change the IDataAccess interface by adding a parameter of type SearchBase to the GetAllAsync method.
 
 ![](Assets/2021-01-15-07-27-11.png)
 
@@ -323,7 +295,7 @@ Change the Data Access Interface to include the Search Model in GetAllAsync.
 Task<ListResult<T>> GetAllAsync(Entity searchBase);
 ```
 
-## **STEP 2 - Filtering & Searching**
+## **Add Searching Capability**
 
 Change all the DataAccess GetAllSync methods to include the new SearchModel and Filtering.
 

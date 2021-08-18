@@ -4,6 +4,7 @@
     using MediatR;
     using Pezza.Common.DTO;
     using Pezza.Common.Models;
+using Pezza.Core.Customer.Queries;
     using Pezza.Core.Email;
     using Pezza.Core.Notify.Queries;
 
@@ -17,7 +18,7 @@
         {
             var result = await this.mediator.Send(new GetNotifiesQuery
             {
-                SearchModel = new NotifyDTO
+                dto = new NotifyDTO
                 {
                     Sent = false,
                     PagingArgs = PagingArgs.Default
@@ -27,13 +28,24 @@
             {
                 foreach (var notification in result.Data)
                 {
-                    var emailService = new EmailService
+                    if (notification.CustomerId.HasValue)
                     {
-                        Customer = notification.Customer,
-                        HtmlContent = notification.Email
-                    };
+                        var customer = await this.mediator.Send(new GetCustomerQuery
+                        {
+                            Id = notification.CustomerId.Value
+                        });
 
-                    var send = await emailService.SendEmail();
+                        if (customer.Succeeded)
+                        {
+                            var emailService = new EmailService
+                            {
+                                Customer = customer.Data,
+                                HtmlContent = notification.Email
+                            };
+
+                            var send = await emailService.SendEmail();
+                        }
+                    }
                 }
             }
         }

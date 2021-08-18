@@ -28,11 +28,7 @@
                 return controller.BadRequest(result.Errors);
             }
 
-            return controller.Ok(new ListOutcome<T>
-            {
-                Count = result.Count,
-                Data = result.Data
-            });
+            return controller.Ok(result.Data);
         }
 
         public static ActionResult ResponseOutcome(Result result, ApiController controller)

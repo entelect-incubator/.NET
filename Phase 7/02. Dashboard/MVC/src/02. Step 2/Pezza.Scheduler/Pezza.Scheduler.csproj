@@ -5,9 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Hangfire.AspNetCore" Version="1.7.19" />
-    <PackageReference Include="Hangfire.Core" Version="1.7.19" />
-    <PackageReference Include="Hangfire.SqlServer" Version="1.7.19" />
+    <PackageReference Include="Hangfire.AspNetCore" Version="1.7.22" />
+    <PackageReference Include="Hangfire.Core" Version="1.7.22" />
+    <PackageReference Include="Hangfire.SqlServer" Version="1.7.22" />
     <PackageReference Include="MediatR" Version="9.0.0" />
   </ItemGroup>
 
