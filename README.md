@@ -198,7 +198,7 @@ Overview
 
 [![.NET Core - Phase 4 - Step 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase4-step2.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase4-step2.yml)
   
-### **Phase 5 - Performance Improvement **
+### **Phase 5 - Performance Improvement**
 
 For improved performance we relaised that certain data doesn't change often and can be cached. We can also add a few small changes to improve performance.
 
