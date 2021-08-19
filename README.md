@@ -144,7 +144,7 @@ Restaurant staff should be able to manage the stock through a web application as
 
 ## **Learning Outcomes**
 
-### **Phase 1** Getting started
+### **Phase 1 - Getting started** 
 
 We will be starting off with how to make a basic project and refactoring it into a solution following the single responsibility principle and how to set up a basic clean code architecture. This setup format will be used throughout the incubator.
 
@@ -155,7 +155,7 @@ Overview
 [Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%201)
 
 [![.NET Core - Phase 1](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase1-finalsolution.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase1-finalsolution.yml)
-### **Phase 2** Scaffolding
+### **Phase 2 - Scaffolding** 
 
 We will be extending the foundation from Phase 1 to all Entities CRUD operations, we will also be moving to use CQRS Pattern and Mediatr NuGet Package.
 
@@ -166,7 +166,7 @@ Overview
 
 [![.NET Core - Phase 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase2-finalsolution.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase2-finalsolution.yml)
 
-### **Phase 3 - Handling Data**
+### **Phase 3 - Data Validation and Data Pagination**
 
 Now that we have deployed phase 2, we can make a few enhancements. Also, it will be easier for the customer and admin to search and filter through the data, so we will add that in as well.
 
@@ -184,7 +184,7 @@ Improve how data is displayed and validated
 
 [![.NET Core - Phase 3 - Step 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase3-step2.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase3-step2.yml)
 
-### **Phase 4 - Standards and Error Handling**
+### **Phase 4 - Coding Standards and Error Handling**
 
  When we work as part of a team, we usually need to adhere to coding standards. Let's have a look at how we can enforce some of the most basic standards and adding error handling.
   
@@ -197,7 +197,7 @@ Overview
 
 [![.NET Core - Phase 4 - Step 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase4-step2.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase4-step2.yml)
   
-### **Phase 5** - Improving Performance
+### **Phase 5 - Performance Improvement **
 
 For improved performance we relaised that certain data doesn't change often and can be cached. We can also add a few small changes to improve performance.
 
@@ -213,7 +213,7 @@ Increasing Performance
 
 [![.NET Core - Phase 5 - Step 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase5-step2.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase5-step2.yml)
 
-### **Phase 6** - Events
+### **Phase 6 - Events**
 
 We would like to notify the customer as soon as his order has been completed and ready for collection.
 
@@ -228,7 +228,7 @@ Increasing Performance
 
 [![.NET Core - Phase 6 - Step 3](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-step3.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-step3.yml)
 
-### **Phase 7** UI
+### **Phase 7 - User Interface** 
 
 Overview
 - [ ] [MVC Part 1](https://web.microsoftstream.com/video/61e64cfa-c3ba-45c3-9811-e5bc25968a2a?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
@@ -252,9 +252,9 @@ We will be building a basic Pizza website for Customers and a basic Admin Back-E
 - ReactJS - Coming Soon
 - 
  
-[Click here to get started]()
+[Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%207)
 
-### **Phase 8** Coming Soon
+### **Phase 8 - Security**
 
 Now that we have increased the performance lets and an increase of customers we need to secure our website.
 
@@ -264,6 +264,10 @@ Overview
 Add Security
 - [ ] API Oauth / JWT Token
 - [ ] MVC Antiforgy Tokens
+
+[Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%208)
+
+[![.NET Core - Phase 8 - Step 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase8-step2.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase8-step2.yml)
   
 ### **Phase 9** - Coming soon
 
