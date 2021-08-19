@@ -77,10 +77,8 @@ Extend the DTO's in Pezza.Common\Models by inheriting from SearchBase. In the ca
 Create a new SearchBase.cs in Pezza.Common\Models
 
 ```cs
-namespace Pezza.Common.DTO.Data
+namespace Pezza.Common.Models
 {
-    using Pezza.Common.Models;
-
     public class SearchBase
     {
         public string OrderBy { get; set; }
