@@ -14,7 +14,9 @@ JWT has become more and more popular in web development. It is an open standard 
 
 The first step is to configure JWT based authentication in our project. To do this, we need to register a JWT authentication schema by using "AddAuthentication" method and specifying JwtBearerDefaults.AuthenticationScheme. Here, we configure the authentication schema with JWT bearer options.
 
-Install Nuget Package Microsoft.AspNetCore.Authentication
+Install Nuget 
+- [ ] Package Microsoft.AspNetCore.Authentication
+- [ ] Microsoft.AspNetCore.Authentication.JwtBearer
 
 Add to startup.cs
 
@@ -28,8 +30,8 @@ services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            ValidIssuer = Configuration["Jwt:Issuer"],
-            ValidAudience = Configuration["Jwt:Issuer"],
+            ValidIssuer = this.Configuration["Jwt:Issuer"],
+            ValidAudience = this.Configuration["Jwt:Issuer"],
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
         };
     });
@@ -79,25 +81,25 @@ namespace Pezza.Api.Controllers
     using Microsoft.IdentityModel.Tokens;
     using Pezza.Common.Models;
 
-    [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ApiController
     {
-        private IConfiguration config;
+        private readonly IConfiguration config;
 
         public AuthController(IConfiguration config) => this.config = config;
 
         [AllowAnonymous]
         [HttpPost]
-        public IActionResult Login([FromBody] AuthModel auth)
+        [Route("Authorise")]
+        public IActionResult Authorise([FromBody] AuthModel auth)
         {
-            IActionResult response = Unauthorized();
-            var authenticate = Authenticate(auth);
+            IActionResult response = this.Unauthorized();
+            var authenticate = this.Authenticate(auth);
 
             if (authenticate.Succeeded)
             {
                 var tokenString = this.GenerateJSONWebToken();
-                response = Ok(new { token = tokenString });
+                response = this.Ok(new { token = tokenString });
             }
 
             return response;
@@ -124,7 +126,32 @@ namespace Pezza.Api.Controllers
         }
     }
 }
+```
 
+Add the following models into Pezza.Common\Models
+
+AuthModel.cs
+
+```cs
+namespace Pezza.Common.Models
+{
+    public class AuthModel
+    {
+        public string ApiKey { get; set; }
+    }
+}
+```
+
+TokenModel.cs
+
+```cs
+namespace Pezza.Common.Models
+{
+    public class TokenModel
+    {
+        public string Token { get; set; }
+    }
+}
 ```
 
 Once, we have enabled the JWT based authentication, I have created a simple Web API method that returns a list of value strings when invoked with an HTTP GET request. Here, I have marked this method with the authorize attribute, so that this endpoint will trigger the validation check of the token passed with an HTTP request.
@@ -143,7 +170,7 @@ As a response, we will get the JSON like the following,
 
 Now, we will try to get the list of values by passing this token into the authentication HTTP header. Following is my Action method definition.
 
-Add Authorize to all Controllers except AuthController. For example 
+Add Authorize to all Controllers except AuthController and PictureController.  For example 
 
 ```cs
 [ApiController]
@@ -226,6 +253,7 @@ private async Task<string> SetBearerToken()
     return string.Empty;
 }
 ```
+
 
 On very call add Authorization Header
 

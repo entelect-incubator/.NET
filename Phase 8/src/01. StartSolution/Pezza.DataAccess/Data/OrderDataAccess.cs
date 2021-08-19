@@ -15,52 +15,58 @@
 
     public class OrderDataAccess : IDataAccess<OrderDTO>
     {
-        private readonly IDatabaseContext databaseContext;
+        private readonly DatabaseContext databaseContext;
 
         private readonly IMapper mapper;
 
-        public OrderDataAccess(IDatabaseContext databaseContext, IMapper mapper)
+        public OrderDataAccess(DatabaseContext databaseContext, IMapper mapper)
             => (this.databaseContext, this.mapper) = (databaseContext, mapper);
 
         public async Task<OrderDTO> GetAsync(int id)
             => this.mapper.Map<OrderDTO>(await this.databaseContext.Orders.Include(x => x.OrderItems).ThenInclude(x => x.Product).Include(x => x.Restaurant).Include(x => x.Customer).FirstOrDefaultAsync(x => x.Id == id));
 
-        public async Task<ListResult<OrderDTO>> GetAllAsync(Entity searchBase)
+        public async Task<ListResult<OrderDTO>> GetAllAsync(OrderDTO dto)
         {
-            var searchModel = (OrderDTO)searchBase;
             var entities = this.databaseContext.Orders
                 .Include(x => x.OrderItems)
                 .ThenInclude(x => x.Product)
                 .Include(x => x.Restaurant)
                 .Include(x => x.Customer)
                 .AsNoTracking()
-                .FilterByCustomerId(searchModel.CustomerId)
-                .FilterByRestaurantId(searchModel.RestaurantId)
-                .FilterByAmount(searchModel.Amount)
-                .FilterByCompleted(searchModel.Completed)
-
-                .OrderBy(searchModel.OrderBy);
+                .FilterByCustomerId(dto.CustomerId)
+                .FilterByRestaurantId(dto.RestaurantId)
+                .FilterByAmount(dto.Amount)
+                .FilterByCompleted(dto.Completed);
 
             var count = entities.Count();
-            var paged = this.mapper.Map<List<OrderDTO>>(await entities.ApplyPaging(searchModel.PagingArgs).ToListAsync());
+            var paged = this.mapper.Map<List<OrderDTO>>(await entities.ApplyPaging(dto.PagingArgs).ToListAsync());
 
             return ListResult<OrderDTO>.Success(paged, count);
         }
 
-        public async Task<OrderDTO> SaveAsync(OrderDTO entity)
+        public async Task<OrderDTO> SaveAsync(OrderDTO dto)
         {
-            this.databaseContext.Orders.Add(this.mapper.Map<Order>(entity));
-            await this.databaseContext.SaveChangesAsync();
+            var entity = this.mapper.Map<Order>(dto);
 
-            return entity;
+            this.databaseContext.Orders.Add(entity);
+            await this.databaseContext.SaveChangesAsync();
+            dto.Id = entity.Id;
+
+            return dto;
         }
 
-        public async Task<OrderDTO> UpdateAsync(OrderDTO entity)
+        public async Task<OrderDTO> UpdateAsync(OrderDTO dto)
         {
-            var findEntity = await this.databaseContext.Orders.FirstOrDefaultAsync(x => x.Id == entity.Id);
-            findEntity.Completed = entity.Completed ?? findEntity.Completed;
-            findEntity.RestaurantId = entity.RestaurantId ?? findEntity.RestaurantId;
-            findEntity.CustomerId = entity.CustomerId ?? findEntity.CustomerId;
+            var findEntity = await this.databaseContext.Orders.FirstOrDefaultAsync(x => x.Id == dto.Id);
+            if (findEntity == null)
+            {
+                return null;
+            }
+
+            findEntity.Completed = dto.Completed ?? findEntity.Completed;
+            findEntity.RestaurantId = dto.RestaurantId ?? findEntity.RestaurantId;
+            findEntity.CustomerId = dto.CustomerId ?? findEntity.CustomerId;
+            findEntity.Amount = dto.Amount ?? findEntity.Amount;
 
             this.databaseContext.Orders.Update(findEntity);
             await this.databaseContext.SaveChangesAsync();
@@ -71,6 +77,11 @@
         public async Task<bool> DeleteAsync(int id)
         {
             var entity = await this.databaseContext.Orders.FirstOrDefaultAsync(x => x.Id == id);
+            if (entity == null)
+            {
+                return false;
+            }
+
             this.databaseContext.Orders.Remove(entity);
             var result = await this.databaseContext.SaveChangesAsync();
 

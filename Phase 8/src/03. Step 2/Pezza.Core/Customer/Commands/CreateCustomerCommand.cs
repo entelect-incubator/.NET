@@ -7,21 +7,21 @@
     using Pezza.Common.Models;
     using Pezza.DataAccess.Contracts;
 
-    public partial class CreateCustomerCommand : IRequest<Result<CustomerDTO>>
+    public class CreateCustomerCommand : IRequest<Result<CustomerDTO>>
     {
         public CustomerDTO Data { get; set; }
     }
 
     public class CreateCustomerCommandHandler : IRequestHandler<CreateCustomerCommand, Result<CustomerDTO>>
     {
-        private readonly IDataAccess<CustomerDTO> DataAccess;
+        private readonly IDataAccess<CustomerDTO> dto;
 
-        public CreateCustomerCommandHandler(IDataAccess<CustomerDTO> DataAccess)
-            => this.DataAccess = DataAccess;
+        public CreateCustomerCommandHandler(IDataAccess<CustomerDTO> dto)
+            => this.dto = dto;
 
         public async Task<Result<CustomerDTO>> Handle(CreateCustomerCommand request, CancellationToken cancellationToken)
         {
-            var outcome = await this.DataAccess.SaveAsync(request.Data);
+            var outcome = await this.dto.SaveAsync(request.Data);
             return (outcome != null) ? Result<CustomerDTO>.Success(outcome) : Result<CustomerDTO>.Failure("Error creating a Customer");
         }
     }

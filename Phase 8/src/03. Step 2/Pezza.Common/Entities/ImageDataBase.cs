@@ -1,6 +1,8 @@
 ﻿namespace Pezza.Common.Entities
 {
-    public class ImageDataBase : Entity
+    using Pezza.Common.DTO.Data;
+
+    public class ImageDataBase : SearchBase
     {
         public string ImageData { get; set; }
     }

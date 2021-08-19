@@ -23,14 +23,13 @@ namespace Pezza.Common.Behaviours
             }
             catch (Exception ex)
             {
-                Logging.Logging.LogException(ex);
-
                 await HandleExceptionAsync(context, ex);
             }
         }
 
         private static Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
+            // Log issues and handle exception response
             if (exception.GetType() == typeof(ValidationException))
             {
                 var errors = ((ValidationException)exception).Errors;
@@ -38,7 +37,7 @@ namespace Pezza.Common.Behaviours
                 {
                     var failures = errors.Select(x =>
                     {
-                        return new ValidationError
+                        return new
                         {
                             Property = x.PropertyName.Replace("Data.", string.Empty),
                             Error = x.ErrorMessage.Replace("Data ", string.Empty)
@@ -71,6 +70,7 @@ namespace Pezza.Common.Behaviours
                 var result = JsonConvert.SerializeObject(new { isSuccess = false, error = exception.Message });
                 context.Response.ContentType = "application/json";
                 context.Response.StatusCode = (int)code;
+                Logging.LogException(exception);
 
                 return context.Response.WriteAsync(result);
             }

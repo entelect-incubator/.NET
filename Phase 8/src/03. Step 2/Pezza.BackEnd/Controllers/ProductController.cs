@@ -36,7 +36,7 @@
 
         public async Task<JsonResult> List(int limit, int page, string orderBy = "Name asc")
         {
-            var result = await this.apiCallHelper.GetListAsync(new ProductDTO
+            var dto = new ProductDTO
             {
                 OrderBy = orderBy,
                 PagingArgs = new Common.Models.PagingArgs
@@ -45,7 +45,8 @@
                     Offset = (page - 1) * limit,
                     UsePaging = true
                 }
-            });
+            };
+            var result = await this.apiCallHelper.GetListAsync(dto);
             for (var i = 0; i < result.Data.Count; i++)
             {
                 var picture = result.Data[i].PictureUrl;
@@ -81,11 +82,6 @@
                 product.Image.CopyTo(ms);
                 var fileBytes = ms.ToArray();
                 product.ImageData = $"data:{MimeTypeMap.GetMimeType(Path.GetExtension(product.Image.FileName))};base64,{Convert.ToBase64String(fileBytes)}";
-            }
-            else
-            {
-                product.PictureUrl = null;
-                ModelState.AddModelError("Image", "Please select a photo of the product");
             }
 
             var result = await this.apiCallHelper.Create(product);

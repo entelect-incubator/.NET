@@ -7,8 +7,8 @@
 
 @using (Html.BeginForm())
 {
-    @Html.ValidationSummary(true)
     @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
     <div class="form-group">
         <fieldset>
             <legend>Add Stock</legend>

@@ -12,7 +12,7 @@
     [ApiController]
     public class AuthController : ApiController
     {
-        private IConfiguration config;
+        private readonly IConfiguration config;
 
         public AuthController(IConfiguration config) => this.config = config;
 
@@ -21,13 +21,13 @@
         [Route("Authorise")]
         public IActionResult Authorise([FromBody] AuthModel auth)
         {
-            IActionResult response = Unauthorized();
-            var authenticate = Authenticate(auth);
+            IActionResult response = this.Unauthorized();
+            var authenticate = this.Authenticate(auth);
 
             if (authenticate.Succeeded)
             {
                 var tokenString = this.GenerateJSONWebToken();
-                response = Ok(new { token = tokenString });
+                response = this.Ok(new { token = tokenString });
             }
 
             return response;

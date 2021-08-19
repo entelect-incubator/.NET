@@ -6,6 +6,7 @@
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Rendering;
+    using Newtonsoft.Json;
     using Pezza.Common;
     using Pezza.Common.DTO;
     using Pezza.Portal.Helpers;
@@ -84,14 +85,15 @@
 
         private async Task<List<SelectListItem>> GetCustomers()
         {
+            var dto = new CustomerDTO
+            {
+                PagingArgs = Common.Models.PagingArgs.NoPaging
+            };
             var apiHelper = new ApiCallHelper<CustomerDTO>(this.clientFactory)
             {
                 ControllerName = "Customer"
             };
-            var entities = await apiHelper.GetListAsync(new CustomerDTO
-            {
-                PagingArgs = Common.Models.PagingArgs.NoPaging
-            });
+            var entities = await apiHelper.GetListAsync(dto);
             return entities.Data?.Select(x =>
             {
                 return new SelectListItem
@@ -104,14 +106,15 @@
 
         private async Task<List<SelectListItem>> GetRestaurants()
         {
+            var dto = new RestaurantDTO
+            {
+                PagingArgs = Common.Models.PagingArgs.NoPaging
+            };
             var apiHelper = new ApiCallHelper<RestaurantDTO>(this.clientFactory)
             {
                 ControllerName = "Restaurant"
             };
-            var entities = await apiHelper.GetListAsync(new RestaurantDTO
-            {
-                PagingArgs = Common.Models.PagingArgs.NoPaging
-            });
+            var entities = await apiHelper.GetListAsync(dto);
             for (var i = 0; i < entities.Data.Count; i++)
             {
                 entities.Data[i].PictureUrl = $"{AppSettings.ApiUrl}Picture?file={entities.Data[i].PictureUrl}&folder=restaurant";
@@ -129,14 +132,15 @@
 
         private async Task<List<ProductModel>> GetProducts()
         {
+            var dto = new ProductDTO
+            {
+                PagingArgs = Common.Models.PagingArgs.NoPaging
+            };
             var apiHelper = new ApiCallHelper<ProductDTO>(this.clientFactory)
             {
                 ControllerName = "Product"
             };
-            var entities = await apiHelper.GetListAsync(new ProductDTO
-            {
-                PagingArgs = Common.Models.PagingArgs.NoPaging
-            });
+            var entities = await apiHelper.GetListAsync(dto);
             if (entities.Data.Any())
             {
                 for (var i = 0; i < entities.Data.Count; i++)

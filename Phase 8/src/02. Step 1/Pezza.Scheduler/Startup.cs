@@ -8,6 +8,7 @@ namespace Pezza.Scheduler
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
+    using Pezza.Common.Behaviours;
     using Pezza.Core;
     using Pezza.DataAccess;
     using Pezza.DataAccess.Contracts;
@@ -33,7 +34,7 @@ namespace Pezza.Scheduler
                     .UseDefaultTypeSerializer()
                     .UseSqlServerStorage(this.Configuration.GetConnectionString("PezzaDatabase")));
 
-            services.AddDbContext<IDatabaseContext, DatabaseContext>(options =>
+            services.AddDbContext<DatabaseContext>(options =>
                options.UseSqlServer(this.Configuration.GetConnectionString("PezzaDatabase")));
 
             services.AddSingleton<IOrderCompleteJob, OrderCompleteJob>();
@@ -51,6 +52,7 @@ namespace Pezza.Scheduler
                 );
 
             app.UseHangfireDashboard();
+            app.UseMiddleware(typeof(ExceptionHandlerMiddleware));
 
             if (env.IsDevelopment())
             {

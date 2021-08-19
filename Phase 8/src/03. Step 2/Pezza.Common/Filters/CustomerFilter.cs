@@ -46,14 +46,14 @@ namespace Pezza.Common.Filters
             return query.Where(x => x.Province.Contains(province));
         }
 
-        public static IQueryable<Customer> FilterByPostalCode(this IQueryable<Customer> query, string PostalCode)
+        public static IQueryable<Customer> FilterByPostalCode(this IQueryable<Customer> query, string postalCode)
         {
-            if (string.IsNullOrWhiteSpace(PostalCode))
+            if (string.IsNullOrWhiteSpace(postalCode))
             {
                 return query;
             }
-
-            return query.Where(x => x.PostalCode.Contains(PostalCode));
+          
+            return query.Where(x => x.PostalCode.Contains(postalCode));
         }
 
         public static IQueryable<Customer> FilterByPhone(this IQueryable<Customer> query, string phone)

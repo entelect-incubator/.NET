@@ -40,7 +40,6 @@
                 Offset = (searchmodel.Page - 1) * searchmodel.Limit,
                 UsePaging = true
             };
-
             var result = await this.apiCallHelper.GetListAsync(entity);
             return this.Json(result);
         }
