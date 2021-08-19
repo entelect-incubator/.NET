@@ -9,7 +9,7 @@
     using Pezza.Common.DTO;
     using Pezza.Common.Entities;
     using Pezza.Common.Extensions;
-    using Pezza.Common.Filter;
+    using Pezza.Common.Filters;
     using Pezza.Common.Models;
     using Pezza.DataAccess.Contracts;
 
