@@ -20,7 +20,8 @@
     - [ ] ASP.NET
     - [ ] JS Libraries (Coming Soon!)
 
-## **Resource
+## **Resources**
+
 - [Entelect Stream](https://web.microsoftstream.com/channel/fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
 
 ## **Prerequirements**
