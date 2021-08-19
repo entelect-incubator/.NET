@@ -1,7 +1,7 @@
 ﻿namespace Pezza.Common.DTO
 {
+    using Pezza.Common.Models;
     using System;
-    using Pezza.Common.DTO.Data;
 
     public class NotifyDTO : SearchBase
     {
