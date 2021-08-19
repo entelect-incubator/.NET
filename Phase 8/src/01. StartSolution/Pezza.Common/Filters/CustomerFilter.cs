@@ -1,4 +1,3 @@
-
 namespace Pezza.Common.Filters
 {
     using System;
