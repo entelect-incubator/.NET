@@ -1,4 +1,4 @@
-namespace Pezza.Common.Filter
+namespace Pezza.Common.Filters
 {
     using System;
     using System.Linq;
@@ -52,7 +52,7 @@ namespace Pezza.Common.Filter
             {
                 return query;
             }
-
+          
             return query.Where(x => x.PostalCode.Contains(postalCode));
         }
 

@@ -1,4 +1,5 @@
-namespace Pezza.Common.Filter
+
+namespace Pezza.Common.Filters
 {
     using System;
     using System.Linq;

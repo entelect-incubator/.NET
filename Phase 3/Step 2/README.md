@@ -176,7 +176,7 @@ Create a Filter class for every entity, these filters use fluent design for read
 Create a CustomerFilter.cs in Pezza.Common\Filter
 
 ```cs
-namespace Pezza.Common.Filter
+namespace Pezza.Common.Filters
 {
     using System;
     using System.Linq;
