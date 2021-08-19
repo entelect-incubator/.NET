@@ -1,5 +1,3 @@
-using System;
-using System.Linq;
 using System.Threading.Tasks;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
@@ -37,13 +35,6 @@ namespace Pezza.BackEnd
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAntiforgery(options =>
-            {
-                options.FormFieldName = "AntiforgeryFieldname";
-                options.HeaderName = "X-CSRF-TOKEN-HEADERNAME";
-                options.SuppressXFrameOptionsHeader = false;
-            });
-
             services.AddHttpClient();
             services.AddResponseCompression(options =>
             {

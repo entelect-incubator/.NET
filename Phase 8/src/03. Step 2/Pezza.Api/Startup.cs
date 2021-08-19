@@ -7,16 +7,18 @@ namespace Pezza.Api
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.ResponseCompression;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.FileProviders;
+    using Microsoft.Extensions.Hosting;
     using Microsoft.IdentityModel.Tokens;
     using Microsoft.OpenApi.Models;
     using Pezza.Common.Behaviours;
     using Pezza.Core;
     using Pezza.DataAccess;
-    using Pezza.DataAccess.Contracts;
 
     public class Startup
     {
@@ -34,7 +36,7 @@ namespace Pezza.Api
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Title = "Pezza API",
+                    Title = "Stock API",
                     Version = "v1"
                 });
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
@@ -49,7 +51,7 @@ namespace Pezza.Api
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
                     {
-                          new OpenApiSecurityScheme
+                            new OpenApiSecurityScheme
                             {
                                 Reference = new OpenApiReference
                                 {
@@ -59,14 +61,17 @@ namespace Pezza.Api
                             }, new string[] { }
                     }
                 });
+
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
             });
 
             // Add DbContext using SQL Server Provider
-            services.AddDbContext<IDatabaseContext, DatabaseContext>(options =>
+            services.AddDbContext<DatabaseContext>(options =>
                 options.UseSqlServer(this.Configuration.GetConnectionString("PezzaDatabase")));
+
+            services.AddLazyCache();
 
             services.AddResponseCompression(options =>
             {
@@ -84,21 +89,18 @@ namespace Pezza.Api
                         .AllowAnyHeader());
             });
 
-            services.AddAuthentication(option =>
-            {
-                option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(options =>
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
                 {
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuer = true,
                         ValidateAudience = true,
-                        ValidateLifetime = false,
+                        ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
-                        ValidIssuer = Configuration["Jwt:Issuer"],
-                        ValidAudience = Configuration["Jwt:Issuer"],
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
+                        ValidIssuer = this.Configuration["Jwt:Issuer"],
+                        ValidAudience = this.Configuration["Jwt:Issuer"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this.Configuration["Jwt:Key"]))
                     };
                 });
 
@@ -107,23 +109,22 @@ namespace Pezza.Api
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+
             app.UseCors("CorsPolicy");
-            app.UseAuthentication();
-
-            app.UseResponseCompression();
             app.UseMiddleware(typeof(ExceptionHandlerMiddleware));
-
-            // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
-
-            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
-            // specifying the Swagger JSON endpoint.
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Stock API V1");
             });
 
             app.UseHttpsRedirection();
+
+            app.UseResponseCompression();
 
             app.UseRouting();
 
@@ -132,6 +133,12 @@ namespace Pezza.Api
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+            });
+
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"Media")),
+                RequestPath = new PathString("/Media"),
             });
         }
     }

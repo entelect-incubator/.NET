@@ -21,7 +21,7 @@
 
             this.RuleFor(x => x.PostalCode)
             .NotEmpty()
-            .Matches(@"^\d$")
+            .Must(x => int.TryParse(x, out var val) && val > 0)
             .MaximumLength(8);
         }
     }
@@ -40,7 +40,7 @@
             .MaximumLength(100);
 
             this.RuleFor(x => x.PostalCode)
-            .Matches(@"^\d$")
+            .Must(x => int.TryParse(x, out var val) && val > 0)
             .MaximumLength(8);
         }
     }

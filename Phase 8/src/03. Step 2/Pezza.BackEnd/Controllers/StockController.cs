@@ -32,7 +32,7 @@
 
         public async Task<JsonResult> List(int limit, int page, string orderBy = "Name asc")
         {
-            var result = await this.apiCallHelper.GetListAsync(new StockDTO
+            var dto = new StockDTO
             {
                 OrderBy = orderBy,
                 PagingArgs = new Common.Models.PagingArgs
@@ -41,7 +41,8 @@
                     Offset = (page - 1) * limit,
                     UsePaging = true
                 }
-            });
+            };
+            var result = await this.apiCallHelper.GetListAsync(dto);
             return this.Json(result);
         }
 

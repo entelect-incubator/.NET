@@ -1,11 +1,12 @@
 ﻿namespace Pezza.Common.DTO
 {
     using System;
-    using Pezza.Common.Entities;
-    using Pezza.Common.Models;
+    using Pezza.Common.DTO.Data;
 
-    public class StockDTO : Entity, Data.ISearchBase
+    public class StockDTO : SearchBase
     {
+        public int Id { get; set; }
+
         public string Name { get; set; }
 
         public string UnitOfMeasure { get; set; }
@@ -17,9 +18,5 @@
         public DateTime? ExpiryDate { get; set; }
 
         public string Comment { get; set; }
-
-        public string OrderBy { get; set; }
-
-        public PagingArgs PagingArgs { get; set; }
     }
 }

@@ -28,14 +28,11 @@
         {
             if (!result.Succeeded)
             {
-                if (apiCallHelper.ValidationErrors != null)
+                if (apiCallHelper.ValidationErrors?.Count > 0)
                 {
-                    if (apiCallHelper.ValidationErrors.Any())
+                    foreach (var validation in apiCallHelper.ValidationErrors)
                     {
-                        foreach (var validation in apiCallHelper.ValidationErrors)
-                        {
-                            ModelState.AddModelError(validation.Property, validation.Error);
-                        }
+                        ModelState.AddModelError(validation.Property, validation.Error);
                     }
                 }
 

@@ -6,6 +6,7 @@
     using Pezza.Api.Helpers;
     using Pezza.Common.DTO;
     using Pezza.Common.Entities;
+    using Pezza.Common.Models;
     using Pezza.Core.Notify.Commands;
     using Pezza.Core.Notify.Queries;
 
@@ -18,35 +19,34 @@
         /// </summary>
         /// <param name="id">Primary Key.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        /// <response code="200">Get a notification</response>
+        /// <response code="400">Error getting a notification</response>
+        /// <response code="404">Notification not found</response>
         [HttpGet("{id}")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(404)]
+        [ProducesResponseType(typeof(Result<NotifyDTO>), 200)]
+        [ProducesResponseType(typeof(ErrorResult), 400)]
+        [ProducesResponseType(typeof(ErrorResult), 404)]
         public async Task<ActionResult> Get(int id)
         {
             var result = await this.Mediator.Send(new GetNotifyQuery { Id = id });
 
-            return ResponseHelper.ResponseOutcome<NotifyDTO>(result, this);
+            return ResponseHelper.ResponseOutcome(result, this);
         }
 
         /// <summary>
         /// Get all Notifies.
         /// </summary>
-        /// <param name="searchModel">The search model.</param>
-        /// <returns>
-        /// A <see cref="Task" /> representing the asynchronous operation.
-        /// </returns>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        /// <response code="200">Notification Search</response>
+        /// <response code="400">Error searching for notifications</response>
         [HttpPost]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
+        [ProducesResponseType(typeof(ListResult<NotifyDTO>), 200)]
+        [ProducesResponseType(typeof(Result), 400)]
         [Route("Search")]
-        public async Task<ActionResult> Search([FromBody] NotifyDTO searchModel)
+        public async Task<ActionResult> Search()
         {
-            var result = await this.Mediator.Send(new GetNotifiesQuery
-            {
-                SearchModel = searchModel ?? new NotifyDTO()
-            });
-            return ResponseHelper.ResponseOutcome<NotifyDTO>(result, this);
+            var result = await this.Mediator.Send(new GetNotifiesQuery());
+            return ResponseHelper.ResponseOutcome(result, this);
         }
 
         /// <summary>
@@ -66,11 +66,13 @@
         ///       "contactPerson": "Person B 0723210000"
         ///     }.
         /// </remarks>
-        /// <param name="notify">Notify Data DTO.</param>
+        /// <param name="notify">Notification Data DTO.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        /// <response code="200">Notification created</response>
+        /// <response code="400">Error creating a notification</response>
         [HttpPost]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
+        [ProducesResponseType(typeof(Result<NotifyDTO>), 200)]
+        [ProducesResponseType(typeof(Result), 400)]
         [Route("Notify")]
         public async Task<ActionResult<Notify>> Create(NotifyDTO notify)
         {
@@ -79,7 +81,7 @@
                 Data = notify
             });
 
-            return ResponseHelper.ResponseOutcome<NotifyDTO>(result, this);
+            return ResponseHelper.ResponseOutcome(result, this);
         }
 
         /// <summary>
@@ -95,10 +97,13 @@
         /// </remarks>
         /// <param name="notify">Notify Data DTO.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        /// <response code="200">Notification updated</response>
+        /// <response code="400">Error updating a notification</response>
+        /// <response code="404">Notification not found</response>
         [HttpPut]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(404)]
+        [ProducesResponseType(typeof(Result<NotifyDTO>), 200)]
+        [ProducesResponseType(typeof(Result), 400)]
+        [ProducesResponseType(typeof(Result), 404)]
         public async Task<ActionResult> Update(NotifyDTO notify)
         {
             var result = await this.Mediator.Send(new UpdateNotifyCommand
@@ -106,7 +111,7 @@
                 Data = notify
             });
 
-            return ResponseHelper.ResponseOutcome<NotifyDTO>(result, this);
+            return ResponseHelper.ResponseOutcome(result, this);
         }
 
         /// <summary>
@@ -114,9 +119,11 @@
         /// </summary>
         /// <param name="id">Primary Key.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        /// <response code="200">Notification deleted</response>
+        /// <response code="400">Error deleting a notification</response>
         [HttpDelete("{id}")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
+        [ProducesResponseType(typeof(Result), 200)]
+        [ProducesResponseType(typeof(Result), 400)]
         public async Task<ActionResult> Delete(int id)
         {
             var result = await this.Mediator.Send(new DeleteNotifyCommand { Id = id });

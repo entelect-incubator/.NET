@@ -5,7 +5,6 @@
     using System.Linq;
     using System.Net.Http;
     using System.Net.Http.Headers;
-    using System.Net.Http.Json;
     using System.Text;
     using System.Text.Json;
     using System.Threading.Tasks;
@@ -65,7 +64,7 @@
             this.client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await this.SetBearerToken());
 
             var json = JsonSerializer.Serialize(entity);
-            var response = await this.client.PostAsync(@$"{AppSettings.ApiUrl}{ControllerName}\Search", new StringContent(json, Encoding.UTF8, "application/json"));
+            var response = await this.client.PostAsync(@$"{AppSettings.ApiUrl}{this.ControllerName}\Search", new StringContent(json, Encoding.UTF8, "application/json"));
             var responseData = await response.Content.ReadAsStringAsync();
 
             var entities = JsonSerializer.Deserialize<ListOutcome<T>>(responseData, this.jsonSerializerOptions);
@@ -76,7 +75,7 @@
         {
             this.client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await this.SetBearerToken());
 
-            var responseMessage = await this.client.GetAsync(@$"{AppSettings.ApiUrl}{ControllerName}\{id}");
+            var responseMessage = await this.client.GetAsync(@$"{AppSettings.ApiUrl}{this.ControllerName}\{id}");
             if (responseMessage.IsSuccessStatusCode)
             {
                 var responseData = await responseMessage.Content.ReadAsStringAsync();
@@ -94,13 +93,13 @@
             var json = JsonSerializer.Serialize(entity);
             var data = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var responseMessage = await this.client.PostAsync(@$"{AppSettings.ApiUrl}{ControllerName}", data);
+            var responseMessage = await this.client.PostAsync(@$"{AppSettings.ApiUrl}{this.ControllerName}", data);
             if (responseMessage.StatusCode == System.Net.HttpStatusCode.BadRequest)
             {
                 var responseData = await responseMessage.Content.ReadAsStringAsync();
                 var response = JsonSerializer.Deserialize<Result>(responseData, this.jsonSerializerOptions);
 
-                this.ValidationErrors = response.Errors?.Select(x =>
+                this.ValidationErrors = response.Errors.Select(x =>
                 {
                     return (x as JObject).ToObject<ValidationError>();
                 }).ToList();
@@ -127,7 +126,7 @@
             var json = JsonSerializer.Serialize(entity);
             var data = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var responseMessage = await this.client.PutAsync(@$"{AppSettings.ApiUrl}{ControllerName}", data);
+            var responseMessage = await this.client.PutAsync(@$"{AppSettings.ApiUrl}{this.ControllerName}", data);
             if (responseMessage.StatusCode == System.Net.HttpStatusCode.BadRequest)
             {
                 var responseData = await responseMessage.Content.ReadAsStringAsync();
@@ -156,7 +155,7 @@
         {
             this.client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await this.SetBearerToken());
 
-            var responseMessage = await this.client.DeleteAsync(@$"{AppSettings.ApiUrl}{ControllerName}\{id}");
+            var responseMessage = await this.client.DeleteAsync(@$"{AppSettings.ApiUrl}{this.ControllerName}\{id}");
             if (responseMessage.IsSuccessStatusCode)
             {
                 var responseData = await responseMessage.Content.ReadAsStringAsync();
