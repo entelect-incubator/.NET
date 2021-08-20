@@ -6,10 +6,9 @@
 
 ## **Search Models**
 
-Let's extend our data DTO's to cater for filtering and pagination. In Pezza.Common\Models create PagingArgs.cs
+Extend our data DTO's to cater for filtering and pagination. In Pezza.Common Models create PagingArgs.cs
 
 ![PagingArgs](Assets/2021-01-15-07-06-25.png)
-
 
 ```cs
 namespace Pezza.Common.Models
@@ -46,7 +45,7 @@ namespace Pezza.Common.Models
 }
 ```
 
-Add an extension method in Pezza.Common to do the Pagination. Create a new folder called Extensions in Pezza.Common and add Extensions.cs
+Add Extensions method in Pezza.Common to do the Pagination. Create a new Folder Extension in Pezza.Common with Extensions.cs
 
 ```cs
 namespace Pezza.Common.Extensions
@@ -71,6 +70,10 @@ namespace Pezza.Common.Extensions
 }
 ```
 
+Extend the DTO's in Pezza.Common\Models by inheriting from SearchBase. In the cases of RestaurantDTO and ProductDTO  that already inherit from ImageDataBase, let ImageDataBase derive from SearchBase.
+
+![](2021-01-15-07-08-27.png)
+
 Create a new SearchBase.cs in Pezza.Common\Models
 
 ```cs
@@ -84,10 +87,6 @@ namespace Pezza.Common.Models
     }
 }
 ```
-
-Extend the DTO's in Pezza.Common\Models by inheriting from SearchBase. In the cases of RestaurantDTO and ProductDTO  that already inherit from ImageDataBase, let ImageDataBase derive from SearchBase.
-
-![](2021-01-15-07-08-27.png)
 
 ```cs
 namespace Pezza.Common.DTO
@@ -168,16 +167,16 @@ namespace Pezza.Common.DTO
 
 ```
 
-![](Assets\2021-01-18-09-58-18.png)
+![](2021-01-18-09-58-18.png)
 
 ### **Add filtering**
 
-Filter classes are created for every entity. These filters will make use of fluent design for readability. In each filter, you create a rule for every property that you want to filter on. If that property has a value, it builds up a query before executing it to the database. See it as building up a SQL WHERE clause.
+Create a Filter class for every entity, these filters use fluent design for readability. In each filter, you create a rule for every property that you want to filter on. If that property has a value it builds up a query before executing it to the database. See it as building up a SQL WHERE clause.
 
-Create a folder called Filters in Pezza.Common and add CustomerFilter.cs.
+Create a CustomerFilter.cs in Pezza.Common\Filter
 
 ```cs
-namespace Pezza.Common.Filters
+namespace Pezza.Common.Filter
 {
     using System;
     using System.Linq;
@@ -280,25 +279,40 @@ namespace Pezza.Common.Filters
 }
 ```
 
-You can copy the other Filters from Step3\Data\Filter
+You can also copy the other Filters from Step3\Data\Filter
 
 ![Filters](Assets/2021-01-15-07-13-03.png)
 
-### **Add Filtering to DataAccess**
+### **Add Filters to the DataAccess**
 
-The GetAllAsync method of IDataAccess gets enhanced in two ways. Firstly, a generic type parameter of type that is intended for passing through DTOs. Secondly, enhance the response by using ListResult<T> as the type argument of the Task return type.
+Change the IDataAccess interface by adding a parameter of type SearchBase to the GetAllAsync method.
 
 ![](Assets/2021-01-15-07-27-11.png)
 
 ```
-Task<ListResult<T>> GetAllAsync(T dto);
+Task<ListResult<T>> GetAllAsync(Entity searchBase);
 ```
 
-## **Add Filtering Capability**
+## **Add Searching Capability**
 
-The implementations of all DataAccess GetAllAsync methods need to be modified to include filtering.
+Change all the DataAccess GetAllSync methods to include the new SearchModel and Filtering.
 
-Modify the GetAllAsync method in CustomerDataAccess.cs as follows.
+The only exception will be on Restaurant GetAllAsync(). We don't want to add any filtering, because of caching we want to include later on.
+
+```cs
+public async Task<ListResult<RestaurantDTO>> GetAllAsync(Entity searchBase)
+{
+    var entities = this.databaseContext.Restaurants.Select(x => x)
+        .AsNoTracking();
+
+    var count = entities.Count();
+    var paged = await entities.ApplyPaging(dto.PagingArgs).ToListAsync();
+
+    return ListResult<RestaurantDTO>.Success(this.mapper.Map<List<RestaurantDTO>>(paged), count);
+}
+``
+
+Open CustomerDataAccess
 
 ```cs
 public async Task<ListResult<CustomerDTO>> GetAllAsync(CustomerDTO dto)
@@ -323,36 +337,17 @@ public async Task<ListResult<CustomerDTO>> GetAllAsync(CustomerDTO dto)
 
     var count = entities.Count();
     var paged = this.mapper.Map<List<CustomerDTO>>(await entities.ApplyPaging(dto.PagingArgs).ToListAsync());
-
     return ListResult<CustomerDTO>.Success(paged, count);
 }
 ```
-The only exception will be on the GetAllAsync implementation for Restaurant. We don't want to add any filtering, because of caching we will include later on.
 
-Modify the GetAllAsync method in RestaurantDataAccess.cs as follows.
-
-```cs
-public async Task<ListResult<RestaurantDTO>> GetAllAsync(RestaurantDTO dto)
-{
-    var entities = this.databaseContext.Restaurants.Select(x => x)
-        .AsNoTracking();
-
-    var count = entities.Count();
-    var paged = await entities.ApplyPaging(dto.PagingArgs).ToListAsync();
-
-    return ListResult<RestaurantDTO>.Success(this.mapper.Map<List<RestaurantDTO>>(paged), count);
-}
-```
-
-
-
-Add filters to the other DataAccess GetAllAsync implementations as well or copy it from Phase 3\Data\DataAccess
+Add all the Filters to the other DataAccess as well or can copy it from Phase 3/Data/DataAccess
 
 ### Modify all Queries
 
-Pass each entity DTO as the argument in all queries that call GetAllAsync of the repective DataAccess implementation.
+Include each entity DTO as a Search Model in all Queries that calls GetAllAsync DataAccess.
 
-For example, modify GetCustomersQuery.cs as follows.
+Example GetCustomersQuery.cs
 
 ```cs
 namespace Pezza.Core.Customer.Queries
@@ -384,13 +379,12 @@ namespace Pezza.Core.Customer.Queries
     }
 }
 ```
-You can copy the other queries from the respective entity folders in Phase 3\Data\Core
 
 ### **Modify Controllers**
 
-Modify all the Search Action Methods in the controllers.
+Modify all the Controllers Search Functions
 
-For example, modify CustomerController.cs as follows.
+Example Customer Controller
 
 ```cs
 /// <summary>
@@ -414,11 +408,9 @@ public async Task<ActionResult> Search(CustomerDTO dto)
 }
 ```
 
-### **Modify Unit Tests**
+### **Modify Unit Test**
 
-Modify unit tests to incorporate our changes. 
-
-In the case of testing DataAccess, we pass a new DTO as the argument. Modify the GetAllAsync test method in TestCustomerDataAccess.cs as follows.
+Add Search Model to all GetAllAsync Unit Tests
 
 ```cs
 [Test]
@@ -434,7 +426,7 @@ public async Task GetAllAsync()
 }
 ```
 
-Modify the GetAllAsync test method in TestCustomerCore.cs as follows.
+Test Customer Core
 
 ```cs
 [Test]
