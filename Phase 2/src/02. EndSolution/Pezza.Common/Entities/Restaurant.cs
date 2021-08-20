@@ -12,8 +12,6 @@ namespace Pezza.Common.Entities
 
         public string PictureUrl { get; set; }
 
-        public string PostalCode { get; set; }
-
         public bool IsActive { get; set; }
 
         public DateTime DateCreated { get; set; }
