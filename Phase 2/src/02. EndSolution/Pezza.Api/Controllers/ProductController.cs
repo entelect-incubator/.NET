@@ -38,7 +38,7 @@
         /// <response code="400">Error searching for products</response>
         [HttpPost]
         [ProducesResponseType(typeof(ListResult<ProductDTO>), 200)]
-        [ProducesResponseType(typeof(Result), 400)]
+        [ProducesResponseType(typeof(ErrorResult), 400)]
         [Route("Search")]
         public async Task<ActionResult> Search()
         {
@@ -67,7 +67,7 @@
         /// <response code="400">Error creating a product</response>
         [HttpPost]
         [ProducesResponseType(typeof(Result<ProductDTO>), 200)]
-        [ProducesResponseType(typeof(Result), 400)]
+        [ProducesResponseType(typeof(ErrorResult), 400)]
         public async Task<ActionResult<Product>> Create(ProductDTO data)
         {
             if (!string.IsNullOrEmpty(data.ImageData))
@@ -105,7 +105,7 @@
         /// <response code="404">Product not found</response>
         [HttpPut]
         [ProducesResponseType(typeof(Result<ProductDTO>), 200)]
-        [ProducesResponseType(typeof(Result), 400)]
+        [ProducesResponseType(typeof(ErrorResult), 400)]
         [ProducesResponseType(typeof(Result), 404)]
         public async Task<ActionResult> Update(ProductDTO data)
         {
@@ -135,7 +135,7 @@
         /// <response code="400">Error deleting a product</response>
         [HttpDelete("{id}")]
         [ProducesResponseType(typeof(Result), 200)]
-        [ProducesResponseType(typeof(Result), 400)]
+        [ProducesResponseType(typeof(ErrorResult), 400)]
         public async Task<ActionResult> Delete(int id)
         {
             var result = await this.Mediator.Send(new DeleteProductCommand { Id = id });

@@ -38,7 +38,7 @@
         /// <response code="400">Error searching for restaurants</response>
         [HttpPost]
         [ProducesResponseType(typeof(ListResult<RestaurantDTO>), 200)]
-        [ProducesResponseType(typeof(Result), 400)]
+        [ProducesResponseType(typeof(ErrorResult), 400)]
         [Route("Search")]
         public async Task<ActionResult> Search()
         {
@@ -71,7 +71,7 @@
         /// <response code="400">Error creating a restaurant</response>
         [HttpPost]
         [ProducesResponseType(typeof(Result<RestaurantDTO>), 200)]
-        [ProducesResponseType(typeof(Result), 400)]
+        [ProducesResponseType(typeof(ErrorResult), 400)]
         public async Task<ActionResult<Restaurant>> Create(RestaurantDTO data)
         {
             if (!string.IsNullOrEmpty(data.ImageData))
@@ -110,7 +110,7 @@
         /// <response code="404">Restaurant not found</response>
         [HttpPut]
         [ProducesResponseType(typeof(Result<RestaurantDTO>), 200)]
-        [ProducesResponseType(typeof(Result), 400)]
+        [ProducesResponseType(typeof(ErrorResult), 400)]
         [ProducesResponseType(typeof(Result), 404)]
         public async Task<ActionResult> Update(RestaurantDTO data)
         {
@@ -140,7 +140,7 @@
         /// <response code="400">Error deleting a restaurant</response>
         [HttpDelete("{id}")]
         [ProducesResponseType(typeof(Result), 200)]
-        [ProducesResponseType(typeof(Result), 400)]
+        [ProducesResponseType(typeof(ErrorResult), 400)]
         public async Task<ActionResult> Delete(int id)
         {
             var result = await this.Mediator.Send(new DeleteRestaurantCommand { Id = id });

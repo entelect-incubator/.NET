@@ -38,7 +38,7 @@
         /// <response code="400">Error searching for stock</response>
         [HttpPost]
         [ProducesResponseType(typeof(ListResult<StockDTO>), 200)]
-        [ProducesResponseType(typeof(Result), 400)]
+        [ProducesResponseType(typeof(ErrorResult), 400)]
         [Route("Search")]
         public async Task<ActionResult> Search(StockDTO dto)
         {
@@ -69,7 +69,7 @@
         /// <response code="400">Error creating a stock</response>
         [HttpPost]
         [ProducesResponseType(typeof(Result<StockDTO>), 200)]
-        [ProducesResponseType(typeof(Result), 400)]
+        [ProducesResponseType(typeof(ErrorResult), 400)]
         public async Task<ActionResult<Stock>> Create(StockDTO data)
         {
             var result = await this.Mediator.Send(new CreateStockCommand
@@ -99,7 +99,7 @@
         /// <response code="404">Stock not found</response>
         [HttpPut]
         [ProducesResponseType(typeof(Result<StockDTO>), 200)]
-        [ProducesResponseType(typeof(Result), 400)]
+        [ProducesResponseType(typeof(ErrorResult), 400)]
         [ProducesResponseType(typeof(Result), 404)]
         public async Task<ActionResult> Update(StockDTO data)
         {
@@ -120,7 +120,7 @@
         /// <response code="400">Error deleting a stock</response>
         [HttpDelete("{id}")]
         [ProducesResponseType(typeof(Result), 200)]
-        [ProducesResponseType(typeof(Result), 400)]
+        [ProducesResponseType(typeof(ErrorResult), 400)]
         public async Task<ActionResult> Delete(int id)
         {
             var result = await this.Mediator.Send(new DeleteStockCommand { Id = id });
