@@ -72,8 +72,6 @@ namespace Pezza.Common.Extensions
 
 Extend the DTO's in Pezza.Common\Models by inheriting from SearchBase. In the cases of RestaurantDTO and ProductDTO  that already inherit from ImageDataBase, let ImageDataBase derive from SearchBase.
 
-![](2021-01-15-07-08-27.png)
-
 Create a new SearchBase.cs in Pezza.Common\Models
 
 ```cs
@@ -167,7 +165,7 @@ namespace Pezza.Common.DTO
 
 ```
 
-![](2021-01-18-09-58-18.png)
+![](./Assets/2021-08-19-15-44-02.png)
 
 ### **Add filtering**
 

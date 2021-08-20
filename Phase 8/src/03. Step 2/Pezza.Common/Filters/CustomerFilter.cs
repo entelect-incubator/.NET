@@ -52,7 +52,7 @@ namespace Pezza.Common.Filters
             {
                 return query;
             }
-          
+
             return query.Where(x => x.PostalCode.Contains(postalCode));
         }
 
