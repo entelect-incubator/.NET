@@ -38,7 +38,7 @@
         /// <response code="400">Error searching for customers</response>
         [HttpPost]
         [ProducesResponseType(typeof(ListResult<CustomerDTO>), 200)]
-        [ProducesResponseType(typeof(Result), 400)]
+        [ProducesResponseType(typeof(ErrorResult), 400)]
         [Route("Search")]
         public async Task<ActionResult> Search()
         {
@@ -69,7 +69,7 @@
         /// <response code="400">Error creating a customer</response>
         [HttpPost]
         [ProducesResponseType(typeof(Result<CustomerDTO>), 200)]
-        [ProducesResponseType(typeof(Result), 400)]
+        [ProducesResponseType(typeof(ErrorResult), 400)]
         public async Task<ActionResult<CustomerDTO>> Create(CustomerDTO customer)
         {
             var result = await this.Mediator.Send(new CreateCustomerCommand
@@ -105,7 +105,7 @@
         /// <response code="404">Customer not found</response>
         [HttpPut]
         [ProducesResponseType(typeof(Result<CustomerDTO>), 200)]
-        [ProducesResponseType(typeof(Result), 400)]
+        [ProducesResponseType(typeof(ErrorResult), 400)]
         [ProducesResponseType(typeof(Result), 404)]
         public async Task<ActionResult> Update(CustomerDTO customer)
         {
@@ -126,7 +126,7 @@
         /// <response code="400">Error deleting a customer</response>
         [HttpDelete("{id}")]
         [ProducesResponseType(typeof(Result), 200)]
-        [ProducesResponseType(typeof(Result), 400)]
+        [ProducesResponseType(typeof(ErrorResult), 400)]
         public async Task<ActionResult> Delete(int id)
         {
             var result = await this.Mediator.Send(new DeleteCustomerCommand { Id = id });

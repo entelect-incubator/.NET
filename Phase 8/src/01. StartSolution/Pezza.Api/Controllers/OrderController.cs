@@ -38,7 +38,7 @@
         /// <response code="400">Error searching for orders</response>
         [HttpPost]
         [ProducesResponseType(typeof(ListResult<OrderDTO>), 200)]
-        [ProducesResponseType(typeof(Result), 400)]
+        [ProducesResponseType(typeof(ErrorResult), 400)]
         [Route("Search")]
         public async Task<ActionResult> Search(OrderDTO dto)
         {
@@ -67,7 +67,7 @@
         /// <response code="400">Error creating a order</response>
         [HttpPost]
         [ProducesResponseType(typeof(Result<OrderDTO>), 200)]
-        [ProducesResponseType(typeof(Result), 400)]
+        [ProducesResponseType(typeof(ErrorResult), 400)]
         public async Task<ActionResult<Order>> Create(OrderDTO data)
         {
             data.Customer = null;
@@ -97,7 +97,7 @@
         /// <response code="404">Order not found</response>
         [HttpPut]
         [ProducesResponseType(typeof(Result<OrderDTO>), 200)]
-        [ProducesResponseType(typeof(Result), 400)]
+        [ProducesResponseType(typeof(ErrorResult), 400)]
         [ProducesResponseType(typeof(Result), 404)]
         public async Task<ActionResult> Update(OrderDTO data)
         {
@@ -118,7 +118,7 @@
         /// <response code="400">Error deleting a order</response>
         [HttpDelete("{id}")]
         [ProducesResponseType(typeof(Result), 200)]
-        [ProducesResponseType(typeof(Result), 400)]
+        [ProducesResponseType(typeof(ErrorResult), 400)]
         public async Task<ActionResult> Delete(int id)
         {
             var result = await this.Mediator.Send(new DeleteOrderCommand { Id = id });

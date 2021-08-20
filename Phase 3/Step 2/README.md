@@ -400,7 +400,7 @@ For example, modify CustomerController.cs as follows.
 /// <response code="400">Error searching for customers</response>
 [HttpPost]
 [ProducesResponseType(typeof(ListResult<CustomerDTO>), 200)]
-[ProducesResponseType(typeof(Result), 400)]
+[ProducesResponseType(typeof(ErrorResult), 400)]
 [Route("Search")]
 public async Task<ActionResult> Search(CustomerDTO dto)
 {

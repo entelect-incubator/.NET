@@ -39,7 +39,7 @@
         /// <response code="400">Error searching for notifications</response>
         [HttpPost]
         [ProducesResponseType(typeof(ListResult<NotifyDTO>), 200)]
-        [ProducesResponseType(typeof(Result), 400)]
+        [ProducesResponseType(typeof(ErrorResult), 400)]
         [Route("Search")]
         public async Task<ActionResult> Search(NotifyDTO dto)
         {
@@ -73,7 +73,7 @@
         /// <response code="400">Error creating a notification</response>
         [HttpPost]
         [ProducesResponseType(typeof(Result<NotifyDTO>), 200)]
-        [ProducesResponseType(typeof(Result), 400)]
+        [ProducesResponseType(typeof(ErrorResult), 400)]
         [Route("Notify")]
         public async Task<ActionResult<Notify>> Create(NotifyDTO notify)
         {
@@ -103,7 +103,7 @@
         /// <response code="404">Notification not found</response>
         [HttpPut]
         [ProducesResponseType(typeof(Result<NotifyDTO>), 200)]
-        [ProducesResponseType(typeof(Result), 400)]
+        [ProducesResponseType(typeof(ErrorResult), 400)]
         [ProducesResponseType(typeof(Result), 404)]
         public async Task<ActionResult> Update(NotifyDTO notify)
         {
@@ -124,7 +124,7 @@
         /// <response code="400">Error deleting a notification</response>
         [HttpDelete("{id}")]
         [ProducesResponseType(typeof(Result), 200)]
-        [ProducesResponseType(typeof(Result), 400)]
+        [ProducesResponseType(typeof(ErrorResult), 400)]
         public async Task<ActionResult> Delete(int id)
         {
             var result = await this.Mediator.Send(new DeleteNotifyCommand { Id = id });
