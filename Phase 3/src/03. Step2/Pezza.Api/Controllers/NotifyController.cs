@@ -41,9 +41,12 @@
         [ProducesResponseType(typeof(ListResult<NotifyDTO>), 200)]
         [ProducesResponseType(typeof(Result), 400)]
         [Route("Search")]
-        public async Task<ActionResult> Search()
+        public async Task<ActionResult> Search(NotifyDTO dto)
         {
-            var result = await this.Mediator.Send(new GetNotifiesQuery());
+            var result = await this.Mediator.Send(new GetNotifiesQuery
+            {
+                dto = dto
+            });
             return ResponseHelper.ResponseOutcome(result, this);
         }
 
