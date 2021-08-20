@@ -170,7 +170,7 @@ namespace Pezza.Common.DTO
 
 ![](Assets\2021-01-18-09-58-18.png)
 
-### **Add filtering**
+## **Add filtering**
 
 Filter classes are created for every entity. These filters will make use of fluent design for readability. In each filter, you create a rule for every property that you want to filter on. If that property has a value, it builds up a query before executing it to the database. See it as building up a SQL WHERE clause.
 
@@ -280,11 +280,11 @@ namespace Pezza.Common.Filters
 }
 ```
 
-You can copy the other Filters from Step3\Data\Filter
+You can copy the other Filters from Phase 3\Data\Common\Filters
 
 ![Filters](Assets/2021-01-15-07-13-03.png)
 
-### **Add Filtering to DataAccess**
+### **Modifying DataAccess**
 
 The GetAllAsync method of IDataAccess gets enhanced in two ways. Firstly, a generic type parameter of type that is intended for passing through DTOs. Secondly, enhance the response by using ListResult<T> as the type argument of the Task return type.
 
@@ -293,8 +293,6 @@ The GetAllAsync method of IDataAccess gets enhanced in two ways. Firstly, a gene
 ```
 Task<ListResult<T>> GetAllAsync(T dto);
 ```
-
-## **Add Filtering Capability**
 
 The implementations of all DataAccess GetAllAsync methods need to be modified to include filtering.
 
@@ -348,9 +346,9 @@ public async Task<ListResult<RestaurantDTO>> GetAllAsync(RestaurantDTO dto)
 
 Add filters to the other DataAccess GetAllAsync implementations as well or copy it from Phase 3\Data\DataAccess
 
-### Modify all Queries
+### **Modifying Queries**
 
-Pass each entity DTO as the argument in all queries that call GetAllAsync of the repective DataAccess implementation.
+Pass an entity DTO as the argument in all queries that call GetAllAsync of the repective DataAccess implementation.
 
 For example, modify GetCustomersQuery.cs as follows.
 
@@ -386,7 +384,7 @@ namespace Pezza.Core.Customer.Queries
 ```
 You can copy the other queries from the respective entity folders in Phase 3\Data\Core
 
-### **Modify Controllers**
+### **Modifying Controllers**
 
 Modify all the Search Action Methods in the controllers.
 
