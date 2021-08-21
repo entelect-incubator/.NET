@@ -14,7 +14,7 @@ namespace Pezza.Test.DataAccess
         private ProductDTO dto;
 
         [SetUp]
-        public async Task Init()
+        public async Task SetUp()
         {
             this.handler = new ProductDataAccess(this.Context, Mapper());
             this.dto = ProductTestData.ProductDTO;

@@ -153,7 +153,7 @@ namespace Pezza.Test.DataAccess
         private CustomerDTO dto;
 
         [SetUp]
-        public async Task Init()
+        public async Task SetUp()
         {
             this.handler = new CustomerDataAccess(this.Context, Mapper());
             this.dto = CustomerTestData.CustomerDTO;
@@ -251,7 +251,7 @@ namespace Pezza.Test.Core
         private CustomerDTO dto;
 
         [SetUp]
-        public async Task Init()
+        public async Task SetUp()
         {
             this.dataAccess = new CustomerDataAccess(this.Context, Mapper());
             this.dto = CustomerTestData.CustomerDTO;
