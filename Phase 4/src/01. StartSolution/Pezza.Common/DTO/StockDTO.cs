@@ -1,7 +1,7 @@
 ﻿namespace Pezza.Common.DTO
 {
-    using Pezza.Common.Models;
     using System;
+    using Pezza.Common.Models;
 
     public class StockDTO : SearchBase
     {

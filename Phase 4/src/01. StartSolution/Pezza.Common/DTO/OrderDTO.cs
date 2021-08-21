@@ -1,8 +1,8 @@
 ﻿namespace Pezza.Common.DTO
 {
-    using Pezza.Common.Models;
     using System;
     using System.Collections.Generic;
+    using Pezza.Common.Models;
 
     public class OrderDTO : SearchBase
     {
