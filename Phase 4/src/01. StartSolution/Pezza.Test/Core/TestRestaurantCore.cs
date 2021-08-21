@@ -63,7 +63,7 @@ namespace Pezza.Test.Core
         }
 
         [Test]
-        public async Task SaveAsync()
+        public void SaveAsync()
         {
             Assert.IsTrue(this.dto != null);
         }
