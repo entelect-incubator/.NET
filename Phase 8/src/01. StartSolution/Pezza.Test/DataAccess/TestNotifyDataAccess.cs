@@ -14,7 +14,7 @@ namespace Pezza.Test.DataAccess
         private NotifyDTO dto;
 
         [SetUp]
-        public async Task SetUp()
+        public async Task Init()
         {
             this.handler = new NotifyDataAccess(this.Context, Mapper());
             this.dto = NotifyTestData.NotifyDTO;

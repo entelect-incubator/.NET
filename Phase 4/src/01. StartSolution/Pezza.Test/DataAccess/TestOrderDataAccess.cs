@@ -14,7 +14,7 @@ namespace Pezza.Test.DataAccess
         private OrderDTO dto;
 
         [SetUp]
-        public async Task SetUp()
+        public async Task Init()
         {
             this.handler = new OrderDataAccess(this.Context, Mapper());
             this.dto = OrderTestData.OrderDTO;

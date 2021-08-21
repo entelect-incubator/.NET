@@ -16,7 +16,7 @@ namespace Pezza.Test.DataAccess
         private StockDTO stock;
 
         [SetUp]
-        public async Task SetUp()
+        public async Task Init()
         {
             this.handler = new StockDataAccess(this.Context, Mapper());
             this.stock = StockTestData.StockDTO;

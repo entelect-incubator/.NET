@@ -17,7 +17,7 @@ namespace Pezza.Test.Core
         private RestaurantDTO dto;
 
         [SetUp]
-        public async Task SetUp()
+        public async Task Init()
         {
             this.dataAccess = new RestaurantDataAccess(this.Context, Mapper());
             this.dto = RestaurantTestData.RestaurantDTO;
