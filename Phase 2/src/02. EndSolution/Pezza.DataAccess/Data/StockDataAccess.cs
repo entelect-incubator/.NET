@@ -36,8 +36,6 @@
             dto.Id = entity.Id;
 
             return dto;
-
-            return this.mapper.Map<StockDTO>(entity);
         }
 
         public async Task<StockDTO> UpdateAsync(StockDTO dto)
