@@ -47,6 +47,7 @@
 
             var count = entities.Count();
             var paged = this.mapper.Map<List<CustomerDTO>>(await entities.ApplyPaging(dto.PagingArgs).ToListAsync());
+
             return ListResult<CustomerDTO>.Success(paged, count);
         }
 
