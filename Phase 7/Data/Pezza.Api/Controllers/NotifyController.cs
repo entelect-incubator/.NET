@@ -30,14 +30,16 @@
         /// Get all Notifys.
         /// </summary>
         [HttpPost]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
+        [ProducesResponseType(typeof(ListResult<NotifyDTO>), 200)]
+        [ProducesResponseType(typeof(ErrorResult), 400)]
         [Route("Search")]
-        public async Task<ActionResult> Search()
+        public async Task<ActionResult> Search(NotifyDTO dto)
         {
-            var result = await this.Mediator.Send(new GetNotifiesQuery());
-
-            return ResponseHelper.ResponseOutcome<Notify>(result, this);
+            var result = await this.Mediator.Send(new GetNotifiesQuery
+            {
+                dto = dto
+            });
+            return ResponseHelper.ResponseOutcome(result, this);
         }
 
         /// <summary>
