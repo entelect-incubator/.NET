@@ -53,7 +53,7 @@ In this Incubator, we will build a solution based on the Single Responsibility P
 
 ## **Setup**
 
-- (Pezza Setup)[]
+- [ ] [Pezza Setup](https://github.com/entelect-incubator/.NET/blob/master/Setup.md)
 
 # **Pezza Digital Solutions**
 
