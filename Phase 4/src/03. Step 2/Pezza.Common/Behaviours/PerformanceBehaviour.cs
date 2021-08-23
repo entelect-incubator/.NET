@@ -9,12 +9,10 @@
     public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     {
         private readonly Stopwatch timer;
-        private readonly ILogger<TRequest> logger;
 
-        public PerformanceBehaviour(ILogger<TRequest> logger)
+        public PerformanceBehaviour()
         {
             this.timer = new Stopwatch();
-            this.logger = logger;
         }
 
         public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
@@ -30,7 +28,7 @@
             if (elapsedMilliseconds > 500)
             {
                 var requestName = typeof(TRequest).Name;
-                this.logger.LogInformation($"CleanArchitecture Long Running Request: {requestName} ({elapsedMilliseconds} milliseconds)", request);
+                Logging.LogInfo($"CleanArchitecture Long Running Request: {requestName} ({elapsedMilliseconds} milliseconds)", request);
             }
 
             return response;
