@@ -27,17 +27,23 @@
         }
 
         /// <summary>
-        /// Get all Notifys.
+        /// Get all Notifies.
         /// </summary>
+        /// <param name="searchModel">The search model.</param>
+        /// <returns>
+        /// A <see cref="Task" /> representing the asynchronous operation.
+        /// </returns>
         [HttpPost]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         [Route("Search")]
-        public async Task<ActionResult> Search()
+        public async Task<ActionResult> Search([FromBody] NotifyDTO searchModel)
         {
-            var result = await this.Mediator.Send(new GetNotifiesQuery());
-
-            return ResponseHelper.ResponseOutcome<Notify>(result, this);
+            var result = await this.Mediator.Send(new GetNotifiesQuery
+            {
+                SearchModel = searchModel ?? new NotifyDTO()
+            });
+            return ResponseHelper.ResponseOutcome<NotifyDTO>(result, this);
         }
 
         /// <summary>
