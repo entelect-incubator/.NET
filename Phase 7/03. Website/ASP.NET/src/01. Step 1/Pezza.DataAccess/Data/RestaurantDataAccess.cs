@@ -21,7 +21,6 @@
         private readonly TimeSpan cacheExpiry = new TimeSpan(12, 0, 0);
         private readonly DatabaseContext databaseContext;
         private readonly IMapper mapper;
-        private int count = 0;
 
         public RestaurantDataAccess(DatabaseContext databaseContext, IMapper mapper, IAppCache cache)
             => (this.databaseContext, this.mapper, this.cache) = (databaseContext, mapper, cache);
@@ -29,71 +28,81 @@
         public async Task<RestaurantDTO> GetAsync(int id)
             => this.mapper.Map<RestaurantDTO>(await this.databaseContext.Restaurants.FirstOrDefaultAsync(x => x.Id == id));
 
-        public async Task<ListResult<RestaurantDTO>> GetAllAsync(RestaurantDTO searchModel)
+        public async Task<ListResult<RestaurantDTO>> GetAllAsync(RestaurantDTO dto)
         {
-            if (searchModel.BustCache)
+            if (dto.BustCache)
             {
-                this.ClearPageCache();
+                this.ClearCache();
             }
 
-            Task<List<RestaurantDTO>> CacheFactory() => this.GetRestaurantCache(searchModel);
-            var data = await this.cache.GetOrAddAsync(this.cacheKey, CacheFactory, this.cacheExpiry);
+            Task<List<RestaurantDTO>> DataDelegate() => this.GetRestaurantData();
+            var data = await this.cache.GetOrAddAsync(this.cacheKey, DataDelegate, this.cacheExpiry);
 
-            return ListResult<RestaurantDTO>.Success(data, this.count);
+            string orderBy = string.IsNullOrEmpty(dto.OrderBy) ? "DateCreated desc" : dto.OrderBy;
+            var orderedData = data.ApplyPaging(dto.PagingArgs).OrderBy(orderBy).ToList();
+
+            return ListResult<RestaurantDTO>.Success(orderedData, orderedData.Count);
         }
 
-        private async Task<List<RestaurantDTO>> GetRestaurantCache(RestaurantDTO searchModel)
+        public async Task<RestaurantDTO> SaveAsync(RestaurantDTO dto)
         {
-            if (string.IsNullOrEmpty(searchModel.OrderBy))
-            {
-                searchModel.OrderBy = "DateCreated desc";
-            }
-
-            var entities = this.databaseContext.Restaurants.Select(x => x)
-                .AsNoTracking()
-                .OrderBy(searchModel.OrderBy);
-
-            this.count = entities.Count();
-            var paged = await entities.ApplyPaging(searchModel.PagingArgs).ToListAsync();
-
-            return this.mapper.Map<List<RestaurantDTO>>(paged);
-        }
-
-        public void ClearPageCache() => this.cache.Remove(this.cacheKey);
-
-        public async Task<RestaurantDTO> SaveAsync(RestaurantDTO entity)
-        {
-            this.databaseContext.Restaurants.Add(this.mapper.Map<Restaurant>(entity));
+            var entity = this.mapper.Map<Restaurant>(dto);
+            this.databaseContext.Restaurants.Add(entity);
             await this.databaseContext.SaveChangesAsync();
-            this.ClearPageCache();
-            return entity;
+            dto.Id = entity.Id;
+            this.ClearCache();
+
+            return dto;
         }
 
-        public async Task<RestaurantDTO> UpdateAsync(RestaurantDTO entity)
+        public async Task<RestaurantDTO> UpdateAsync(RestaurantDTO dto)
         {
-            var findEntity = await this.databaseContext.Restaurants.FirstOrDefaultAsync(x => x.Id == entity.Id);
-            findEntity.Name = !string.IsNullOrEmpty(entity.Name) ? entity.Name : findEntity.Name;
-            findEntity.Description = !string.IsNullOrEmpty(entity.Description) ? entity.Description : findEntity.Description;
-            findEntity.Address = !string.IsNullOrEmpty(entity?.Address?.Address) ? entity?.Address?.Address : findEntity.Address;
-            findEntity.City = !string.IsNullOrEmpty(entity?.Address?.City) ? entity?.Address?.City : findEntity.City;
-            findEntity.Province = !string.IsNullOrEmpty(entity?.Address?.Province) ? entity?.Address?.Province : findEntity.Province;
-            findEntity.PostalCode = !string.IsNullOrEmpty(entity?.Address?.PostalCode) ? entity?.Address?.PostalCode : findEntity.PostalCode;
-            findEntity.PictureUrl = !string.IsNullOrEmpty(entity.PictureUrl) ? entity.PictureUrl : findEntity.PictureUrl;
-            findEntity.IsActive = entity.IsActive ?? findEntity.IsActive;
+            var findEntity = await this.databaseContext.Restaurants.FirstOrDefaultAsync(x => x.Id == dto.Id);
+            if (findEntity == null)
+            {
+                return null;
+            }
+
+            findEntity.Name = !string.IsNullOrEmpty(dto.Name) ? dto.Name : findEntity.Name;
+            findEntity.Description = !string.IsNullOrEmpty(dto.Description) ? dto.Description : findEntity.Description;
+            findEntity.Address = !string.IsNullOrEmpty(dto?.Address?.Address) ? dto?.Address?.Address : findEntity.Address;
+            findEntity.City = !string.IsNullOrEmpty(dto?.Address?.City) ? dto?.Address?.City : findEntity.City;
+            findEntity.Province = !string.IsNullOrEmpty(dto?.Address?.Province) ? dto?.Address?.Province : findEntity.Province;
+            findEntity.PostalCode = !string.IsNullOrEmpty(dto?.Address?.PostalCode) ? dto?.Address?.PostalCode : findEntity.PostalCode;
+            findEntity.PictureUrl = !string.IsNullOrEmpty(dto.PictureUrl) ? dto.PictureUrl : findEntity.PictureUrl;
+            findEntity.IsActive = dto.IsActive ?? findEntity.IsActive;
 
             this.databaseContext.Restaurants.Update(findEntity);
             await this.databaseContext.SaveChangesAsync();
-            this.ClearPageCache();
+            this.ClearCache();
+
             return this.mapper.Map<RestaurantDTO>(findEntity);
         }
 
         public async Task<bool> DeleteAsync(int id)
         {
             var entity = await this.databaseContext.Restaurants.FirstOrDefaultAsync(x => x.Id == id);
+            if (entity == null)
+            {
+                return false;
+            }
+
             this.databaseContext.Restaurants.Remove(entity);
             var result = await this.databaseContext.SaveChangesAsync();
-            this.ClearPageCache();
+            this.ClearCache();
+
             return result == 1;
         }
+
+        private async Task<List<RestaurantDTO>> GetRestaurantData()
+        {
+            var entities = await this.databaseContext.Restaurants.Select(x => x)
+                .AsNoTracking()
+                .ToListAsync();
+
+            return this.mapper.Map<List<RestaurantDTO>>(entities);
+        }
+
+        private void ClearCache() => this.cache.Remove(this.cacheKey);
     }
 }

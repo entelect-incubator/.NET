@@ -6,13 +6,11 @@
 
 ## **Compression**
 
-[Response Compression](https://docs.microsoft.com/en-us/aspnet/core/performance/response-compression?view=aspnetcore-5.0)
+To improve the response time we will be adding compression. There is a variety of other things you can do to improve performance, this is just one of them.
 
-To improve the response time we will be adding compression. There is a variety of other things you can do to improve performance. There are just a few things you can do.
+Open up Startup.cs in Pezza.API.
 
-Open up Startup.cs in Pezza.API
-
-public void ConfigureServices(IServiceCollection services)
+Add the following to the ConfigureServices method.
 
 ```cs
 services.AddResponseCompression(options =>
@@ -23,11 +21,15 @@ services.AddResponseCompression(options =>
 services.AddResponseCompression();
 ```
 
-public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+Add the following to the Configure method.
 
 ```cs
 app.UseResponseCompression();
 ```
+
+Brotli compression is used by default if it is supported by the client. If Brotli is not supported, Gzip can be used if the client supports it.
+
+You can read more on response compression [here](https://docs.microsoft.com/en-us/aspnet/core/performance/response-compression?view=aspnetcore-5.0).
 
 ## **Move to Phase 6**
 

@@ -21,7 +21,6 @@
         private readonly TimeSpan cacheExpiry = new TimeSpan(12, 0, 0);
         private readonly DatabaseContext databaseContext;
         private readonly IMapper mapper;
-        private int count = 0;
 
         public RestaurantDataAccess(DatabaseContext databaseContext, IMapper mapper, IAppCache cache)
             => (this.databaseContext, this.mapper, this.cache) = (databaseContext, mapper, cache);
@@ -33,19 +32,17 @@
         {
             if (dto.BustCache)
             {
-                this.ClearPageCache();
+                this.ClearCache();
             }
 
-            var entities = this.databaseContext.Restaurants.Select(x => x)
-                .AsNoTracking();
+            Task<List<RestaurantDTO>> DataDelegate() => this.GetRestaurantData();
+            var data = await this.cache.GetOrAddAsync(this.cacheKey, DataDelegate, this.cacheExpiry);
 
-            Task<List<RestaurantDTO>> CacheFactory() => this.GetRestaurantCache(dto);
-            var data = await this.cache.GetOrAddAsync(this.cacheKey, CacheFactory, this.cacheExpiry);
+            string orderBy = string.IsNullOrEmpty(dto.OrderBy) ? "DateCreated desc" : dto.OrderBy;
+            var orderedData = data.ApplyPaging(dto.PagingArgs).OrderBy(orderBy).ToList();
 
-            return ListResult<RestaurantDTO>.Success(data, data.Count);
+            return ListResult<RestaurantDTO>.Success(orderedData, orderedData.Count);
         }
-
-        public void ClearPageCache() => this.cache.Remove(this.cacheKey);
 
         public async Task<RestaurantDTO> SaveAsync(RestaurantDTO dto)
         {
@@ -53,6 +50,7 @@
             this.databaseContext.Restaurants.Add(entity);
             await this.databaseContext.SaveChangesAsync();
             dto.Id = entity.Id;
+            this.ClearCache();
 
             return dto;
         }
@@ -76,6 +74,7 @@
 
             this.databaseContext.Restaurants.Update(findEntity);
             await this.databaseContext.SaveChangesAsync();
+            this.ClearCache();
 
             return this.mapper.Map<RestaurantDTO>(findEntity);
         }
@@ -90,25 +89,20 @@
 
             this.databaseContext.Restaurants.Remove(entity);
             var result = await this.databaseContext.SaveChangesAsync();
+            this.ClearCache();
 
             return result == 1;
         }
 
-        private async Task<List<RestaurantDTO>> GetRestaurantCache(RestaurantDTO searchModel)
+        private async Task<List<RestaurantDTO>> GetRestaurantData()
         {
-            if (string.IsNullOrEmpty(searchModel.OrderBy))
-            {
-                searchModel.OrderBy = "DateCreated desc";
-            }
-
-            var entities = this.databaseContext.Restaurants.Select(x => x)
+            var entities = await this.databaseContext.Restaurants.Select(x => x)
                 .AsNoTracking()
-                .OrderBy(searchModel.OrderBy);
+                .ToListAsync();
 
-            this.count = entities.Count();
-            var paged = await entities.ApplyPaging(searchModel.PagingArgs).ToListAsync();
-
-            return this.mapper.Map<List<RestaurantDTO>>(paged);
+            return this.mapper.Map<List<RestaurantDTO>>(entities);
         }
+
+        private void ClearCache() => this.cache.Remove(this.cacheKey);
     }
 }

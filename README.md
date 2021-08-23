@@ -105,8 +105,7 @@ Overview
   
 ### **Phase 5 - Performance Improvement**
 
-For improved performance we relaised that certain data doesn't change often and can be cached. We can also add a few small changes to improve performance.
-
+To improve performance we introduce caching and compression. Caching is useful in scenarios where we retrieve data that does not change very often. Response compression usually increases the responsiveness of an app in cases where the client supports it.
 Overview
 - [ ] [Performance and Memory Management](https://web.microsoftstream.com/video/64098be8-6979-4c10-85f4-efa91d0cb1f1?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
 
