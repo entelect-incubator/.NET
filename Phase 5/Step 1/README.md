@@ -4,9 +4,9 @@
 
 <br/><br/>
 
-Caching
+## **Caching**
 
-## **Install Lazy Cache**
+### **Install Lazy Cache**
 
 Install Nuget Package LazyCache.AspNetCore on Core and DataAccess Project
 
