@@ -2,11 +2,13 @@
 
 # &nbsp;**Pezza - Phase 4 - Step 1** [![.NET Core - Phase 4 - Step 1](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase4-step1.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase4-step1.yml)
 
-<br/><br/>
+<br/><br/><br/>
 
-Standards
+## Coding Standards
 
-## **Install StyleCop**
+In this section we introduce StyleCop which enforces configurable rules on developer coding styles. This creates consistency in projects for increased productivity. It is especially valuable when multiple developers are involved.
+
+### **Install StyleCop**
 
 [Overview](https://github.com/StyleCop/StyleCop)
 
