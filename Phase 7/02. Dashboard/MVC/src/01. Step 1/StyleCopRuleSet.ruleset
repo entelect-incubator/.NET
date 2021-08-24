@@ -99,7 +99,7 @@
     <Rule Id="SA1308" Action="Error" />
     <Rule Id="SA1309" Action="Error" />
     <Rule Id="SA1310" Action="Error" />
-    <Rule Id="SA1311" Action="Error" />
+    <Rule Id="SA1311" Action="None" />
     <Rule Id="SA1312" Action="Error" />
     <Rule Id="SA1313" Action="Error" />
     <Rule Id="SA1314" Action="Error" />

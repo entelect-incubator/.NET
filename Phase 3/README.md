@@ -12,7 +12,7 @@ FluentValidation is a server-side framework and does not provide any client-side
 
 ## **Setup**
 
-- [ ] Use the Final Solution from Phase 2 to get started or use Phase3\src\01. StartSolution
+- [ ] Use the Start Solution from Phase 3 to get started.
 
 ## **Steps**
 

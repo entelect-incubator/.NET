@@ -12,11 +12,13 @@ Install FluentEmail.Core, HtmlAgilityPack and FluentEmail.SendGrid on Pezza.Core
 
 ![FluentEmail](Assets/2021-01-17-22-57-42.png)
 
+You will need to set up a SendGrid account to execute the code in this phase.
+
+- [ ] [Create a SendGrid account](https://signup.sendgrid.com/)
+- [ ] [Read more about SendGrid API Keys](https://sendgrid.com/docs/ui/account-and-settings/api-keys/)
+- [ ] [Create API Key](https://app.sendgrid.com/settings/api_keys)
+
 In Pezza.Core create a new folder Email. Inside Email create a new EmailService.cs.
-
-- [ ] Create a SendGrid account [Here](https://signup.sendgrid.com/)
-- [ ] Create SendGrid API Key [How to](https://sendgrid.com/docs/ui/account-and-settings/api-keys/) | [Get API Key](https://app.sendgrid.com/settings/api_keys)
-
 
 ```cs
 namespace Pezza.Core.Email
@@ -57,20 +59,21 @@ namespace Pezza.Core.Email
     }
 }
 ```
+We will use an HTML template file. This template file can be read in code and the tags inside the template will be replaced with actual content before it gets sent to the customer.
 
-We will use an HTML template that will be read, tag inside the template will be replace and then send to the customer.
+Create OrderCompleted.html inside Pezza.Core\Email\Templates.
 
-Create a new Folder in Email called Templates - Side note - of you have a lot of Templates, better to move to Pezza.Common.
+Copy the HTML from Phase 6\Data\Templates\OrderCompleted.html into your newly created OrderCompleted.html.
 
-Create OrderCompleted.html. The HTML might look a bit strange to you, it's because it is made for email client support.
+![Email Service](Assets/2021-01-17-23-03-34.png)
 
-Look in Phase 6/Data/Templates/OrderCompleted.html and Copy it into Email/Templates.
+The HTML might look a bit strange to you. It is because it is made for email client support.
 
-Right-click on OrderCompleted.html and Choose Copy always for Copy to Output.
+Right-click on OrderCompleted.html and choose Copy always for Copy to Output.
 
 ![](Assets/2021-01-19-07-54-33.png)
 
-![Email Service](Assets/2021-01-17-23-03-34.png)
+In the next step we will look at how to call the email service with the use of MediatR events.
 
 ## **STEP 2 - Event**
 

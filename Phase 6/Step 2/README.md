@@ -8,7 +8,7 @@
 
 [Domain Event Pattern](https://microservices.io/patterns/data/domain-event.html)
 
-Mediatr allows you to publish domain events after a COmmand has happend. This applies the SOLID principle in seprating Domain Events from Commands. For example after someone has viewed a Customer record you might want to log an audit of that person. Or as the example we will be looking at is, sending out a notification to the customer that there pizza is ready for collection. 
+Mediatr allows you to publish domain events when a command is handled. This applies the SOLID principle in seperating domain events from commands. In this example, we will be sending out an email to the customer that there pizza is ready for collection. We achieve this by creating an event that we publish with MediatR when the command for updating an order to completed is handled.
 
 [Read More](https://ardalis.com/immediate-domain-event-salvation-with-mediatr/)
 
@@ -90,16 +90,16 @@ namespace Pezza.Core.Order.Commands
 
     public class UpdateOrderCommandHandler : IRequestHandler<UpdateOrderCommand, Result<OrderDTO>>
     {
-        private readonly IDataAccess<OrderDTO> dto;
+        private readonly IDataAccess<OrderDTO> dataAccess;
 
         private readonly IMediator mediator;
 
-        public UpdateOrderCommandHandler(IDataAccess<OrderDTO> dto, IMediator mediator)
-            => (this.dto, this.mediator) = (dto, mediator);
+        public UpdateOrderCommandHandler(IDataAccess<OrderDTO> dataAccess, IMediator mediator)
+            => (this.dataAccess, this.mediator) = (dataAccess, mediator);
 
         public async Task<Result<OrderDTO>> Handle(UpdateOrderCommand request, CancellationToken cancellationToken)
         {
-            var outcome = await this.dto.UpdateAsync(request.Data);
+            var outcome = await this.dataAccess.UpdateAsync(request.Data);
             if (request.Data.Completed.HasValue)
             {
                 await this.mediator.Publish(new OrderCompletedEvent { CompletedOrder = outcome }, cancellationToken);

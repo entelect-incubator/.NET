@@ -12,7 +12,7 @@ In this Incubator, we try to follow the **Single Responsibility Principle** as f
 
 ## **Setup**
 
-- [ ] Use the Final Solution from Phase 1 to get started
+- [ ] Use the Start Solution from Phase 2 to get started
 
 ## **Steps**
 

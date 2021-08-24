@@ -96,7 +96,7 @@ namespace Pezza.Common.Behaviours
 }
 ```
 
-With Serilog you can different hooks into i.e. Elastic etc.
+Serilog provides sinks for writing log events to storage in various formats. Read more on [provided sinks](https://github.com/serilog/serilog/wiki/Provided-Sinks) or move on to the next phase.
 
 
 

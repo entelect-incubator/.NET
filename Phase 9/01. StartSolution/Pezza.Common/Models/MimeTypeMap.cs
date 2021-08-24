@@ -6,6 +6,8 @@
 
     public static class MimeTypeMap
     {
+        private static readonly Lazy<IDictionary<string, string>> mappings = new Lazy<IDictionary<string, string>>(BuildMappings);
+
         public static string GetMimeType(string extension)
         {
             if (extension == null)
@@ -18,7 +20,7 @@
                 extension = "." + extension;
             }
 
-            return Mappings.Value.TryGetValue(extension, out var mime) ? mime : "application/octet-stream";
+            return mappings.Value.TryGetValue(extension, out var mime) ? mime : "application/octet-stream";
         }
 
         public static string GetExtensionFromMimeType(this string mimeType)
@@ -33,15 +35,13 @@
                 throw new ArgumentException("Requested mime type is not valid: " + mimeType);
             }
 
-            if (Mappings.Value.TryGetValue(mimeType, out var extension))
+            if (mappings.Value.TryGetValue(mimeType, out var extension))
             {
                 return extension;
             }
 
             throw new ArgumentException("Requested mime type is not registered: " + mimeType);
         }
-
-        private static readonly Lazy<IDictionary<string, string>> Mappings = new Lazy<IDictionary<string, string>>(BuildMappings);
 
         private static IDictionary<string, string> BuildMappings()
         {
