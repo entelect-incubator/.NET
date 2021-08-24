@@ -19,11 +19,11 @@
     {
         private readonly IDataAccess<Common.Entities.Customer> DataAccess;
 
-        public UpdateCustomerCommandHandler(IDataAccess<Common.Entities.Customer> DataAccess) => this.DataAccess = DataAccess;
+        public UpdateCustomerCommandHandler(IDataAccess<Common.Entities.Customer> DataAccess) => this.dataAccess = dataAccess;
 
         public async Task<Result<CustomerDTO>> Handle(UpdateCustomerCommand request, CancellationToken cancellationToken)
         {
-            var findEntity = await this.DataAccess.GetAsync(request.Id);
+            var findEntity = await this.dataAccess.GetAsync(request.Id);
             findEntity.Name = !string.IsNullOrEmpty(request.Data?.Name) ? request.Data?.Name : findEntity.Name;
             findEntity.Address = !string.IsNullOrEmpty(request.Data?.Address?.Address) ? request.Data?.Address?.Address : findEntity.Address;
             findEntity.City = !string.IsNullOrEmpty(request.Data?.Address?.City) ? request.Data?.Address?.City : findEntity.City;
@@ -31,7 +31,7 @@
             findEntity.PostalCode = !string.IsNullOrEmpty(request.Data?.Address?.PostalCode) ? request.Data?.Address?.PostalCode : findEntity.PostalCode;
             findEntity.Phone = !string.IsNullOrEmpty(request.Data?.Phone) ? request.Data?.Phone : findEntity.Phone;
             findEntity.ContactPerson = !string.IsNullOrEmpty(request.Data?.ContactPerson) ? request.Data?.ContactPerson : findEntity.ContactPerson;
-            var outcome = await this.DataAccess.UpdateAsync(findEntity);
+            var outcome = await this.dataAccess.UpdateAsync(findEntity);
 
             return (outcome != null) ? Result<CustomerDTO>.Success(outcome.Map()) : Result<CustomerDTO>.Failure("Error updating a Customer");
         }

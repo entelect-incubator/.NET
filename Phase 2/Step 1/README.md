@@ -512,14 +512,14 @@ namespace Pezza.Core.Customer.Commands
 
     public class CreateCustomerCommandHandler : IRequestHandler<CreateCustomerCommand, Result<CustomerDTO>>
     {
-        private readonly IDataAccess<CustomerDTO> DataAccess;
+        private readonly IDataAccess<CustomerDTO> dataAccess;
 
-        public CreateCustomerCommandHandler(IDataAccess<CustomerDTO> DataAccess)
-            => this.DataAccess = DataAccess;
+        public CreateCustomerCommandHandler(IDataAccess<CustomerDTO> dataAccess)
+            => this.dataAccess = dataAccess;
 
         public async Task<Result<CustomerDTO>> Handle(CreateCustomerCommand request, CancellationToken cancellationToken)
         {
-            var outcome = await this.DataAccess.SaveAsync(request.Data);
+            var outcome = await this.dataAccess.SaveAsync(request.Data);
             return (outcome != null) ? Result<CustomerDTO>.Success(outcome) : Result<CustomerDTO>.Failure("Error creating a Customer");
         }
     }
@@ -545,14 +545,14 @@ namespace Pezza.Core.Customer.Commands
 
     public class DeleteCustomerCommandHandler : IRequestHandler<DeleteCustomerCommand, Result>
     {
-        private readonly IDataAccess<CustomerDTO> DataAccess;
+        private readonly IDataAccess<CustomerDTO> dataAccess;
 
-        public DeleteCustomerCommandHandler(IDataAccess<CustomerDTO> DataAccess)
-            => this.DataAccess = DataAccess;
+        public DeleteCustomerCommandHandler(IDataAccess<CustomerDTO> dataAccess)
+            => this.dataAccess = dataAccess;
 
         public async Task<Result> Handle(DeleteCustomerCommand request, CancellationToken cancellationToken)
         {
-            var outcome = await this.DataAccess.DeleteAsync(request.Id);
+            var outcome = await this.dataAccess.DeleteAsync(request.Id);
 
             return (outcome) ? Result.Success() : Result.Failure("Error deleting a Customer");
         }
@@ -579,13 +579,13 @@ namespace Pezza.Core.Customer.Commands
 
     public class UpdateCustomerCommandHandler : IRequestHandler<UpdateCustomerCommand, Result<CustomerDTO>>
     {
-        private readonly IDataAccess<CustomerDTO> DataAccess;
+        private readonly IDataAccess<CustomerDTO> dataAccess;
 
-        public UpdateCustomerCommandHandler(IDataAccess<CustomerDTO> DataAccess) => this.dataAccess = dataAccess;
+        public UpdateCustomerCommandHandler(IDataAccess<CustomerDTO> dataAccess) => this.dataAccess = dataAccess;
 
         public async Task<Result<CustomerDTO>> Handle(UpdateCustomerCommand request, CancellationToken cancellationToken)
         {            
-            var outcome = await this.DataAccess.UpdateAsync(request.Data);
+            var outcome = await this.dataAccess.UpdateAsync(request.Data);
             return (outcome != null) ? Result<CustomerDTO>.Success(outcome) : Result<CustomerDTO>.Failure("Error updating a Customer");
         }
     }
@@ -619,13 +619,13 @@ namespace Pezza.Core.Customer.Queries
 
     public class GetCustomerQueryHandler : IRequestHandler<GetCustomerQuery, Result<CustomerDTO>>
     {
-        private readonly IDataAccess<CustomerDTO> DataAccess;
+        private readonly IDataAccess<CustomerDTO> dataAccess;
 
-        public GetCustomerQueryHandler(IDataAccess<CustomerDTO> DataAccess) => this.DataAccess = DataAccess;
+        public GetCustomerQueryHandler(IDataAccess<CustomerDTO> dataAccess) => this.dataAccess = dataAccess;
 
         public async Task<Result<CustomerDTO>> Handle(GetCustomerQuery request, CancellationToken cancellationToken)
         {
-            var search = await this.DataAccess.GetAsync(request.Id);
+            var search = await this.dataAccess.GetAsync(request.Id);
             return Result<CustomerDTO>.Success(search);
         }
     }
@@ -650,13 +650,13 @@ namespace Pezza.Core.Customer.Queries
 
     public class GetCustomersQueryHandler : IRequestHandler<GetCustomersQuery, ListResult<CustomerDTO>>
     {
-        private readonly IDataAccess<CustomerDTO> DataAccess;
+        private readonly IDataAccess<CustomerDTO> dataAccess;
 
-        public GetCustomersQueryHandler(IDataAccess<CustomerDTO> DataAccess) => this.DataAccess = DataAccess;
+        public GetCustomersQueryHandler(IDataAccess<CustomerDTO> dataAccess) => this.dataAccess = dataAccess;
 
         public async Task<ListResult<CustomerDTO>> Handle(GetCustomersQuery request, CancellationToken cancellationToken)
         {
-            var search = await this.DataAccess.GetAllAsync();
+            var search = await this.dataAccess.GetAllAsync();
 
             return ListResult<CustomerDTO>.Success(search, search.Count);
         }

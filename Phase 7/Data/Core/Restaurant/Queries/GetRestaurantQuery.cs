@@ -15,11 +15,11 @@
     {
         private readonly IDataAccess<Common.Entities.Restaurant> DataAccess;
 
-        public GetRestaurantQueryHandler(IDataAccess<Common.Entities.Restaurant> DataAccess) => this.DataAccess = DataAccess;
+        public GetRestaurantQueryHandler(IDataAccess<Common.Entities.Restaurant> DataAccess) => this.dataAccess = dataAccess;
 
         public async Task<Result<Common.Entities.Restaurant>> Handle(GetRestaurantQuery request, CancellationToken cancellationToken)
         {
-            var search = await this.DataAccess.GetAsync(request.Id);
+            var search = await this.dataAccess.GetAsync(request.Id);
 
             return Result<Common.Entities.Restaurant>.Success(search);
         }

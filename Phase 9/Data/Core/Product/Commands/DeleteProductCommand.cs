@@ -16,11 +16,11 @@
         private readonly IDataAccess<Common.Entities.Product> DataAccess;
 
         public DeleteProductCommandHandler(IDataAccess<Common.Entities.Product> DataAccess)
-            => this.DataAccess = DataAccess;
+            => this.dataAccess = dataAccess;
 
         public async Task<Result> Handle(DeleteProductCommand request, CancellationToken cancellationToken)
         {
-            var outcome = await this.DataAccess.DeleteAsync(request.Id);
+            var outcome = await this.dataAccess.DeleteAsync(request.Id);
 
             return (outcome) ? Result.Success() : Result.Failure("Error deleting a Product");
         }

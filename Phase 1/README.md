@@ -593,14 +593,14 @@ namespace Pezza.Core
 
         public async Task<StockDTO> GetAsync(int id)
         {
-            var search = await this.DataAccess.GetAsync(id);
+            var search = await this.dataAccess.GetAsync(id);
 
             return this.mapper.Map<StockDTO>(search);
         }
 
         public async Task<IEnumerable<StockDTO>> GetAllAsync()
         {
-            var search = await this.DataAccess.GetAllAsync();
+            var search = await this.dataAccess.GetAllAsync();
 
             return this.mapper.Map<List<StockDTO>>(search);
         }
@@ -608,7 +608,7 @@ namespace Pezza.Core
         public async Task<StockDTO> SaveAsync(Stock model)
         {
 
-            var outcome = await this.DataAccess.SaveAsync(model);
+            var outcome = await this.dataAccess.SaveAsync(model);
 
             return this.mapper.Map<StockDTO>(outcome);
         }
@@ -616,7 +616,7 @@ namespace Pezza.Core
         public async Task<StockDTO> UpdateAsync(StockDTO model)
         {
 
-            var entity = await this.DataAccess.GetAsync(model.Id);            
+            var entity = await this.dataAccess.GetAsync(model.Id);            
 
             entity.Name = !string.IsNullOrEmpty(model.Name) ? model.Name : entity.Name;
             entity.UnitOfMeasure = !string.IsNullOrEmpty(model.UnitOfMeasure) ? model.UnitOfMeasure : entity.UnitOfMeasure;
@@ -626,7 +626,7 @@ namespace Pezza.Core
             entity.ExpiryDate = (model.ExpiryDate.HasValue) ? model.ExpiryDate : entity.ExpiryDate;
             entity.Comment = (!string.IsNullOrEmpty(model.Comment)) ? model.Comment : entity.Comment;
 
-            var outcome = await this.DataAccess.UpdateAsync(entity);
+            var outcome = await this.dataAccess.UpdateAsync(entity);
             return this.mapper.Map<StockDTO>(outcome);
         }
 

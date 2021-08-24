@@ -369,13 +369,13 @@ namespace Pezza.Core.Customer.Queries
 
     public class GetCustomersQueryHandler : IRequestHandler<GetCustomersQuery, ListResult<CustomerDTO>>
     {
-        private readonly IDataAccess<CustomerDTO> DataAccess;
+        private readonly IDataAccess<CustomerDTO> dataAccess;
 
-        public GetCustomersQueryHandler(IDataAccess<CustomerDTO> DataAccess) => this.DataAccess = DataAccess;
+        public GetCustomersQueryHandler(IDataAccess<CustomerDTO> dataAccess) => this.dataAccess = dataAccess;
 
         public async Task<ListResult<CustomerDTO>> Handle(GetCustomersQuery request, CancellationToken cancellationToken)
         {
-            var search = await this.DataAccess.GetAllAsync(request.dto);
+            var search = await this.dataAccess.GetAllAsync(request.dto);
 
             return search;
         }

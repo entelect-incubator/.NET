@@ -18,11 +18,11 @@
     {
         private readonly IDataAccess<Common.Entities.Restaurant> DataAccess;
 
-        public UpdateRestaurantCommandHandler(IDataAccess<Common.Entities.Restaurant> DataAccess) => this.DataAccess = DataAccess;
+        public UpdateRestaurantCommandHandler(IDataAccess<Common.Entities.Restaurant> DataAccess) => this.dataAccess = dataAccess;
 
         public async Task<Result<Common.Entities.Restaurant>> Handle(UpdateRestaurantCommand request, CancellationToken cancellationToken)
         {
-            var findEntity = await this.DataAccess.GetAsync(request.Id);
+            var findEntity = await this.dataAccess.GetAsync(request.Id);
             findEntity.Name = !string.IsNullOrEmpty(request.Data?.Name) ? request.Data?.Name : findEntity.Name;
             findEntity.Description = !string.IsNullOrEmpty(request.Data?.Description) ? request.Data?.Description : findEntity.Description;
             findEntity.Address = !string.IsNullOrEmpty(request.Data?.Address?.Address) ? request.Data?.Address?.Address : findEntity.Address;
@@ -31,7 +31,7 @@
             findEntity.PostalCode = !string.IsNullOrEmpty(request.Data?.Address?.PostalCode) ? request.Data?.Address?.PostalCode : findEntity.PostalCode;
             findEntity.PictureUrl = !string.IsNullOrEmpty(request.Data?.PictureUrl) ? request.Data?.PictureUrl : findEntity.PictureUrl;
             findEntity.IsActive = request.Data.IsActive ?? findEntity.IsActive;
-            var outcome = await this.DataAccess.UpdateAsync(findEntity);
+            var outcome = await this.dataAccess.UpdateAsync(findEntity);
 
             return (outcome != null) ? Result<Common.Entities.Restaurant>.Success(outcome) : Result<Common.Entities.Restaurant>.Failure("Error updating a Restaurant");
         }

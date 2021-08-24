@@ -18,11 +18,11 @@
     {
         private readonly IDataAccess<Restaurant> DataAccess;
 
-        public CreateRestaurantCommandHandler(IDataAccess<Restaurant> DataAccess) => this.DataAccess = DataAccess;
+        public CreateRestaurantCommandHandler(IDataAccess<Restaurant> DataAccess) => this.dataAccess = dataAccess;
 
         public async Task<Result<Restaurant>> Handle(CreateRestaurantCommand request, CancellationToken cancellationToken)
         {
-            var outcome = await this.DataAccess.SaveAsync(request.Data.Map());
+            var outcome = await this.dataAccess.SaveAsync(request.Data.Map());
 
             return (outcome != null) ? Result<Restaurant>.Success(outcome) : Result<Restaurant>.Failure("Error adding a Restaurant");
         }

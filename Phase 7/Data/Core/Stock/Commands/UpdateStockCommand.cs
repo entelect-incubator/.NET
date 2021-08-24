@@ -18,11 +18,11 @@
     {
         private readonly IDataAccess<Common.Entities.Stock> DataAccess;
 
-        public UpdateStockCommandHandler(IDataAccess<Common.Entities.Stock> DataAccess) => this.DataAccess = DataAccess;
+        public UpdateStockCommandHandler(IDataAccess<Common.Entities.Stock> DataAccess) => this.dataAccess = dataAccess;
 
         public async Task<Result<Common.Entities.Stock>> Handle(UpdateStockCommand request, CancellationToken cancellationToken)
         {
-            var findEntity = await this.DataAccess.GetAsync(request.Id);
+            var findEntity = await this.dataAccess.GetAsync(request.Id);
 
             findEntity.Name = !string.IsNullOrEmpty(request.Data?.Name) ? request.Data?.Name : findEntity.Name;
             findEntity.UnitOfMeasure = !string.IsNullOrEmpty(request.Data?.UnitOfMeasure) ? request.Data?.UnitOfMeasure : findEntity.UnitOfMeasure;
@@ -30,7 +30,7 @@
             findEntity.Quantity = request.Data.Quantity ?? findEntity.Quantity;
             findEntity.ExpiryDate = request.Data.ExpiryDate ?? findEntity.ExpiryDate;
             findEntity.Comment = request.Data?.Comment;
-            var outcome = await this.DataAccess.UpdateAsync(findEntity);
+            var outcome = await this.dataAccess.UpdateAsync(findEntity);
 
             return (outcome != null) ? Result<Common.Entities.Stock>.Success(outcome) : Result<Common.Entities.Stock>.Failure("Error updating a Stock");
         }

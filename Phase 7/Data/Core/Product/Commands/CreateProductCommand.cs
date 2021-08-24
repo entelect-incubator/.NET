@@ -18,11 +18,11 @@
     {
         private readonly IDataAccess<Product> DataAccess;
 
-        public CreateProductCommandHandler(IDataAccess<Product> DataAccess) => this.DataAccess = DataAccess;
+        public CreateProductCommandHandler(IDataAccess<Product> DataAccess) => this.dataAccess = dataAccess;
 
         public async Task<Result<Product>> Handle(CreateProductCommand request, CancellationToken cancellationToken)
         {
-            var outcome = await this.DataAccess.SaveAsync(request.Data.Map());
+            var outcome = await this.dataAccess.SaveAsync(request.Data.Map());
 
             return (outcome != null) ? Result<Product>.Success(outcome) : Result<Product>.Failure("Error adding a Product");
         }

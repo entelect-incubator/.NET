@@ -6,7 +6,7 @@
 
 ## **Events**
 
-Mediatr allows you to publish domain events when a command is handled. This applies the SOLID principle in seperating domain events from commands. In this example, we will be sending out an email to the customer that there pizza is ready for collection. We achieve this by creating an event that we publish with MediatR when the command for updating an order to completed is handled.
+Mediatr allows you to publish domain events when a command is handled. This applies the SOLID principle in seperating domain events from commands. In this example, we will be sending out an email to the customer to notigy them that their pizza is ready for collection. We achieve this by creating an event that we publish with MediatR when the command for updating an order to completed is handled.
 
 The following material is valuable in getting a better understanding of these patterns:
 - [Domain Event Pattern](https://microservices.io/patterns/data/domain-event.html)

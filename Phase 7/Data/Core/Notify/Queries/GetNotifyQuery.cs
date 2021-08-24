@@ -15,11 +15,11 @@
     {
         private readonly IDataAccess<Common.Entities.Notify> DataAccess;
 
-        public GetNotifyQueryHandler(IDataAccess<Common.Entities.Notify> DataAccess) => this.DataAccess = DataAccess;
+        public GetNotifyQueryHandler(IDataAccess<Common.Entities.Notify> DataAccess) => this.dataAccess = dataAccess;
 
         public async Task<Result<Common.Entities.Notify>> Handle(GetNotifyQuery request, CancellationToken cancellationToken)
         {
-            var search = await this.DataAccess.GetAsync(request.Id);
+            var search = await this.dataAccess.GetAsync(request.Id);
 
             return Result<Common.Entities.Notify>.Success(search);
         }

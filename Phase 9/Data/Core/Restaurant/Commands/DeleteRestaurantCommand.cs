@@ -16,11 +16,11 @@
         private readonly IDataAccess<Common.Entities.Restaurant> DataAccess;
 
         public DeleteRestaurantCommandHandler(IDataAccess<Common.Entities.Restaurant> DataAccess)
-            => this.DataAccess = DataAccess;
+            => this.dataAccess = dataAccess;
 
         public async Task<Result> Handle(DeleteRestaurantCommand request, CancellationToken cancellationToken)
         {
-            var outcome = await this.DataAccess.DeleteAsync(request.Id);
+            var outcome = await this.dataAccess.DeleteAsync(request.Id);
 
             return (outcome) ? Result.Success() : Result.Failure("Error deleting a Restaurant");
         }

@@ -16,11 +16,11 @@
     {
         private readonly IDataAccess<Common.Entities.Order> DataAccess;
 
-        public GetOrdersQueryHandler(IDataAccess<Common.Entities.Order> DataAccess) => this.DataAccess = DataAccess;
+        public GetOrdersQueryHandler(IDataAccess<Common.Entities.Order> DataAccess) => this.dataAccess = dataAccess;
 
         public async Task<ListResult<OrderDTO>> Handle(GetOrdersQuery request, CancellationToken cancellationToken)
         {
-            var search = await this.DataAccess.GetAllAsync();
+            var search = await this.dataAccess.GetAllAsync();
 
             return ListResult<OrderDTO>.Success(search.Map());
         }

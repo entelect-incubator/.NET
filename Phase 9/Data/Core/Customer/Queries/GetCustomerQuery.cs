@@ -17,11 +17,11 @@
     {
         private readonly IDataAccess<Common.Entities.Customer> DataAccess;
 
-        public GetCustomerQueryHandler(IDataAccess<Common.Entities.Customer> DataAccess) => this.DataAccess = DataAccess;
+        public GetCustomerQueryHandler(IDataAccess<Common.Entities.Customer> DataAccess) => this.dataAccess = dataAccess;
 
         public async Task<Result<CustomerDTO>> Handle(GetCustomerQuery request, CancellationToken cancellationToken)
         {
-            var search = await this.DataAccess.GetAsync(request.Id);
+            var search = await this.dataAccess.GetAsync(request.Id);
 
             return Result<CustomerDTO>.Success(search.Map());
         }

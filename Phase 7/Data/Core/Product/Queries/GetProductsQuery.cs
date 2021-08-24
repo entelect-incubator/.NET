@@ -14,11 +14,11 @@
     {
         private readonly IDataAccess<Common.Entities.Product> DataAccess;
 
-        public GetProductsQueryHandler(IDataAccess<Common.Entities.Product> DataAccess) => this.DataAccess = DataAccess;
+        public GetProductsQueryHandler(IDataAccess<Common.Entities.Product> DataAccess) => this.dataAccess = dataAccess;
 
         public async Task<ListResult<Common.Entities.Product>> Handle(GetProductsQuery request, CancellationToken cancellationToken)
         {
-            var search = await this.DataAccess.GetAllAsync();
+            var search = await this.dataAccess.GetAllAsync();
 
             return ListResult<Common.Entities.Product>.Success(search);
         }

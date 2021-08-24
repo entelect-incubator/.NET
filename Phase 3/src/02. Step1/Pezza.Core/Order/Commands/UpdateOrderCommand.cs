@@ -14,13 +14,13 @@
 
     public class UpdateOrderCommandHandler : IRequestHandler<UpdateOrderCommand, Result<OrderDTO>>
     {
-        private readonly IDataAccess<OrderDTO> DataAccess;
+        private readonly IDataAccess<OrderDTO> dataAccess;
 
-        public UpdateOrderCommandHandler(IDataAccess<OrderDTO> DataAccess) => this.DataAccess = DataAccess;
+        public UpdateOrderCommandHandler(IDataAccess<OrderDTO> dataAccess) => this.dataAccess = dataAccess;
 
         public async Task<Result<OrderDTO>> Handle(UpdateOrderCommand request, CancellationToken cancellationToken)
         {            
-            var outcome = await this.DataAccess.UpdateAsync(request.Data);
+            var outcome = await this.dataAccess.UpdateAsync(request.Data);
             return (outcome != null) ? Result<OrderDTO>.Success(outcome) : Result<OrderDTO>.Failure("Error updating a Order");
         }
     }
