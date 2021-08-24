@@ -6,13 +6,13 @@
 
 ### **Events**
 
-By using Mediatr you have the capability of firing off events between different commands. This prevents duplicate code from being created and adhere to SOLID principles.
+Mediatr provides the capability of firing off events between different commands. This prevents duplicate code from being created and adheres to SOLID principles.
 
 [Mediatr Events](https://ardalis.com/immediate-domain-event-salvation-with-mediatr/)
 
 ## **Setup**
 
-- [ ] Use the Final Solution from Phase 5 to get started
+- [ ] Use the Start Solution from Phase 6 to get started
 
 ## **Steps**
 

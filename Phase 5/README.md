@@ -8,7 +8,7 @@
 
 ## **Setup**
 
-- [ ] Use the Step 2 Solution from Phase 4 to get started
+- [ ] Use the Start Solution from Phase 5 to get started
 
 ## **Overview**
 
