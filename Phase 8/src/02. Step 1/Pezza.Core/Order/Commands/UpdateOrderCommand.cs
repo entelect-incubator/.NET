@@ -15,16 +15,16 @@
 
     public class UpdateOrderCommandHandler : IRequestHandler<UpdateOrderCommand, Result<OrderDTO>>
     {
-        private readonly IDataAccess<OrderDTO> dto;
+        private readonly IDataAccess<OrderDTO> dataAccess;
 
         private readonly IMediator mediator;
 
-        public UpdateOrderCommandHandler(IDataAccess<OrderDTO> dto, IMediator mediator)
-            => (this.dto, this.mediator) = (dto, mediator);
+        public UpdateOrderCommandHandler(IDataAccess<OrderDTO> dataAccess, IMediator mediator)
+            => (this.dataAccess, this.mediator) = (dataAccess, mediator);
 
         public async Task<Result<OrderDTO>> Handle(UpdateOrderCommand request, CancellationToken cancellationToken)
         {
-            var outcome = await this.dto.UpdateAsync(request.Data);
+            var outcome = await this.dataAccess.UpdateAsync(request.Data);
             if (request.Data.Completed.HasValue)
             {
                 await this.mediator.Publish(new OrderCompletedEvent { CompletedOrder = outcome }, cancellationToken);

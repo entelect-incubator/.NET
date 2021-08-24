@@ -14,13 +14,13 @@
 
     public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand, Result<ProductDTO>>
     {
-        private readonly IDataAccess<ProductDTO> dto;
+        private readonly IDataAccess<ProductDTO> dataAccess;
 
-        public UpdateProductCommandHandler(IDataAccess<ProductDTO> dto) => this.dto = dto;
+        public UpdateProductCommandHandler(IDataAccess<ProductDTO> dataAccess) => this.dataAccess = dataAccess;
 
         public async Task<Result<ProductDTO>> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
         {
-            var outcome = await this.dto.UpdateAsync(request.Data);
+            var outcome = await this.dataAccess.UpdateAsync(request.Data);
             return (outcome != null) ? Result<ProductDTO>.Success(outcome) : Result<ProductDTO>.Failure("Error updating a Product");
         }
     }

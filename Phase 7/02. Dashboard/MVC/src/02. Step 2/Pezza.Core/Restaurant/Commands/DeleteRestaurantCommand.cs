@@ -14,14 +14,14 @@
 
     public class DeleteRestaurantCommandHandler : IRequestHandler<DeleteRestaurantCommand, Result>
     {
-        private readonly IDataAccess<RestaurantDTO> dto;
+        private readonly IDataAccess<RestaurantDTO> dataAccess;
 
-        public DeleteRestaurantCommandHandler(IDataAccess<RestaurantDTO> dto)
-            => this.dto = dto;
+        public DeleteRestaurantCommandHandler(IDataAccess<RestaurantDTO> dataAccess)
+            => this.dataAccess = dataAccess;
 
         public async Task<Result> Handle(DeleteRestaurantCommand request, CancellationToken cancellationToken)
         {
-            var outcome = await this.dto.DeleteAsync(request.Id);
+            var outcome = await this.dataAccess.DeleteAsync(request.Id);
             return outcome ? Result.Success() : Result.Failure("Error deleting a Restaurant");
         }
     }

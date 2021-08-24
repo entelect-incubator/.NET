@@ -14,14 +14,14 @@
 
     public class DeleteStockCommandHandler : IRequestHandler<DeleteStockCommand, Result>
     {
-        private readonly IDataAccess<StockDTO> dto;
+        private readonly IDataAccess<StockDTO> dataAccess;
 
-        public DeleteStockCommandHandler(IDataAccess<StockDTO> dto)
-            => this.dto = dto;
+        public DeleteStockCommandHandler(IDataAccess<StockDTO> dataAccess)
+            => this.dataAccess = dataAccess;
 
         public async Task<Result> Handle(DeleteStockCommand request, CancellationToken cancellationToken)
         {
-            var outcome = await this.dto.DeleteAsync(request.Id);
+            var outcome = await this.dataAccess.DeleteAsync(request.Id);
             return outcome ? Result.Success() : Result.Failure("Error deleting a Stock");
         }
     }

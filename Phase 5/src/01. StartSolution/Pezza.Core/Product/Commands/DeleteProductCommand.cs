@@ -14,14 +14,14 @@
 
     public class DeleteProductCommandHandler : IRequestHandler<DeleteProductCommand, Result>
     {
-        private readonly IDataAccess<ProductDTO> dto;
+        private readonly IDataAccess<ProductDTO> dataAccess;
 
-        public DeleteProductCommandHandler(IDataAccess<ProductDTO> dto)
-            => this.dto = dto;
+        public DeleteProductCommandHandler(IDataAccess<ProductDTO> dataAccess)
+            => this.dataAccess = dataAccess;
 
         public async Task<Result> Handle(DeleteProductCommand request, CancellationToken cancellationToken)
         {
-            var outcome = await this.dto.DeleteAsync(request.Id);
+            var outcome = await this.dataAccess.DeleteAsync(request.Id);
             return outcome ? Result.Success() : Result.Failure("Error deleting a Product");
         }
     }
