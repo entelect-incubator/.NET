@@ -1,6 +1,6 @@
 ﻿namespace Pezza.Common.DTO
 {
-    using Pezza.Common.DTO.Data;
+    using Pezza.Common.Models;
 
     public class OrderItemDTO : SearchBase
     {

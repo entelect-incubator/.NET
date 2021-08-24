@@ -2,7 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
-    using Pezza.Common.DTO.Data;
+    using Pezza.Common.Models;
 
     public class OrderDTO : SearchBase
     {

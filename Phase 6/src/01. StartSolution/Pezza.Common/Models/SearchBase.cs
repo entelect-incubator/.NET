@@ -1,7 +1,5 @@
-﻿namespace Pezza.Common.DTO.Data
+﻿namespace Pezza.Common.Models
 {
-    using Pezza.Common.Models;
-
     public class SearchBase
     {
         public string OrderBy { get; set; }
