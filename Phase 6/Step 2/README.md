@@ -8,7 +8,7 @@
 
 [Domain Event Pattern](https://microservices.io/patterns/data/domain-event.html)
 
-Mediatr allows you to publish domain events after a COmmand has happend. This applies the SOLID principle in seprating Domain Events from Commands. For example after someone has viewed a Customer record you might want to log an audit of that person. Or as the example we will be looking at is, sending out a notification to the customer that there pizza is ready for collection. 
+Mediatr allows you to publish domain events when a command is handled. This applies the SOLID principle in seperating domain events from commands. In this example, we will be sending out an email to the customer that there pizza is ready for collection. We achieve this by creating an event that we publish with MediatR when the command for updating an order to completed is handled.
 
 [Read More](https://ardalis.com/immediate-domain-event-salvation-with-mediatr/)
 

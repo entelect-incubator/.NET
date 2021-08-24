@@ -6,9 +6,9 @@
 
 ### **Events**
 
-Mediatr provides the capability of firing off events between different commands. This prevents duplicate code from being created and adheres to SOLID principles.
+The Mediatr package introduced in Phase 2 provides the capability of firing off events between different commands. This prevents duplicate code from being created and adheres to SOLID principles.
 
-[Mediatr Events](https://ardalis.com/immediate-domain-event-salvation-with-mediatr/)
+Read more on [Mediatr Events](https://ardalis.com/immediate-domain-event-salvation-with-mediatr/).
 
 ## **Setup**
 
