@@ -1,4 +1,4 @@
-﻿snamespace Pezza.Core.Restaurant.Commands
+﻿namespace Pezza.Core.Restaurant.Commands
 {
     using System.Threading;
     using System.Threading.Tasks;
