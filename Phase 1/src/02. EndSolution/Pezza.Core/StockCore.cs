@@ -8,10 +8,10 @@
 
     public class StockCore : IStockCore
     {
-        private readonly IStockDataAccess DataAccess;
+        private readonly IStockDataAccess dataAccess;
 
-        public StockCore(IStockDataAccess DataAccess)
-            => (this.DataAccess) = (DataAccess);
+        public StockCore(IStockDataAccess dataAccess)
+            => (this.dataAccess) = (dataAccess);
 
         public async Task<StockDTO> GetAsync(int id)
             => await this.dataAccess.GetAsync(id);
@@ -26,6 +26,6 @@
             => await this.dataAccess.UpdateAsync(dto);
 
         public async Task<bool> DeleteAsync(int id)
-            => await this.DataAccess.DeleteAsync(id);
+            => await this.dataAccess.DeleteAsync(id);
     }
 }

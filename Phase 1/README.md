@@ -584,7 +584,7 @@ namespace Pezza.Core
 
     public class StockCore : IStockCore
     {
-        private readonly IStockDataAccess DataAccess;
+        private readonly IStockDataAccess dataAccess;
 
         private readonly IMapper mapper;
 
@@ -632,7 +632,7 @@ namespace Pezza.Core
 
         public async Task<bool> DeleteAsync(int id)
         {
-            var outcome = await this.DataAccess.DeleteAsync(id);
+            var outcome = await this.dataAccess.DeleteAsync(id);
 
             return outcome;
         }
