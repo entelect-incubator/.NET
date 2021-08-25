@@ -12,7 +12,7 @@ In this section we introduce StyleCop which enforces configurable rules on devel
 
 [Overview](https://github.com/StyleCop/StyleCop)
 
-Add Phase 4/Data/StyleCopRuleSet.ruleset to your Solution
+Add **Phase 4\src\03. Step 2\StyleCopRuleSet.ruleset** to your Solution
 
 ![StyleCopRuleSet](Assets/2021-01-15-10-25-17.png)
 
@@ -21,8 +21,6 @@ Install StyleCop.Analyzers Nuget Package to all Projects
 ![StyleCop.Analyzers](Assets/2021-01-15-10-26-37.png)
 
 Add the StyleCop Rule Set in every project file.
-
-
 
 ```
 <CodeAnalysisRuleSet>$(SolutionDir)\StyleCopRuleSet.ruleset</CodeAnalysisRuleSet>
