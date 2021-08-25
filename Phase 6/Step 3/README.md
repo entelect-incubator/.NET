@@ -112,19 +112,25 @@ When calling unsent notifications we want to pull in the customer detail as well
 
 ![](Assets/2021-01-28-08-38-32.png)
 
-Modify Customer.cs add the following
+Modify Customer.cs by adding the following property
 
 ```cs
 public virtual ICollection<Notify> Notifies { get; set; }
 ```
 
-Modify Notify.cs and NotifyDTO.cs add Customer
+In Pezza.Common, modify Notify.cs and NotifyDTO.cs. Add a Customer property to Notify.cs
 
 ```cs
 public virtual Customer Customer { get; set; }
 ```
 
-NotifyMap.cs
+and a CustomerDTO property to NotifyDTO.cs
+
+```cs
+public virtual CustomerDTO Customer { get; set; }
+```
+
+In Pezza.DataAccess\Mapping modify NotifyMap.cs
 
 ```cs
 builder.HasOne(t => t.Customer)
@@ -160,7 +166,7 @@ namespace Pezza.Scheduler.Jobs
 
         public async Task SendNotificationAsync()
         {
-            var result = await this.mediator.Send(new GetNotifiesQuery
+            var notifiesResult = await this.mediator.Send(new GetNotifiesQuery
             {
                 dto = new NotifyDTO
                 {
@@ -168,22 +174,23 @@ namespace Pezza.Scheduler.Jobs
                     PagingArgs = PagingArgs.Default
                 }
             });
-            if (result.Succeeded)
+
+            if (notifiesResult.Succeeded)
             {
-                foreach (var notification in result.Data)
+                foreach (var notification in notifiesResult.Data)
                 {
                     if (notification.CustomerId.HasValue)
                     {
-                        var customer = await this.mediator.Send(new GetCustomerQuery
+                        var customerResult = await this.mediator.Send(new GetCustomerQuery
                         {
                             Id = notification.CustomerId.Value
                         });
 
-                        if (customer.Succeeded)
+                        if (customerResult.Succeeded)
                         {
                             var emailService = new EmailService
                             {
-                                Customer = customer.Data,
+                                Customer = customerResult.Data,
                                 HtmlContent = notification.Email
                             };
 
