@@ -233,7 +233,7 @@ namespace Pezza.Scheduler.Jobs
 
 ## **Configure Startup class**
 
-Once the OrderCompleteJob class is created, it is time to configure the Startup class. In the Startup class, the objective is to configure a recurring job to call the SendNotficationAsync method every minute.
+Once the OrderCompleteJob class is created, it is time to configure the Startup class. In the Startup class, the objective is to configure a recurring job to call the SendNotificationAsync method every minute.
 
 Firstly, I will add the OrderCompleteJob to the dependency injection container in the ConfigureServices method.
 
@@ -241,7 +241,7 @@ Firstly, I will add the OrderCompleteJob to the dependency injection container i
 services.AddSingleton<IOrderCompleteJob, OrderCompleteJob>();
 ```
 
-Secondly, I will update the Configure method to take two new parameters. The first one is the IRecurringJobManager necessary for creating a recurring job. And the second one is the IServiceProvider to get the IPrintJob instance from the dependency injection container.
+Secondly, I will update the Configure method to take two new parameters. The first one is the IRecurringJobManager necessary for creating a recurring job. And the second one is the IServiceProvider to get the IOrderCompleteJob instance from the dependency injection container.
 
 Thirdly, I will call the AddOrUpdate on the IRecurringJobManager instance to set up a recurring job.
 
