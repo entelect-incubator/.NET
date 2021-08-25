@@ -34,10 +34,14 @@ namespace Pezza.Scheduler
                     .UseDefaultTypeSerializer()
                     .UseSqlServerStorage(this.Configuration.GetConnectionString("PezzaDatabase")));
 
+            services.AddHangfireServer();
+
             services.AddDbContext<DatabaseContext>(options =>
                options.UseSqlServer(this.Configuration.GetConnectionString("PezzaDatabase")));
 
             services.AddSingleton<IOrderCompleteJob, OrderCompleteJob>();
+
+            services.AddLazyCache();
 
             DependencyInjection.AddApplication(services);
         }
