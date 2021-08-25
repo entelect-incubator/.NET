@@ -12,40 +12,33 @@
     public class OrderCompletedEvent : INotification
     {
         public OrderDTO CompletedOrder { get; set; }
+    }
 
-        public class ArrivalNotificationEventHandler : INotificationHandler<OrderCompletedEvent>
+    public class OrderCompletedEventHandler : INotificationHandler<OrderCompletedEvent>
+    {
+        private readonly IMediator mediator;
+
+        public OrderCompletedEventHandler(IMediator mediator) => this.mediator = mediator;
+
+        public async Task Handle(OrderCompletedEvent notification, CancellationToken cancellationToken)
         {
-            private readonly IMediator mediator;
+            var path = AppDomain.CurrentDomain.BaseDirectory + "\\Email\\Templates\\OrderCompleted.html";
+            var html = File.ReadAllText(path);
 
-            public ArrivalNotificationEventHandler(IMediator mediator) => this.mediator = mediator;
+            html = html.Replace("<%% ORDER %%>", notification.CompletedOrder.Id.ToString());
 
-            public async Task Handle(OrderCompletedEvent notification, CancellationToken cancellationToken)
+            var customer = notification.CompletedOrder?.Customer;
+            var notify = await this.mediator.Send(new CreateNotifyCommand
             {
-                var path = AppDomain.CurrentDomain.BaseDirectory + "\\Email\\Templates\\OrderCompleted.html";
-                var html = File.ReadAllText(path);
-
-                html = html.Replace("<%% ORDER %%>", notification.CompletedOrder.Id.ToString());
-                var emailService = new EmailService
+                Data = new NotifyDTO
                 {
-                    Customer = notification.CompletedOrder?.Customer,
-                    HtmlContent = html
-                };
-
-                var send = await emailService.SendEmail();
-
-                var customer = notification.CompletedOrder?.Customer;
-                var notify = await this.mediator.Send(new CreateNotifyCommand
-                {
-                    Data = new NotifyDTO
-                    {
-                        CustomerId = customer.Id,
-                        DateSent = DateTime.Now,
-                        Email = customer.Email,
-                        Sent = send.Succeeded,
-                        Retry = 0
-                    }
-                });
-            }
+                    CustomerId = customer.Id,
+                    DateSent = DateTime.Now,
+                    Email = customer.Email,
+                    Sent = false,
+                    Retry = 0
+                }
+            });
         }
     }
 }
