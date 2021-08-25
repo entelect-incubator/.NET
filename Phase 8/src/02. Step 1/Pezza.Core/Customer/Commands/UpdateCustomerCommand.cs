@@ -16,7 +16,7 @@
     {
         private readonly IDataAccess<CustomerDTO> dataAccess;
 
-        public UpdateCustomerCommandHandler(IDataAccess<CustomerDTO> dataAccess) => this.dataAccess = dataAccess ?? throw new System.ArgumentNullException(nameof(dataAccess));
+        public UpdateCustomerCommandHandler(IDataAccess<CustomerDTO> dataAccess) => this.dataAccess = dataAccess;
 
         public async Task<Result<CustomerDTO>> Handle(UpdateCustomerCommand request, CancellationToken cancellationToken)
         {

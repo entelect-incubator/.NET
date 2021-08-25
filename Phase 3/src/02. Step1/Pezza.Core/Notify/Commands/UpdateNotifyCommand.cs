@@ -15,13 +15,13 @@
 
     public class UpdateNotifyCommandHandler : IRequestHandler<UpdateNotifyCommand, Result<NotifyDTO>>
     {
-        private readonly IDataAccess<NotifyDTO> DataAccess;
+        private readonly IDataAccess<NotifyDTO> dataAccess;
 
-        public UpdateNotifyCommandHandler(IDataAccess<NotifyDTO> DataAccess) => this.DataAccess = DataAccess;
+        public UpdateNotifyCommandHandler(IDataAccess<NotifyDTO> dataAccess) => this.dataAccess = dataAccess;
 
         public async Task<Result<NotifyDTO>> Handle(UpdateNotifyCommand request, CancellationToken cancellationToken)
         {            
-            var outcome = await this.DataAccess.UpdateAsync(request.Data);
+            var outcome = await this.dataAccess.UpdateAsync(request.Data);
             return (outcome != null) ? Result<NotifyDTO>.Success(outcome) : Result<NotifyDTO>.Failure("Error updating notification");
         }
     }

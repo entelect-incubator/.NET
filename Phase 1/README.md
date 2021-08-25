@@ -14,15 +14,19 @@ We will be looking at creating a solution for Pezza's customers only. We will st
 ![Database Context Interface Setup](./Assets/phase-1-new-solution.PNG)
   - [ ] ASP.NET Core Web Application
 
-- [ ] Run [SQL file](pezza-db.sql) on your local SQL Server
+  - [ ] Choose Empty template
+
+  - [ ] Make sure your solution is empty
+
 - [ ] We don't want everything in one folder and we want to follow the **Single Responsibility Principle**.
-  - [ ] Right Click on the Solution - Add New Solution Folder. Call it *01 Apis*. This is where we want to group all Apis together. Move the Api you create into the *01 Apis* <br/>![](Assets/2020-09-11-09-52-48.png)
+  - [ ] Right click on the Solution - Add New Solution Folder. Call it *01 Apis*. This is where we want to group all Apis together. Right click on the folder and add a new project called Pezza.Api with an API template<br/>![](Assets/2020-09-11-09-52-48.png)
   - [ ] Next we want to create a Common project that can be used between all Projects
     - [ ] Create a new Solution Folder *04 Common*
     - [ ] Create a new Class Library Pezza.Common <br/> ![](Assets/2020-09-11-10-01-34.png) <br/> ![](Assets/2020-09-11-10-02-26.png)
     - [ ] Create a folder *Entities* where all database models will go into <br/> ![](./Assets/2021-08-15-17-18-46.png)
     - [ ] Create a Entity Stock.cs in a folder Entities <br/>![](Assets/2020-09-11-10-03-20.png)
-    - [ ] 
+
+Add the following to Stock.cs
 ``` 
 namespace Pezza.Common.Entities
 {
@@ -48,16 +52,12 @@ namespace Pezza.Common.Entities
     }
 }
 ```
-
+- [ ] Run [SQL file](pezza-db.sql) on your local SQL Server
 ## **Database Layer**
 
 - [ ] Next create a new Solution Folder *03 Database*
-- [ ] Create a new Class Library Pezza.DataAccess and Pezza.DataAccess.Contracts (This will used for Dependency Injection and Unit Tests) <br/> ![](Assets/2020-09-11-10-06-58.png)
-- [ ] Add Nuget Package to each project
-  - [ ]  Microsoft.EntityFrameworkCore.Relational
-  - [ ]  Sytem.Linq.Dynamic.Core in DataAccess
-- [ ] For interacting with the Database we will be using Entity Framework Core. Right-click on the Pezza.DataAccess and Pezza.DataAccessContracts project *Manage NuGet Packages...*. Search for EFCore Nuget Package, Install the following Packages
-  - [ ] Microsoft.EntityFrameworkCore
+- [ ] Create a new Class Library Pezza.DataAccess and Pezza.DataAccess.Contracts  <br/> ![](Assets/2020-09-11-10-06-58.png)
+- [ ] For interacting with the Database we will be using Entity Framework Core. Right-click on the Pezza.DataAccess and Pezza.DataAccessContracts project *Manage NuGet Packages...*. Search for EFCore Nuget Package, 
 - [ ] Create an interface in DataAccess.Contracts called IDatabaseContext.cs <br/> ![](Assets/2020-09-11-10-14-32.png)
 
 ```
@@ -584,7 +584,7 @@ namespace Pezza.Core
 
     public class StockCore : IStockCore
     {
-        private readonly IStockDataAccess DataAccess;
+        private readonly IStockDataAccess dataAccess;
 
         private readonly IMapper mapper;
 
@@ -593,14 +593,14 @@ namespace Pezza.Core
 
         public async Task<StockDTO> GetAsync(int id)
         {
-            var search = await this.DataAccess.GetAsync(id);
+            var search = await this.dataAccess.GetAsync(id);
 
             return this.mapper.Map<StockDTO>(search);
         }
 
         public async Task<IEnumerable<StockDTO>> GetAllAsync()
         {
-            var search = await this.DataAccess.GetAllAsync();
+            var search = await this.dataAccess.GetAllAsync();
 
             return this.mapper.Map<List<StockDTO>>(search);
         }
@@ -608,7 +608,7 @@ namespace Pezza.Core
         public async Task<StockDTO> SaveAsync(Stock model)
         {
 
-            var outcome = await this.DataAccess.SaveAsync(model);
+            var outcome = await this.dataAccess.SaveAsync(model);
 
             return this.mapper.Map<StockDTO>(outcome);
         }
@@ -616,7 +616,7 @@ namespace Pezza.Core
         public async Task<StockDTO> UpdateAsync(StockDTO model)
         {
 
-            var entity = await this.DataAccess.GetAsync(model.Id);            
+            var entity = await this.dataAccess.GetAsync(model.Id);            
 
             entity.Name = !string.IsNullOrEmpty(model.Name) ? model.Name : entity.Name;
             entity.UnitOfMeasure = !string.IsNullOrEmpty(model.UnitOfMeasure) ? model.UnitOfMeasure : entity.UnitOfMeasure;
@@ -626,13 +626,13 @@ namespace Pezza.Core
             entity.ExpiryDate = (model.ExpiryDate.HasValue) ? model.ExpiryDate : entity.ExpiryDate;
             entity.Comment = (!string.IsNullOrEmpty(model.Comment)) ? model.Comment : entity.Comment;
 
-            var outcome = await this.DataAccess.UpdateAsync(entity);
+            var outcome = await this.dataAccess.UpdateAsync(entity);
             return this.mapper.Map<StockDTO>(outcome);
         }
 
         public async Task<bool> DeleteAsync(int id)
         {
-            var outcome = await this.DataAccess.DeleteAsync(id);
+            var outcome = await this.dataAccess.DeleteAsync(id);
 
             return outcome;
         }

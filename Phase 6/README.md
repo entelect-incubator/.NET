@@ -18,4 +18,4 @@ Read more on [Mediatr Events](https://ardalis.com/immediate-domain-event-salvati
 
 - [ ] [Step 1 - Email Service](https://github.com/entelect-incubator/.NET/tree/master/Phase%206/Step%201)
 - [ ] [Step 2 - Event](https://github.com/entelect-incubator/.NET/tree/master/Phase%206/Step%202)
-- [ ]  [Step 3 - Background Scheduler](https://github.com/entelect-incubator/.NET/tree/master/Phase%206/Step%203)
+- [ ] [Step 3 - Background Scheduler](https://github.com/entelect-incubator/.NET/tree/master/Phase%206/Step%203)

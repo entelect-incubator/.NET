@@ -14,13 +14,13 @@
 
     public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, Result<ProductDTO>>
     {
-        private readonly IDataAccess<ProductDTO> DataAccess;
+        private readonly IDataAccess<ProductDTO> dataAccess;
 
-        public CreateProductCommandHandler(IDataAccess<ProductDTO> DataAccess) => this.DataAccess = DataAccess;
+        public CreateProductCommandHandler(IDataAccess<ProductDTO> dataAccess) => this.dataAccess = dataAccess;
 
         public async Task<Result<ProductDTO>> Handle(CreateProductCommand request, CancellationToken cancellationToken)
         {
-            var outcome = await this.DataAccess.SaveAsync(request.Data);
+            var outcome = await this.dataAccess.SaveAsync(request.Data);
             return (outcome != null) ? Result<ProductDTO>.Success(outcome) : Result<ProductDTO>.Failure("Error adding a Product");
         }
     }

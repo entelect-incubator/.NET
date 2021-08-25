@@ -14,13 +14,13 @@
 
     public class GetStocksQueryHandler : IRequestHandler<GetStocksQuery, ListResult<StockDTO>>
     {
-        private readonly IDataAccess<StockDTO> DataAccess;
+        private readonly IDataAccess<StockDTO> dataAccess;
 
-        public GetStocksQueryHandler(IDataAccess<StockDTO> DataAccess) => this.DataAccess = DataAccess;
+        public GetStocksQueryHandler(IDataAccess<StockDTO> dataAccess) => this.dataAccess = dataAccess;
 
         public async Task<ListResult<StockDTO>> Handle(GetStocksQuery request, CancellationToken cancellationToken)
         {
-            var search = await this.DataAccess.GetAllAsync(request.dto);
+            var search = await this.dataAccess.GetAllAsync(request.dto);
             return search;
         }
     }

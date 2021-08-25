@@ -3,7 +3,6 @@ namespace Pezza.DataAccess.Contracts
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Pezza.Common.DTO;
-    using Pezza.Common.Entities;
 
     public interface IStockDataAccess
     {

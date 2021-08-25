@@ -6,17 +6,13 @@
 
 ## **Schedule Background Jobs**
 
-[Hangfire](https://www.hangfire.io/)
+[Hangfire](https://www.hangfire.io/) provides an easy way to perform background processing in .NET and .NET Core applications. No Windows Service or separate process is required.
 
-An easy way to perform background processing in .NET and .NET Core applications. No Windows Service or separate process is required.
-
-The benefit of using Hangfire is that it comes with a Dashboard. Hangfire Dashboard is a place where you could find all the information about your background jobs. It is written as an OWIN middleware, so you can plug it into your ASP.NET, ASP.NET MVC, Nancy, ServiceStack application as well as use the OWIN Self-Host feature to host Dashboard inside console applications or in Windows Services.
-
-[Hangfire Dashboard](https://docs.hangfire.io/en/latest/configuration/using-dashboard.html)
-
-[Fire and Forget](https://ducmanhphan.github.io/2020-02-24-fire-and-forget-pattern/)
+The benefit of using Hangfire is that it comes with a Dashboard. [Hangfire Dashboard](https://docs.hangfire.io/en/latest/configuration/using-dashboard.html) is a place where you could find all the information about your background jobs. It is written as an OWIN middleware, so you can plug it into your ASP.NET, ASP.NET MVC, Nancy, ServiceStack application as well as use the OWIN Self-Host feature to host Dashboard inside console applications or in Windows Services.
 
 General problems with relying on the external systems are fire and forget or performance. You send a request out, but what happens if it fails or times out? Do you impact the system by waiting for this request to be sent?
+
+Read more on [Fire and Forget Pattern](https://ducmanhphan.github.io/2020-02-24-fire-and-forget-pattern/).
 
 ## Solution...
 
