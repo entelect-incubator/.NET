@@ -145,7 +145,34 @@ NotifyDataAccess.cs
 var entities = this.databaseContext.Notify.Include(x => x.Customer).Select(x => x)
 ```
 
-OrderCompleteJob.cs
+Startup.cs
+
+```cs
+services.AddDbContext<DatabaseContext>(options => 
+    options.UseSqlServer(this.Configuration.GetConnectionString("PezzaDatabase")));
+```
+
+## **Create a recurring job**
+
+Creating a background job as we did above is easy with Hangfire, but it is as easy using an instance of Task class as well. So why go with something like Hangfire and install all these packages into the project?
+
+Well, the main advantage of Hangfire comes in when we use it to create scheduling jobs. It uses CRON expressions for scheduling.
+
+Let us say we need to create a job that is responsible for finding any emails in Notify table that hasn't been send and send them out.
+
+Create a new folder called Jobs inside Pezza.Scheduler and inside that IOrderCompleteJob.cs interface and OrderCompleteJob.cs.
+
+```cs
+namespace Pezza.Scheduler.Jobs
+{
+    using System.Threading.Tasks;
+
+    public interface IOrderCompleteJob
+    {
+        Task SendNotificationAsync();
+    }
+}
+```
 
 ```cs
 namespace Pezza.Scheduler.Jobs
@@ -197,79 +224,6 @@ namespace Pezza.Scheduler.Jobs
                             var send = await emailService.SendEmail();
                         }
                     }
-                }
-            }
-        }
-    }
-}
-```
-
-Startup.cs
-
-```cs
- services.AddDbContext<DatabaseContext>(options =>
-    options.UseSqlServer(this.Configuration.GetConnectionString("PezzaDatabase")));
-```
-
-## **Create a recurring job**
-
-Creating a background job as we did above is easy with Hangfire, but it is as easy using an instance of Task class as well. So why go with something like Hangfire and install all these packages into the project?
-
-Well, the main advantage of Hangfire comes in when we use it for creating scheduling jobs. It uses CRON expressions for scheduling.
-
-Let us say we need to create a job that is responsible for finding any emails in Notify table that hasn't been send and send them out.
-
-Create a new folder Jobs and inside that IOrderCompleteJob.cs interface and OrderCompleteJob.cs.
-
-```cs
-namespace Pezza.Scheduler.Jobs
-{
-    using System.Threading.Tasks;
-
-    public interface IOrderCompleteJob
-    {
-        Task SendNotficationAsync();
-    }
-}
-```
-
-```cs
-namespace Pezza.Scheduler.Jobs
-{
-    using System.Threading.Tasks;
-    using MediatR;
-    using Pezza.Common.DTO;
-    using Pezza.Common.Models;
-    using Pezza.Core.Email;
-    using Pezza.Core.Notify.Queries;
-
-    public class OrderCompleteJob : IOrderCompleteJob
-    {
-        private IMediator mediator;
-
-        public OrderCompleteJob(IMediator mediator) => this.mediator = mediator;
-
-        public async Task SendNotficationAsync()
-        {
-            var result = await this.mediator.Send(new GetNotifiesQuery
-            {
-                SearchModel = new NotifyDTO
-                {
-                    Sent = false,
-                    PagingArgs = PagingArgs.Default
-                }
-            });
-            if (result.Succeeded)
-            {
-                foreach (var notification in result.Data)
-                {
-                    var emailService = new EmailService
-                    {
-                        Customer = notification.Customer,
-                        HtmlContent = notification.Email
-                    };
-
-                    var send = await emailService.SendEmail();
                 }
             }
         }
