@@ -47,7 +47,7 @@ namespace Pezza.Scheduler
         {
             recurringJobManager.AddOrUpdate(
                 "Run every minute",
-                () => serviceProvider.GetService<IOrderCompleteJob>().SendNotficationAsync(),
+                () => serviceProvider.GetService<IOrderCompleteJob>().SendNotificationAsync(),
                 "* * * * *"
                 );
 

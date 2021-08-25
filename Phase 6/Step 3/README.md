@@ -139,7 +139,7 @@ NotifyDataAccess.cs
 var entities = this.databaseContext.Notify.Include(x => x.Customer).Select(x => x)
 ```
 
-OrderCompletedEvent.cs
+OrderCompleteJob.cs
 
 ```cs
 namespace Pezza.Scheduler.Jobs
@@ -148,7 +148,7 @@ namespace Pezza.Scheduler.Jobs
     using MediatR;
     using Pezza.Common.DTO;
     using Pezza.Common.Models;
-using Pezza.Core.Customer.Queries;
+    using Pezza.Core.Customer.Queries;
     using Pezza.Core.Email;
     using Pezza.Core.Notify.Queries;
 
@@ -158,7 +158,7 @@ using Pezza.Core.Customer.Queries;
 
         public OrderCompleteJob(IMediator mediator) => this.mediator = mediator;
 
-        public async Task SendNotficationAsync()
+        public async Task SendNotificationAsync()
         {
             var result = await this.mediator.Send(new GetNotifiesQuery
             {

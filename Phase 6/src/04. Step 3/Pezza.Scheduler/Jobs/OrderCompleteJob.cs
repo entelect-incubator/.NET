@@ -14,7 +14,7 @@
 
         public OrderCompleteJob(IMediator mediator) => this.mediator = mediator;
 
-        public async Task SendNotficationAsync()
+        public async Task SendNotificationAsync()
         {
             var result = await this.mediator.Send(new GetNotifiesQuery
             {
