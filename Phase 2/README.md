@@ -12,7 +12,8 @@ In this Incubator, we try to follow the **Single Responsibility Principle** as f
 
 ## **Setup**
 
-- [ ] Use the Start Solution from Phase 2 to get started
+- [ ] Use the Start Solution from Phase 2 to get started - **Phase 2\src\01. StartSolution**
+- [ ] Run database script to create the other tables you will require going forward - **Phase 2\DatabaseSeed\db.sql**
 
 ## **Steps**
 

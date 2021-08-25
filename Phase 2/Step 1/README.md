@@ -227,7 +227,7 @@ To create consistency with the result we send back from the Core layer we will u
 
 ## **Common Models**
 
-Copy MimeTypes.cs from Phase 2\Data\Common\Models
+Copy MimeTypes.cs from Phase 2\src\02. EndSolution\Pezza.Common\Models
 
 ![MimeTypes.cs](Assets/2021-01-14-08-05-17.png)
 
@@ -377,7 +377,7 @@ namespace Pezza.Common.Models
 ```
 
 
-To something like this. Can also look at Phase 2\Data on how it suppose to look like.
+To something like this. You can also have a look at **Phase 2\src\02. EndSolution** on how it is suppose to look.
 
 ```cs
 namespace Pezza.Common.DTO
@@ -412,7 +412,7 @@ namespace Pezza.Common.DTO
 
 ## **DTO's**
 
-Create DTO's that we will use in the calling projects for SOLID principal. Only send in data that is needed. Copy from Phase 2\Data\Common\DTO
+Create DTO's that we will use in the calling projects for SOLID principal. Only send in data that is needed. Copy from Phase 2\src\02. EndSolution\Pezza.Common\DTO
 
 ![DTO's](Assets/2021-01-17-09-04-19.png)
 

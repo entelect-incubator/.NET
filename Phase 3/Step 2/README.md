@@ -280,7 +280,7 @@ namespace Pezza.Common.Filters
 }
 ```
 
-You can copy the other Filters from Phase 3\Data\Common\Filters
+You can copy the other Filters from **Phase 3\src\03. Step2\Pezza.Common\Filters**
 
 ![Filters](Assets/2021-01-15-07-13-03.png)
 
@@ -344,7 +344,7 @@ public async Task<ListResult<RestaurantDTO>> GetAllAsync(RestaurantDTO dto)
 
 
 
-Add filters to the other DataAccess GetAllAsync implementations as well or copy it from Phase 3\Data\DataAccess
+Add filters to the other DataAccess GetAllAsync implementations as well or copy it from **Phase 3\src\03. Step2\Pezza.DataAccess**
 
 ### **Modifying Queries**
 
@@ -382,7 +382,7 @@ namespace Pezza.Core.Customer.Queries
     }
 }
 ```
-You can copy the other queries from the respective entity folders in Phase 3\Data\Core
+You can copy the other queries from the respective entity folders in **Phase 3\src\03. Step2\Pezza.Core**
 
 ### **Modifying Controllers**
 

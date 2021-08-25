@@ -63,7 +63,7 @@ We will use an HTML template file. This template file can be read in code and th
 
 Create OrderCompleted.html inside Pezza.Core\Email\Templates.
 
-Copy the HTML from Phase 6\Data\Templates\OrderCompleted.html into your newly created OrderCompleted.html.
+Copy the HTML from **Phase 6\src\04. Step 3\Pezza.Core\Email\Templates\OrderCompleted.html** into your newly created OrderCompleted.html.
 
 ![Email Service](Assets/2021-01-17-23-03-34.png)
 
