@@ -4,7 +4,7 @@
     using MediatR;
     using Pezza.Common.DTO;
     using Pezza.Common.Models;
-using Pezza.Core.Customer.Queries;
+    using Pezza.Core.Customer.Queries;
     using Pezza.Core.Email;
     using Pezza.Core.Notify.Queries;
 
