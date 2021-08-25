@@ -36,7 +36,7 @@ Once the project is ready, I will open the NuGet package manager UI and add the 
 
 ## **Connection String**
 
-Add Connection String in your appsetting.json
+Add Connection String in appsetting.json Pezza.Scheduler
 
 ```json
 "ConnectionStrings": {
@@ -62,13 +62,13 @@ And here first I will call the SetDataCompatibilityLevel method on the IGlobalCo
 
 Next, I will call the UseSimpleAssemblyNameTypeSerializer and UseDefaultTypeSerializer one after the other, to set serialization configuration.
 
-Finally, I will call UseMemoryStorage on the IGlobalConfiguration instance to set up an in-memory storage provider.
+Finally, I will call UseSqlServerStorage and pass it the connection string to the Pezza database to set up the storage provider.
 
 Next, I will call the extension method AddHangfireServer on the IServiceCollection instance to add the Hangfire server to the dependency injection container. Which we will use later to configure and run jobs.
 
 ## **Dashboard**
 
-Once the basic setup for the dependency injection container is done, now I will add the middleware needed to add the Hangfire dashboard UI. For that, I will call the extension method UseHangfireDashboard to the IApplicationBuilder instance.
+Once the basic setup for the dependency injection container is done, now I will add the middleware needed to add the Hangfire Dashboard UI. For that, I will call the extension method UseHangfireDashboard on the IApplicationBuilder instance in the Configure method of the Pezza.Scheduler StartUp class.
 
 ```cs
 app.UseHangfireDashboard();
