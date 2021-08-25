@@ -14,15 +14,19 @@ We will be looking at creating a solution for Pezza's customers only. We will st
 ![Database Context Interface Setup](./Assets/phase-1-new-solution.PNG)
   - [ ] ASP.NET Core Web Application
 
-- [ ] Run [SQL file](pezza-db.sql) on your local SQL Server
+  - [ ] Choose Empty template
+
+  - [ ] Make sure your solution is empty
+
 - [ ] We don't want everything in one folder and we want to follow the **Single Responsibility Principle**.
-  - [ ] Right Click on the Solution - Add New Solution Folder. Call it *01 Apis*. This is where we want to group all Apis together. Move the Api you create into the *01 Apis* <br/>![](Assets/2020-09-11-09-52-48.png)
+  - [ ] Right click on the Solution - Add New Solution Folder. Call it *01 Apis*. This is where we want to group all Apis together. Right click on the folder and add a new project called Pezza.Api with an API template<br/>![](Assets/2020-09-11-09-52-48.png)
   - [ ] Next we want to create a Common project that can be used between all Projects
     - [ ] Create a new Solution Folder *04 Common*
     - [ ] Create a new Class Library Pezza.Common <br/> ![](Assets/2020-09-11-10-01-34.png) <br/> ![](Assets/2020-09-11-10-02-26.png)
     - [ ] Create a folder *Entities* where all database models will go into <br/> ![](./Assets/2021-08-15-17-18-46.png)
     - [ ] Create a Entity Stock.cs in a folder Entities <br/>![](Assets/2020-09-11-10-03-20.png)
-    - [ ] 
+
+Add the following to Stock.cs
 ``` 
 namespace Pezza.Common.Entities
 {
@@ -48,16 +52,12 @@ namespace Pezza.Common.Entities
     }
 }
 ```
-
+- [ ] Run [SQL file](pezza-db.sql) on your local SQL Server
 ## **Database Layer**
 
 - [ ] Next create a new Solution Folder *03 Database*
-- [ ] Create a new Class Library Pezza.DataAccess and Pezza.DataAccess.Contracts (This will used for Dependency Injection and Unit Tests) <br/> ![](Assets/2020-09-11-10-06-58.png)
-- [ ] Add Nuget Package to each project
-  - [ ]  Microsoft.EntityFrameworkCore.Relational
-  - [ ]  Sytem.Linq.Dynamic.Core in DataAccess
-- [ ] For interacting with the Database we will be using Entity Framework Core. Right-click on the Pezza.DataAccess and Pezza.DataAccessContracts project *Manage NuGet Packages...*. Search for EFCore Nuget Package, Install the following Packages
-  - [ ] Microsoft.EntityFrameworkCore
+- [ ] Create a new Class Library Pezza.DataAccess and Pezza.DataAccess.Contracts  <br/> ![](Assets/2020-09-11-10-06-58.png)
+- [ ] For interacting with the Database we will be using Entity Framework Core. Right-click on the Pezza.DataAccess and Pezza.DataAccessContracts project *Manage NuGet Packages...*. Search for EFCore Nuget Package, 
 - [ ] Create an interface in DataAccess.Contracts called IDatabaseContext.cs <br/> ![](Assets/2020-09-11-10-14-32.png)
 
 ```
