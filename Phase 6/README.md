@@ -6,9 +6,9 @@
 
 ### **Events**
 
-The Mediatr package introduced in Phase 2 provides the capability of firing off events between different commands. This prevents duplicate code from being created and adheres to SOLID principles.
+The [MediatR](https://github.com/jbogard/MediatR) package introduced in Phase 2 provides the capability of firing off events between different commands and is introduced in Step 2. This prevents duplicate code from being created and adheres to SOLID principles. [Hangfire](https://www.hangfire.io) is introduced in Step 3 to schedule background jobs.
 
-Read more on [Mediatr Events](https://ardalis.com/immediate-domain-event-salvation-with-mediatr/).
+Read more on [MediatR Events](https://ardalis.com/immediate-domain-event-salvation-with-mediatr/).
 
 ## **Setup**
 
