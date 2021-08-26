@@ -6,9 +6,7 @@
 
 ### **Fluent Validation**
 
-[Overview](https://fluentvalidation.net/)
-
-FluentValidation is a server-side framework and does not provide any client-side validation directly. However, it can provide metadata that, when applied to the generated HTML elements, can be used by a client-side framework such as jQuery Validate, in the same way, that ASP. NET's default validation attributes work.
+[FluentValidation](https://fluentvalidation.net/) is a server-side framework and does not provide any client-side validation directly. However, it can provide metadata that, when applied to the generated HTML elements, can be used by a client-side framework such as jQuery Validate. It operates in a similar way as ASP.NET's default validation attributes.
 
 ## **Setup**
 

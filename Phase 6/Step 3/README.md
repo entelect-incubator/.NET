@@ -36,7 +36,7 @@ Once the project is ready, I will open the NuGet package manager UI and add the 
 
 ## **Connection String**
 
-Add Connection String in your appsetting.json
+Add Connection String in appsetting.json Pezza.Scheduler
 
 ```json
 "ConnectionStrings": {
@@ -62,13 +62,13 @@ And here first I will call the SetDataCompatibilityLevel method on the IGlobalCo
 
 Next, I will call the UseSimpleAssemblyNameTypeSerializer and UseDefaultTypeSerializer one after the other, to set serialization configuration.
 
-Finally, I will call UseMemoryStorage on the IGlobalConfiguration instance to set up an in-memory storage provider.
+Finally, I will call UseSqlServerStorage and pass it the connection string to the Pezza database to set up the storage provider.
 
 Next, I will call the extension method AddHangfireServer on the IServiceCollection instance to add the Hangfire server to the dependency injection container. Which we will use later to configure and run jobs.
 
 ## **Dashboard**
 
-Once the basic setup for the dependency injection container is done, now I will add the middleware needed to add the Hangfire dashboard UI. For that, I will call the extension method UseHangfireDashboard to the IApplicationBuilder instance.
+Once the basic setup for the dependency injection container is done, now I will add the middleware needed to add the Hangfire Dashboard UI. For that, I will call the extension method UseHangfireDashboard on the IApplicationBuilder instance in the Configure method of the Pezza.Scheduler StartUp class.
 
 ```cs
 app.UseHangfireDashboard();
@@ -112,19 +112,25 @@ When calling unsent notifications we want to pull in the customer detail as well
 
 ![](Assets/2021-01-28-08-38-32.png)
 
-Modify Customer.cs add the following
+Modify Customer.cs by adding the following property
 
 ```cs
 public virtual ICollection<Notify> Notifies { get; set; }
 ```
 
-Modify Notify.cs and NotifyDTO.cs add Customer
+In Pezza.Common, modify Notify.cs and NotifyDTO.cs. Add a Customer property to Notify.cs
 
 ```cs
 public virtual Customer Customer { get; set; }
 ```
 
-NotifyMap.cs
+and a CustomerDTO property to NotifyDTO.cs
+
+```cs
+public virtual CustomerDTO Customer { get; set; }
+```
+
+In Pezza.DataAccess\Mapping modify NotifyMap.cs
 
 ```cs
 builder.HasOne(t => t.Customer)
@@ -139,7 +145,34 @@ NotifyDataAccess.cs
 var entities = this.databaseContext.Notify.Include(x => x.Customer).Select(x => x)
 ```
 
-OrderCompletedEvent.cs
+Startup.cs
+
+```cs
+services.AddDbContext<DatabaseContext>(options => 
+    options.UseSqlServer(this.Configuration.GetConnectionString("PezzaDatabase")));
+```
+
+## **Create a recurring job**
+
+Creating a background job as we did above is easy with Hangfire, but it is as easy using an instance of Task class as well. So why go with something like Hangfire and install all these packages into the project?
+
+Well, the main advantage of Hangfire comes in when we use it to create scheduling jobs. It uses CRON expressions for scheduling.
+
+Let us say we need to create a job that is responsible for finding any emails in Notify table that hasn't been send and send them out.
+
+Create a new folder called Jobs inside Pezza.Scheduler and inside that IOrderCompleteJob.cs interface and OrderCompleteJob.cs.
+
+```cs
+namespace Pezza.Scheduler.Jobs
+{
+    using System.Threading.Tasks;
+
+    public interface IOrderCompleteJob
+    {
+        Task SendNotificationAsync();
+    }
+}
+```
 
 ```cs
 namespace Pezza.Scheduler.Jobs
@@ -148,7 +181,7 @@ namespace Pezza.Scheduler.Jobs
     using MediatR;
     using Pezza.Common.DTO;
     using Pezza.Common.Models;
-using Pezza.Core.Customer.Queries;
+    using Pezza.Core.Customer.Queries;
     using Pezza.Core.Email;
     using Pezza.Core.Notify.Queries;
 
@@ -158,9 +191,9 @@ using Pezza.Core.Customer.Queries;
 
         public OrderCompleteJob(IMediator mediator) => this.mediator = mediator;
 
-        public async Task SendNotficationAsync()
+        public async Task SendNotificationAsync()
         {
-            var result = await this.mediator.Send(new GetNotifiesQuery
+            var notifiesResult = await this.mediator.Send(new GetNotifiesQuery
             {
                 dto = new NotifyDTO
                 {
@@ -168,22 +201,23 @@ using Pezza.Core.Customer.Queries;
                     PagingArgs = PagingArgs.Default
                 }
             });
-            if (result.Succeeded)
+
+            if (notifiesResult.Succeeded)
             {
-                foreach (var notification in result.Data)
+                foreach (var notification in notifiesResult.Data)
                 {
                     if (notification.CustomerId.HasValue)
                     {
-                        var customer = await this.mediator.Send(new GetCustomerQuery
+                        var customerResult = await this.mediator.Send(new GetCustomerQuery
                         {
                             Id = notification.CustomerId.Value
                         });
 
-                        if (customer.Succeeded)
+                        if (customerResult.Succeeded)
                         {
                             var emailService = new EmailService
                             {
-                                Customer = customer.Data,
+                                Customer = customerResult.Data,
                                 HtmlContent = notification.Email
                             };
 
@@ -197,82 +231,9 @@ using Pezza.Core.Customer.Queries;
 }
 ```
 
-Startup.cs
-
-```cs
- services.AddDbContext<DatabaseContext>(options =>
-    options.UseSqlServer(this.Configuration.GetConnectionString("PezzaDatabase")));
-```
-
-## **Create a recurring job**
-
-Creating a background job as we did above is easy with Hangfire, but it is as easy using an instance of Task class as well. So why go with something like Hangfire and install all these packages into the project?
-
-Well, the main advantage of Hangfire comes in when we use it for creating scheduling jobs. It uses CRON expressions for scheduling.
-
-Let us say we need to create a job that is responsible for finding any emails in Notify table that hasn't been send and send them out.
-
-Create a new folder Jobs and inside that IOrderCompleteJob.cs interface and OrderCompleteJob.cs.
-
-```cs
-namespace Pezza.Scheduler.Jobs
-{
-    using System.Threading.Tasks;
-
-    public interface IOrderCompleteJob
-    {
-        Task SendNotficationAsync();
-    }
-}
-```
-
-```cs
-namespace Pezza.Scheduler.Jobs
-{
-    using System.Threading.Tasks;
-    using MediatR;
-    using Pezza.Common.DTO;
-    using Pezza.Common.Models;
-    using Pezza.Core.Email;
-    using Pezza.Core.Notify.Queries;
-
-    public class OrderCompleteJob : IOrderCompleteJob
-    {
-        private IMediator mediator;
-
-        public OrderCompleteJob(IMediator mediator) => this.mediator = mediator;
-
-        public async Task SendNotficationAsync()
-        {
-            var result = await this.mediator.Send(new GetNotifiesQuery
-            {
-                SearchModel = new NotifyDTO
-                {
-                    Sent = false,
-                    PagingArgs = PagingArgs.Default
-                }
-            });
-            if (result.Succeeded)
-            {
-                foreach (var notification in result.Data)
-                {
-                    var emailService = new EmailService
-                    {
-                        Customer = notification.Customer,
-                        HtmlContent = notification.Email
-                    };
-
-                    var send = await emailService.SendEmail();
-                }
-            }
-        }
-    }
-}
-```
-
 ## **Configure Startup class**
 
-Once the OrderCompleteJob class is created, it is time to configure the Startup class. In the Startup class, the objective is to configure a recurring job to call the SendNotficationAsync method every minute.
+Once the OrderCompleteJob class is created, it is time to configure the Startup class. In the Startup class, the objective is to configure a recurring job to call the SendNotificationAsync method every minute.
 
 Firstly, I will add the OrderCompleteJob to the dependency injection container in the ConfigureServices method.
 
@@ -280,7 +241,7 @@ Firstly, I will add the OrderCompleteJob to the dependency injection container i
 services.AddSingleton<IOrderCompleteJob, OrderCompleteJob>();
 ```
 
-Secondly, I will update the Configure method to take two new parameters. The first one is the IRecurringJobManager necessary for creating a recurring job. And the second one is the IServiceProvider to get the IPrintJob instance from the dependency injection container.
+Secondly, I will update the Configure method to take two new parameters. The first one is the IRecurringJobManager necessary for creating a recurring job. And the second one is the IServiceProvider to get the IOrderCompleteJob instance from the dependency injection container.
 
 Thirdly, I will call the AddOrUpdate on the IRecurringJobManager instance to set up a recurring job.
 
