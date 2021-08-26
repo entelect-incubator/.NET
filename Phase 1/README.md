@@ -645,7 +645,7 @@ namespace Pezza.Core
 
     public class StockCore : IStockCore
     {
-        private readonly IStockDataAccess dataAccess;
+        private readonly IStockDataAccess dataAccess;        
 
         private readonly IMapper mapper;
 
