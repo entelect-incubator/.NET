@@ -4,26 +4,44 @@
 
 <br/><br/>
 
-We will be looking at creating a solution for Pezza's customers only. We will start with what a typical solution might look like and refactor it into a clean architecture that can be used throughout the rest of the incubator. We will only be focussing on the Pezza Stock for this Phase. This is to show the scaffold of a new solution and projects for a clean architecture.
+We will be looking at creating a solution for Pezza's customers only. We will start with what a typical solution might look like and refactor it into a clean architecture that can be used throughout the rest of the incubator. We will only be focussing on the Pezza Stock for this Phase. This is to show the scaffold of a new solution and projects according to [.NET Clean Architecture](https://github.com/entelect-incubator/.NET-CleanArchitecture).
+
+## **What you will be building in Phase 1**
+
+![Phase 1 End Solution](./Assets/2021-08-26-19-31-55.png)
 
 ## **Setup**
 
-- [ ] Setup a new Pezza Solution
-  - [ ] Open Visual Studio - Create a new project
+Run [SQL file](pezza-db.sql) on your local SQL Server
+
+![](./Assets/2021-08-26-20-04-56.png)
+
+Create a new Pezza Solution - CMD Run dotnet new sln
 
 ![Database Context Interface Setup](./Assets/phase-1-new-solution.PNG)
-  - [ ] ASP.NET Core Web Application
 
-- [ ] Run [SQL file](pezza-db.sql) on your local SQL Server
-- [ ] We don't want everything in one folder and we want to follow the **Single Responsibility Principle**.
-  - [ ] Right Click on the Solution - Add New Solution Folder. Call it *01 Apis*. This is where we want to group all Apis together. Move the Api you create into the *01 Apis* <br/>![](Assets/2020-09-11-09-52-48.png)
-  - [ ] Next we want to create a Common project that can be used between all Projects
-    - [ ] Create a new Solution Folder *04 Common*
-    - [ ] Create a new Class Library Pezza.Common <br/> ![](Assets/2020-09-11-10-01-34.png) <br/> ![](Assets/2020-09-11-10-02-26.png)
-    - [ ] Create a folder *Entities* where all database models will go into <br/> ![](./Assets/2021-08-15-17-18-46.png)
-    - [ ] Create a Entity Stock.cs in a folder Entities <br/>![](Assets/2020-09-11-10-03-20.png)
-    - [ ] 
-``` 
+Create Clean Architecture Folder Structure in your new Solution as belows.
+
+![](./Assets/2021-08-26-19-39-43.png)
+
+## **Create the Common Layer**
+
+This will contain all entities, enums, exceptions, interfaces and types.
+
+**Nuget Packages Required**
+- [ ] AutoMapper
+
+Create a new Class Library Pezza.Common <br/> ![](Assets/2020-09-11-10-01-34.png) <br/> ![](Assets/2020-09-11-10-02-26.png)
+
+![Phase 1 Common Project](./Assets/2021-08-26-19-41-58.png)
+
+Create a folder *Entities* where all database models will go into <br/> ![](./Assets/2021-08-15-17-18-46.png)
+
+Create a Entity Stock.cs in a folder **Entities** <br/>![](Assets/2020-09-11-10-03-20.png)
+
+Stock.cs 
+
+```cs
 namespace Pezza.Common.Entities
 {
     using System;
@@ -49,55 +67,125 @@ namespace Pezza.Common.Entities
 }
 ```
 
-## **Database Layer**
+Create a folder *DTO* where all data transfer objects will go into <br/>  ![](./Assets/2021-08-26-19-49-57.png)
 
-- [ ] Next create a new Solution Folder *03 Database*
-- [ ] Create a new Class Library Pezza.DataAccess and Pezza.DataAccess.Contracts (This will used for Dependency Injection and Unit Tests) <br/> ![](Assets/2020-09-11-10-06-58.png)
-- [ ] Add Nuget Package to each project
-  - [ ]  Microsoft.EntityFrameworkCore.Relational
-  - [ ]  Sytem.Linq.Dynamic.Core in DataAccess
-- [ ] For interacting with the Database we will be using Entity Framework Core. Right-click on the Pezza.DataAccess and Pezza.DataAccessContracts project *Manage NuGet Packages...*. Search for EFCore Nuget Package, Install the following Packages
-  - [ ] Microsoft.EntityFrameworkCore
-- [ ] Create an interface in DataAccess.Contracts called IDatabaseContext.cs <br/> ![](Assets/2020-09-11-10-14-32.png)
+Create a Entity StockDTO.cs in a folder **DTO** <br/>![](./Assets/2021-08-26-19-50-19.png)
 
-```
-namespace Pezza.DataAccess.Contracts
+StockDTO.cs 
+
+```cs
+namespace Pezza.Common.DTO
 {
-    using System.Threading;
-    using System.Threading.Tasks;
-    using Microsoft.EntityFrameworkCore;
-    using Pezza.Common.Entities;
+    using System;
 
-    public interface IDatabaseContext
+    public class StockDTO
     {
-        DbSet<Stock> Stocks { get; set; }
+        public int Id { get; set; }
 
-        Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+        public string Name { get; set; }
+
+        public string UnitOfMeasure { get; set; }
+
+        public double? ValueOfMeasure { get; set; }
+
+        public int? Quantity { get; set; }
+
+        public DateTime? ExpiryDate { get; set; }
+
+        public string Comment { get; set; }
     }
 }
 ```
+
+Create a folder **Profiles** where all AutoMapper Profiles will go into. [What is AutoMapper?](https://docs.automapper.org/en/stable/Getting-started.html) <br/>  ![](./Assets/2021-08-26-19-52-29.png)
+
+Create a Entity MappingProfile.cs in a folder **Profiles** <br/>![](./Assets/2021-08-26-19-52-54.png)
+
+MappingProfile.cs
+
+```cs
+namespace Pezza.Common.Profiles
+{
+    using AutoMapper;
+    using Pezza.Common.DTO;
+    using Pezza.Common.Entities;
+
+    public class MappingProfile : Profile
+    {
+        public MappingProfile()
+        {
+            this.CreateMap<Stock, StockDTO>();
+            this.CreateMap<StockDTO, Stock>();
+        }
+    }
+}
+```
+
+## **Create the Database Layer**
+
+Create a new Class Library Pezza.DataAccess and Pezza.DataAccess.Contracts (This will used for Dependency Injection and Unit Tests) <br/> ![](Assets/2020-09-11-10-06-58.png)
+
+ For accessing the Database we will be using [Entity Framework Core](https://github.com/dotnet/efcore).
+
+**Nuget Packages Required**
+- [ ]  Microsoft.EntityFrameworkCore.Relational
+- [ ]  Sytem.Linq.Dynamic.Core in DataAccess
+
 DbSet will act as a Repository to the Database. You will see we have added SaveChangesAsync into the interface, this is to expose DbContext Entity Framework Core methods in your interface.
 
-- [ ] To be able to map the Database Table to the Entity we use Mappings from EntityFrameworkCore. We also prefer using Mappings for Single Responsibility instead of using Attributes inside of an Entity. This allows the code to stay clean. Create a new folder inside Pezza.DataAccess *Mapping* with a class StockMap.cs <br/> ![](Assets/2020-09-11-10-19-06.png)
+We need to create a DbContext.cs inside of Pezza.DataAccess. A [DbContext](https://docs.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.dbcontext?view=efcore-5.0) instance represents a session with the database and can be used to query and save instances of your entities. DbContext is a combination of the Unit Of Work and Repository patterns.
 
+ ![](Assets/2020-09-11-10-22-16.png)
+
+ DatabaseContext.cs
+
+```cs
+namespace Pezza.DataAccess
+{
+    using Microsoft.EntityFrameworkCore;
+    using Pezza.Common.Entities;
+    using Pezza.DataAccess.Mapping;
+
+    public class DatabaseContext : DbContext
+    {
+        public DatabaseContext()
+        {
+        }
+
+        public DatabaseContext(DbContextOptions options) : base(options)
+        {
+        }
+
+        public virtual DbSet<Stock> Stocks { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.ApplyConfiguration(new StockMap());
+        }
+    }
+}
 ```
+
+To be able to map the Database Table to the Entity we use Mappings from EF Core. We also prefer using Mappings for Single Responsibility instead of using Attributes inside of an Entity. This allows the code to stay clean. Create a new folder inside Pezza.DataAccess *Mapping* with a class StockMap.cs
+
+![](Assets/2020-09-11-10-19-06.png)
+
+StockMap.cs
+
+```cs
 namespace Pezza.DataAccess.Mapping
 {
     using Microsoft.EntityFrameworkCore;
     using Pezza.Common.Entities;
 
-    public partial class StockMap
-        : IEntityTypeConfiguration<Stock>
+    public partial class StockMap : IEntityTypeConfiguration<Stock>
     {
         public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Stock> builder)
         {
-            // table
             builder.ToTable("Stock", "dbo");
 
-            // key
             builder.HasKey(t => t.Id);
 
-            // properties
             builder.Property(t => t.Id)
                 .IsRequired()
                 .HasColumnName("Id")
@@ -139,47 +227,15 @@ namespace Pezza.DataAccess.Mapping
                 .HasColumnType("varchar(1000)")
                 .HasMaxLength(1000);
         }
-
     }
 }
 ```
+
 This will map the table name and all the fields as well as indicate what the primary key will be.
 
-- [ ] Now we need to create a DbContext.cs inside of Pezza.DataAccess that handles the session with the database or can be seen as a unit of work. <br/> ![](Assets/2020-09-11-10-22-16.png)
+### **Building the Data Access Contracts Project**
 
-
-
-```
-namespace Pezza.DataAccess
-{
-    using Microsoft.EntityFrameworkCore;
-    using Pezza.Common.Entities;
-    using Pezza.DataAccess.Mapping;
-
-    public class DatabaseContext : DbContext
-    {
-        public DatabaseContext()
-        {
-        }
-
-        public DatabaseContext(DbContextOptions options) : base(options)
-        {
-        }
-
-        public virtual DbSet<Stock> Stocks { get; set; }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.ApplyConfiguration(new StockMap());
-        }
-    }
-}
-
-```
-
-## **Data Access**
-
-To keep the calls to the database as clean as possible and single responsibility we will be creating Data Access interfaces and classes for each entity.
+To keep the calls to the database as clean as possible and single responsibility we will be creating Data Access interfaces and classes for each entity. We will also only be using the Stock Entity in the project. 
 
 - [ ] Create an interface in DataAccess.Contracts called IStockDataAccess.cs <br/> ![](Assets/2020-09-11-10-27-53.png)
 
@@ -196,16 +252,18 @@ namespace Pezza.DataAccess.Contracts
 
         Task<List<Stock>> GetAllAsync();
 
-        Task<Stock> UpdateAsync(Stock entity);
+        Task<Stock> UpdateAsync(Stock stock);
 
-        Task<Stock> SaveAsync(Stock entity);
+        Task<Stock> SaveAsync(Stock stock);
 
         Task<bool> DeleteAsync(int id);
     }
 }
 ```
 
-Create a new folder in *Pezza.DataAccess* called Data, add a new Data Access called StockDataAccess.cs. <br/> ![](Assets/2020-09-14-05-35-34.png)
+### **Building the Data Access Project**
+
+Create a new folder in **Pezza.DataAccess** called Data, add a new Data Access called StockDataAccess.cs. <br/> ![](Assets/2020-09-14-05-35-34.png)
 
 ```cs
 namespace Pezza.DataAccess.Data
@@ -214,48 +272,55 @@ namespace Pezza.DataAccess.Data
     using System.Linq;
     using System.Linq.Dynamic.Core;
     using System.Threading.Tasks;
+    using AutoMapper;
     using Microsoft.EntityFrameworkCore;
+    using Pezza.Common.Entities;
     using Pezza.DataAccess.Contracts;
 
     public class StockDataAccess : IStockDataAccess
     {
         private readonly DatabaseContext databaseContext;
 
-        public StockDataAccess(DatabaseContext databaseContext) 
+        public StockDataAccess(DatabaseContext databaseContext, IMapper mapper)
             => this.databaseContext = databaseContext;
 
-        public async Task<Common.Entities.Stock> GetAsync(int id)
-        {
-            return await this.databaseContext.Stocks.FirstOrDefaultAsync(x => x.Id == id);
-        }
+        public async Task<Stock> GetAsync(int id)
+            => await this.databaseContext.Stocks.FirstOrDefaultAsync(x => x.Id == id);
 
-        public async Task<List<Common.Entities.Stock>> GetAllAsync()
+        public async Task<List<Stock>> GetAllAsync()
         {
             var entities = await this.databaseContext.Stocks.Select(x => x).AsNoTracking().ToListAsync();
-
             return entities;
         }
 
-        public async Task<Common.Entities.Stock> SaveAsync(Common.Entities.Stock entity)
+        public async Task<Stock> SaveAsync(Stock stock)
         {
-            this.databaseContext.Stocks.Add(entity);
+            this.databaseContext.Stocks.Add(stock);
             await this.databaseContext.SaveChangesAsync();
 
-            return entity;
+            return stock;
         }
 
-        public async Task<Common.Entities.Stock> UpdateAsync(Common.Entities.Stock entity)
+        public async Task<Stock> UpdateAsync(Stock stock)
         {
-            this.databaseContext.Stocks.Update(entity);
+            this.databaseContext.Stocks.Update(stock);
             await this.databaseContext.SaveChangesAsync();
 
-            return entity;
+            return stock;
         }
 
         public async Task<bool> DeleteAsync(int id)
         {
-            var entity = await this.GetAsync(id);
+            var entity = await this.databaseContext.Stocks.FirstOrDefaultAsync(x => x.Id == id);
             this.databaseContext.Stocks.Remove(entity);
+            var result = await this.databaseContext.SaveChangesAsync();
+
+            return (result == 1);
+        }
+
+        public async Task<bool> DeleteAsync(Stock stock)
+        {
+            this.databaseContext.Stocks.Remove(stock);
             var result = await this.databaseContext.SaveChangesAsync();
 
             return (result == 1);
@@ -263,21 +328,61 @@ namespace Pezza.DataAccess.Data
     }
 }
 ```
+
+**Hint**
+
 The interesting part here is, when you call SaveChangesAsync it will return the number of changed records in the database. If you save a new record it will return the result of 1.
 
-## **Data Access Unit Test**
+## **Create a Unit Test Project**
 
 As we add value with the different layers, we need to make sure it is testable and create unit tests. This helps later on if code changes that Unit Tests will pick up any bugs.
 
 There are a variety of ways we can setup Unit Tests, this is one way to do it.
 
-- [ ] Next create a new Solution Folder *05 Tests*
-- [ ] Create a new NUnit Test Project <br/> ![](Assets/2020-09-14-05-50-19.png)
-- [ ] Install Nuget Package
+### **Overview**
+
+[Unit test basics](https://docs.microsoft.com/en-us/visualstudio/test/unit-test-basics?view=vs-2019)
+### **Setup**
+
+Create a new NUnit Test Project <br/> ![](Assets/2020-09-14-05-50-19.png)
+
+**Nuget Packages Required**
   - [ ]  Microsoft.EntityFrameworkCore.InMemory
   - [ ]  AutoMapper
   - [ ]  Bogus
-- [ ] Create a **Setup folder**, create QueryTestBase.cs class this will be inherited by by different Entity Data Access Test classes to expose Create() function.
+
+On the root folder create the following 2 classes.
+
+DatabaseContextTest.cs
+
+```cs
+namespace Pezza.Test
+{
+    using Microsoft.EntityFrameworkCore;
+    using Pezza.DataAccess;
+
+    public class DatabaseContextTest
+    {
+        protected DatabaseContextTest(DbContextOptions<DbContext> contextOptions)
+        {
+            this.ContextOptions = contextOptions;
+            this.Seed();
+        }
+
+        protected DbContextOptions<DbContext> ContextOptions { get; }
+
+        private void Seed()
+        {
+            using var context = new DatabaseContext(this.ContextOptions);
+
+            context.Database.EnsureDeleted();
+            context.Database.EnsureCreated();
+
+            context.SaveChanges();
+        }
+    }
+}
+```
 
 TestBase.cs - Create a In Memory DBContext.
 
@@ -299,7 +404,17 @@ namespace Pezza.Test
 }
 ```
 
+Create the following folders
+
+![](./Assets/2021-08-26-20-22-46.png)
+
+The **Setup folder**, create QueryTestBase.cs class this will be inherited by by different Entity Data Access Test classes to expose Create() function.
+
+What you will be creating in the Setup Folder
+
 ![](./Assets/2021-08-15-17-28-14.png)
+
+QueryTestBase.cs
 
 ```cs
 namespace Pezza.Test.Setup
@@ -317,7 +432,9 @@ namespace Pezza.Test.Setup
 }
 ```
 
-- [ ] Create DatabaseContextFactory.cs class in **Setup folder** that will be used to create a new DbContext object, but it will create a database session in memory.
+Create DatabaseContextFactory.cs class in **Setup folder** that will be used to create a new DbContext object, but it will create a database session in memory.
+
+DatabaseContextFactory.cs
 
 ```cs
 namespace Pezza.Test.Setup
@@ -357,8 +474,9 @@ namespace Pezza.Test.Setup
 }
 ```
 
-- [ ] Install Bogus NuGet Package to your *Pezza.Test* Project.
-- [ ] For clean code we will create Test Data for each Entity. Create a folder TestData, then create a folder Stock. Create a StockTestData.cs class. This will create a fake Stock Entity for testing. <br/> ![](Assets/2020-09-14-05-58-42.png)
+next we will create Test Data for each Entity. Inside the folder **TestData**, then create a folder **Stock**. Create a **StockTestData.cs** class. This will create a fake Stock Entity for testing. <br/> ![](Assets/2020-09-14-05-58-42.png)
+
+StockTestData.cs
 
 ```cs
 namespace Pezza.Test
@@ -385,7 +503,9 @@ namespace Pezza.Test
 
 }
 ```
-- [ ] Create a new folder DataAccess, that will be used to test Stock Data Access. Create TestStockDataAccess.cs class. <br/> ![](Assets/2020-09-14-06-01-45.png)
+Inside the DataAccess folder, create TestStockDataAccess.cs class. <br/> ![](Assets/2020-09-14-06-01-45.png)
+
+TestStockDataAccess.cs
 
 ```cs
 namespace Pezza.Test.DataAccess
@@ -393,7 +513,7 @@ namespace Pezza.Test.DataAccess
     using System.Threading.Tasks;
     using Bogus;
     using NUnit.Framework;
-    using Pezza.Common.DTO;
+    using Pezza.Common.Entities;
     using Pezza.DataAccess.Data;
     using Pezza.Test.Setup;
     using Pezza.Test.Setup.TestData.Stock;
@@ -403,13 +523,13 @@ namespace Pezza.Test.DataAccess
     {
         private StockDataAccess handler;
 
-        private StockDTO stock;
+        private Stock stock;
 
         [SetUp]
         public async Task Init()
         {
             this.handler = new StockDataAccess(this.Context, Mapper());
-            this.stock = StockTestData.StockDTO;
+            this.stock = StockTestData.Stock;
             this.stock = await this.handler.SaveAsync(this.stock);
         }
 
@@ -455,7 +575,7 @@ namespace Pezza.Test.DataAccess
 }
 ```
 
-Lets break this down.
+### **Break down**
 
 For every test we will create a new stock data access that will create a test session in memory to the database. We will then mock new stock using the stock test data. THen we will persist the new stock to the in-memory database.
 
@@ -465,86 +585,24 @@ For every test we will create a new stock data access that will create a test se
 - UpdateAsync (Tests updating existing stock) - We generate a new name for the stock item to be updated. We verify the updated stock's name with the updated stock if they are the same; your unit test is successful.
 - DeleteAsync (Tests removing stock) - We verify the result of deleting the stock from the in-memory database. Depending on the result being returned will determine the outcome of the unit test.
 
-## **Core Layer**
+## **Create the Core Layer**
 
-- [ ] Create a new Solution Folder *02 Core*, this where all of your business logic will be found. Imagine the "core" of the business lives here.
-- [ ] Let us put all the Solution Folders in the correct order of use. Think of it as a vertical slice down to the database. Start with the API call, through to the Business Layer, through to the Data Access layer.
-  - [ ] 01 Apis
-  - [ ] 02 Core
-  - [ ] 03 Database
-  - [ ] 04 Common
-  - [ ] 05 Tests <br/> ![](Assets/2020-09-15-04-24-39.png)
-- [ ] We don't always want to expose the entities properties back to API, we want to send back DTO (Data Transfer Objects).
-  - Remove circular references.
-  - Hide the particular properties that clients are not supposed to view.
-  - Omit some properties to reduce the payload size.
-  - Flatten object graphs that contain nested objects, to make them more convenient for clients.
-  - Avoid "over-posting" vulnerabilities.
-  - Decouple your service layer from your database layer
-  - [Read More](https://docs.microsoft.com/en-us/aspnet/web-api/overview/data/using-web-api-with-entity-framework/part-5)
-- [ ] Create a DTO folder in *Pezza.Common*
-- [ ] Create a new Class StockDTO.cs <br/> ![](Assets/2020-09-15-04-37-29.png)
+### **Intro**
 
-```cs
-namespace Pezza.Common.DTO
-{
-    using System;
+The Core Layer is where all of your business logic will live. Imagine this as the "core" of the business.
 
-    public class StockDTO
-    {
-        public int Id { get; set; }
+### **Setup**
 
-        public string Name { get; set; }
+Create 2 new Class Libraries inside of *02 Core* - Pezza.Core and Pezza.Core.Contracts. We will start by using very basic Stock Core.
 
-        public string UnitOfMeasure { get; set; }
+**Nuget Packages Required**
+  - [ ] Automapper
 
-        public double? ValueOfMeasure { get; set; }
+### **Building the Core Contracts Project**
 
-        public int? Quantity { get; set; }
+Create a new IStockCore Interface in *Pezza.Core.Contracts* <br/> ![](./Assets/2021-08-26-20-33-00.png)
 
-        public DateTime? ExpiryDate { get; set; }
-
-        public string Comment { get; set; }
-    }
-}
-```
-- [ ] We want to create Mapping between these 2 objects. Create a Mapping folder in *Pezza.Common*
-  - [ ] Install Nuget Package [AutoMapper](https://docs.automapper.org/en/stable/Getting-started.html)
-  - [ ] Create a new folder Profiles
-  - [ ] Create a new class MappingProfile.cs
-
-```cs
-namespace Pezza.Common.Profiles
-{
-    using AutoMapper;
-    using Pezza.Common.DTO;
-    using Pezza.Common.Entities;
-
-    public class MappingProfile : Profile
-    {
-        public MappingProfile()
-        {
-            this.CreateMap<Stock, StockDTO>();
-            this.CreateMap<StockDTO, Stock>();
-        }
-    }
-}
-
-```
-
-- [ ] In Pezza.Test QueryTestBase.cs add
-
-```cs
-public static IMapper Mapper()
-{
-    var mappingConfig = new MapperConfiguration(mc => mc.AddProfile(new MappingProfile()));
-    return mappingConfig.CreateMapper();
-}
-```
-
-- [ ] Create 2 new Class Libraries inside of *02 Core* - Pezza.Core and Pezza.Core.Contracts. We will start by using very basic Stock Core.
-  - [ ] Installl Nuget Package Automapper on these 2 Projects.
-  - [ ] Create a new IStockCore Interface in *Pezza.Core.Contracts* <br/> ![](./Assets/2021-08-15-18-28-44.png)
+IStockCore.cs
 
 ```cs
 namespace Pezza.Core.Contracts
@@ -552,7 +610,6 @@ namespace Pezza.Core.Contracts
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Pezza.Common.DTO;
-    using Pezza.Common.Entities;
 
     public interface IStockCore
     {
@@ -560,16 +617,20 @@ namespace Pezza.Core.Contracts
 
         Task<IEnumerable<StockDTO>> GetAllAsync();
 
-        Task<StockDTO> UpdateAsync(StockDTO model);
+        Task<StockDTO> UpdateAsync(StockDTO stock);
 
-        Task<StockDTO> SaveAsync(Stock model);
+        Task<StockDTO> SaveAsync(StockDTO stock);
 
         Task<bool> DeleteAsync(int id);
     }
 }
 ```
 
-- [ ] Create a new StockCore.cs inside of *Pezza.Core* <br/> ![](Assets/2020-09-15-05-07-13.png)
+### **Building the Core Project**
+
+Create a new StockCore.cs inside of *Pezza.Core* <br/> ![](Assets/2020-09-15-05-07-13.png)
+
+StockCore.cs
 
 ```cs
 namespace Pezza.Core
@@ -584,63 +645,45 @@ namespace Pezza.Core
 
     public class StockCore : IStockCore
     {
-        private readonly IStockDataAccess DataAccess;
+        private readonly IStockDataAccess dataAccess;
 
         private readonly IMapper mapper;
 
-        public StockCore(IStockDataAccess DataAccess, IMapper mapper)
-            => (this.DataAccess, this.mapper) = (DataAccess, mapper);
+        public StockCore(IStockDataAccess dataAccess, IMapper mapper)
+            => (this.dataAccess, this.mapper) = (dataAccess, mapper);
+
 
         public async Task<StockDTO> GetAsync(int id)
-        {
-            var search = await this.DataAccess.GetAsync(id);
-
-            return this.mapper.Map<StockDTO>(search);
-        }
+            => this.mapper.Map<StockDTO>(await this.dataAccess.GetAsync(id));
 
         public async Task<IEnumerable<StockDTO>> GetAllAsync()
+            => this.mapper.Map<List<StockDTO>>(await this.dataAccess.GetAllAsync());
+
+        public async Task<StockDTO> SaveAsync(StockDTO stock)
+            => this.mapper.Map<StockDTO>(await this.dataAccess.SaveAsync(this.mapper.Map<Stock>(stock)));
+
+        public async Task<StockDTO> UpdateAsync(StockDTO stock)
         {
-            var search = await this.DataAccess.GetAllAsync();
+            var findEntity = await this.dataAccess.GetAsync(stock.Id);
 
-            return this.mapper.Map<List<StockDTO>>(search);
-        }
+            findEntity.Name = !string.IsNullOrEmpty(stock.Name) ? stock.Name : findEntity.Name;
+            findEntity.UnitOfMeasure = !string.IsNullOrEmpty(stock.UnitOfMeasure) ? stock.UnitOfMeasure : findEntity.UnitOfMeasure;
+            findEntity.ValueOfMeasure = stock.ValueOfMeasure ?? findEntity.ValueOfMeasure;
+            findEntity.Quantity = stock.Quantity ?? findEntity.Quantity;
+            findEntity.ExpiryDate = stock.ExpiryDate ?? findEntity.ExpiryDate;
+            findEntity.Comment = stock.Comment;
+            await this.dataAccess.UpdateAsync(findEntity);
 
-        public async Task<StockDTO> SaveAsync(Stock model)
-        {
-
-            var outcome = await this.DataAccess.SaveAsync(model);
-
-            return this.mapper.Map<StockDTO>(outcome);
-        }
-
-        public async Task<StockDTO> UpdateAsync(StockDTO model)
-        {
-
-            var entity = await this.DataAccess.GetAsync(model.Id);            
-
-            entity.Name = !string.IsNullOrEmpty(model.Name) ? model.Name : entity.Name;
-            entity.UnitOfMeasure = !string.IsNullOrEmpty(model.UnitOfMeasure) ? model.UnitOfMeasure : entity.UnitOfMeasure;
-            entity.UnitOfMeasure = !string.IsNullOrEmpty(model.UnitOfMeasure) ? model.UnitOfMeasure : entity.UnitOfMeasure;
-            entity.ValueOfMeasure = (model.ValueOfMeasure.HasValue) ? model.ValueOfMeasure : entity.ValueOfMeasure;
-            entity.Quantity = (model.Quantity.HasValue) ? model.Quantity.Value : entity.Quantity;
-            entity.ExpiryDate = (model.ExpiryDate.HasValue) ? model.ExpiryDate : entity.ExpiryDate;
-            entity.Comment = (!string.IsNullOrEmpty(model.Comment)) ? model.Comment : entity.Comment;
-
-            var outcome = await this.DataAccess.UpdateAsync(entity);
-            return this.mapper.Map<StockDTO>(outcome);
+            return this.mapper.Map<StockDTO>(findEntity);
         }
 
         public async Task<bool> DeleteAsync(int id)
-        {
-            var outcome = await this.DataAccess.DeleteAsync(id);
-
-            return outcome;
-        }
+            => await this.dataAccess.DeleteAsync(id);
     }
 }
 ```
 
-- [ ] To keep the Dependency Injection clean and relevant to *Pezza.Core*, create a DependencyInjection.cs class that can be called from any Startup.cs class. <br/> ![](Assets/2020-09-15-05-10-13.png)
+To keep the Dependency Injection clean and relevant to **Pezza.Core**, create a DependencyInjection.cs class that can be called from any Startup.cs class. <br/> ![](Assets/2020-09-15-05-10-13.png)
 
 ```cs
 namespace Pezza.Core
@@ -658,23 +701,24 @@ namespace Pezza.Core
             services.AddTransient(typeof(IStockCore), typeof(StockCore));
             services.AddTransient(typeof(IStockDataAccess), typeof(StockDataAccess));
             services.AddAutoMapper(typeof(MappingProfile));
-            
-            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));
+
             return services;
         }
     }
 }
 ```
 
-## **Core Layer Unit Test**
+### **Create the Core Layer Unit Tests**
 
 Next, we will create unit tests for our Core Layer.
 
-- [ ] Create a new folder Core inside *Pezza.Test* with a class TestStockCore.cs. Also, add new StockDTO to StockTestData.cs <br/> ![](Assets/2020-09-15-05-13-20.png)
+Inside the folder **Core** create a class **TestStockCore.cs**. Also, add new StockDTO to StockTestData.cs <br/> ![](Assets/2020-09-15-05-13-20.png)
 
 ![](./Assets/2021-08-15-22-59-49.png)
 
 ![](./Assets/2021-08-15-23-01-27.png)
+
+Inside StockTestData.cs add the follwoing <br/> ![](./Assets/2021-08-26-20-38-22.png)
 
 ```cs
 public static StockDTO StockDTO = new StockDTO()
@@ -688,6 +732,8 @@ public static StockDTO StockDTO = new StockDTO()
 };
 ```
 
+Core\TestStockCore.cs
+
 ```cs
 namespace Pezza.Test.Core
 {
@@ -695,6 +741,7 @@ namespace Pezza.Test.Core
     using Bogus;
     using NUnit.Framework;
     using Pezza.Common.DTO;
+    using Pezza.Common.Entities;
     using Pezza.DataAccess.Data;
     using Pezza.Test.Setup;
     using Pezza.Test.Setup.TestData.Stock;
@@ -704,13 +751,13 @@ namespace Pezza.Test.Core
     {
         private StockDataAccess handler;
 
-        private StockDTO stock;
+        private Stock stock;
 
         [SetUp]
         public async Task Init()
         {
             this.handler = new StockDataAccess(this.Context, Mapper());
-            this.stock = StockTestData.StockDTO;
+            this.stock = StockTestData.Stock;
             this.stock = await this.handler.SaveAsync(this.stock);
         }
 
@@ -756,17 +803,21 @@ namespace Pezza.Test.Core
 }
 ```
 
+**Hint**
+
 Currently, the Unit test will be very similar to that of Data Access. When new Business Logic gets added to the Core layer, you will then add Unit Test for that specific criteria. We are currently focussing on putting down foundations.
 
-## **API Layer**
+## **Create the Apis Layer**
+### **Setup**
 
-Finally, let's put the last piece together.
+Create a new ASP.NET Core Web Application inside **01 Apis*** <br/>![](Assets/2020-09-11-09-52-48.png)
 
-- [ ] To bring our API to standard we all know that documentation is really important. What we want to do is Install Swagger / OpenAPI onto our API. This also makes it easier to test. [Read More](https://code-maze.com/swagger-ui-asp-net-core-web-api/) Install the Swashbuckle.AspNetCore NuGet package.
-```
-Install-Package Swashbuckle.AspNetCore
-```
-- [ ] Configuring the Swagger Middleware. Let's make the following changes in the ConfigureServices() method of the Startup.cs class. This adds the Swagger generator to the services collection.
+**Nuget Packages Required**
+- [ ] Swashbuckle.AspNetCore [Read More](https://code-maze.com/swagger-ui-asp-net-core-web-api/)
+
+### **Configuration**
+
+Configuring the Swagger Middleware. Let's make the following changes in the ConfigureServices() method of the Startup.cs class. This adds the Swagger generator to the services collection.
 
 ```cs
 public void ConfigureServices(IServiceCollection services)
@@ -779,7 +830,8 @@ public void ConfigureServices(IServiceCollection services)
     services.AddControllers();
 }
 ```
-- [ ] In the Configure() method, let’s enable the middleware for serving the generated JSON document and the Swagger UI
+
+In the Configure() method, let’s enable the middleware for serving the generated JSON document and the Swagger UI
 
 ```cs
 public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -795,7 +847,7 @@ public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 }
 ``` 
 
-- [ ] Inside of Startup.cs add DependencyInjection.cs inside of ConfigureService.
+Inside of Startup.cs add DependencyInjection.cs inside of ConfigureService.
 
 ```cs
 DependencyInjection.AddApplication(services);
@@ -810,7 +862,7 @@ DependencyInjection.AddApplication(services);
   },
 ```
 
-- [ ] Add Dependency injection for Database Context in Startup.cs ConfigureServices
+Add Dependency injection for Database Context in Startup.cs ConfigureServices
 
 ```cs
 // Add DbContext using SQL Server Provider
@@ -819,17 +871,33 @@ services.AddDbContext<DatabaseContext>(options =>
 );
 ```
 
-- [ ] Remove all refrences to WeatherForecast
-- [ ] Create new StockController.cs. We will create a restfull endpoint fo each Core method. <br/> ![](Assets/2020-09-15-05-31-22.png)
+Let us enable XML Documentation on the *Pezza.Api* project. Right-click on the API goes to Properties. <br/> ![](Assets/2020-09-15-05-59-50.png)
 
-First, add the dependency injection to Stock Core
+In the ConfigureServices() method, configure Swagger to use the XML file that’s generated in the above step.
+
+```cs
+services.AddSwaggerGen(c =>
+    {
+        c.SwaggerDoc("v1", new OpenApiInfo
+        {
+            Title = "Stock API",
+            Version = "v1",
+            Description = "An API to perform Stock operations"
+        });
+// Set the comments path for the Swagger JSON and UI.
+        var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+        var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+        c.IncludeXmlComments(xmlPath);
+    });
 ```
-private readonly IStockCore StockCore;
 
-public StockController(IStockCore StockCore) => this.StockCore = StockCore;
-```
+Change Debug setting to open Swagger by default <br/> ![](Assets/2020-09-15-06-14-01.png)
 
-Then all the endpoints.
+### **Create a API Controller**
+
+Create a new **StockController.cs**. We will create a restfull endpoint for **Stock Core** layer. <br/> ![](Assets/2020-09-15-05-31-22.png)
+
+StockController.cs
 
 ```cs
 namespace Pezza.Api.Controllers
@@ -918,26 +986,9 @@ namespace Pezza.Api.Controllers
 }
 ```
 
-- [ ] Let us enable XML Documentation on the *Pezza.Api* project. Right-click on the API goes to Properties. <br/> ![](Assets/2020-09-15-05-59-50.png)
-- [ ] In the ConfigureServices() method, configure Swagger to use the XML file that’s generated in the above step.
+### **Add XML Comments to the Stock API Controller**.
 
-```cs
-services.AddSwaggerGen(c =>
-    {
-        c.SwaggerDoc("v1", new OpenApiInfo
-        {
-            Title = "Stock API",
-            Version = "v1",
-            Description = "An API to perform Stock operations"
-        });
-// Set the comments path for the Swagger JSON and UI.
-        var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-        var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-        c.IncludeXmlComments(xmlPath);
-    });
-```
-
-- [ ] Add XML Comments to your Controller.
+StockController.cs
 
 ```cs
 namespace Pezza.Api.Controllers
@@ -1047,8 +1098,11 @@ namespace Pezza.Api.Controllers
 }
 ```
 
-- [ ] Change Debug setting to open Swagger by default <br/> ![](Assets/2020-09-15-06-14-01.png)
-- [ ] Press F5 and Phase 1 is Done <br/> ![](Assets/2020-09-15-06-38-33.png)
+## **Run you Pezza API**
+
+Press F5 and Test all the Stock Methods. 
+
+![](Assets/2020-09-15-06-38-33.png)
 
 ## **Phase 2 - CQRS**
 
