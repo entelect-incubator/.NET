@@ -25,7 +25,7 @@
             var path = AppDomain.CurrentDomain.BaseDirectory + "\\Email\\Templates\\OrderCompleted.html";
             var html = File.ReadAllText(path);
 
-            html = html.Replace("<%% ORDER %%>", notification.CompletedOrder.Id.ToString());
+            html = html.Replace("<%% ORDER %%>", Convert.ToString(notification.CompletedOrder.Id));
 
             var customer = notification.CompletedOrder?.Customer;
             var notify = await this.mediator.Send(new CreateNotifyCommand
