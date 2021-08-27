@@ -4,7 +4,7 @@
 
 <br/><br/>
 
-We are going to create a basic Email Service using Fluent Email and SendGrid.
+We are going to create a basic Email Service using [FluentEmail](https://github.com/lukencode/FluentEmail) and [SendGrid](https://sendgrid.com/).
 
 ## **FluentEmail**
 
@@ -18,7 +18,7 @@ You will need to set up a SendGrid account to execute the code in this phase.
 - [ ] [Read more about SendGrid API Keys](https://sendgrid.com/docs/ui/account-and-settings/api-keys/)
 - [ ] [Create API Key](https://app.sendgrid.com/settings/api_keys)
 
-In Pezza.Core create a new folder Email. Inside Email create a new EmailService.cs.
+Create a new folder called Email in Pezza.Core. Create a file inside the folder called EmailService.cs and add the following code.
 
 ```cs
 namespace Pezza.Core.Email

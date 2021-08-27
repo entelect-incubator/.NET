@@ -4,6 +4,6 @@
 
     public interface IOrderCompleteJob
     {
-        Task SendNotficationAsync();
+        Task SendNotificationAsync();
     }
 }

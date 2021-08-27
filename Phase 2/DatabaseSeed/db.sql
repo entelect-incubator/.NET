@@ -51,11 +51,12 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[Order](
-	[Id] [int] NOT NULL,
+	[Id] [int] IDENTITY(1,1) NOT NULL,
 	[CustomerId] [int] NOT NULL,
 	[RestaurantId] [int] NOT NULL,
 	[Amount] [decimal](17, 2) NOT NULL,
 	[DateCreated] [datetime] NOT NULL,
+	[Completed] [bit] NOT NULL
  CONSTRAINT [PK_Order] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC

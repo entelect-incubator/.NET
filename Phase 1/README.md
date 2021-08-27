@@ -20,7 +20,7 @@ Create a new Pezza Solution - CMD Run dotnet new sln
 
 ![Database Context Interface Setup](./Assets/phase-1-new-solution.PNG)
 
-Create Clean Architecture Folder Structure in your new Solution as belows.
+Create Clean Architecture Folder Structure in your new Solution as below.
 
 ![](./Assets/2021-08-26-19-39-43.png)
 

@@ -7,7 +7,6 @@ namespace Pezza.Core
     using Pezza.Common.Behaviours;
     using Pezza.Common.DTO;
     using Pezza.Common.Profiles;
-    using Pezza.Core.Stock.Commands;
     using Pezza.DataAccess.Contracts;
     using Pezza.DataAccess.Data;
 
@@ -15,13 +14,10 @@ namespace Pezza.Core
     {
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
-            services.AddMediatR((typeof(CreateStockCommand).GetTypeInfo().Assembly));
-            services.AddAutoMapper(Assembly.GetExecutingAssembly());
-
-            AssemblyScanner.FindValidatorsInAssembly(typeof(CreateStockCommand).Assembly)
-                .ForEach(item => services.AddScoped(item.InterfaceType, item.ValidatorType));
-
+            services.AddMediatR(Assembly.GetExecutingAssembly());
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+            services.AddAutoMapper(typeof(MappingProfile));
+
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));
 
@@ -31,8 +27,6 @@ namespace Pezza.Core
             services.AddTransient(typeof(IDataAccess<ProductDTO>), typeof(ProductDataAccess));
             services.AddTransient(typeof(IDataAccess<CustomerDTO>), typeof(CustomerDataAccess));
             services.AddTransient(typeof(IDataAccess<RestaurantDTO>), typeof(RestaurantDataAccess));
-
-            services.AddAutoMapper(typeof(MappingProfile));
 
             return services;
         }

@@ -50,7 +50,7 @@
 
             this.databaseContext.Orders.Add(entity);
             await this.databaseContext.SaveChangesAsync();
-            dto.Id = entity.Id;
+            dto = this.mapper.Map<OrderDTO>(entity);
 
             return dto;
         }

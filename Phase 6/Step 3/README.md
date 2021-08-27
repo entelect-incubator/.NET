@@ -252,7 +252,7 @@ public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IRecurri
 ```cs
 recurringJobManager.AddOrUpdate(
     "Run every minute",
-    () => serviceProvider.GetService<IOrderCompleteJob>().SendNotficationAsync(),
+    () => serviceProvider.GetService<IOrderCompleteJob>().SendNotificationAsync(),
     "* * * * *"
     );
 ```

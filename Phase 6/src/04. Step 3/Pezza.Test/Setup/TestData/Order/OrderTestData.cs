@@ -18,9 +18,9 @@
         public static OrderDTO OrderDTO = new OrderDTO()
         {
             Amount = faker.Finance.Amount(),
-            Customer = CustomerTestData.CustomerDTO,
+            Customer = null,
             CustomerId = 1,
-            Restaurant = RestaurantTestData.RestaurantDTO,
+            Restaurant = null,
             RestaurantId = 1,
             DateCreated = DateTime.Now,
             Completed = false,
@@ -28,8 +28,9 @@
             {
                 new OrderItemDTO()
                 {
-                    OrderId = 1,
-                    Product = ProductTestData.ProductDTO
+                    OrderId = 0,
+                    Product = null,
+                    ProductId = 1
                 }
             }
         };

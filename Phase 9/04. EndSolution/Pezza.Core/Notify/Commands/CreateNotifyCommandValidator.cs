@@ -11,8 +11,6 @@
                 .NotNull();
 
             this.RuleFor(r => r.Data.Email)
-                .MaximumLength(800)
-                .EmailAddress()
                 .NotEmpty();
         }
     }

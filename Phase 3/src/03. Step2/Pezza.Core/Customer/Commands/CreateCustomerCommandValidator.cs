@@ -13,7 +13,7 @@
 
             this.RuleFor(r => r.Data.Phone)
                 .MaximumLength(20)
-                .Matches(@"^\d$")
+                .Matches(@"^[0-9]*$")
                 .NotEmpty();
 
             this.RuleFor(r => r.Data.Email)
