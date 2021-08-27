@@ -6,6 +6,7 @@
     using System.Threading.Tasks;
     using MediatR;
     using Pezza.Common.DTO;
+    using Pezza.Core.Customer.Queries;
     using Pezza.Core.Email;
     using Pezza.Core.Notify.Commands;
 
@@ -27,18 +28,22 @@
 
             html = html.Replace("<%% ORDER %%>", Convert.ToString(notification.CompletedOrder.Id));
 
-            var customer = notification.CompletedOrder?.Customer;
-            var notify = await this.mediator.Send(new CreateNotifyCommand
+            var customerResult = await this.mediator.Send(new GetCustomerQuery { Id = notification.CompletedOrder.CustomerId.Value });
+
+            if (customerResult.Succeeded)
             {
-                Data = new NotifyDTO
+                var notify = await this.mediator.Send(new CreateNotifyCommand
                 {
-                    CustomerId = customer.Id,
-                    DateSent = DateTime.Now,
-                    Email = customer.Email,
-                    Sent = false,
-                    Retry = 0
-                }
-            });
+                    Data = new NotifyDTO
+                    {
+                        CustomerId = customerResult.Data.Id,
+                        DateSent = DateTime.Now,
+                        Email = html,
+                        Sent = false,
+                        Retry = 0
+                    }
+                });
+            }
         }
     }
 }
