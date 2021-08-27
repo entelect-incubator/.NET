@@ -6,6 +6,7 @@
     using Pezza.Common.Models;
     using Pezza.Core.Customer.Queries;
     using Pezza.Core.Email;
+    using Pezza.Core.Notify.Commands;
     using Pezza.Core.Notify.Queries;
 
     public class OrderCompleteJob : IOrderCompleteJob
@@ -44,7 +45,13 @@
                                 HtmlContent = notification.Email
                             };
 
-                            var send = await emailService.SendEmail();
+                            var emailResult = await emailService.SendEmail();
+
+                            if (emailResult.Succeeded)
+                            {
+                                notification.Sent = true;
+                                var updateNotifyResult = await this.mediator.Send(new UpdateNotifyCommand{ Data = notification });
+                            }
                         }
                     }
                 }

@@ -4,8 +4,9 @@
     using MediatR;
     using Pezza.Common.DTO;
     using Pezza.Common.Models;
-using Pezza.Core.Customer.Queries;
+    using Pezza.Core.Customer.Queries;
     using Pezza.Core.Email;
+    using Pezza.Core.Notify.Commands;
     using Pezza.Core.Notify.Queries;
 
     public class OrderCompleteJob : IOrderCompleteJob
@@ -14,9 +15,9 @@ using Pezza.Core.Customer.Queries;
 
         public OrderCompleteJob(IMediator mediator) => this.mediator = mediator;
 
-        public async Task SendNotficationAsync()
+        public async Task SendNotificationAsync()
         {
-            var result = await this.mediator.Send(new GetNotifiesQuery
+            var notifiesResult = await this.mediator.Send(new GetNotifiesQuery
             {
                 dto = new NotifyDTO
                 {
@@ -24,26 +25,33 @@ using Pezza.Core.Customer.Queries;
                     PagingArgs = PagingArgs.Default
                 }
             });
-            if (result.Succeeded)
+
+            if (notifiesResult.Succeeded)
             {
-                foreach (var notification in result.Data)
+                foreach (var notification in notifiesResult.Data)
                 {
                     if (notification.CustomerId.HasValue)
                     {
-                        var customer = await this.mediator.Send(new GetCustomerQuery
+                        var customerResult = await this.mediator.Send(new GetCustomerQuery
                         {
                             Id = notification.CustomerId.Value
                         });
 
-                        if (customer.Succeeded)
+                        if (customerResult.Succeeded)
                         {
                             var emailService = new EmailService
                             {
-                                Customer = customer.Data,
+                                Customer = customerResult.Data,
                                 HtmlContent = notification.Email
                             };
 
-                            var send = await emailService.SendEmail();
+                            var emailResult = await emailService.SendEmail();
+
+                            if (emailResult.Succeeded)
+                            {
+                                notification.Sent = true;
+                                var updateNotifyResult = await this.mediator.Send(new UpdateNotifyCommand{ Data = notification });
+                            }
                         }
                     }
                 }
