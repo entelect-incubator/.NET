@@ -56,6 +56,7 @@ CREATE TABLE [dbo].[Order](
 	[RestaurantId] [int] NOT NULL,
 	[Amount] [decimal](17, 2) NOT NULL,
 	[DateCreated] [datetime] NOT NULL,
+	[Completed] [bit] NOT NULL
  CONSTRAINT [PK_Order] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
