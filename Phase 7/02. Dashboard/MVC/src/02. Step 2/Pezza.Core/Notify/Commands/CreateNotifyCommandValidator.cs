@@ -7,7 +7,7 @@
     {
         public CreateNotifyCommandValidator()
         {
-            this.RuleFor(r => r.Data.CustomerId)                
+            this.RuleFor(r => r.Data.CustomerId)
                 .NotNull();
 
             this.RuleFor(r => r.Data.Email)
