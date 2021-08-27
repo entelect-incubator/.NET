@@ -1,4 +1,4 @@
-<img align="left" width="116" height="116" src="../pezza-logo.png" />
+<img align="left" width="116" height="116" src="../Assets/pezza-logo.png" />
 
 # &nbsp;**Pezza - Phase 2 - Step 3**
 
@@ -8,13 +8,9 @@ Finishing up the API to use CQRS
 
 ## **API**
 
-Create helper class for you API Project.
+In order to return clean unified responses consumers of the API, ActionResult Helper class. Depending on the data retrieved from the Core layer it will cater for the HTTP response and prevent duplicating code in controllers.
 
-Returning clean unified responses to the consumer of your API will be creating an Action Result Helper. Depending on the data retrieve from your Core layer it will cater for the HTTP Response and don't have duplicate code all over the Controllers.
-
-This ensure we always return the same Result Object back to the consumer.
-
-ActionResultHelper.cs
+Create a Helpers folder in Pezza.Api and ResultHelper.cs inside it with the following code.
 
 ```cs
 namespace Pezza.Api.Helpers
