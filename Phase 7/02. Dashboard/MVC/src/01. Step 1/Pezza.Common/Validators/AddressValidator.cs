@@ -41,6 +41,7 @@
 
             this.RuleFor(x => x.PostalCode)
             .Must(x => int.TryParse(x, out var val) && val > 0)
+            .When(x => !string.IsNullOrWhiteSpace(x.PostalCode))
             .MaximumLength(8);
         }
     }
