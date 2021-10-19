@@ -35,7 +35,7 @@ GO
 CREATE TABLE [dbo].[Notify](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
 	[CustomerId] [int] NOT NULL,
-	[Email] [nvarchar](max) NOT NULL,
+	[Email] [varchar](max) NOT NULL,
 	[Sent] [bit] NOT NULL,
 	[Retry] [int] NOT NULL,
 	[DateSent] [datetime] NOT NULL,

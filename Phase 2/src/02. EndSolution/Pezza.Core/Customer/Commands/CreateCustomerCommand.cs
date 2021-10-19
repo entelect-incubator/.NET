@@ -2,6 +2,7 @@
 {
     using System.Threading;
     using System.Threading.Tasks;
+    using AutoMapper;
     using MediatR;
     using Pezza.Common.DTO;
     using Pezza.Common.Models;
@@ -16,8 +17,10 @@
     {
         private readonly IDataAccess<CustomerDTO> dataAccess;
 
-        public CreateCustomerCommandHandler(IDataAccess<CustomerDTO> dataAccess)
-            => this.dataAccess = dataAccess;
+        private readonly IMapper mapper;
+
+        public CreateCustomerCommandHandler(IDataAccess<CustomerDTO> dataAccess, IMapper mapper)
+            => (this.dataAccess, this.mapper) = (dataAccess, mapper);
 
         public async Task<Result<CustomerDTO>> Handle(CreateCustomerCommand request, CancellationToken cancellationToken)
         {

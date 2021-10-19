@@ -1,11 +1,10 @@
 namespace Pezza.Common.Entities
 {
     using System;
+    using Pezza.Common.Models.Base;
 
-    public class Notify
+    public class Notify : EntityBase
     {
-        public int Id { get; set; }
-
         public int CustomerId { get; set; }
 
         public string Email { get; set; }
@@ -15,5 +14,7 @@ namespace Pezza.Common.Entities
         public int Retry { get; set; }
 
         public DateTime DateSent { get; set; }
+
+        public virtual Customer Customer { get; set; }
     }
 }

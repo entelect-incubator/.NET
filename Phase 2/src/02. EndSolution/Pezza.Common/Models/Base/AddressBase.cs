@@ -1,6 +1,6 @@
-﻿namespace Pezza.Common.Entities
+﻿namespace Pezza.Common.Models.Base
 {
-    public class AddressBase
+    public class AddressBase : EntityBase
     {
         public string Address { get; set; }
 

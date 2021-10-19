@@ -3,7 +3,7 @@ namespace Pezza.Test.DataAccess
     using System.Threading.Tasks;
     using Bogus;
     using NUnit.Framework;
-    using Pezza.Common.DTO;
+    using Pezza.Common.Entities;
     using Pezza.DataAccess.Data;
     using Pezza.Test.Setup;
     using Pezza.Test.Setup.TestData.Stock;
@@ -13,13 +13,13 @@ namespace Pezza.Test.DataAccess
     {
         private StockDataAccess handler;
 
-        private StockDTO stock;
+        private Stock stock;
 
         [SetUp]
         public async Task Init()
         {
             this.handler = new StockDataAccess(this.Context, Mapper());
-            this.stock = StockTestData.StockDTO;
+            this.stock = StockTestData.Stock;
             this.stock = await this.handler.SaveAsync(this.stock);
         }
 

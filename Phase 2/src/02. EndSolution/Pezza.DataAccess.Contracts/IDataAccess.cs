@@ -2,17 +2,20 @@ namespace Pezza.DataAccess.Contracts
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using Pezza.Common.Models.Base;
 
-    public interface IDataAccess<T>
+    public interface IDataAccess<TEntity> where TEntity : EntityBase
     {
-        Task<T> GetAsync(int id);
+        Task<TEntity> GetAsync(int id);
 
-        Task<List<T>> GetAllAsync();
+        Task<List<TEntity>> GetAllAsync(string[] includes);
 
-        Task<T> UpdateAsync(T dto);
-
-        Task<T> SaveAsync(T dto);
+        Task SaveAsync(TEntity entity);
+        
+        void Update(TEntity entity);
 
         Task<bool> DeleteAsync(int id);
+
+        Task<int> Complete();
     }
 }

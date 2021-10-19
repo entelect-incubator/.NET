@@ -3,7 +3,6 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Pezza.Common.DTO;
-    using Pezza.Common.Entities;
 
     public interface IStockCore
     {
@@ -11,9 +10,9 @@
 
         Task<IEnumerable<StockDTO>> GetAllAsync();
 
-        Task<StockDTO> UpdateAsync(StockDTO dto);
+        Task<StockDTO> UpdateAsync(StockDTO stock);
 
-        Task<StockDTO> SaveAsync(StockDTO dto);
+        Task<StockDTO> SaveAsync(StockDTO stock);
 
         Task<bool> DeleteAsync(int id);
     }

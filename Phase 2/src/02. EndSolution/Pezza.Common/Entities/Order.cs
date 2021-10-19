@@ -2,12 +2,11 @@ namespace Pezza.Common.Entities
 {
     using System;
     using System.Collections.Generic;
+    using Pezza.Common.Models.Base;
 
-    public class Order
+    public class Order : EntityBase
     {
         public Order() => this.OrderItems = new HashSet<OrderItem>();
-
-        public int Id { get; set; }
 
         public int CustomerId { get; set; }
 
