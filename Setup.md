@@ -77,7 +77,7 @@ At the bottom of Visual Studio click on the broom and choose **Configure Code Cl
 
 ![](./Assets/2021-08-15-14-31-39.png)
 
-No on any file you can press Ctr+K and then Ctrl+E to cleanup your code. This helps for consitency and clean code.
+Note on any file you can press Ctr+K and then Ctrl+E to cleanup your code. This helps for consitency and clean code.
 
 ### **Pezza Digital Solutions Intro**
 
