@@ -17,8 +17,6 @@ namespace Pezza.DataAccess
         public virtual DbSet<Stock> Stocks { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.ApplyConfiguration(new StockMap());
-        }
+            => modelBuilder.ApplyConfiguration(new StockMap());
     }
 }

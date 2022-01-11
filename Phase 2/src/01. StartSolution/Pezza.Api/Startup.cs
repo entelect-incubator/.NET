@@ -12,14 +12,11 @@ namespace Pezza.Api
     using Microsoft.OpenApi.Models;
     using Pezza.Core;
     using Pezza.DataAccess;
-    using Pezza.DataAccess.Contracts;
 
     public class Startup
     {
         public Startup(IConfiguration configuration)
-        {
-            this.Configuration = configuration;
-        }
+            => this.Configuration = configuration;
 
         public IConfiguration Configuration { get; }
 
@@ -41,9 +38,7 @@ namespace Pezza.Api
             });
 
             // Add DbContext using SQL Server Provider
-            services.AddDbContext<DatabaseContext>(options =>
-                options.UseSqlServer(this.Configuration.GetConnectionString("PezzaDatabase"))
-            );
+            services.AddDbContext<DatabaseContext>(options => options.UseSqlServer(this.Configuration.GetConnectionString("PezzaDatabase")));
 
             DependencyInjection.AddApplication(services);
         }
@@ -57,8 +52,8 @@ namespace Pezza.Api
 
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
-            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
-            // specifying the Swagger JSON endpoint.
+            //// Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+            //// specifying the Swagger JSON endpoint.
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Stock API V1");

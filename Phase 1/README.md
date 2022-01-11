@@ -233,106 +233,6 @@ namespace Pezza.DataAccess.Mapping
 
 This will map the table name and all the fields as well as indicate what the primary key will be.
 
-### **Building the Data Access Contracts Project**
-
-To keep the calls to the database as clean as possible and single responsibility we will be creating Data Access interfaces and classes for each entity. We will also only be using the Stock Entity in the project. 
-
-- [ ] Create an interface in DataAccess.Contracts called IStockDataAccess.cs <br/> ![](Assets/2020-09-11-10-27-53.png)
-
-```cs
-namespace Pezza.DataAccess.Contracts
-{
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using Pezza.Common.Entities;
-
-    public interface IStockDataAccess
-    {
-        Task<Stock> GetAsync(int id);
-
-        Task<List<Stock>> GetAllAsync();
-
-        Task<Stock> UpdateAsync(Stock stock);
-
-        Task<Stock> SaveAsync(Stock stock);
-
-        Task<bool> DeleteAsync(int id);
-    }
-}
-```
-
-### **Building the Data Access Project**
-
-Create a new folder in **Pezza.DataAccess** called Data, add a new Data Access called StockDataAccess.cs. <br/> ![](Assets/2020-09-14-05-35-34.png)
-
-```cs
-namespace Pezza.DataAccess.Data
-{
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Linq.Dynamic.Core;
-    using System.Threading.Tasks;
-    using AutoMapper;
-    using Microsoft.EntityFrameworkCore;
-    using Pezza.Common.Entities;
-    using Pezza.DataAccess.Contracts;
-
-    public class StockDataAccess : IStockDataAccess
-    {
-        private readonly DatabaseContext databaseContext;
-
-        public StockDataAccess(DatabaseContext databaseContext, IMapper mapper)
-            => this.databaseContext = databaseContext;
-
-        public async Task<Stock> GetAsync(int id)
-            => await this.databaseContext.Stocks.FirstOrDefaultAsync(x => x.Id == id);
-
-        public async Task<List<Stock>> GetAllAsync()
-        {
-            var entities = await this.databaseContext.Stocks.Select(x => x).AsNoTracking().ToListAsync();
-            return entities;
-        }
-
-        public async Task<Stock> SaveAsync(Stock stock)
-        {
-            this.databaseContext.Stocks.Add(stock);
-            await this.databaseContext.SaveChangesAsync();
-
-            return stock;
-        }
-
-        public async Task<Stock> UpdateAsync(Stock stock)
-        {
-            this.databaseContext.Stocks.Update(stock);
-            await this.databaseContext.SaveChangesAsync();
-
-            return stock;
-        }
-
-        public async Task<bool> DeleteAsync(int id)
-        {
-            var entity = await this.databaseContext.Stocks.FirstOrDefaultAsync(x => x.Id == id);
-            this.databaseContext.Stocks.Remove(entity);
-            var result = await this.databaseContext.SaveChangesAsync();
-
-            return (result == 1);
-        }
-
-        public async Task<bool> DeleteAsync(Stock stock)
-        {
-            this.databaseContext.Stocks.Remove(stock);
-            var result = await this.databaseContext.SaveChangesAsync();
-
-            return (result == 1);
-        }
-    }
-}
-```
-
-**Hint**
-
-The interesting part here is, when you call SaveChangesAsync it will return the number of changed records in the database. If you save a new record it will return the result of 1.
-
 ## **Create a Unit Test Project**
 
 As we add value with the different layers, we need to make sure it is testable and create unit tests. This helps later on if code changes that Unit Tests will pick up any bugs.
@@ -406,13 +306,13 @@ namespace Pezza.Test
 
 Create the following folders
 
-![](./Assets/2021-08-26-20-22-46.png)
+![](Assets/2021-10-21-08-25-02.png)
 
-The **Setup folder**, create QueryTestBase.cs class this will be inherited by by different Entity Data Access Test classes to expose Create() function.
+The **Setup folder**, create QueryTestBase.cs class this will be inherited by different Entity Data Access Test classes to expose Create() function.
 
 What you will be creating in the Setup Folder
 
-![](./Assets/2021-08-15-17-28-14.png)
+![](Assets/2021-10-21-08-25-59.png)
 
 QueryTestBase.cs
 
@@ -500,90 +400,8 @@ namespace Pezza.Test
             ValueOfMeasure = 10.5
         };
     }
-
 }
 ```
-Inside the DataAccess folder, create TestStockDataAccess.cs class. <br/> ![](Assets/2020-09-14-06-01-45.png)
-
-TestStockDataAccess.cs
-
-```cs
-namespace Pezza.Test.DataAccess
-{
-    using System.Threading.Tasks;
-    using Bogus;
-    using NUnit.Framework;
-    using Pezza.Common.Entities;
-    using Pezza.DataAccess.Data;
-    using Pezza.Test.Setup;
-    using Pezza.Test.Setup.TestData.Stock;
-
-    [TestFixture]
-    public class TestStockDataAccess : QueryTestBase
-    {
-        private StockDataAccess handler;
-
-        private Stock stock;
-
-        [SetUp]
-        public async Task Init()
-        {
-            this.handler = new StockDataAccess(this.Context, Mapper());
-            this.stock = StockTestData.Stock;
-            this.stock = await this.handler.SaveAsync(this.stock);
-        }
-
-        [Test]
-        public async Task GetAsync()
-        {
-            var response = await this.handler.GetAsync(this.stock.Id);
-            Assert.IsTrue(response != null);
-        }
-
-        [Test]
-        public async Task GetAllAsync()
-        {
-            var response = await this.handler.GetAllAsync();
-            Assert.IsTrue(response.Count == 1);
-        }
-
-        [Test]
-        public void SaveAsync()
-        {
-            var outcome = this.stock.Id != 0;
-            Assert.IsTrue(outcome);
-        }
-
-        [Test]
-        public async Task UpdateAsync()
-        {
-            var originalStock = this.stock;
-            this.stock.Name = new Faker().Commerce.Product();
-            var response = await this.handler.UpdateAsync(this.stock);
-            var outcome = response.Name.Equals(originalStock.Name);
-
-            Assert.IsTrue(outcome);
-        }
-
-        [Test]
-        public async Task DeleteAsync()
-        {
-            var response = await this.handler.DeleteAsync(this.stock.Id);
-            Assert.IsTrue(response);
-        }
-    }
-}
-```
-
-### **Break down**
-
-For every test we will create a new stock data access that will create a test session in memory to the database. We will then mock new stock using the stock test data. THen we will persist the new stock to the in-memory database.
-
-- GetAsync (Tests the get stock by id) - We retrieve the newly created stock from the in-memory database using the stock id. If the data that gets return is found, your unit test is successful.
-- GetAllAsync (Tests list of stock) - We retrieve a list of all the stock from the in-memory database. If the count of data returned is equalled to 1, your unit test is successful.
-- SaveAsync (Tests creating new stock) - We verify the result of records changed from the save changes should equal to 1, meaning your unit test is successful.
-- UpdateAsync (Tests updating existing stock) - We generate a new name for the stock item to be updated. We verify the updated stock's name with the updated stock if they are the same; your unit test is successful.
-- DeleteAsync (Tests removing stock) - We verify the result of deleting the stock from the in-memory database. Depending on the result being returned will determine the outcome of the unit test.
 
 ## **Create the Core Layer**
 
@@ -636,35 +454,44 @@ StockCore.cs
 namespace Pezza.Core
 {
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
     using AutoMapper;
+    using Microsoft.EntityFrameworkCore;
     using Pezza.Common.DTO;
     using Pezza.Common.Entities;
     using Pezza.Core.Contracts;
-    using Pezza.DataAccess.Contracts;
+    using Pezza.DataAccess;
 
     public class StockCore : IStockCore
     {
-        private readonly IStockDataAccess dataAccess;        
+        private readonly DatabaseContext databaseContext;
 
         private readonly IMapper mapper;
 
-        public StockCore(IStockDataAccess dataAccess, IMapper mapper)
-            => (this.dataAccess, this.mapper) = (dataAccess, mapper);
-
+        public StockCore(DatabaseContext databaseContext, IMapper mapper)
+            => (this.databaseContext, this.mapper) = (databaseContext, mapper);
 
         public async Task<StockDTO> GetAsync(int id)
-            => this.mapper.Map<StockDTO>(await this.dataAccess.GetAsync(id));
+            => this.mapper.Map<StockDTO>(await this.databaseContext.Stocks.FirstOrDefaultAsync(x => x.Id == id));
 
         public async Task<IEnumerable<StockDTO>> GetAllAsync()
-            => this.mapper.Map<List<StockDTO>>(await this.dataAccess.GetAllAsync());
+        {
+            var entities = await this.databaseContext.Stocks.Select(x => x).AsNoTracking().ToListAsync();
+            return this.mapper.Map<List<StockDTO>>(entities);
+        }
 
         public async Task<StockDTO> SaveAsync(StockDTO stock)
-            => this.mapper.Map<StockDTO>(await this.dataAccess.SaveAsync(this.mapper.Map<Stock>(stock)));
+        {
+            var entity = this.mapper.Map<Stock>(stock);
+            this.databaseContext.Stocks.Add(entity);
+            await this.databaseContext.SaveChangesAsync();
+            return this.mapper.Map<StockDTO>(entity);
+        }
 
         public async Task<StockDTO> UpdateAsync(StockDTO stock)
         {
-            var findEntity = await this.dataAccess.GetAsync(stock.Id);
+            var findEntity = await this.databaseContext.Stocks.FirstOrDefaultAsync(x => x.Id == stock.Id);
 
             findEntity.Name = !string.IsNullOrEmpty(stock.Name) ? stock.Name : findEntity.Name;
             findEntity.UnitOfMeasure = !string.IsNullOrEmpty(stock.UnitOfMeasure) ? stock.UnitOfMeasure : findEntity.UnitOfMeasure;
@@ -672,16 +499,28 @@ namespace Pezza.Core
             findEntity.Quantity = stock.Quantity ?? findEntity.Quantity;
             findEntity.ExpiryDate = stock.ExpiryDate ?? findEntity.ExpiryDate;
             findEntity.Comment = stock.Comment;
-            await this.dataAccess.UpdateAsync(findEntity);
+            this.databaseContext.Stocks.Update(findEntity);
+            await this.databaseContext.SaveChangesAsync();
 
             return this.mapper.Map<StockDTO>(findEntity);
         }
 
         public async Task<bool> DeleteAsync(int id)
-            => await this.dataAccess.DeleteAsync(id);
+        {
+            var entity = await this.databaseContext.Stocks.FirstOrDefaultAsync(x => x.Id == id);
+            this.databaseContext.Stocks.Remove(entity);
+            var result = await this.databaseContext.SaveChangesAsync();
+
+            return result == 1;
+        }
     }
 }
 ```
+
+**Hint**
+
+The interesting part here is, when you call SaveChangesAsync it will return the number of changed records in the database. If you save a new record it will return the result of 1.
+
 
 To keep the Dependency Injection clean and relevant to **Pezza.Core**, create a DependencyInjection.cs class that can be called from any Startup.cs class. <br/> ![](Assets/2020-09-15-05-10-13.png)
 
@@ -691,15 +530,12 @@ namespace Pezza.Core
     using Microsoft.Extensions.DependencyInjection;
     using Pezza.Common.Profiles;
     using Pezza.Core.Contracts;
-    using Pezza.DataAccess.Contracts;
-    using Pezza.DataAccess.Data;
 
     public static class DependencyInjection
     {
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
             services.AddTransient(typeof(IStockCore), typeof(StockCore));
-            services.AddTransient(typeof(IStockDataAccess), typeof(StockDataAccess));
             services.AddAutoMapper(typeof(MappingProfile));
 
             return services;
@@ -716,7 +552,7 @@ Inside the folder **Core** create a class **TestStockCore.cs**. Also, add new St
 
 ![](./Assets/2021-08-15-22-59-49.png)
 
-![](./Assets/2021-08-15-23-01-27.png)
+![](Assets/2021-10-21-08-29-42.png)
 
 Inside StockTestData.cs add the follwoing <br/> ![](./Assets/2021-08-26-20-38-22.png)
 
@@ -737,27 +573,27 @@ Core\TestStockCore.cs
 ```cs
 namespace Pezza.Test.Core
 {
+    using System.Linq;
     using System.Threading.Tasks;
     using Bogus;
     using NUnit.Framework;
     using Pezza.Common.DTO;
-    using Pezza.Common.Entities;
-    using Pezza.DataAccess.Data;
+    using Pezza.Core;
     using Pezza.Test.Setup;
     using Pezza.Test.Setup.TestData.Stock;
 
     [TestFixture]
     public class TestStockCore : QueryTestBase
     {
-        private StockDataAccess handler;
+        private StockCore handler;
 
-        private Stock stock;
+        private StockDTO stock;
 
         [SetUp]
         public async Task Init()
         {
-            this.handler = new StockDataAccess(this.Context, Mapper());
-            this.stock = StockTestData.Stock;
+            this.handler = new StockCore(this.Context, Mapper());
+            this.stock = StockTestData.StockDTO;
             this.stock = await this.handler.SaveAsync(this.stock);
         }
 
@@ -772,7 +608,7 @@ namespace Pezza.Test.Core
         public async Task GetAllAsync()
         {
             var response = await this.handler.GetAllAsync();
-            Assert.IsTrue(response.Count == 1);
+            Assert.IsTrue(response.Count() == 1);
         }
 
         [Test]
@@ -803,9 +639,15 @@ namespace Pezza.Test.Core
 }
 ```
 
-**Hint**
+### **Break down**
 
-Currently, the Unit test will be very similar to that of Data Access. When new Business Logic gets added to the Core layer, you will then add Unit Test for that specific criteria. We are currently focussing on putting down foundations.
+For every test we will create a new stock Core that will create a test session in memory to the database. We will then mock new stock using the stock test data. THen we will persist the new stock to the in-memory database.
+
+- GetAsync (Tests the get stock by id) - We retrieve the newly created stock from the in-memory database using the stock id. If the data that gets return is found, your unit test is successful.
+- GetAllAsync (Tests list of stock) - We retrieve a list of all the stock from the in-memory database. If the count of data returned is equalled to 1, your unit test is successful.
+- SaveAsync (Tests creating new stock) - We verify the result of records changed from the save changes should equal to 1, meaning your unit test is successful.
+- UpdateAsync (Tests updating existing stock) - We generate a new name for the stock item to be updated. We verify the updated stock's name with the updated stock if they are the same; your unit test is successful.
+- DeleteAsync (Tests removing stock) - We verify the result of deleting the stock from the in-memory database. Depending on the result being returned will determine the outcome of the unit test.
 
 ## **Create the Apis Layer**
 ### **Setup**
@@ -1003,20 +845,21 @@ namespace Pezza.Api.Controllers
     [Route("api/[controller]")]
     public class StockController : ControllerBase
     {
-        private readonly IStockCore StockCore;
+        private readonly IStockCore stockCore;
 
-        public StockController(IStockCore StockCore) => this.StockCore = StockCore;
+        public StockController(IStockCore stockCore) => this.stockCore = stockCore;
 
         /// <summary>
         /// Get Stock by Id.
         /// </summary>
-        /// <param name="id"></param> 
+        /// <param name="id">Stock Id</param>
+        /// <returns>ActionResult</returns>
         [HttpGet("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
         public async Task<ActionResult> Get(int id)
         {
-            var search = await this.StockCore.GetAsync(id);
+            var search = await this.stockCore.GetAsync(id);
 
             return (search == null) ? this.NotFound() : this.Ok(search);
         }
@@ -1024,11 +867,12 @@ namespace Pezza.Api.Controllers
         /// <summary>
         /// Get all Stock.
         /// </summary>
-        [HttpGet()]
+        /// <returns>ActionResult</returns>
+        [HttpGet]
         [ProducesResponseType(200)]
         public async Task<ActionResult> Search()
         {
-            var result = await this.StockCore.GetAllAsync();
+            var result = await this.stockCore.GetAllAsync();
 
             return this.Ok(result);
         }
@@ -1038,22 +882,23 @@ namespace Pezza.Api.Controllers
         /// </summary>
         /// <remarks>
         /// Sample request:
-        /// 
+        ///
         ///     POST api/Stock
-        ///     {        
+        ///     {
         ///       "name": "Tomatoes",
         ///       "UnitOfMeasure": "Kg",
         ///       "ValueOfMeasure": "1",
         ///       "Quantity": "50"
         ///     }
         /// </remarks>
-        /// <param name="stock"></param> 
+        /// <param name="dto">Stock Model</param>
+        /// <returns>ActionResult</returns>
         [HttpPost]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public async Task<ActionResult<Stock>> Create([FromBody] Stock stock)
+        public async Task<ActionResult<Stock>> Create([FromBody] StockDTO dto)
         {
-            var result = await this.StockCore.SaveAsync(stock);
+            var result = await this.stockCore.SaveAsync(dto);
 
             return (result == null) ? this.BadRequest() : this.Ok(result);
         }
@@ -1063,20 +908,20 @@ namespace Pezza.Api.Controllers
         /// </summary>
         /// <remarks>
         /// Sample request:
-        /// 
+        ///
         ///     PUT api/Stock/1
-        ///     {        
+        ///     {
         ///       "Quantity": "30"
         ///     }
         /// </remarks>
-        /// <param name="id"></param>
-        /// <param name="stock"></param>
-        [HttpPut("{id}")]
+        /// <param name="dto">Stock Model</param>
+        /// <returns>ActionResult</returns>
+        [HttpPut]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public async Task<ActionResult> Update(int id, [FromBody] StockDTO stock)
+        public async Task<ActionResult> Update([FromBody] StockDTO dto)
         {
-            var result = await this.StockCore.UpdateAsync(stock);
+            var result = await this.stockCore.UpdateAsync(dto);
 
             return (result == null) ? this.BadRequest() : this.Ok(result);
         }
@@ -1084,13 +929,14 @@ namespace Pezza.Api.Controllers
         /// <summary>
         /// Remove Stock by Id.
         /// </summary>
-        /// <param name="id"></param> 
+        /// <param name="id">Stock Id</param>
+        /// <returns>ActionResult</returns>
         [HttpDelete("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         public async Task<ActionResult> Delete(int id)
         {
-            var result = await this.StockCore.DeleteAsync(id);
+            var result = await this.stockCore.DeleteAsync(id);
 
             return (!result) ? this.BadRequest() : this.Ok(result);
         }
@@ -1098,9 +944,9 @@ namespace Pezza.Api.Controllers
 }
 ```
 
-## **Run you Pezza API**
+## **Run your Pezza API**
 
-Press F5 and Test all the Stock Methods. 
+Press F5 and Test all the Stock Methods.
 
 ![](Assets/2020-09-15-06-38-33.png)
 

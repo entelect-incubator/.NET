@@ -1,26 +1,26 @@
 namespace Pezza.Test.Core
 {
+    using System.Linq;
     using System.Threading.Tasks;
     using Bogus;
     using NUnit.Framework;
     using Pezza.Common.DTO;
-    using Pezza.Common.Entities;
-    using Pezza.DataAccess.Data;
+    using Pezza.Core;
     using Pezza.Test.Setup;
     using Pezza.Test.Setup.TestData.Stock;
 
     [TestFixture]
     public class TestStockCore : QueryTestBase
     {
-        private StockDataAccess handler;
+        private StockCore handler;
 
-        private Stock stock;
+        private StockDTO stock;
 
         [SetUp]
         public async Task Init()
         {
-            this.handler = new StockDataAccess(this.Context, Mapper());
-            this.stock = StockTestData.Stock;
+            this.handler = new StockCore(this.Context, Mapper());
+            this.stock = StockTestData.StockDTO;
             this.stock = await this.handler.SaveAsync(this.stock);
         }
 
@@ -35,7 +35,7 @@ namespace Pezza.Test.Core
         public async Task GetAllAsync()
         {
             var response = await this.handler.GetAllAsync();
-            Assert.IsTrue(response.Count == 1);
+            Assert.IsTrue(response.Count() == 1);
         }
 
         [Test]

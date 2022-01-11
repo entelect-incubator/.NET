@@ -17,7 +17,8 @@
         /// <summary>
         /// Get Stock by Id.
         /// </summary>
-        /// <param name="id"></param> 
+        /// <param name="id">Stock Id</param>
+        /// <returns>ActionResult</returns>
         [HttpGet("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
@@ -31,7 +32,8 @@
         /// <summary>
         /// Get all Stock.
         /// </summary>
-        [HttpGet()]
+        /// <returns>ActionResult</returns>
+        [HttpGet]
         [ProducesResponseType(200)]
         public async Task<ActionResult> Search()
         {
@@ -45,16 +47,17 @@
         /// </summary>
         /// <remarks>
         /// Sample request:
-        /// 
+        ///
         ///     POST api/Stock
-        ///     {        
+        ///     {
         ///       "name": "Tomatoes",
         ///       "UnitOfMeasure": "Kg",
         ///       "ValueOfMeasure": "1",
         ///       "Quantity": "50"
         ///     }
         /// </remarks>
-        /// <param name="dto"></param> 
+        /// <param name="dto">Stock Model</param>
+        /// <returns>ActionResult</returns>
         [HttpPost]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
@@ -70,18 +73,18 @@
         /// </summary>
         /// <remarks>
         /// Sample request:
-        /// 
+        ///
         ///     PUT api/Stock/1
-        ///     {        
+        ///     {
         ///       "Quantity": "30"
         ///     }
         /// </remarks>
-        /// <param name="id"></param>
-        /// <param name="dto"></param>
-        [HttpPut("{id}")]
+        /// <param name="dto">Stock Model</param>
+        /// <returns>ActionResult</returns>
+        [HttpPut]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public async Task<ActionResult> Update(int id, [FromBody] StockDTO dto)
+        public async Task<ActionResult> Update([FromBody] StockDTO dto)
         {
             var result = await this.stockCore.UpdateAsync(dto);
 
@@ -91,7 +94,8 @@
         /// <summary>
         /// Remove Stock by Id.
         /// </summary>
-        /// <param name="id"></param> 
+        /// <param name="id">Stock Id</param>
+        /// <returns>ActionResult</returns>
         [HttpDelete("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]

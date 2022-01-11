@@ -2,6 +2,7 @@
 
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
+        <CodeAnalysisRuleSet>$(SolutionDir)\StyleCopRuleSet.ruleset</CodeAnalysisRuleSet>
     </PropertyGroup>
 
     <ItemGroup>
@@ -29,10 +30,19 @@
         <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="10.0.3" />
         <PackageReference Include="MediatR" Version="9.0.0" />
         <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
+        <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\Pezza.Common\Pezza.Common.csproj" />
         <ProjectReference Include="..\Pezza.DataAccess\Pezza.DataAccess.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Base\" />
     </ItemGroup>
 
 </Project>
