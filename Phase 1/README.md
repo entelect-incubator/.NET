@@ -123,13 +123,12 @@ namespace Pezza.Common.Profiles
 
 ## **Create the Database Layer**
 
-Create a new Class Library Pezza.DataAccess and Pezza.DataAccess.Contracts (This will used for Dependency Injection and Unit Tests) <br/> ![](Assets/2020-09-11-10-06-58.png)
+Create a new Class Library Pezza.DataAccess <br/> ![](![](Assets/2020-09-11-10-06-58.png).png)
 
- For accessing the Database we will be using [Entity Framework Core](https://github.com/dotnet/efcore).
+For accessing the Database we will be using [Entity Framework Core](https://github.com/dotnet/efcore).
 
 **Nuget Packages Required**
 - [ ]  Microsoft.EntityFrameworkCore.Relational
-- [ ]  Sytem.Linq.Dynamic.Core in DataAccess
 
 DbSet will act as a Repository to the Database. You will see we have added SaveChangesAsync into the interface, this is to expose DbContext Entity Framework Core methods in your interface.
 
@@ -547,6 +546,12 @@ namespace Pezza.Core
 ### **Create the Core Layer Unit Tests**
 
 Next, we will create unit tests for our Core Layer.
+
+For accessing the Database we will be using [Entity Framework Core](https://github.com/dotnet/efcore).
+
+**Nuget Packages Required**
+- [ ]  Microsoft.EntityFrameworkCore.Relational
+- [ ]  Sytem.Linq.Dynamic.Core 
 
 Inside the folder **Core** create a class **TestStockCore.cs**. Also, add new StockDTO to StockTestData.cs <br/> ![](Assets/2020-09-15-05-13-20.png)
 
