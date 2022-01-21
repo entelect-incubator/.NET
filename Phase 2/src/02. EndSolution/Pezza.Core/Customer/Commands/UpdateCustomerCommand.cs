@@ -27,7 +27,7 @@
         public async Task<Result<CustomerDTO>> Handle(UpdateCustomerCommand request, CancellationToken cancellationToken)
         {
             var dto = request.Data;
-            var findEntity = await this.databaseContext.Customers.FirstOrDefaultAsync(x => x.Id == dto.Id, cancellationToken: cancellationToken);
+            var findEntity = await this.databaseContext.Customers.FirstOrDefaultAsync(x => x.Id == dto.Id, cancellationToken);
             if (findEntity == null)
             {
                 return null;
@@ -40,10 +40,9 @@
             findEntity.PostalCode = !string.IsNullOrEmpty(dto?.Address?.PostalCode) ? dto?.Address?.PostalCode : findEntity.PostalCode;
             findEntity.Phone = !string.IsNullOrEmpty(dto?.Phone) ? dto?.Phone : findEntity.Phone;
             findEntity.ContactPerson = !string.IsNullOrEmpty(dto?.ContactPerson) ? dto?.ContactPerson : findEntity.ContactPerson;
-            this.databaseContext.Customers.Update(findEntity);
-            
+            var outcome = this.databaseContext.Customers.Update(findEntity);
 
-            return CoreHelper<CustomerDTO>.Outcome(this.mapper, outcome, findEntity, "Error updating customer");
+            return await CoreHelper<CustomerDTO>.Outcome(this.databaseContext, this.mapper, cancellationToken, findEntity, "Error updating customer");
         }
     }
 }

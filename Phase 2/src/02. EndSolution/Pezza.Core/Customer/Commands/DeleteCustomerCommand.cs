@@ -22,11 +22,10 @@
 
         public async Task<Result> Handle(DeleteCustomerCommand request, CancellationToken cancellationToken)
         {
-            var findEntity = await this.databaseContext.Stocks.FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken: cancellationToken);
-            this.databaseContext.Stocks.Remove(findEntity);
-            var outcome = await this.databaseContext.SaveChangesAsync(cancellationToken);
+            var findEntity = await this.databaseContext.Products.FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
+            this.databaseContext.Products.Remove(findEntity);
 
-            return CoreHelper.CoreResult(outcome, "Error deleting a Customer");
+            return await CoreHelper.Outcome(this.databaseContext, cancellationToken, "Error deleting a customer");
         }
     }
 }

@@ -28,9 +28,8 @@
         {
             var entity = this.mapper.Map<Customer>(request.Data);
             this.databaseContext.Customers.Add(entity);
-            var outcome = await this.databaseContext.SaveChangesAsync(cancellationToken);
 
-            return CoreHelper<CustomerDTO>.Outcome(this.mapper, outcome, entity, "Error creating a Customer");
+            return await CoreHelper<CustomerDTO>.Outcome(this.databaseContext, this.mapper, cancellationToken, entity, "Error creating a customer");
         }
     }
 }

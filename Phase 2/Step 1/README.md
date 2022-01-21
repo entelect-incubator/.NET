@@ -98,119 +98,6 @@ Remeber some of the DTO's needs to inherit from AddressBase and ImageDataBase.
 
 ![DBCOntext Map](Assets/2021-01-14-07-45-18.png)
 
-### **Base DataAccess**
-
-```cs
-namespace Pezza.DataAccess.Contracts
-{
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-
-    public interface IDataAccess<T>
-    {
-        Task<T> GetAsync(int id);
-
-        Task<List<T>> GetAllAsync();
-
-        Task<T> UpdateAsync(T dto);
-
-        Task<T> SaveAsync(T dto);
-
-        Task<bool> DeleteAsync(int id);
-    }
-}
-```
-
-Remove IStockDataAccess.cs
-
-!DataAccess Contracts Structure[](Assets/2020-10-04-20-36-09.png)
-
-Convert StockDataAccess to inherit from IDataAccess.cs
-
-```cs
-namespace Pezza.DataAccess.Data
-{
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Linq.Dynamic.Core;
-    using System.Threading.Tasks;
-    using AutoMapper;
-    using Microsoft.EntityFrameworkCore;
-    using Pezza.Common.DTO;
-    using Pezza.Common.Entities;
-    using Pezza.DataAccess.Contracts;
-
-    public class StockDataAccess : IDataAccess<StockDTO>
-    {
-        private readonly DatabaseContext databaseContext;
-
-        private readonly IMapper mapper;
-
-        public StockDataAccess(DatabaseContext databaseContext, IMapper mapper)
-            => (this.databaseContext, this.mapper) = (databaseContext, mapper);
-
-        public async Task<StockDTO> GetAsync(int id)
-            => this.mapper.Map<StockDTO>(await this.databaseContext.Stocks.FirstOrDefaultAsync(x => x.Id == id));
-
-        public async Task<List<StockDTO>> GetAllAsync()
-        {
-            var entities = await this.databaseContext.Stocks.Select(x => x).AsNoTracking().ToListAsync();
-            return this.mapper.Map<List<StockDTO>>(entities);
-        }
-
-        public async Task<StockDTO> SaveAsync(StockDTO dto)
-        {
-            var entity = this.mapper.Map<Stock>(dto);
-            this.databaseContext.Stocks.Add(entity);
-            await this.databaseContext.SaveChangesAsync();
-            dto.Id = entity.Id;
-
-            return dto;
-
-            return this.mapper.Map<StockDTO>(entity);
-        }
-
-        public async Task<StockDTO> UpdateAsync(StockDTO dto)
-        {
-            var findEntity = await this.databaseContext.Stocks.FirstOrDefaultAsync(x => x.Id == dto.Id);
-            if (findEntity == null)
-            {
-                return null;
-            }
-
-            findEntity.Name = !string.IsNullOrEmpty(dto.Name) ? dto.Name : findEntity.Name;
-            findEntity.UnitOfMeasure = !string.IsNullOrEmpty(dto.UnitOfMeasure) ? dto.UnitOfMeasure : findEntity.UnitOfMeasure;
-            findEntity.ValueOfMeasure = dto.ValueOfMeasure ?? findEntity.ValueOfMeasure;
-            findEntity.Quantity = dto.Quantity ?? findEntity.Quantity;
-            findEntity.ExpiryDate = dto.ExpiryDate ?? findEntity.ExpiryDate;
-            findEntity.Comment = dto.Comment;
-            this.databaseContext.Stocks.Update(findEntity);
-            await this.databaseContext.SaveChangesAsync();
-
-            return this.mapper.Map<StockDTO>(findEntity);
-        }
-
-        public async Task<bool> DeleteAsync(int id)
-        {
-            var entity = await this.databaseContext.Stocks.FirstOrDefaultAsync(x => x.Id == id);
-            if (entity == null)
-            {
-                return false;
-            }
-
-            this.databaseContext.Stocks.Remove(entity);
-            var result = await this.databaseContext.SaveChangesAsync();
-
-            return (result == 1);
-        }
-    }
-}
-```
-
-Create DataAccess for all the Entities
-
-![DataAccess Structure](Assets/2020-10-04-20-46-27.png)
-
 ### **Business Logic - Core**
 
 We will be moving to CQRS pattern for the Core Layer. This helps Single Responsibility.
@@ -500,27 +387,34 @@ namespace Pezza.Core.Customer.Commands
 {
     using System.Threading;
     using System.Threading.Tasks;
+    using AutoMapper;
     using MediatR;
     using Pezza.Common.DTO;
+    using Pezza.Common.Entities;
     using Pezza.Common.Models;
-    using Pezza.DataAccess.Contracts;
+    using Pezza.Core.Helpers;
+    using Pezza.DataAccess;
 
-    public partial class CreateCustomerCommand : IRequest<Result<CustomerDTO>>
+    public class CreateCustomerCommand : IRequest<Result<CustomerDTO>>
     {
         public CustomerDTO Data { get; set; }
     }
 
     public class CreateCustomerCommandHandler : IRequestHandler<CreateCustomerCommand, Result<CustomerDTO>>
     {
-        private readonly IDataAccess<CustomerDTO> dataAccess;
+        private readonly DatabaseContext databaseContext;
 
-        public CreateCustomerCommandHandler(IDataAccess<CustomerDTO> dataAccess)
-            => this.dataAccess = dataAccess;
+        private readonly IMapper mapper;
+
+        public CreateCustomerCommandHandler(DatabaseContext databaseContext, IMapper mapper)
+            => (this.databaseContext, this.mapper) = (databaseContext, mapper);
 
         public async Task<Result<CustomerDTO>> Handle(CreateCustomerCommand request, CancellationToken cancellationToken)
         {
-            var outcome = await this.dataAccess.SaveAsync(request.Data);
-            return (outcome != null) ? Result<CustomerDTO>.Success(outcome) : Result<CustomerDTO>.Failure("Error creating a Customer");
+            var entity = this.mapper.Map<Customer>(request.Data);
+            this.databaseContext.Customers.Add(entity);
+
+            return await CoreHelper<CustomerDTO>.Outcome(this.databaseContext, this.mapper, cancellationToken, entity, "Error creating a customer");
         }
     }
 }
@@ -534,27 +428,29 @@ namespace Pezza.Core.Customer.Commands
     using System.Threading;
     using System.Threading.Tasks;
     using MediatR;
-    using Pezza.Common.DTO;
+    using Microsoft.EntityFrameworkCore;
     using Pezza.Common.Models;
-    using Pezza.DataAccess.Contracts;
+    using Pezza.Core.Helpers;
+    using Pezza.DataAccess;
 
-    public partial class DeleteCustomerCommand : IRequest<Result>
+    public class DeleteCustomerCommand : IRequest<Result>
     {
         public int Id { get; set; }
     }
 
     public class DeleteCustomerCommandHandler : IRequestHandler<DeleteCustomerCommand, Result>
     {
-        private readonly IDataAccess<CustomerDTO> dataAccess;
+        private readonly DatabaseContext databaseContext;
 
-        public DeleteCustomerCommandHandler(IDataAccess<CustomerDTO> dataAccess)
-            => this.dataAccess = dataAccess;
+        public DeleteCustomerCommandHandler(DatabaseContext databaseContext)
+            => this.databaseContext = databaseContext;
 
         public async Task<Result> Handle(DeleteCustomerCommand request, CancellationToken cancellationToken)
         {
-            var outcome = await this.dataAccess.DeleteAsync(request.Id);
+            var findEntity = await this.databaseContext.Products.FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
+            this.databaseContext.Products.Remove(findEntity);
 
-            return (outcome) ? Result.Success() : Result.Failure("Error deleting a Customer");
+            return await CoreHelper.Outcome(this.databaseContext, cancellationToken, "Error deleting a customer");
         }
     }
 }
@@ -567,26 +463,47 @@ namespace Pezza.Core.Customer.Commands
 {
     using System.Threading;
     using System.Threading.Tasks;
+    using AutoMapper;
     using MediatR;
+    using Microsoft.EntityFrameworkCore;
     using Pezza.Common.DTO;
     using Pezza.Common.Models;
-    using Pezza.DataAccess.Contracts;
+    using Pezza.Core.Helpers;
+    using Pezza.DataAccess;
 
-    public partial class UpdateCustomerCommand : IRequest<Result<CustomerDTO>>
+    public class UpdateCustomerCommand : IRequest<Result<CustomerDTO>>
     {
         public CustomerDTO Data { get; set; }
     }
 
     public class UpdateCustomerCommandHandler : IRequestHandler<UpdateCustomerCommand, Result<CustomerDTO>>
     {
-        private readonly IDataAccess<CustomerDTO> dataAccess;
+        private readonly DatabaseContext databaseContext;
 
-        public UpdateCustomerCommandHandler(IDataAccess<CustomerDTO> dataAccess) => this.dataAccess = dataAccess;
+        private readonly IMapper mapper;
+
+        public UpdateCustomerCommandHandler(DatabaseContext databaseContext, IMapper mapper)
+            => (this.databaseContext, this.mapper) = (databaseContext, mapper);
 
         public async Task<Result<CustomerDTO>> Handle(UpdateCustomerCommand request, CancellationToken cancellationToken)
-        {            
-            var outcome = await this.dataAccess.UpdateAsync(request.Data);
-            return (outcome != null) ? Result<CustomerDTO>.Success(outcome) : Result<CustomerDTO>.Failure("Error updating a Customer");
+        {
+            var dto = request.Data;
+            var findEntity = await this.databaseContext.Customers.FirstOrDefaultAsync(x => x.Id == dto.Id, cancellationToken);
+            if (findEntity == null)
+            {
+                return null;
+            }
+
+            findEntity.Name = !string.IsNullOrEmpty(dto?.Name) ? dto?.Name : findEntity.Name;
+            findEntity.Address = !string.IsNullOrEmpty(dto?.Address?.Address) ? dto?.Address?.Address : findEntity.Address;
+            findEntity.City = !string.IsNullOrEmpty(dto?.Address?.City) ? dto?.Address?.City : findEntity.City;
+            findEntity.Province = !string.IsNullOrEmpty(dto?.Address?.Province) ? dto?.Address?.Province : findEntity.Province;
+            findEntity.PostalCode = !string.IsNullOrEmpty(dto?.Address?.PostalCode) ? dto?.Address?.PostalCode : findEntity.PostalCode;
+            findEntity.Phone = !string.IsNullOrEmpty(dto?.Phone) ? dto?.Phone : findEntity.Phone;
+            findEntity.ContactPerson = !string.IsNullOrEmpty(dto?.ContactPerson) ? dto?.ContactPerson : findEntity.ContactPerson;
+            var outcome = this.databaseContext.Customers.Update(findEntity);
+
+            return await CoreHelper<CustomerDTO>.Outcome(this.databaseContext, this.mapper, cancellationToken, findEntity, "Error updating customer");
         }
     }
 }
@@ -607,10 +524,12 @@ namespace Pezza.Core.Customer.Queries
 {
     using System.Threading;
     using System.Threading.Tasks;
+    using AutoMapper;
     using MediatR;
+    using Microsoft.EntityFrameworkCore;
     using Pezza.Common.DTO;
     using Pezza.Common.Models;
-    using Pezza.DataAccess.Contracts;
+    using Pezza.DataAccess;
 
     public class GetCustomerQuery : IRequest<Result<CustomerDTO>>
     {
@@ -619,14 +538,17 @@ namespace Pezza.Core.Customer.Queries
 
     public class GetCustomerQueryHandler : IRequestHandler<GetCustomerQuery, Result<CustomerDTO>>
     {
-        private readonly IDataAccess<CustomerDTO> dataAccess;
+        private readonly DatabaseContext databaseContext;
 
-        public GetCustomerQueryHandler(IDataAccess<CustomerDTO> dataAccess) => this.dataAccess = dataAccess;
+        private readonly IMapper mapper;
+
+        public GetCustomerQueryHandler(DatabaseContext databaseContext, IMapper mapper)
+            => (this.databaseContext, this.mapper) = (databaseContext, mapper);
 
         public async Task<Result<CustomerDTO>> Handle(GetCustomerQuery request, CancellationToken cancellationToken)
         {
-            var search = await this.dataAccess.GetAsync(request.Id);
-            return Result<CustomerDTO>.Success(search);
+            var result = this.mapper.Map<CustomerDTO>(await this.databaseContext.Customers.FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken));
+            return Result<CustomerDTO>.Success(result);
         }
     }
 }
@@ -637,12 +559,16 @@ namespace Pezza.Core.Customer.Queries
 ```cs
 namespace Pezza.Core.Customer.Queries
 {
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
+    using AutoMapper;
     using MediatR;
+    using Microsoft.EntityFrameworkCore;
     using Pezza.Common.DTO;
     using Pezza.Common.Models;
-    using Pezza.DataAccess.Contracts;
+    using Pezza.DataAccess;
 
     public class GetCustomersQuery : IRequest<ListResult<CustomerDTO>>
     {
@@ -650,15 +576,21 @@ namespace Pezza.Core.Customer.Queries
 
     public class GetCustomersQueryHandler : IRequestHandler<GetCustomersQuery, ListResult<CustomerDTO>>
     {
-        private readonly IDataAccess<CustomerDTO> dataAccess;
+        private readonly DatabaseContext databaseContext;
 
-        public GetCustomersQueryHandler(IDataAccess<CustomerDTO> dataAccess) => this.dataAccess = dataAccess;
+        private readonly IMapper mapper;
+
+        public GetCustomersQueryHandler(DatabaseContext databaseContext, IMapper mapper)
+            => (this.databaseContext, this.mapper) = (databaseContext, mapper);
 
         public async Task<ListResult<CustomerDTO>> Handle(GetCustomersQuery request, CancellationToken cancellationToken)
         {
-            var search = await this.dataAccess.GetAllAsync();
+            var entities = this.databaseContext.Customers.Select(x => x).AsNoTracking();
 
-            return ListResult<CustomerDTO>.Success(search, search.Count);
+            var count = entities.Count();
+            var paged = this.mapper.Map<List<CustomerDTO>>(await entities.ToListAsync(cancellationToken));
+
+            return ListResult<CustomerDTO>.Success(paged, count);
         }
     }
 }
@@ -817,13 +749,6 @@ namespace Pezza.Core
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnhandledExceptionBehaviour<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));
-
-            services.AddTransient(typeof(IDataAccess<OrderDTO>), typeof(OrderDataAccess));
-            services.AddTransient(typeof(IDataAccess<StockDTO>), typeof(StockDataAccess));
-            services.AddTransient(typeof(IDataAccess<NotifyDTO>), typeof(NotifyDataAccess));
-            services.AddTransient(typeof(IDataAccess<ProductDTO>), typeof(ProductDataAccess));
-            services.AddTransient(typeof(IDataAccess<CustomerDTO>), typeof(CustomerDataAccess));
-            services.AddTransient(typeof(IDataAccess<RestaurantDTO>), typeof(RestaurantDataAccess));
 
             services.AddAutoMapper(typeof(MappingProfile));
 

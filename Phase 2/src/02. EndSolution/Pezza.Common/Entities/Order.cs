@@ -19,7 +19,7 @@ namespace Pezza.Common.Entities
         public bool Completed { get; set; }
 
         public virtual Customer Customer { get; set; }
-        
+
         public virtual Restaurant Restaurant { get; set; }
 
         public virtual ICollection<OrderItem> OrderItems { get; set; }

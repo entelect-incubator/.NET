@@ -41,8 +41,4 @@
         <ProjectReference Include="..\Pezza.DataAccess\Pezza.DataAccess.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Base\" />
-    </ItemGroup>
-
 </Project>

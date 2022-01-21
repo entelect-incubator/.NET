@@ -35,13 +35,13 @@ namespace Pezza.Common.Models
 
         public List<object> Errors { get; set; }
 
-        public static Result Success() => new Result(true, new List<object> { });
+        public static Result Success() => new (true, new List<object> { });
 
-        public static Result Failure(List<object> errors) => new Result(false, errors);
+        public static Result Failure(List<object> errors) => new (false, errors);
 
-        public static Result Failure(List<string> errors) => new Result(false, errors);
+        public static Result Failure(List<string> errors) => new (false, errors);
 
-        public static Result Failure(string error) => new Result(false, error);
+        public static Result Failure(string error) => new (false, error);
     }
 
     public class Result<T>
@@ -74,11 +74,11 @@ namespace Pezza.Common.Models
 
         public List<object> Errors { get; set; }
 
-        public static Result<T> Success(T data) => new Result<T>(true, data, new List<object> { });
+        public static Result<T> Success(T data) => new (true, data, new List<object> { });
 
-        public static Result<T> Failure(string error) => new Result<T>(false, error);
+        public static Result<T> Failure(string error) => new (false, error);
 
-        public static Result<T> Failure(List<object> errors) => new Result<T>(false, errors);
+        public static Result<T> Failure(List<object> errors) => new (false, errors);
     }
 
     public class ListResult<T>
@@ -122,13 +122,13 @@ namespace Pezza.Common.Models
 
         public int Count { get; set; }
 
-        public static ListResult<T> Success(List<T> data, int count) => new ListResult<T>(true, data, count, new List<object> { });
+        public static ListResult<T> Success(List<T> data, int count) => new (true, data, count, new List<object> { });
 
-        public static ListResult<T> Success(IEnumerable<T> data, int count) => new ListResult<T>(true, data, count, new List<object> { });
+        public static ListResult<T> Success(IEnumerable<T> data, int count) => new (true, data, count, new List<object> { });
 
-        public static ListResult<T> Failure(string error) => new ListResult<T>(false, error);
+        public static ListResult<T> Failure(string error) => new (false, error);
 
-        public static ListResult<T> Failure(List<object> errors) => new ListResult<T>(false, errors);
+        public static ListResult<T> Failure(List<object> errors) => new (false, errors);
     }
 
     public class ListOutcome<T>

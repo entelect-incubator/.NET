@@ -10,7 +10,7 @@
         {
             if (result.Data == null)
             {
-                return controller.NotFound(Result.Failure( $"{typeof(T).Name.Replace("DTO","")} not found"));
+                return controller.NotFound(Result.Failure($"{typeof(T).Name.Replace("DTO", string.Empty)} not found"));
             }
 
             if (!result.Succeeded)

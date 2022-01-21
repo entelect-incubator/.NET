@@ -36,6 +36,5 @@ namespace Pezza.DataAccess.Map
                 .HasColumnName("Quantity")
                 .HasColumnType("int");
         }
-
     }
 }

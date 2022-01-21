@@ -14,11 +14,11 @@ Create a New Solution Folder `05 Tests` inside create a new project NUnit Test P
 
 The project at the end will look like this
 
-![](Assets/2020-11-20-09-27-07.png)
+![Unit test Test Data Structure](Assets/2022-01-21-08-29-02.png)
 
 Test Data for our tests. Staying with **Single Responsibility** we want to create a Test Class for every Entity or DTO. Create a folder for every Entity in the Database.
 
-![Unit test Test Data Structure](Assets/2020-11-20-09-37-20.png)
+![](Assets/2020-11-20-09-37-20.png)
 
 CustomerTestData.cs - We will use Bogus package to help us out in creating Test Data, by creating a Faker Object. You will end up with 3 functions i.e. Entity, DTO and DTOData, the same as you did for StockTestData.
 
@@ -115,98 +115,6 @@ namespace Pezza.Test
 
 Create a Test Data Class for every entity or you can copy it from Phase2/Data.
 
-### **Testing Data Access Layer**
-
-Create a Folder in the Test Project called **DataAccess**. Create a Test Data Access Class for every Entity.
-
-![Data Access Structure](Assets/2020-11-20-09-42-04.png)
-
-We will test every method inside of the DataAccess class - GetAsync, GetAllAsync, SaveAsync, UpdateAsync and DeleteAsync. The class will inherit from QueryTestBase created earlier.
-
-Every test method will start with [Test], this indicates it as a Unit Test.
-
-It will contain a new Handler declaring a new DataAccess object with the In Memory DBContext. i.e. var handler = new CustomerDataAccess(this.Context);
-
- The entity passed will be from the Test Data created earlier. i.e.  var entity = CustomerTestData.Customer;
-
- Next we will Unit Test the Database Call and test the result i.e await handler.SaveAsync(entity);
-
- This is building on for what was done for TestStockDataAccess
-
-TestCustomerDataAccess.cs
-
-```cs
-namespace Pezza.Test.DataAccess
-{
-    using System.Threading.Tasks;
-    using Bogus;
-    using NUnit.Framework;
-    using Pezza.Common.DTO;
-    using Pezza.DataAccess.Data;
-
-    [TestFixture]
-
-    public class TestCustomerDataAccess : QueryTestBase
-    {
-        private CustomerDataAccess handler;
-
-        private CustomerDTO dto;
-
-        [SetUp]
-        public async Task Init()
-        {
-            this.handler = new CustomerDataAccess(this.Context, Mapper());
-            this.dto = CustomerTestData.CustomerDTO;
-            this.dto = await this.handler.SaveAsync(this.dto);
-        }
-
-        [Test]
-        public async Task GetAsync()
-        {
-            var response = await this.handler.GetAsync(this.dto.Id);
-            Assert.IsTrue(response != null);
-        }
-
-        [Test]
-        public async Task GetAllAsync()
-        {
-            var response = await this.handler.GetAllAsync();
-            var outcome = response.Count;
-
-            Assert.IsTrue(outcome == 1);
-        }
-
-        [Test]
-        public void SaveAsync()
-        {
-            Assert.IsTrue(this.dto.Id != 0);
-        }
-
-        [Test]
-        public async Task UpdateAsync()
-        {
-            var originalCustomer = this.dto;
-            this.dto.Name = new Faker().Person.FirstName;
-            var response = await this.handler.UpdateAsync(this.dto);
-            var outcome = response.Name.Equals(originalCustomer.Name);
-
-            Assert.IsTrue(outcome);
-        }
-
-        [Test]
-        public async Task DeleteAsync()
-        {
-            var response = await this.handler.DeleteAsync(this.dto.Id);
-            Assert.IsTrue(response);
-        }
-    }
-}
-```
-
-Create a DataAccess test for every Entity
-
-![](Assets/2020-11-20-09-48-51.png)
-
 ### **Testing Core Layer**
 
 Create a Folder in the Test Project called **Core**. Create a Test Core Class for every Entity.
@@ -217,9 +125,9 @@ We will test every method inside of the Core class - GetAsync, GetAllAsync, Save
 
 Every test method will start with [Test], this indicates it as a Unit Test. Every Test class will have an attribute [TestFixture] at the top. We will use [SetUp] to intialize our handlers or data access layer and resue it in every test.
 
-It will contain a new Handler declaring a new DataAccess object with the In Memory DBContext and AutoMapper. i.e. var handler = new CustomerDataAccess(this.Context, Mapper());
+It will contain a new Handler with the In Memory DBContext and AutoMapper.
 
- We will declare a new Handler for every test and inject the DataAccess into it. i.e. var sutCreate = new CreateCustomerCommandHandler(dataAccess);
+ We will declare a new Handler for every test and inject the DbContext into it. i.e. var sutCreate = new CreateCustomerCommandHandler(this.Context, Mapper());
 
  Then we will test the Command or Query Handler with the Test Data created earlier i.e. var resultCreate = await sutCreate.Handle(new CreateCustomerCommand
             {
@@ -241,25 +149,22 @@ namespace Pezza.Test.Core
     using Pezza.Common.DTO;
     using Pezza.Core.Customer.Commands;
     using Pezza.Core.Customer.Queries;
-    using Pezza.DataAccess.Data;
 
     [TestFixture]
     public class TestCustomerCore : QueryTestBase
     {
-        private CustomerDataAccess dataAccess;
-
         private CustomerDTO dto;
 
         [SetUp]
         public async Task Init()
         {
-            this.dataAccess = new CustomerDataAccess(this.Context, Mapper());
             this.dto = CustomerTestData.CustomerDTO;
-            var sutCreate = new CreateCustomerCommandHandler(this.dataAccess);
-            var resultCreate = await sutCreate.Handle(new CreateCustomerCommand
-            {
-                Data = this.dto
-            }, CancellationToken.None);
+            var sutCreate = new CreateCustomerCommandHandler(this.Context, Mapper());
+            var resultCreate = await sutCreate.Handle(
+                new CreateCustomerCommand
+                {
+                    Data = this.dto
+                }, CancellationToken.None);
 
             if (!resultCreate.Succeeded)
             {
@@ -272,11 +177,12 @@ namespace Pezza.Test.Core
         [Test]
         public async Task GetAsync()
         {
-            var sutGet = new GetCustomerQueryHandler(this.dataAccess);
-            var resultGet = await sutGet.Handle(new GetCustomerQuery
-            {
-                Id = this.dto.Id
-            }, CancellationToken.None);
+            var sutGet = new GetCustomerQueryHandler(this.Context, Mapper());
+            var resultGet = await sutGet.Handle(
+                new GetCustomerQuery
+                {
+                    Id = this.dto.Id
+                }, CancellationToken.None);
 
             Assert.IsTrue(resultGet?.Data != null);
         }
@@ -284,30 +190,28 @@ namespace Pezza.Test.Core
         [Test]
         public async Task GetAllAsync()
         {
-            var sutGetAll = new GetCustomersQueryHandler(this.dataAccess);
+            var sutGetAll = new GetCustomersQueryHandler(this.Context, Mapper());
             var resultGetAll = await sutGetAll.Handle(new GetCustomersQuery(), CancellationToken.None);
 
             Assert.IsTrue(resultGetAll?.Data.Count == 1);
         }
 
         [Test]
-        public void SaveAsync()
-        {
-            Assert.IsTrue(this.dto != null);
-        }
+        public void SaveAsync() => Assert.IsTrue(this.dto != null);
 
         [Test]
         public async Task UpdateAsync()
         {
-            var sutUpdate = new UpdateCustomerCommandHandler(this.dataAccess);
-            var resultUpdate = await sutUpdate.Handle(new UpdateCustomerCommand
-            {
-                Data = new CustomerDTO
+            var sutUpdate = new UpdateCustomerCommandHandler(this.Context, Mapper());
+            var resultUpdate = await sutUpdate.Handle(
+                new UpdateCustomerCommand
                 {
-                    Id = this.dto.Id,
-                    Phone = "0721230000"
-                }
-            }, CancellationToken.None);
+                    Data = new CustomerDTO
+                    {
+                        Id = this.dto.Id,
+                        Phone = "0721230000"
+                    }
+                }, CancellationToken.None);
 
             Assert.IsTrue(resultUpdate.Succeeded);
         }
@@ -315,11 +219,12 @@ namespace Pezza.Test.Core
         [Test]
         public async Task DeleteAsync()
         {
-            var sutDelete = new DeleteCustomerCommandHandler(this.dataAccess);
-            var outcomeDelete = await sutDelete.Handle(new DeleteCustomerCommand
-            {
-                Id = this.dto.Id
-            }, CancellationToken.None);
+            var sutDelete = new DeleteCustomerCommandHandler(this.Context);
+            var outcomeDelete = await sutDelete.Handle(
+                new DeleteCustomerCommand
+                {
+                    Id = this.dto.Id
+                }, CancellationToken.None);
 
             Assert.IsTrue(outcomeDelete.Succeeded);
         }

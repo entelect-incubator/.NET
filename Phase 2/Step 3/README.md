@@ -77,19 +77,38 @@ namespace Pezza.Api.Helpers
 
     public static class MediaHelper
     {
+        public static string GetMimeFromBase64(this string value)
+        {
+            var match = Regex.Match(value, @"data:(?<type>.+?);base64,(?<data>.+)");
+            return match.Groups["type"].Value;
+        }
+
+        public static Stream GetStreamFromUrl(string url)
+        {
+            byte[] imageData = null;
+
+            using (var wc = new System.Net.WebClient())
+            {
+                imageData = wc.DownloadData(url);
+            }
+
+            return new MemoryStream(imageData);
+        }
+
         public static async Task<Result<UploadMediaResult>> UploadMediaAsync(string uploadFolder, string base64FileData, bool thumbnail = false)
         {
             if (!string.IsNullOrEmpty(base64FileData))
             {
-                var folderName = string.IsNullOrEmpty(uploadFolder) ? "" : uploadFolder;
+                var folderName = string.IsNullOrEmpty(uploadFolder) ? string.Empty : uploadFolder;
 
                 var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), Path.Combine("Media", folderName));
                 if (!Directory.Exists(pathToSave))
                 {
                     Directory.CreateDirectory(pathToSave);
                 }
+
                 var extension = base64FileData.GetMimeFromBase64().GetExtensionFromMimeType();
-                var timestamp = $"{ DateTime.Now:yyyy-MM-dd_HH-mm-ss-fff}";
+                var timestamp = $"{DateTime.Now:yyyy-MM-dd_HH-mm-ss-fff}";
                 var imageFileName = $"{timestamp}{extension}";
                 var thumbnailFileName = $"{timestamp}_Thumbnail{extension}";
 
@@ -139,24 +158,6 @@ namespace Pezza.Api.Helpers
 
             mImage.Write(thumbnailPath);
         }
-
-        public static string GetMimeFromBase64(this string value)
-        {
-            var match = Regex.Match(value, @"data:(?<type>.+?);base64,(?<data>.+)");
-            return match.Groups["type"].Value;
-        }
-
-        public static Stream GetStreamFromUrl(string url)
-        {
-            byte[] imageData = null;
-
-            using (var wc = new System.Net.WebClient())
-            {
-                imageData = wc.DownloadData(url);
-            }
-
-            return new MemoryStream(imageData);
-        }
     }
 }
 ```
@@ -175,7 +176,6 @@ namespace Pezza.Api.Helpers
 
     public class ErrorResult : Result
     {
-
         public ErrorResult() => this.Succeeded = false;
 
         [DefaultValue(false)]
@@ -402,8 +402,9 @@ namespace Pezza.Api.Controllers
         /// <param name="folder">Folder.</param>
         /// <param name="thumbnail">Return thumbnail or not.</param>
         /// <returns>HttpResponseMessage.</returns>
+        /// <response code="200">Picture</response>
         [HttpGet]
-        [ProducesResponseType(200)]
+        [ProducesResponseType(typeof(FileStreamResult), 200)]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Get(string file, string folder = "", bool thumbnail = false)
         {
@@ -491,16 +492,14 @@ namespace Pezza.Api
 
     public class Startup
     {
-        public Startup(IConfiguration configuration)
-        {
-            this.Configuration = configuration;
-        }
+        public Startup(IConfiguration configuration) => this.Configuration = configuration;
 
         public IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
@@ -513,11 +512,9 @@ namespace Pezza.Api
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
             });
-
-            // Add DbContext using SQL Server Provider
+            //// Add DbContext using SQL Server Provider
             services.AddDbContext<DatabaseContext>(options =>
-                options.UseSqlServer(this.Configuration.GetConnectionString("PezzaDatabase"))
-            );
+                options.UseSqlServer(this.Configuration.GetConnectionString("PezzaDatabase")));
 
             DependencyInjection.AddApplication(services);
         }
@@ -531,8 +528,8 @@ namespace Pezza.Api
 
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
-            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
-            // specifying the Swagger JSON endpoint.
+            //// Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+            //// specifying the Swagger JSON endpoint.
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Stock API V1");

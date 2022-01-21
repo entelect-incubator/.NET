@@ -1,7 +1,7 @@
-﻿using Pezza.Common.Models.Base;
-
-namespace Pezza.Common.DTO
+﻿namespace Pezza.Common.DTO
 {
+    using Pezza.Common.Models.Base;
+
     public class OrderItemDTO : EntityBase
     {
         public int? OrderId { get; set; }
