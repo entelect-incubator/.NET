@@ -2,12 +2,11 @@ namespace Pezza.Common.Entities
 {
     using System;
     using System.Collections.Generic;
+    using Pezza.Common.Models.Base;
 
-    public class Order
+    public class Order : EntityBase
     {
         public Order() => this.OrderItems = new HashSet<OrderItem>();
-
-        public int Id { get; set; }
 
         public int CustomerId { get; set; }
 
@@ -20,7 +19,7 @@ namespace Pezza.Common.Entities
         public bool Completed { get; set; }
 
         public virtual Customer Customer { get; set; }
-        
+
         public virtual Restaurant Restaurant { get; set; }
 
         public virtual ICollection<OrderItem> OrderItems { get; set; }

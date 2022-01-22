@@ -1,8 +1,9 @@
 namespace Pezza.Common.Entities
 {
-    public class OrderItem
+    using Pezza.Common.Models.Base;
+
+    public class OrderItem : EntityBase
     {
-        public int Id { get; set; }
 
         public int OrderId { get; set; }
 

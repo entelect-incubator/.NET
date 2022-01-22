@@ -114,6 +114,109 @@ To create consistency with the result we send back from the Core layer we will u
 
 ## **Common Models**
 
+Create common base models in Pezza.Common\Models\base
+
+![](Assets/2022-01-21-08-55-36.png)
+
+EntityBase.cs
+
+```cs
+namespace Pezza.Common.Models.Base
+{
+    public abstract class EntityBase : IEntityBase
+    {
+        public virtual int Id { get; set; }
+    }
+}
+```
+
+IEntityBase.cs
+
+```cs
+namespace Pezza.Common.Models.Base
+{
+    public interface IEntityBase
+    {
+        int Id { get; set; }
+    }
+}
+```
+
+ImageDataBase.cs
+
+```cs
+namespace Pezza.Common.Models.Base
+{
+    public class ImageDataBase : EntityBase
+    {
+        public string ImageData { get; set; }
+    }
+}
+```
+
+AddressBase.cs
+
+```cs
+namespace Pezza.Common.Models.Base
+{
+    public class AddressBase : EntityBase
+    {
+        public string Address { get; set; }
+
+        public string City { get; set; }
+
+        public string Province { get; set; }
+
+        public string PostalCode { get; set; }
+    }
+}
+```
+
+Modify all entities to either inherit from EntityBase or AddressBase where applicable. Can have a look at the End Solution to copy it over.
+
+Remove Id from all entities
+
+```cs
+public int Id { get; set; }
+```
+
+Customer.cs
+
+```cs
+namespace Pezza.Common.Entities
+{
+    using System;
+    using System.Collections.Generic;
+
+    public class Customer
+    {
+        public Customer() => this.Orders = new HashSet<Order>();
+
+        public int Id { get; set; }
+
+        public string Name { get; set; }
+
+        public string Address { get; set; }
+
+        public string City { get; set; }
+
+        public string Province { get; set; }
+
+        public string PostalCode { get; set; }
+
+        public string Phone { get; set; }
+
+        public string Email { get; set; }
+
+        public string ContactPerson { get; set; }
+
+        public DateTime DateCreated { get; set; }
+
+        public virtual ICollection<Order> Orders { get; set; }
+    }
+}
+```
+
 Copy MimeTypes.cs from Phase 2\src\02. EndSolution\Pezza.Common\Models
 
 ![MimeTypes.cs](Assets/2021-01-14-08-05-17.png)
@@ -376,6 +479,53 @@ app.UseStaticFiles(new StaticFileOptions
     FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"Media")),
     RequestPath = new PathString("/Media"),
 });
+```
+
+Create a Core Helper to unify DbContext SaveChanges as well as result for all Commands and Queries.
+
+![](Assets/2022-01-21-08-51-11.png)
+
+```cs
+namespace Pezza.Core.Helpers
+{
+    using System.Diagnostics;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using AutoMapper;
+    using Pezza.Common.Models;
+    using Pezza.DataAccess;
+
+    public static class CoreHelper<T>
+    {
+        public static async Task<Result<T>> Outcome(DatabaseContext databaseContext, IMapper mapper, CancellationToken cancellationToken, EntityBase entity, string errorMessage)
+        {
+            var stackTrace = new StackTrace();
+            var methodName = stackTrace?.GetFrame(1)?.GetMethod()?.Name;
+            methodName = methodName.Replace("Query", string.Empty);
+            methodName = methodName.Replace("Command", string.Empty);
+
+            var outcome = await databaseContext.SaveChangesAsync(cancellationToken);
+            return (outcome > 0) ? Result<T>.Success(mapper.Map<T>(entity)) : Result<T>.Failure(errorMessage);
+        }
+    }
+
+    public static class CoreHelper
+    {
+        public static Result CoreResult(int outcome, string errorMessage)
+            => (outcome > 0) ? Result.Success() : Result.Failure(errorMessage);
+
+        public static async Task<Result> Outcome(DatabaseContext databaseContext, CancellationToken cancellationToken, string errorMessage)
+        {
+            var stackTrace = new StackTrace();
+            var methodName = stackTrace?.GetFrame(1)?.GetMethod()?.Name;
+            methodName = methodName.Replace("Query", string.Empty);
+            methodName = methodName.Replace("Command", string.Empty);
+
+            var outcome = await databaseContext.SaveChangesAsync(cancellationToken);
+            return (outcome > 0) ? Result.Success() : Result.Failure(errorMessage);
+        }
+    }
+}
 ```
 
 Create the following Commands for each Entity in Pezza.Core inside the Entity Name Folder/Commands <br/> ![](./Assets/2021-08-16-06-51-20.png)

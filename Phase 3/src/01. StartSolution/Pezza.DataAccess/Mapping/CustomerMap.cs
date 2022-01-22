@@ -3,8 +3,7 @@ namespace Pezza.DataAccess.Map
     using Microsoft.EntityFrameworkCore;
     using Pezza.Common.Entities;
 
-    public partial class CustomerMap
-        : IEntityTypeConfiguration<Customer>
+    public class CustomerMap : IEntityTypeConfiguration<Customer>
     {
         public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Customer> builder)
         {
@@ -75,6 +74,5 @@ namespace Pezza.DataAccess.Map
                 .HasColumnType("datetime")
                 .HasDefaultValueSql("(getdate())");
         }
-
     }
 }

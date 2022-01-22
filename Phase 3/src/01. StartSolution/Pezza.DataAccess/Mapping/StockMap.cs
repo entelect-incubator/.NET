@@ -3,8 +3,7 @@ namespace Pezza.DataAccess.Map
     using Microsoft.EntityFrameworkCore;
     using Pezza.Common.Entities;
 
-    public partial class StockMap
-        : IEntityTypeConfiguration<Stock>
+    public class StockMap : IEntityTypeConfiguration<Stock>
     {
         public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Stock> builder)
         {
@@ -56,6 +55,5 @@ namespace Pezza.DataAccess.Map
                 .HasColumnType("varchar(1000)")
                 .HasMaxLength(1000);
         }
-
     }
 }

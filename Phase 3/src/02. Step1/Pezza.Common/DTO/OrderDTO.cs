@@ -2,11 +2,10 @@
 {
     using System;
     using System.Collections.Generic;
+    using Pezza.Common.Models.Base;
 
-    public class OrderDTO
+    public class OrderDTO : EntityBase
     {
-        public int Id { get; set; }
-
         public CustomerDTO Customer { get; set; }
 
         public int? CustomerId { get; set; }

@@ -2,10 +2,12 @@
 {
     using System.Threading;
     using System.Threading.Tasks;
+    using AutoMapper;
     using MediatR;
+    using Microsoft.EntityFrameworkCore;
     using Pezza.Common.DTO;
     using Pezza.Common.Models;
-    using Pezza.DataAccess.Contracts;
+    using Pezza.DataAccess;
 
     public class GetRestaurantQuery : IRequest<Result<RestaurantDTO>>
     {
@@ -14,14 +16,17 @@
 
     public class GetRestaurantQueryHandler : IRequestHandler<GetRestaurantQuery, Result<RestaurantDTO>>
     {
-        private readonly IDataAccess<RestaurantDTO> dataAccess;
+        private readonly DatabaseContext databaseContext;
 
-        public GetRestaurantQueryHandler(IDataAccess<RestaurantDTO> dataAccess) => this.dataAccess = dataAccess;
+        private readonly IMapper mapper;
+
+        public GetRestaurantQueryHandler(DatabaseContext databaseContext, IMapper mapper)
+            => (this.databaseContext, this.mapper) = (databaseContext, mapper);
 
         public async Task<Result<RestaurantDTO>> Handle(GetRestaurantQuery request, CancellationToken cancellationToken)
         {
-            var search = await this.dataAccess.GetAsync(request.Id);
-            return Result<RestaurantDTO>.Success(search);
+            var result = this.mapper.Map<RestaurantDTO>(await this.databaseContext.Restaurants.FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken));
+            return Result<RestaurantDTO>.Success(result);
         }
     }
 }

@@ -3,8 +3,7 @@ namespace Pezza.DataAccess.Map
     using Microsoft.EntityFrameworkCore;
     using Pezza.Common.Entities;
 
-    public partial class NotifyMap
-        : IEntityTypeConfiguration<Notify>
+    public class NotifyMap : IEntityTypeConfiguration<Notify>
     {
         public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Notify> builder)
         {
@@ -45,7 +44,11 @@ namespace Pezza.DataAccess.Map
                 .IsRequired()
                 .HasColumnName("DateSent")
                 .HasColumnType("datetime");
-        }
 
+            builder.HasOne(t => t.Customer)
+                .WithMany(t => t.Notifies)
+                .HasForeignKey(d => d.CustomerId)
+                .HasConstraintName("FK_Notify_Customer");
+        }
     }
 }

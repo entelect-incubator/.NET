@@ -1,11 +1,15 @@
 ﻿namespace Pezza.Core.Product.Queries
 {
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
+    using AutoMapper;
     using MediatR;
+    using Microsoft.EntityFrameworkCore;
     using Pezza.Common.DTO;
     using Pezza.Common.Models;
-    using Pezza.DataAccess.Contracts;
+    using Pezza.DataAccess;
 
     public class GetProductsQuery : IRequest<ListResult<ProductDTO>>
     {
@@ -13,14 +17,21 @@
 
     public class GetProductsQueryHandler : IRequestHandler<GetProductsQuery, ListResult<ProductDTO>>
     {
-        private readonly IDataAccess<ProductDTO> dataAccess;
+        private readonly DatabaseContext databaseContext;
 
-        public GetProductsQueryHandler(IDataAccess<ProductDTO> dataAccess) => this.dataAccess = dataAccess;
+        private readonly IMapper mapper;
+
+        public GetProductsQueryHandler(DatabaseContext databaseContext, IMapper mapper)
+            => (this.databaseContext, this.mapper) = (databaseContext, mapper);
 
         public async Task<ListResult<ProductDTO>> Handle(GetProductsQuery request, CancellationToken cancellationToken)
         {
-            var search = await this.dataAccess.GetAllAsync();
-            return ListResult<ProductDTO>.Success(search, search.Count);
+            var entities = this.databaseContext.Orders.Select(x => x).AsNoTracking();
+
+            var count = entities.Count();
+            var paged = this.mapper.Map<List<ProductDTO>>(await entities.ToListAsync(cancellationToken));
+
+            return ListResult<ProductDTO>.Success(paged, count);
         }
     }
 }

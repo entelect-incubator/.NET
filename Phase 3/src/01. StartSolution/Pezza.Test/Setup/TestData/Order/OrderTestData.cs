@@ -7,23 +7,9 @@
 
     public static class OrderTestData
     {
-        public static Faker faker = new Faker();
+        public static Faker faker = new ();
 
-        public static List<OrderDTO> OrdersDTO()
-        {
-            var orders = new List<OrderDTO>
-            {
-                OrderDTO,
-                OrderDTO,
-                OrderDTO,
-                OrderDTO,
-                OrderDTO
-            };
-
-            return orders;
-        }
-
-        public static OrderDTO OrderDTO = new OrderDTO()
+        public static OrderDTO OrderDTO = new ()
         {
             Amount = faker.Finance.Amount(),
             Customer = CustomerTestData.CustomerDTO,
@@ -42,11 +28,24 @@
             }
         };
 
-        public static OrderItemDTO OrderItemDTO = new OrderItemDTO()
+        public static OrderItemDTO OrderItemDTO = new ()
         {
             OrderId = 1,
             Product = ProductTestData.ProductDTO
         };
-    }
 
+        public static List<OrderDTO> OrdersDTO()
+        {
+            var orders = new List<OrderDTO>
+            {
+                OrderDTO,
+                OrderDTO,
+                OrderDTO,
+                OrderDTO,
+                OrderDTO
+            };
+
+            return orders;
+        }
+    }
 }

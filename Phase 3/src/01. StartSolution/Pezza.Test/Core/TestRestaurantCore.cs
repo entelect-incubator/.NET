@@ -6,26 +6,23 @@ namespace Pezza.Test.Core
     using Pezza.Common.DTO;
     using Pezza.Core.Restaurant.Commands;
     using Pezza.Core.Restaurant.Queries;
-    using Pezza.DataAccess.Data;
 
     [TestFixture]
 
     public class TestRestaurantCore : QueryTestBase
     {
-        private RestaurantDataAccess dataAccess;
-
         private RestaurantDTO dto;
 
         [SetUp]
         public async Task Init()
         {
-            this.dataAccess = new RestaurantDataAccess(this.Context, Mapper());
             this.dto = RestaurantTestData.RestaurantDTO;
-            var sutCreate = new CreateRestaurantCommandHandler(this.dataAccess);
-            var resultCreate = await sutCreate.Handle(new CreateRestaurantCommand
-            {
-                Data = this.dto
-            }, CancellationToken.None);
+            var sutCreate = new CreateRestaurantCommandHandler(this.Context, Mapper());
+            var resultCreate = await sutCreate.Handle(
+                new CreateRestaurantCommand
+                {
+                    Data = this.dto
+                }, CancellationToken.None);
 
             if (!resultCreate.Succeeded)
             {
@@ -38,11 +35,12 @@ namespace Pezza.Test.Core
         [Test]
         public async Task GetAsync()
         {
-            var sutGet = new GetRestaurantQueryHandler(this.dataAccess);
-            var resultGet = await sutGet.Handle(new GetRestaurantQuery
-            {
-                Id = this.dto.Id
-            }, CancellationToken.None);
+            var sutGet = new GetRestaurantQueryHandler(this.Context, Mapper());
+            var resultGet = await sutGet.Handle(
+                new GetRestaurantQuery
+                {
+                    Id = this.dto.Id
+                }, CancellationToken.None);
 
             Assert.IsTrue(resultGet?.Data != null);
         }
@@ -50,30 +48,28 @@ namespace Pezza.Test.Core
         [Test]
         public async Task GetAllAsync()
         {
-            var sutGetAll = new GetRestaurantsQueryHandler(this.dataAccess);
+            var sutGetAll = new GetRestaurantsQueryHandler(this.Context, Mapper());
             var resultGetAll = await sutGetAll.Handle(new GetRestaurantsQuery(), CancellationToken.None);
 
             Assert.IsTrue(resultGetAll?.Data.Count == 1);
         }
 
         [Test]
-        public void SaveAsync()
-        {
-            Assert.IsTrue(this.dto != null);
-        }
+        public void SaveAsync() => Assert.IsTrue(this.dto != null);
 
         [Test]
         public async Task UpdateAsync()
         {
-            var sutUpdate = new UpdateRestaurantCommandHandler(this.dataAccess);
-            var resultUpdate = await sutUpdate.Handle(new UpdateRestaurantCommand
-            {
-                Data = new RestaurantDTO
+            var sutUpdate = new UpdateRestaurantCommandHandler(this.Context, Mapper());
+            var resultUpdate = await sutUpdate.Handle(
+                new UpdateRestaurantCommand
                 {
-                    Id = this.dto.Id,
-                    Name = "New Restaurant"
-                }
-            }, CancellationToken.None);
+                    Data = new RestaurantDTO
+                    {
+                        Id = this.dto.Id,
+                        Name = "New Restaurant"
+                    }
+                }, CancellationToken.None);
 
             Assert.IsTrue(resultUpdate.Succeeded);
         }
@@ -81,11 +77,12 @@ namespace Pezza.Test.Core
         [Test]
         public async Task DeleteAsync()
         {
-            var sutDelete = new DeleteRestaurantCommandHandler(this.dataAccess);
-            var outcomeDelete = await sutDelete.Handle(new DeleteRestaurantCommand
-            {
-                Id = this.dto.Id
-            }, CancellationToken.None);
+            var sutDelete = new DeleteRestaurantCommandHandler(this.Context);
+            var outcomeDelete = await sutDelete.Handle(
+                new DeleteRestaurantCommand
+                {
+                    Id = this.dto.Id
+                }, CancellationToken.None);
 
             Assert.IsTrue(outcomeDelete.Succeeded);
         }

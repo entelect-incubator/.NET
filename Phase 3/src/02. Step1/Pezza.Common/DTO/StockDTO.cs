@@ -1,11 +1,10 @@
 ﻿namespace Pezza.Common.DTO
 {
     using System;
+    using Pezza.Common.Models.Base;
 
-    public class StockDTO
+    public class StockDTO : EntityBase
     {
-        public int Id { get; set; }
-
         public string Name { get; set; }
 
         public string UnitOfMeasure { get; set; }

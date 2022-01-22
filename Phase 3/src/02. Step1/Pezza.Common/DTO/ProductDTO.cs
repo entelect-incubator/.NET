@@ -1,12 +1,10 @@
 ﻿namespace Pezza.Common.DTO
 {
     using System;
-    using Pezza.Common.Entities;
+    using Pezza.Common.Models.Base;
 
     public class ProductDTO : ImageDataBase
     {
-        public int Id { get; set; }
-
         public string Name { get; set; }
 
         public string Description { get; set; }

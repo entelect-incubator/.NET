@@ -71,21 +71,15 @@ namespace Pezza.Common.Extensions
 }
 ```
 
-Create a new SearchBase.cs in Pezza.Common\Models
+Add paging option to all the DTO's
 
 ```cs
-namespace Pezza.Common.Models
-{
-    public class SearchBase
-    {
-        public string OrderBy { get; set; }
+public string OrderBy { get; set; }
 
-        public PagingArgs PagingArgs { get; set; }
-    }
-}
+public PagingArgs PagingArgs { get; set; }
 ```
 
-Extend the DTO's in Pezza.Common\Models by inheriting from SearchBase. In the cases of RestaurantDTO and ProductDTO  that already inherit from ImageDataBase, let ImageDataBase derive from SearchBase.
+Extend the DTO's in Pezza.Common\DTO by inheriting from EntityBase. In the cases of RestaurantDTO and ProductDTO  that already inherit from ImageDataBase, let ImageDataBase derive from EnityBase.
 
 ![](2021-01-15-07-08-27.png)
 
@@ -93,16 +87,16 @@ Extend the DTO's in Pezza.Common\Models by inheriting from SearchBase. In the ca
 namespace Pezza.Common.DTO
 {
     using System;
-    using Pezza.Common.Entities;
+    using Pezza.Common.Models;
+    using Pezza.Common.Models.Base;
 
-    public class CustomerDTO : SearchBase
+    public class CustomerDTO : EntityBase
     {
         public CustomerDTO()
         {
             this.Address = new AddressBase();
+            this.DateCreated = DateTime.Now;
         }
-
-        public int Id { get; set; }
 
         public string Name { get; set; }
 
@@ -115,6 +109,12 @@ namespace Pezza.Common.DTO
         public AddressBase Address { get; set; }
 
         public DateTime? DateCreated { get; set; }
+
+        public PagingArgs MyProperty { get; set; }
+
+        public string OrderBy { get; set; }
+
+        public PagingArgs PagingArgs { get; set; }
     }
 }
 ```
@@ -126,7 +126,7 @@ namespace Pezza.Common.Entities
 {
     using Pezza.Common.DTO.Data;
 
-    public class ImageDataBase : SearchBase
+    public class ImageDataBase : EntityBase
     {
         public string ImageData { get; set; }
     }
@@ -274,8 +274,6 @@ namespace Pezza.Common.Filters
 
             return query.Where(x => x.DateCreated == dateCreated.Value);
         }
-
-
     }
 }
 ```
@@ -284,7 +282,7 @@ You can copy the other Filters from **Phase 3\src\03. Step2\Pezza.Common\Filters
 
 ![Filters](Assets/2021-01-15-07-13-03.png)
 
-### **Modifying DataAccess**
+### **Modifying Core**
 
 The GetAllAsync method of IDataAccess gets enhanced in two ways. Firstly, a generic type parameter of type that is intended for passing through DTOs. Secondly, enhance the response by using ListResult<T> as the type argument of the Task return type.
 
@@ -294,95 +292,125 @@ The GetAllAsync method of IDataAccess gets enhanced in two ways. Firstly, a gene
 Task<ListResult<T>> GetAllAsync(T dto);
 ```
 
-The implementations of all DataAccess GetAllAsync methods need to be modified to include filtering.
+The implementations of all Queries methods need to be modified to include filtering. Remember to install System.Linq.Dynamic.Core on the Pezza.Core Project.
 
-Modify the GetAllAsync method in CustomerDataAccess.cs as follows.
+Modify the GetAllAsync method in GetCustomersQuery.cs as follows.
 
-```cs
-public async Task<ListResult<CustomerDTO>> GetAllAsync(CustomerDTO dto)
-{
-    if (string.IsNullOrEmpty(dto.OrderBy))
-    {
-        dto.OrderBy = "DateCreated desc";
-    }
-
-    var entities = this.databaseContext.Customers.Select(x => x)
-        .AsNoTracking()
-        .FilterByName(dto.Name)
-        .FilterByAddress(dto.Address?.Address)
-        .FilterByCity(dto.Address?.City)
-        .FilterByProvince(dto.Address?.Province)
-        .FilterByPostalCode(dto.Address?.PostalCode)
-        .FilterByPhone(dto.Phone)
-        .FilterByEmail(dto.Email)
-        .FilterByContactPerson(dto.ContactPerson)
-
-        .OrderBy(dto.OrderBy);
-
-    var count = entities.Count();
-    var paged = this.mapper.Map<List<CustomerDTO>>(await entities.ApplyPaging(dto.PagingArgs).ToListAsync());
-
-    return ListResult<CustomerDTO>.Success(paged, count);
-}
-```
-The only exception will be on the GetAllAsync implementation for Restaurant. We don't want to add any filtering, because of caching we will include later on.
-
-Modify the GetAllAsync method in RestaurantDataAccess.cs as follows.
+Add DTO Data object in the request
 
 ```cs
-public async Task<ListResult<RestaurantDTO>> GetAllAsync(RestaurantDTO dto)
+public class GetCustomersQuery : IRequest<ListResult<CustomerDTO>>
 {
-    var entities = this.databaseContext.Restaurants.Select(x => x)
-        .AsNoTracking();
-
-    var count = entities.Count();
-    var paged = await entities.ApplyPaging(dto.PagingArgs).ToListAsync();
-
-    return ListResult<RestaurantDTO>.Success(this.mapper.Map<List<RestaurantDTO>>(paged), count);
+    public CustomerDTO Data { get; set; }
 }
 ```
-
-
-
-Add filters to the other DataAccess GetAllAsync implementations as well or copy it from **Phase 3\src\03. Step2\Pezza.DataAccess**
-
-### **Modifying Queries**
-
-Pass an entity DTO as the argument in all queries that call GetAllAsync of the repective DataAccess implementation.
-
-For example, modify GetCustomersQuery.cs as follows.
+Together
 
 ```cs
 namespace Pezza.Core.Customer.Queries
 {
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
+    using AutoMapper;
     using MediatR;
+    using System.Linq.Dynamic.Core;
+    using Microsoft.EntityFrameworkCore;
     using Pezza.Common.DTO;
+using Pezza.Common.Filters;
     using Pezza.Common.Models;
-    using Pezza.DataAccess.Contracts;
+    using Pezza.DataAccess;
 
     public class GetCustomersQuery : IRequest<ListResult<CustomerDTO>>
     {
-        public CustomerDTO dto;
+        public CustomerDTO Data { get; set; }
     }
 
     public class GetCustomersQueryHandler : IRequestHandler<GetCustomersQuery, ListResult<CustomerDTO>>
     {
-        private readonly IDataAccess<CustomerDTO> dataAccess;
+        private readonly DatabaseContext databaseContext;
 
-        public GetCustomersQueryHandler(IDataAccess<CustomerDTO> dataAccess) => this.dataAccess = dataAccess;
+        private readonly IMapper mapper;
+
+        public GetCustomersQueryHandler(DatabaseContext databaseContext, IMapper mapper)
+            => (this.databaseContext, this.mapper) = (databaseContext, mapper);
 
         public async Task<ListResult<CustomerDTO>> Handle(GetCustomersQuery request, CancellationToken cancellationToken)
         {
-            var search = await this.dataAccess.GetAllAsync(request.dto);
+            var dto = request.Data;
 
-            return search;
+            if (string.IsNullOrEmpty(dto.OrderBy))
+            {
+                dto.OrderBy = "DateCreated desc";
+            }
+
+            var entities = this.databaseContext.Customers.Select(x => x)
+                .AsNoTracking()
+                .FilterByName(dto.Name)
+                .FilterByAddress(dto.Address?.Address)
+                .FilterByCity(dto.Address?.City)
+                .FilterByProvince(dto.Address?.Province)
+                .FilterByPostalCode(dto.Address?.PostalCode)
+                .FilterByPhone(dto.Phone)
+                .FilterByEmail(dto.Email)
+                .FilterByContactPerson(dto.ContactPerson)
+                .OrderBy(dto.OrderBy);
+
+            var count = entities.Count();
+            var paged = this.mapper.Map<List<CustomerDTO>>(await entities.ToListAsync(cancellationToken));
+
+            return ListResult<CustomerDTO>.Success(paged, count);
         }
     }
 }
 ```
-You can copy the other queries from the respective entity folders in **Phase 3\src\03. Step2\Pezza.Core**
+
+The only exception will be on the GetRestaurantsQuery implementation for Restaurant. We don't want to add any filtering, because of caching we will include later on.
+
+Modify GetRestaurantsQuery.cs as follows.
+
+```cs
+namespace Pezza.Core.Restaurant.Queries
+{
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using AutoMapper;
+    using MediatR;
+    using Microsoft.EntityFrameworkCore;
+    using Pezza.Common.DTO;
+    using Pezza.Common.Models;
+    using Pezza.DataAccess;
+
+    public class GetRestaurantsQuery : IRequest<ListResult<RestaurantDTO>>
+    {
+    }
+
+    public class GetRestaurantsQueryHandler : IRequestHandler<GetRestaurantsQuery, ListResult<RestaurantDTO>>
+    {
+        private readonly DatabaseContext databaseContext;
+
+        private readonly IMapper mapper;
+
+        public GetRestaurantsQueryHandler(DatabaseContext databaseContext, IMapper mapper)
+            => (this.databaseContext, this.mapper) = (databaseContext, mapper);
+
+        public async Task<ListResult<RestaurantDTO>> Handle(GetRestaurantsQuery request, CancellationToken cancellationToken)
+        {
+            var entities = this.databaseContext.Restaurants.Select(x => x).AsNoTracking();
+
+            var count = entities.Count();
+            var paged = this.mapper.Map<List<RestaurantDTO>>(await entities.ToListAsync(cancellationToken));
+
+            return ListResult<RestaurantDTO>.Success(paged, count);
+        }
+    }
+}
+```
+
+Add filters to the other Core Queries implementations as well or copy it from **Phase 3\src\03. Step2\Pezza.Core**
 
 ### **Modifying Controllers**
 
@@ -406,7 +434,7 @@ public async Task<ActionResult> Search(CustomerDTO dto)
 {
     var result = await this.Mediator.Send(new GetCustomersQuery
     {
-        dto = dto
+        Data = dto
     });
     return ResponseHelper.ResponseOutcome(result, this);
 }
@@ -414,42 +442,7 @@ public async Task<ActionResult> Search(CustomerDTO dto)
 
 ### **Modify Unit Tests**
 
-Modify unit tests to incorporate our changes. 
-
-In the case of testing DataAccess, we pass a new DTO as the argument. Modify the GetAllAsync test method in TestCustomerDataAccess.cs as follows.
-
-```cs
-[Test]
-public async Task GetAllAsync()
-{
-    var response = await this.handler.GetAllAsync(new CustomerDTO
-    {
-        Name = this.dto.Name
-    });
-    var outcome = response.Count;
-
-    Assert.IsTrue(outcome == 1);
-}
-```
-
-Modify the GetAllAsync test method in TestCustomerCore.cs as follows.
-
-```cs
-[Test]
-public async Task GetAllAsync()
-{
-    var sutGetAll = new GetCustomersQueryHandler(this.dataAccess);
-    var resultGetAll = await sutGetAll.Handle(new GetCustomersQuery
-    {
-        dto = new CustomerDTO
-        {
-            Name = this.dto.Name
-        }
-    }, CancellationToken.None);
-
-    Assert.IsTrue(resultGetAll?.Data.Count == 1);
-}
-```
+Modify unit tests to incorporate our changes.
 
 ## **Move to Phase 4**
 [Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%204)

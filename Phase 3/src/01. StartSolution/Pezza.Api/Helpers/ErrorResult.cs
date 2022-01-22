@@ -5,7 +5,6 @@
 
     public class ErrorResult : Result
     {
-
         public ErrorResult() => this.Succeeded = false;
 
         [DefaultValue(false)]

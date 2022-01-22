@@ -3,7 +3,7 @@
     using System;
     using Bogus;
     using Pezza.Common.DTO;
-    using Pezza.Common.Entities;
+    using Pezza.Common.Models.Base;
 
     public static class CustomerTestData
     {
@@ -24,5 +24,4 @@
             DateCreated = DateTime.Now
         };
     }
-
 }

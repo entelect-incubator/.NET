@@ -2,26 +2,35 @@
 {
     using System.Threading;
     using System.Threading.Tasks;
+    using AutoMapper;
     using MediatR;
     using Pezza.Common.DTO;
+    using Pezza.Common.Entities;
     using Pezza.Common.Models;
-    using Pezza.DataAccess.Contracts;
+    using Pezza.Core.Helpers;
+    using Pezza.DataAccess;
 
-    public partial class CreateNotifyCommand : IRequest<Result<NotifyDTO>>
+    public class CreateNotifyCommand : IRequest<Result<NotifyDTO>>
     {
         public NotifyDTO Data { get; set; }
     }
 
     public class CreateNotifyCommandHandler : IRequestHandler<CreateNotifyCommand, Result<NotifyDTO>>
     {
-        private readonly IDataAccess<NotifyDTO> dataAccess;
+        private readonly DatabaseContext databaseContext;
 
-        public CreateNotifyCommandHandler(IDataAccess<NotifyDTO> dataAccess) => this.dataAccess = dataAccess;
+        private readonly IMapper mapper;
+
+        public CreateNotifyCommandHandler(DatabaseContext databaseContext, IMapper mapper)
+            => (this.databaseContext, this.mapper) = (databaseContext, mapper);
 
         public async Task<Result<NotifyDTO>> Handle(CreateNotifyCommand request, CancellationToken cancellationToken)
         {
-            var outcome = await this.dataAccess.SaveAsync(request.Data);
-            return (outcome != null) ? Result<NotifyDTO>.Success(outcome) : Result<NotifyDTO>.Failure("Error creating a Notification");
+            var entity = this.mapper.Map<Notify>(request.Data);
+            this.databaseContext.Notify.Add(entity);
+            var outcome = await this.databaseContext.SaveChangesAsync(cancellationToken);
+
+            return await CoreHelper<NotifyDTO>.Outcome(this.databaseContext, this.mapper, cancellationToken, entity, "Error creating a Notification");
         }
     }
 }

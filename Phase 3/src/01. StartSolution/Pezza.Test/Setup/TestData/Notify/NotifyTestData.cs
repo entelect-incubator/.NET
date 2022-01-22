@@ -3,13 +3,12 @@
     using System;
     using Bogus;
     using Pezza.Common.DTO;
-    using Pezza.Common.Entities;
 
     public static class NotifyTestData
     {
-        public static Faker faker = new Faker();
+        public static Faker faker = new ();
 
-        public static NotifyDTO NotifyDTO = new NotifyDTO()
+        public static NotifyDTO NotifyDTO = new ()
         {
             CustomerId = 1,
             Email = faker.Person.Email,
@@ -18,5 +17,4 @@
             Sent = true
         };
     }
-
 }

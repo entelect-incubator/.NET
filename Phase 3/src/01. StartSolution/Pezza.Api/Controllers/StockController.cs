@@ -62,7 +62,6 @@
         /// </remarks>
         /// <param name="data">StockDTO.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         /// <response code="200">Stock created</response>
         /// <response code="400">Error creating a stock</response>
         [HttpPost]

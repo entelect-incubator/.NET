@@ -2,26 +2,35 @@
 {
     using System.Threading;
     using System.Threading.Tasks;
+    using AutoMapper;
     using MediatR;
     using Pezza.Common.DTO;
+    using Pezza.Common.Entities;
     using Pezza.Common.Models;
-    using Pezza.DataAccess.Contracts;
+    using Pezza.Core.Helpers;
+    using Pezza.DataAccess;
 
-    public partial class CreateOrderCommand : IRequest<Result<OrderDTO>>
+    public class CreateOrderCommand : IRequest<Result<OrderDTO>>
     {
         public OrderDTO Data { get; set; }
     }
 
     public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Result<OrderDTO>>
     {
-        private readonly IDataAccess<OrderDTO> dataAccess;
+        private readonly DatabaseContext databaseContext;
 
-        public CreateOrderCommandHandler(IDataAccess<OrderDTO> dataAccess) => this.dataAccess = dataAccess;
+        private readonly IMapper mapper;
+
+        public CreateOrderCommandHandler(DatabaseContext databaseContext, IMapper mapper)
+            => (this.databaseContext, this.mapper) = (databaseContext, mapper);
 
         public async Task<Result<OrderDTO>> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
         {
-            var outcome = await this.dataAccess.SaveAsync(request.Data);
-            return (outcome != null) ? Result<OrderDTO>.Success(outcome) : Result<OrderDTO>.Failure("Error adding a Order");
+            var entity = this.mapper.Map<Order>(request.Data);
+            this.databaseContext.Orders.Add(entity);
+            var outcome = await this.databaseContext.SaveChangesAsync(cancellationToken);
+
+            return await CoreHelper<OrderDTO>.Outcome(this.databaseContext, this.mapper, cancellationToken, entity, "Error creating a Order");
         }
     }
 }

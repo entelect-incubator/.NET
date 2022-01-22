@@ -3,8 +3,7 @@ namespace Pezza.DataAccess.Map
     using Microsoft.EntityFrameworkCore;
     using Pezza.Common.Entities;
 
-    public partial class OrderMap
-        : IEntityTypeConfiguration<Order>
+    public class OrderMap : IEntityTypeConfiguration<Order>
     {
         public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Order> builder)
         {
@@ -47,13 +46,6 @@ namespace Pezza.DataAccess.Map
                 .HasColumnName("Completed")
                 .HasColumnType("bit")
                 .HasDefaultValueSql("(0)");
-
-            // relationships
-            builder.HasOne(t => t.Customer)
-                .WithMany(t => t.Orders)
-                .HasForeignKey(d => d.CustomerId)
-                .HasConstraintName("FK_Order_Customer");
         }
-
     }
 }

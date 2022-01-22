@@ -1,11 +1,10 @@
 ﻿namespace Pezza.Common.DTO
 {
     using System;
+using Pezza.Common.Models.Base;
 
-    public class NotifyDTO
+    public class NotifyDTO : EntityBase
     {
-        public int Id { get; set; }
-
         public int? CustomerId { get; set; }
 
         public string Email { get; set; }

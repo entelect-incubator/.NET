@@ -248,14 +248,6 @@ namespace Pezza.Core
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));
 
-
-            services.AddTransient(typeof(IDataAccess<OrderDTO>), typeof(OrderDataAccess));
-            services.AddTransient(typeof(IDataAccess<StockDTO>), typeof(StockDataAccess));
-            services.AddTransient(typeof(IDataAccess<NotifyDTO>), typeof(NotifyDataAccess));
-            services.AddTransient(typeof(IDataAccess<ProductDTO>), typeof(ProductDataAccess));
-            services.AddTransient(typeof(IDataAccess<CustomerDTO>), typeof(CustomerDataAccess));
-            services.AddTransient(typeof(IDataAccess<RestaurantDTO>), typeof(RestaurantDataAccess));
-
             services.AddAutoMapper(typeof(MappingProfile));
 
             return services;
