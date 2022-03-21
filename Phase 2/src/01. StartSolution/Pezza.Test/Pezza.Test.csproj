@@ -1,28 +1,28 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
 
-    <IsPackable>false</IsPackable>
-  </PropertyGroup>
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="Apis\**" />
-    <EmbeddedResource Remove="Apis\**" />
-    <None Remove="Apis\**" />
-  </ItemGroup>
+    <ItemGroup>
+        <Compile Remove="Apis\**" />
+        <EmbeddedResource Remove="Apis\**" />
+        <None Remove="Apis\**" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Bogus" Version="33.1.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="5.0.11" />
-    <PackageReference Include="nunit" Version="3.13.2" />
-    <PackageReference Include="NUnit3TestAdapter" Version="4.0.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Bogus" Version="34.0.1" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.1" />
+        <PackageReference Include="nunit" Version="3.13.2" />
+        <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Pezza.Core\Pezza.Core.csproj" />
-    <ProjectReference Include="..\Pezza.DataAccess\Pezza.DataAccess.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Pezza.Core\Pezza.Core.csproj" />
+        <ProjectReference Include="..\Pezza.DataAccess\Pezza.DataAccess.csproj" />
+    </ItemGroup>
 
 </Project>

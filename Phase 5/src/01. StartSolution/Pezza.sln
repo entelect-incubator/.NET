@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29519.181
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.31911.260
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "05 Tests", "05 Tests", "{2446A02E-3196-4A9D-93FE-2F18F093A466}"
 EndProject
@@ -11,8 +11,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "04 Common", "04 Common", "{64BEE539-3166-40B4-A75F-71DC40D29A61}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01 Apis", "01 Apis", "{62BBBDBE-A110-4A76-AD08-520728FE86E0}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pezza.DataAccess.Contracts", "Pezza.DataAccess.Contracts\Pezza.DataAccess.Contracts.csproj", "{0A8F24C8-2E55-41F4-93B3-C7442E58EE87}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pezza.DataAccess", "Pezza.DataAccess\Pezza.DataAccess.csproj", "{FE42CB6B-CB36-40E0-8624-43D9E60BF918}"
 EndProject
@@ -26,6 +24,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pezza.Api", "Pezza.Api\Pezz
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{30EA8D6A-A152-441E-85AB-A39B51011B5E}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
 		StyleCopRuleSet.ruleset = StyleCopRuleSet.ruleset
 	EndProjectSection
 EndProject
@@ -35,10 +34,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{0A8F24C8-2E55-41F4-93B3-C7442E58EE87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0A8F24C8-2E55-41F4-93B3-C7442E58EE87}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0A8F24C8-2E55-41F4-93B3-C7442E58EE87}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0A8F24C8-2E55-41F4-93B3-C7442E58EE87}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FE42CB6B-CB36-40E0-8624-43D9E60BF918}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FE42CB6B-CB36-40E0-8624-43D9E60BF918}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FE42CB6B-CB36-40E0-8624-43D9E60BF918}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -64,7 +59,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{0A8F24C8-2E55-41F4-93B3-C7442E58EE87} = {4D8B72C8-5089-4064-847F-5B1D41D9EA6F}
 		{FE42CB6B-CB36-40E0-8624-43D9E60BF918} = {4D8B72C8-5089-4064-847F-5B1D41D9EA6F}
 		{A5CA9EDE-B766-4B76-8316-69BFE7FB10E2} = {D8B05A7F-DABF-4E75-AC93-CE78506AE9DC}
 		{863C4B29-22B7-4029-81C9-76D109A9CB10} = {64BEE539-3166-40B4-A75F-71DC40D29A61}

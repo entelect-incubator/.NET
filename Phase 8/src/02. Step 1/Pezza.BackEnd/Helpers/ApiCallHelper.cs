@@ -35,7 +35,7 @@
             this.jsonSerializerOptions = new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                IgnoreNullValues = true,
+                DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull,
                 MaxDepth = 20
             };
         }
@@ -99,10 +99,7 @@
                 var responseData = await responseMessage.Content.ReadAsStringAsync();
                 var response = JsonSerializer.Deserialize<Result>(responseData, this.jsonSerializerOptions);
 
-                this.ValidationErrors = response.Errors.Select(x =>
-                {
-                    return (x as JObject).ToObject<ValidationError>();
-                }).ToList();
+                this.ValidationErrors = response.Errors.Select(x => (x as JObject).ToObject<ValidationError>()).ToList();
 
                 return Result<T>.Failure("ValidationError");
             }
@@ -132,10 +129,7 @@
                 var responseData = await responseMessage.Content.ReadAsStringAsync();
                 var response = JsonSerializer.Deserialize<Result>(responseData, this.jsonSerializerOptions);
 
-                this.ValidationErrors = response.Errors?.Select(x =>
-                {
-                    return (x as JObject).ToObject<ValidationError>();
-                }).ToList();
+                this.ValidationErrors = response.Errors?.Select(x => (x as JObject).ToObject<ValidationError>()).ToList();
 
                 return Result<T>.Failure("ValidationError");
             }

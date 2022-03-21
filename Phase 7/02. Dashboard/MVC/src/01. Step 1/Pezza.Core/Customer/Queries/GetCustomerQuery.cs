@@ -2,10 +2,12 @@
 {
     using System.Threading;
     using System.Threading.Tasks;
+    using AutoMapper;
     using MediatR;
+    using Microsoft.EntityFrameworkCore;
     using Pezza.Common.DTO;
     using Pezza.Common.Models;
-    using Pezza.DataAccess.Contracts;
+    using Pezza.DataAccess;
 
     public class GetCustomerQuery : IRequest<Result<CustomerDTO>>
     {
@@ -14,14 +16,17 @@
 
     public class GetCustomerQueryHandler : IRequestHandler<GetCustomerQuery, Result<CustomerDTO>>
     {
-        private readonly IDataAccess<CustomerDTO> dataAccess;
+        private readonly DatabaseContext databaseContext;
 
-        public GetCustomerQueryHandler(IDataAccess<CustomerDTO> dataAccess) => this.dataAccess = dataAccess;
+        private readonly IMapper mapper;
+
+        public GetCustomerQueryHandler(DatabaseContext databaseContext, IMapper mapper)
+            => (this.databaseContext, this.mapper) = (databaseContext, mapper);
 
         public async Task<Result<CustomerDTO>> Handle(GetCustomerQuery request, CancellationToken cancellationToken)
         {
-            var search = await this.dataAccess.GetAsync(request.Id);
-            return Result<CustomerDTO>.Success(search);
+            var result = this.mapper.Map<CustomerDTO>(await this.databaseContext.Customers.FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken));
+            return Result<CustomerDTO>.Success(result);
         }
     }
 }

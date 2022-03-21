@@ -1,7 +1,7 @@
 ﻿namespace Pezza.Api.Controllers
 {
+    using System.Threading;
     using System.Threading.Tasks;
-    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Pezza.Api.Helpers;
     using Pezza.Common.DTO;
@@ -11,43 +11,46 @@
     using Pezza.Core.Product.Queries;
 
     [ApiController]
-    [Authorize]
     public class ProductController : ApiController
     {
         /// <summary>
         /// Get Product by Id.
         /// </summary>
         /// <param name="id">int.</param>
+        /// <param name="cancellationToken">Cancellation Token.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        /// <response code="200">Get a product</response>
-        /// <response code="400">Error getting a product</response>
-        /// <response code="404">Product not found</response>
+        /// <response code="200">Get a product.</response>
+        /// <response code="400">Error getting a product.</response>
+        /// <response code="404">Product not found.</response>
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(Result<ProductDTO>), 200)]
         [ProducesResponseType(typeof(ErrorResult), 400)]
         [ProducesResponseType(typeof(ErrorResult), 404)]
-        public async Task<ActionResult> Get(int id)
+        public async Task<ActionResult> Get(int id, CancellationToken cancellationToken = default)
         {
-            var result = await this.Mediator.Send(new GetProductQuery { Id = id });
+            var result = await this.Mediator.Send(new GetProductQuery { Id = id }, cancellationToken);
             return ResponseHelper.ResponseOutcome(result, this);
         }
 
         /// <summary>
         /// Get all Products.
         /// </summary>
+        /// <param name="dto">DTO.</param>
+        /// <param name="cancellationToken">Cancellation Token.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        /// <response code="200">Product Search</response>
-        /// <response code="400">Error searching for products</response>
+        /// <response code="200">Product Search.</response>
+        /// <response code="400">Error searching for products.</response>
         [HttpPost]
         [ProducesResponseType(typeof(ListResult<ProductDTO>), 200)]
         [ProducesResponseType(typeof(ErrorResult), 400)]
         [Route("Search")]
-        public async Task<ActionResult> Search(ProductDTO dto)
+        public async Task<ActionResult> Search(ProductDTO dto, CancellationToken cancellationToken = default)
         {
-            var result = await this.Mediator.Send(new GetProductsQuery
-            {
-                dto = dto
-            });
+            var result = await this.Mediator.Send(
+                new GetProductsQuery
+                {
+                    Data = dto,
+                }, cancellationToken);
             return ResponseHelper.ResponseOutcome(result, this);
         }
 
@@ -67,13 +70,14 @@
         ///     }.
         /// </remarks>
         /// <param name="data">ProductDTO.</param>
+        /// <param name="cancellationToken">Cancellation Token.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        /// <response code="200">Product created</response>
-        /// <response code="400">Error creating a product</response>
+        /// <response code="200">Product created.</response>
+        /// <response code="400">Error creating a product.</response>
         [HttpPost]
         [ProducesResponseType(typeof(Result<ProductDTO>), 200)]
         [ProducesResponseType(typeof(ErrorResult), 400)]
-        public async Task<ActionResult<Product>> Create(ProductDTO data)
+        public async Task<ActionResult<Product>> Create(ProductDTO data, CancellationToken cancellationToken = default)
         {
             if (!string.IsNullOrEmpty(data.ImageData))
             {
@@ -84,10 +88,11 @@
                 }
             }
 
-            var result = await this.Mediator.Send(new CreateProductCommand
-            {
-                Data = data
-            });
+            var result = await this.Mediator.Send(
+                new CreateProductCommand
+                {
+                    Data = data,
+                }, cancellationToken);
 
             return ResponseHelper.ResponseOutcome(result, this);
         }
@@ -104,15 +109,16 @@
         ///     }.
         /// </remarks>
         /// <param name="data">ProductDTO.</param>
+        /// <param name="cancellationToken">Cancellation Token.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        /// <response code="200">Product updated</response>
-        /// <response code="400">Error updating a product</response>
-        /// <response code="404">Product not found</response>
+        /// <response code="200">Product updated.</response>
+        /// <response code="400">Error updating a product.</response>
+        /// <response code="404">Product not found.</response>
         [HttpPut]
         [ProducesResponseType(typeof(Result<ProductDTO>), 200)]
         [ProducesResponseType(typeof(ErrorResult), 400)]
         [ProducesResponseType(typeof(Result), 404)]
-        public async Task<ActionResult> Update(ProductDTO data)
+        public async Task<ActionResult> Update(ProductDTO data, CancellationToken cancellationToken = default)
         {
             if (!string.IsNullOrEmpty(data.ImageData))
             {
@@ -123,10 +129,11 @@
                 }
             }
 
-            var result = await this.Mediator.Send(new UpdateProductCommand
+            var result = await this.Mediator.Send(
+                new UpdateProductCommand
             {
-                Data = data
-            });
+                Data = data,
+            }, cancellationToken);
 
             return ResponseHelper.ResponseOutcome(result, this);
         }
@@ -135,15 +142,16 @@
         /// Remove Product by Id.
         /// </summary>
         /// <param name="id">int.</param>
+        /// <param name="cancellationToken">Cancellation Token.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        /// <response code="200">Product deleted</response>
-        /// <response code="400">Error deleting a product</response>
+        /// <response code="200">Product deleted.</response>
+        /// <response code="400">Error deleting a product.</response>
         [HttpDelete("{id}")]
         [ProducesResponseType(typeof(Result), 200)]
         [ProducesResponseType(typeof(ErrorResult), 400)]
-        public async Task<ActionResult> Delete(int id)
+        public async Task<ActionResult> Delete(int id, CancellationToken cancellationToken = default)
         {
-            var result = await this.Mediator.Send(new DeleteProductCommand { Id = id });
+            var result = await this.Mediator.Send(new DeleteProductCommand { Id = id }, cancellationToken);
             return ResponseHelper.ResponseOutcome(result, this);
         }
     }

@@ -1,12 +1,10 @@
-﻿namespace Pezza.BackEnd.Controllers
+﻿using Pezza.BackEnd.Controllers;
+
+namespace Pezza.Portal.Controllers
 {
-    using System.Collections.Generic;
     using System.Net.Http;
-    using System.Text;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Mvc;
-    using Newtonsoft.Json;
-    using Pezza.Common;
     using Pezza.Common.DTO;
     using Pezza.Portal.Helpers;
 
@@ -17,18 +15,17 @@
         public StockController(IHttpClientFactory clientFactory)
             : base(clientFactory)
         {
-            this.apiCallHelper = new ApiCallHelper<StockDTO>(this.clientFactory);
-            this.apiCallHelper.ControllerName = "Stock";
+            this.apiCallHelper = new ApiCallHelper<StockDTO>(this.clientFactory)
+            {
+                ControllerName = "Stock"
+            };
         }
 
-        public ActionResult Index()
+        public ActionResult Index() => this.View(new Models.PagingModel
         {
-            return this.View(new Portal.Models.PagingModel
-            {
-                Limit = 10,
-                Page = 1
-            });
-        }
+            Limit = 10,
+            Page = 1
+        });
 
         public async Task<JsonResult> List(int limit, int page, string orderBy = "Name asc")
         {
@@ -52,10 +49,7 @@
             return this.View(entity);
         }
 
-        public ActionResult Create()
-        {
-            return this.View(new StockDTO());
-        }
+        public ActionResult Create() => this.View(new StockDTO());
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -67,7 +61,7 @@
             }
 
             var result = await this.apiCallHelper.Create(stock);
-            return Validate<StockDTO>(result, this.apiCallHelper, stock);
+            return this.Validate(result, this.apiCallHelper, stock);
         }
 
         [Route("Stock/Edit/{id?}")]
@@ -89,7 +83,7 @@
 
             stock.Id = id;
             var result = await this.apiCallHelper.Edit(stock);
-            return Validate<StockDTO>(result, this.apiCallHelper, stock);
+            return this.Validate(result, this.apiCallHelper, stock);
         }
 
         [HttpPost]

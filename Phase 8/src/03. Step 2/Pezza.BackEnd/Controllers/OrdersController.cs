@@ -1,4 +1,6 @@
-﻿namespace Pezza.BackEnd.Controllers
+﻿using Pezza.BackEnd.Controllers;
+
+namespace Pezza.Portal.Controllers
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -6,7 +8,6 @@
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Rendering;
-    using Newtonsoft.Json;
     using Pezza.Common;
     using Pezza.Common.DTO;
     using Pezza.Portal.Helpers;
@@ -19,18 +20,17 @@
         public OrdersController(IHttpClientFactory clientFactory)
             : base(clientFactory)
         {
-            this.apiCallHelper = new ApiCallHelper<OrderDTO>(this.clientFactory);
-            this.apiCallHelper.ControllerName = "Order";
+            this.apiCallHelper = new ApiCallHelper<OrderDTO>(this.clientFactory)
+            {
+                ControllerName = "Order"
+            };
         }
 
-        public ActionResult Index()
+        public ActionResult Index() => this.View(new PagingModel
         {
-            return this.View(new Portal.Models.PagingModel
-            {
-                Limit = 10,
-                Page = 1
-            });
-        }
+            Limit = 10,
+            Page = 1
+        });
 
         [HttpPost]
         public async Task<JsonResult> List([FromBody] SearchModel<OrderDTO> searchmodel)
@@ -47,13 +47,10 @@
             return this.Json(result);
         }
 
-        public async Task<IActionResult> OrderItem()
+        public async Task<IActionResult> OrderItem() => this.PartialView("~/views/Orders/_Products.cshtml", new OrderItemModel
         {
-            return this.PartialView("~/views/Orders/_Products.cshtml", new OrderItemModel
-            {
-                Products = await this.GetProducts()
-            });
-        }
+            Products = await this.GetProducts()
+        });
 
         public async Task<ActionResult> Details(int id)
         {
@@ -61,14 +58,11 @@
             return this.View(entity);
         }
 
-        public async Task<ActionResult> Create()
+        public async Task<ActionResult> Create() => this.View(new OrderModel
         {
-            return this.View(new OrderModel
-            {
-                Customers = await this.GetCustomers(),
-                Restaurants = await this.GetRestaurants()
-            });
-        }
+            Customers = await this.GetCustomers(),
+            Restaurants = await this.GetRestaurants()
+        });
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -80,7 +74,7 @@
             }
 
             var result = await this.apiCallHelper.Create(order);
-            return Validate<OrderDTO>(result, this.apiCallHelper, order);
+            return this.Validate(result, this.apiCallHelper, order);
         }
 
         private async Task<List<SelectListItem>> GetCustomers()
@@ -156,7 +150,7 @@
                     Id = x.Id,
                     DateCreated = x.DateCreated,
                     Description = x.Description,
-                    HasOffer = x.OfferEndDate.HasValue ? true : false,
+                    HasOffer = x.OfferEndDate.HasValue,
                     IsActive = x.IsActive,
                     OfferEndDate = x.OfferEndDate,
                     OfferPrice = x.OfferPrice,
@@ -208,12 +202,7 @@
                 Completed = true
             });
 
-            if (!result.Succeeded)
-            {
-                return this.Json(false);
-            }
-
-            return this.Json(result.Data?.Id > 0 ? true : false);
+            return !result.Succeeded ? this.Json(false) : this.Json(result.Data?.Id > 0);
         }
     }
 }

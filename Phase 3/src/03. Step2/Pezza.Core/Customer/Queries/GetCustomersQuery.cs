@@ -2,13 +2,14 @@
 {
     using System.Collections.Generic;
     using System.Linq;
+    using System.Linq.Dynamic.Core;
     using System.Threading;
     using System.Threading.Tasks;
     using AutoMapper;
     using MediatR;
-    using System.Linq.Dynamic.Core;
     using Microsoft.EntityFrameworkCore;
     using Pezza.Common.DTO;
+    using Pezza.Common.Extensions;
     using Pezza.Common.Filters;
     using Pezza.Common.Models;
     using Pezza.DataAccess;
@@ -49,7 +50,7 @@
                 .OrderBy(dto.OrderBy);
 
             var count = entities.Count();
-            var paged = this.mapper.Map<List<CustomerDTO>>(await entities.ToListAsync(cancellationToken));
+            var paged = this.mapper.Map<List<CustomerDTO>>(await entities.ApplyPaging(dto.PagingArgs).OrderBy(dto.OrderBy).ToListAsync(cancellationToken));
 
             return ListResult<CustomerDTO>.Success(paged, count);
         }

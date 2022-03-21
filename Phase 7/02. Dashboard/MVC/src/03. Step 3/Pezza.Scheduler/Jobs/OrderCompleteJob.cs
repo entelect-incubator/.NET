@@ -11,7 +11,7 @@
 
     public class OrderCompleteJob : IOrderCompleteJob
     {
-        private IMediator mediator;
+        private readonly IMediator mediator;
 
         public OrderCompleteJob(IMediator mediator) => this.mediator = mediator;
 
@@ -19,7 +19,7 @@
         {
             var notifiesResult = await this.mediator.Send(new GetNotifiesQuery
             {
-                dto = new NotifyDTO
+                Data = new NotifyDTO
                 {
                     Sent = false,
                     PagingArgs = PagingArgs.Default
@@ -50,7 +50,7 @@
                             if (emailResult.Succeeded)
                             {
                                 notification.Sent = true;
-                                var updateNotifyResult = await this.mediator.Send(new UpdateNotifyCommand{ Data = notification });
+                                var updateNotifyResult = await this.mediator.Send(new UpdateNotifyCommand { Data = notification });
                             }
                         }
                     }

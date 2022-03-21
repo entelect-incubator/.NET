@@ -58,7 +58,7 @@
                 {
                     FullPath = fullPath,
                     Path = imageFileName,
-                    Thumbnail = thumbnailFileName
+                    Thumbnail = thumbnailFileName,
                 });
             }
 

@@ -17,9 +17,9 @@
         /// </summary>
         /// <param name="id">int.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        /// <response code="200">Get a product</response>
-        /// <response code="400">Error getting a product</response>
-        /// <response code="404">Product not found</response>
+        /// <response code="200">Get a product.</response>
+        /// <response code="400">Error getting a product.</response>
+        /// <response code="404">Product not found.</response>
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(Result<ProductDTO>), 200)]
         [ProducesResponseType(typeof(ErrorResult), 400)]
@@ -33,9 +33,10 @@
         /// <summary>
         /// Get all Products.
         /// </summary>
+        /// <param name="dto">DTO.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        /// <response code="200">Product Search</response>
-        /// <response code="400">Error searching for products</response>
+        /// <response code="200">Product Search.</response>
+        /// <response code="400">Error searching for products.</response>
         [HttpPost]
         [ProducesResponseType(typeof(ListResult<ProductDTO>), 200)]
         [ProducesResponseType(typeof(ErrorResult), 400)]
@@ -44,7 +45,7 @@
         {
             var result = await this.Mediator.Send(new GetProductsQuery
             {
-                dto = dto
+                Data = dto,
             });
             return ResponseHelper.ResponseOutcome(result, this);
         }
@@ -66,8 +67,8 @@
         /// </remarks>
         /// <param name="data">ProductDTO.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        /// <response code="200">Product created</response>
-        /// <response code="400">Error creating a product</response>
+        /// <response code="200">Product created.</response>
+        /// <response code="400">Error creating a product.</response>
         [HttpPost]
         [ProducesResponseType(typeof(Result<ProductDTO>), 200)]
         [ProducesResponseType(typeof(ErrorResult), 400)]
@@ -84,7 +85,7 @@
 
             var result = await this.Mediator.Send(new CreateProductCommand
             {
-                Data = data
+                Data = data,
             });
 
             return ResponseHelper.ResponseOutcome(result, this);
@@ -103,9 +104,9 @@
         /// </remarks>
         /// <param name="data">ProductDTO.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        /// <response code="200">Product updated</response>
-        /// <response code="400">Error updating a product</response>
-        /// <response code="404">Product not found</response>
+        /// <response code="200">Product updated.</response>
+        /// <response code="400">Error updating a product.</response>
+        /// <response code="404">Product not found.</response>
         [HttpPut]
         [ProducesResponseType(typeof(Result<ProductDTO>), 200)]
         [ProducesResponseType(typeof(ErrorResult), 400)]
@@ -123,7 +124,7 @@
 
             var result = await this.Mediator.Send(new UpdateProductCommand
             {
-                Data = data
+                Data = data,
             });
 
             return ResponseHelper.ResponseOutcome(result, this);
@@ -134,8 +135,8 @@
         /// </summary>
         /// <param name="id">int.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        /// <response code="200">Product deleted</response>
-        /// <response code="400">Error deleting a product</response>
+        /// <response code="200">Product deleted.</response>
+        /// <response code="400">Error deleting a product.</response>
         [HttpDelete("{id}")]
         [ProducesResponseType(typeof(Result), 200)]
         [ProducesResponseType(typeof(ErrorResult), 400)]

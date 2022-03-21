@@ -2,11 +2,13 @@
 {
     using System.Threading;
     using System.Threading.Tasks;
+    using AutoMapper;
     using MediatR;
+    using Microsoft.EntityFrameworkCore;
     using Pezza.Common.DTO;
     using Pezza.Common.Models;
-    using Pezza.Core.Order.Events;
-    using Pezza.DataAccess.Contracts;
+    using Pezza.Core.Helpers;
+    using Pezza.DataAccess;
 
     public class UpdateOrderCommand : IRequest<Result<OrderDTO>>
     {
@@ -15,22 +17,30 @@
 
     public class UpdateOrderCommandHandler : IRequestHandler<UpdateOrderCommand, Result<OrderDTO>>
     {
-        private readonly IDataAccess<OrderDTO> dataAccess;
+        private readonly DatabaseContext databaseContext;
 
-        private readonly IMediator mediator;
+        private readonly IMapper mapper;
 
-        public UpdateOrderCommandHandler(IDataAccess<OrderDTO> dataAccess, IMediator mediator)
-            => (this.dataAccess, this.mediator) = (dataAccess, mediator);
+        public UpdateOrderCommandHandler(DatabaseContext databaseContext, IMapper mapper)
+            => (this.databaseContext, this.mapper) = (databaseContext, mapper);
 
         public async Task<Result<OrderDTO>> Handle(UpdateOrderCommand request, CancellationToken cancellationToken)
         {
-            var outcome = await this.dataAccess.UpdateAsync(request.Data);
-            if (request.Data.Completed.HasValue)
+            var dto = request.Data;
+            var findEntity = await this.databaseContext.Orders.FirstOrDefaultAsync(x => x.Id == dto.Id, cancellationToken);
+            if (findEntity == null)
             {
-                await this.mediator.Publish(new OrderCompletedEvent { CompletedOrder = outcome }, cancellationToken);
+                return null;
             }
 
-            return (outcome != null) ? Result<OrderDTO>.Success(outcome) : Result<OrderDTO>.Failure("Error updating a Order");
+            findEntity.Completed = dto.Completed ?? findEntity.Completed;
+            findEntity.RestaurantId = dto.RestaurantId ?? findEntity.RestaurantId;
+            findEntity.CustomerId = dto.CustomerId ?? findEntity.CustomerId;
+            findEntity.Amount = dto.Amount ?? findEntity.Amount;
+
+            this.databaseContext.Orders.Update(findEntity);
+
+            return await CoreHelper<OrderDTO>.Outcome(this.databaseContext, this.mapper, cancellationToken, findEntity, "Error updating order");
         }
     }
 }

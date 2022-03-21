@@ -1,10 +1,10 @@
-﻿namespace Pezza.BackEnd.Controllers
+﻿using Pezza.BackEnd.Controllers;
+
+namespace Pezza.Portal.Controllers
 {
-    using System.Linq;
     using System.Net.Http;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Mvc;
-    using Newtonsoft.Json;
     using Pezza.Common.DTO;
     using Pezza.Portal.Helpers;
     using Pezza.Portal.Models;
@@ -16,20 +16,20 @@
         public CustomerController(IHttpClientFactory clientFactory)
             : base(clientFactory)
         {
-            this.apiCallHelper = new ApiCallHelper<CustomerDTO>(this.clientFactory);
-            this.apiCallHelper.ControllerName = "Customer";
+            this.apiCallHelper = new ApiCallHelper<CustomerDTO>(this.clientFactory)
+            {
+                ControllerName = "Customer"
+            };
         }
 
-        public ActionResult Index()
+        public ActionResult Index() => this.View(new PagingModel
         {
-            return this.View(new Portal.Models.PagingModel
-            {
-                Limit = 10,
-                Page = 1
-            });
-        }
+            Limit = 10,
+            Page = 1
+        });
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<JsonResult> List([FromBody] SearchModel<CustomerDTO> searchmodel)
         {
             var entity = searchmodel.SearchData;
@@ -44,10 +44,7 @@
             return this.Json(result);
         }
 
-        public IActionResult CreatePartial()
-        {
-            return this.PartialView("~/views/Customer/_Create.cshtml", new CustomerDTO());
-        }
+        public IActionResult CreatePartial() => this.PartialView("~/views/Customer/_Create.cshtml", new CustomerDTO());
 
         public async Task<ActionResult> Details(int id)
         {
@@ -55,12 +52,10 @@
             return this.View(entity);
         }
 
-        public ActionResult Create()
-        {
-            return this.View(new CustomerDTO());
-        }
+        public ActionResult Create() => this.View(new CustomerDTO());
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(CustomerDTO customer)
         {
             if (!this.ModelState.IsValid)
@@ -69,7 +64,7 @@
             }
 
             var result = await this.apiCallHelper.Create(customer);
-            return Validate<CustomerDTO>(result, this.apiCallHelper, customer);
+            return this.Validate(result, this.apiCallHelper, customer);
         }
 
         [Route("Customer/Edit/{id?}")]
@@ -91,7 +86,7 @@
 
             customer.Id = id;
             var result = await this.apiCallHelper.Edit(customer);
-            return Validate<CustomerDTO>(result, this.apiCallHelper, customer);
+            return this.Validate(result, this.apiCallHelper, customer);
         }
 
         [HttpPost]

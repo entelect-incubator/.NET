@@ -44,7 +44,7 @@
         {
             var result = await this.Mediator.Send(new GetStocksQuery
             {
-                dto = dto
+                Data = dto
             });
             return ResponseHelper.ResponseOutcome(result, this);
         }

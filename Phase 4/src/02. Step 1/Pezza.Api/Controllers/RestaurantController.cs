@@ -17,9 +17,9 @@
         /// </summary>
         /// <param name="id">int.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        /// <response code="200">Get a restaurant</response>
-        /// <response code="400">Error getting a restaurant</response>
-        /// <response code="404">Restaurant not found</response>
+        /// <response code="200">Get a restaurant.</response>
+        /// <response code="400">Error getting a restaurant.</response>
+        /// <response code="404">Restaurant not found.</response>
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(Result<RestaurantDTO>), 200)]
         [ProducesResponseType(typeof(ErrorResult), 400)]
@@ -34,17 +34,17 @@
         /// Get all Restaurants.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        /// <response code="200">Restaurant Search</response>
-        /// <response code="400">Error searching for restaurants</response>
+        /// <response code="200">Restaurant Search.</response>
+        /// <response code="400">Error searching for restaurants.</response>
         [HttpPost]
         [ProducesResponseType(typeof(ListResult<RestaurantDTO>), 200)]
         [ProducesResponseType(typeof(ErrorResult), 400)]
         [Route("Search")]
         public async Task<ActionResult> Search(RestaurantDTO dto)
         {
-            var result = await this.Mediator.Send(new GetRestaurantsQuery
+            var result = await this.Mediator.Send(new GetRestaurantsQuery()
             {
-                dto = dto
+                Data = dto,
             });
             return ResponseHelper.ResponseOutcome(result, this);
         }
@@ -70,8 +70,8 @@
         /// </remarks>
         /// <param name="data">RestaurantDTO.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        /// <response code="200">Restaurant created</response>
-        /// <response code="400">Error creating a restaurant</response>
+        /// <response code="200">Restaurant created.</response>
+        /// <response code="400">Error creating a restaurant.</response>
         [HttpPost]
         [ProducesResponseType(typeof(Result<RestaurantDTO>), 200)]
         [ProducesResponseType(typeof(ErrorResult), 400)]
@@ -88,7 +88,7 @@
 
             var result = await this.Mediator.Send(new CreateRestaurantCommand
             {
-                Data = data
+                Data = data,
             });
 
             return ResponseHelper.ResponseOutcome(result, this);
@@ -108,9 +108,9 @@
         /// </remarks>
         /// <param name="data">RestaurantDTO.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        /// <response code="200">Restaurant updated</response>
-        /// <response code="400">Error updating a restaurant</response>
-        /// <response code="404">Restaurant not found</response>
+        /// <response code="200">Restaurant updated.</response>
+        /// <response code="400">Error updating a restaurant.</response>
+        /// <response code="404">Restaurant not found.</response>
         [HttpPut]
         [ProducesResponseType(typeof(Result<RestaurantDTO>), 200)]
         [ProducesResponseType(typeof(ErrorResult), 400)]
@@ -128,7 +128,7 @@
 
             var result = await this.Mediator.Send(new UpdateRestaurantCommand
             {
-                Data = data
+                Data = data,
             });
 
             return ResponseHelper.ResponseOutcome(result, this);
@@ -139,8 +139,8 @@
         /// </summary>
         /// <param name="id">int.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        /// <response code="200">Restaurant deleted</response>
-        /// <response code="400">Error deleting a restaurant</response>
+        /// <response code="200">Restaurant deleted.</response>
+        /// <response code="400">Error deleting a restaurant.</response>
         [HttpDelete("{id}")]
         [ProducesResponseType(typeof(Result), 200)]
         [ProducesResponseType(typeof(ErrorResult), 400)]

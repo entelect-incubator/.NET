@@ -4,6 +4,8 @@
     using System.Collections.Generic;
     using Bogus;
     using Pezza.Common.DTO;
+    using Pezza.Test.Setup.TestData.Customer;
+    using Pezza.Test.Setup.TestData.Restaurant;
 
     public static class OrderTestData
     {

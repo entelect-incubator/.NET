@@ -45,7 +45,7 @@
         {
             var result = await this.Mediator.Send(new GetNotifiesQuery
             {
-                dto = dto
+                Data = dto
             });
             return ResponseHelper.ResponseOutcome(result, this);
         }

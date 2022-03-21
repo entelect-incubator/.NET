@@ -9,6 +9,7 @@
     using MediatR;
     using Microsoft.EntityFrameworkCore;
     using Pezza.Common.DTO;
+    using Pezza.Common.Extensions;
     using Pezza.Common.Filters;
     using Pezza.Common.Models;
     using Pezza.DataAccess;
@@ -42,7 +43,7 @@
                 .FilterByCompleted(dto.Completed);
 
             var count = entities.Count();
-            var paged = this.mapper.Map<List<OrderDTO>>(await entities.ToListAsync(cancellationToken));
+            var paged = this.mapper.Map<List<OrderDTO>>(await entities.ApplyPaging(dto.PagingArgs).OrderBy(dto.OrderBy).ToListAsync(cancellationToken));
 
             return ListResult<OrderDTO>.Success(paged, count);
         }

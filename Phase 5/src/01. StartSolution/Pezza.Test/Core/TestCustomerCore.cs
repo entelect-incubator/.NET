@@ -6,21 +6,17 @@ namespace Pezza.Test.Core
     using Pezza.Common.DTO;
     using Pezza.Core.Customer.Commands;
     using Pezza.Core.Customer.Queries;
-    using Pezza.DataAccess.Data;
 
     [TestFixture]
     public class TestCustomerCore : QueryTestBase
     {
-        private CustomerDataAccess dataAccess;
-
         private CustomerDTO dto;
 
         [SetUp]
         public async Task Init()
         {
-            this.dataAccess = new CustomerDataAccess(this.Context, Mapper());
             this.dto = CustomerTestData.CustomerDTO;
-            var sutCreate = new CreateCustomerCommandHandler(this.dataAccess);
+            var sutCreate = new CreateCustomerCommandHandler(this.Context, Mapper());
             var resultCreate = await sutCreate.Handle(
                 new CreateCustomerCommand
                 {
@@ -38,7 +34,7 @@ namespace Pezza.Test.Core
         [Test]
         public async Task GetAsync()
         {
-            var sutGet = new GetCustomerQueryHandler(this.dataAccess);
+            var sutGet = new GetCustomerQueryHandler(this.Context, Mapper());
             var resultGet = await sutGet.Handle(
                 new GetCustomerQuery
                 {
@@ -51,29 +47,19 @@ namespace Pezza.Test.Core
         [Test]
         public async Task GetAllAsync()
         {
-            var sutGetAll = new GetCustomersQueryHandler(this.dataAccess);
-            var resultGetAll = await sutGetAll.Handle(
-                new GetCustomersQuery
-                {
-                    dto = new CustomerDTO
-                    {
-                        Name = this.dto.Name
-                    }
-                }, CancellationToken.None);
+            var sutGetAll = new GetCustomersQueryHandler(this.Context, Mapper());
+            var resultGetAll = await sutGetAll.Handle(new GetCustomersQuery(), CancellationToken.None);
 
             Assert.IsTrue(resultGetAll?.Data.Count == 1);
         }
 
         [Test]
-        public void SaveAsync()
-        {
-            Assert.IsTrue(this.dto != null);
-        }
+        public void SaveAsync() => Assert.IsTrue(this.dto != null);
 
         [Test]
         public async Task UpdateAsync()
         {
-            var sutUpdate = new UpdateCustomerCommandHandler(this.dataAccess);
+            var sutUpdate = new UpdateCustomerCommandHandler(this.Context, Mapper());
             var resultUpdate = await sutUpdate.Handle(
                 new UpdateCustomerCommand
                 {
@@ -90,7 +76,7 @@ namespace Pezza.Test.Core
         [Test]
         public async Task DeleteAsync()
         {
-            var sutDelete = new DeleteCustomerCommandHandler(this.dataAccess);
+            var sutDelete = new DeleteCustomerCommandHandler(this.Context);
             var outcomeDelete = await sutDelete.Handle(
                 new DeleteCustomerCommand
                 {

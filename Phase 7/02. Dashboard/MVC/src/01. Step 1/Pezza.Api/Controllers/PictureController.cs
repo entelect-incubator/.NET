@@ -13,7 +13,7 @@
         /// <param name="folder">Folder.</param>
         /// <param name="thumbnail">Return thumbnail or not.</param>
         /// <returns>HttpResponseMessage.</returns>
-        /// <response code="200">Picture</response>
+        /// <response code="200">Picture.</response>
         [HttpGet]
         [ProducesResponseType(typeof(FileStreamResult), 200)]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -26,7 +26,7 @@
 
             if (string.IsNullOrEmpty(file))
             {
-                return this.ReturnNotFoundImage();
+                return ReturnNotFoundImage();
             }
 
             var path = Path.Combine(Directory.GetCurrentDirectory(), Path.Combine("Media", file));
@@ -39,7 +39,7 @@
 
             if (!System.IO.File.Exists(path))
             {
-                return this.ReturnNotFoundImage();
+                return ReturnNotFoundImage();
             }
             else
             {
@@ -48,7 +48,7 @@
 
             if (!System.IO.File.Exists(path))
             {
-                return this.ReturnNotFoundImage();
+                return ReturnNotFoundImage();
             }
 
             var mimetype = MimeTypeMap.GetMimeType(Path.GetExtension(path));
@@ -61,7 +61,7 @@
         /// Returns the not found image.
         /// </summary>
         /// <returns>Not found image.</returns>
-        private IActionResult ReturnNotFoundImage()
+        private static IActionResult ReturnNotFoundImage()
         {
             var imgPath = Path.Combine(Directory.GetCurrentDirectory(), "Assets/not-found.png");
             var stream = new FileStream(imgPath, FileMode.Open);

@@ -1,6 +1,6 @@
 <img align="left" width="116" height="116" src="pezza-logo.png" />
 
-# &nbsp;**Pezza - Phase 6** [![.NET Core - Phase 6 - Start Solution](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-startsolution.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-startsolution.yml)
+# &nbsp;**Pezza - Phase 6** [![.NET 6 - Phase 6 - Start Solution](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-startsolution.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-startsolution.yml)
 
 <br/><br/>
 

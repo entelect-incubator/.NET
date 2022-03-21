@@ -2,11 +2,10 @@
 {
     using System;
     using Pezza.Common.Models;
+    using Pezza.Common.Models.Base;
 
-    public class StockDTO : SearchBase
+    public class StockDTO : EntityBase
     {
-        public int Id { get; set; }
-
         public string Name { get; set; }
 
         public string UnitOfMeasure { get; set; }
@@ -18,5 +17,9 @@
         public DateTime? ExpiryDate { get; set; }
 
         public string Comment { get; set; }
+
+        public string OrderBy { get; set; }
+
+        public PagingArgs PagingArgs { get; set; }
     }
 }

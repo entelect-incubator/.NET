@@ -17,9 +17,9 @@
         /// </summary>
         /// <param name="id">id.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        /// <response code="200">Get a stock</response>
-        /// <response code="400">Error getting a stock</response>
-        /// <response code="404">Stock not found</response>
+        /// <response code="200">Get a stock.</response>
+        /// <response code="400">Error getting a stock.</response>
+        /// <response code="404">Stock not found.</response>
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(Result<StockDTO>), 200)]
         [ProducesResponseType(typeof(ErrorResult), 400)]
@@ -33,9 +33,10 @@
         /// <summary>
         /// Get all Stock.
         /// </summary>
+        /// <param name="dto">DTO.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        /// <response code="200">Stock Search</response>
-        /// <response code="400">Error searching for stock</response>
+        /// <response code="200">Stock Search.</response>
+        /// <response code="400">Error searching for stock.</response>
         [HttpPost]
         [ProducesResponseType(typeof(ListResult<StockDTO>), 200)]
         [ProducesResponseType(typeof(ErrorResult), 400)]
@@ -44,7 +45,7 @@
         {
             var result = await this.Mediator.Send(new GetStocksQuery
             {
-                dto = dto
+                Data = dto,
             });
             return ResponseHelper.ResponseOutcome(result, this);
         }
@@ -65,8 +66,8 @@
         /// </remarks>
         /// <param name="data">StockDTO.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        /// <response code="200">Stock created</response>
-        /// <response code="400">Error creating a stock</response>
+        /// <response code="200">Stock created.</response>
+        /// <response code="400">Error creating a stock.</response>
         [HttpPost]
         [ProducesResponseType(typeof(Result<StockDTO>), 200)]
         [ProducesResponseType(typeof(ErrorResult), 400)]
@@ -74,7 +75,7 @@
         {
             var result = await this.Mediator.Send(new CreateStockCommand
             {
-                Data = data
+                Data = data,
             });
 
             return ResponseHelper.ResponseOutcome(result, this);
@@ -94,9 +95,9 @@
         /// </remarks>
         /// <param name="data">StockDTO.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        /// <response code="200">Stock updated</response>
-        /// <response code="400">Error updating a stock</response>
-        /// <response code="404">Stock not found</response>
+        /// <response code="200">Stock updated.</response>
+        /// <response code="400">Error updating a stock.</response>
+        /// <response code="404">Stock not found.</response>
         [HttpPut]
         [ProducesResponseType(typeof(Result<StockDTO>), 200)]
         [ProducesResponseType(typeof(ErrorResult), 400)]
@@ -105,7 +106,7 @@
         {
             var result = await this.Mediator.Send(new UpdateStockCommand
             {
-                Data = data
+                Data = data,
             });
 
             return ResponseHelper.ResponseOutcome(result, this);
@@ -116,8 +117,8 @@
         /// </summary>
         /// <param name="id">int.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        /// <response code="200">Stock deleted</response>
-        /// <response code="400">Error deleting a stock</response>
+        /// <response code="200">Stock deleted.</response>
+        /// <response code="400">Error deleting a stock.</response>
         [HttpDelete("{id}")]
         [ProducesResponseType(typeof(Result), 200)]
         [ProducesResponseType(typeof(ErrorResult), 400)]

@@ -2,10 +2,13 @@
 {
     using System.Threading;
     using System.Threading.Tasks;
+    using AutoMapper;
     using MediatR;
     using Pezza.Common.DTO;
+    using Pezza.Common.Entities;
     using Pezza.Common.Models;
-    using Pezza.DataAccess.Contracts;
+    using Pezza.Core.Helpers;
+    using Pezza.DataAccess;
 
     public class CreateStockCommand : IRequest<Result<StockDTO>>
     {
@@ -14,14 +17,19 @@
 
     public class CreateStockCommandHandler : IRequestHandler<CreateStockCommand, Result<StockDTO>>
     {
-        private readonly IDataAccess<StockDTO> dataAccess;
+        private readonly DatabaseContext databaseContext;
 
-        public CreateStockCommandHandler(IDataAccess<StockDTO> dataAccess) => this.dataAccess = dataAccess;
+        private readonly IMapper mapper;
+
+        public CreateStockCommandHandler(DatabaseContext databaseContext, IMapper mapper)
+            => (this.databaseContext, this.mapper) = (databaseContext, mapper);
 
         public async Task<Result<StockDTO>> Handle(CreateStockCommand request, CancellationToken cancellationToken)
         {
-            var outcome = await this.dataAccess.SaveAsync(request.Data);
-            return (outcome != null) ? Result<StockDTO>.Success(outcome) : Result<StockDTO>.Failure("Error adding a Stock");
+            var entity = this.mapper.Map<Stock>(request.Data);
+            this.databaseContext.Stocks.Add(entity);
+
+            return await CoreHelper<StockDTO>.Outcome(this.databaseContext, this.mapper, cancellationToken, entity, "Error creating stock");
         }
     }
 }

@@ -21,7 +21,7 @@
             var plainText = doc.DocumentNode.SelectSingleNode("//body").InnerText;
             plainText = Regex.Replace(plainText, @"\s+", " ").Trim();
 
-            var apiKey = "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";
+            var apiKey = "YOUR-API-KEY";
             var client = new SendGridClient(apiKey);
             var from = new EmailAddress("notify@pezza.com", "Pezza");
             var subject = $"Collect your order it while it's hot";

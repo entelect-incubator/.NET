@@ -3,9 +3,10 @@
     using System.Threading;
     using System.Threading.Tasks;
     using MediatR;
-    using Pezza.Common.DTO;
+    using Microsoft.EntityFrameworkCore;
     using Pezza.Common.Models;
-    using Pezza.DataAccess.Contracts;
+    using Pezza.Core.Helpers;
+    using Pezza.DataAccess;
 
     public class DeleteStockCommand : IRequest<Result>
     {
@@ -14,15 +15,17 @@
 
     public class DeleteStockCommandHandler : IRequestHandler<DeleteStockCommand, Result>
     {
-        private readonly IDataAccess<StockDTO> dataAccess;
+        private readonly DatabaseContext databaseContext;
 
-        public DeleteStockCommandHandler(IDataAccess<StockDTO> dataAccess)
-            => this.dataAccess = dataAccess;
+        public DeleteStockCommandHandler(DatabaseContext databaseContext)
+            => this.databaseContext = databaseContext;
 
         public async Task<Result> Handle(DeleteStockCommand request, CancellationToken cancellationToken)
         {
-            var outcome = await this.dataAccess.DeleteAsync(request.Id);
-            return outcome ? Result.Success() : Result.Failure("Error deleting a Stock");
+            var findEntity = await this.databaseContext.Stocks.FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
+            this.databaseContext.Stocks.Remove(findEntity);
+
+            return await CoreHelper.Outcome(this.databaseContext, cancellationToken, "Error deleting stock");
         }
     }
 }

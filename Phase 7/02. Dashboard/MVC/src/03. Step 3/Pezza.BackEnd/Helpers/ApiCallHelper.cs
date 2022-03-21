@@ -2,15 +2,15 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Net.Http;
     using System.Net.Http.Headers;
     using System.Text;
-    using System.Threading.Tasks;
-    using Pezza.Common;
     using System.Text.Json;
-    using Pezza.Common.Models;
-    using System.Linq;
+    using System.Threading.Tasks;
     using Newtonsoft.Json.Linq;
+    using Pezza.Common;
+    using Pezza.Common.Models;
 
     public class ApiCallHelper<T>
     {
@@ -35,7 +35,7 @@
             this.jsonSerializerOptions = new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                IgnoreNullValues = true,
+                DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull,
                 MaxDepth = 20
             };
         }
@@ -43,7 +43,7 @@
         public async Task<ListOutcome<T>> GetListAsync(string jsonData)
         {
             var data = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            var response = await this.client.PostAsync(@$"{AppSettings.ApiUrl}{ControllerName}\Search", data);
+            var response = await this.client.PostAsync(@$"{AppSettings.ApiUrl}{this.ControllerName}\Search", data);
 
             var responseData = await response.Content.ReadAsStringAsync();
 
@@ -53,7 +53,7 @@
 
         public async Task<T> GetAsync(int id)
         {
-            var responseMessage = await this.client.GetAsync(@$"{AppSettings.ApiUrl}{ControllerName}\{id}");
+            var responseMessage = await this.client.GetAsync(@$"{AppSettings.ApiUrl}{this.ControllerName}\{id}");
             if (responseMessage.IsSuccessStatusCode)
             {
                 var responseData = await responseMessage.Content.ReadAsStringAsync();
@@ -69,23 +69,20 @@
             var json = JsonSerializer.Serialize(entity);
             var data = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var responseMessage = await this.client.PostAsync(@$"{AppSettings.ApiUrl}{ControllerName}", data);
+            var responseMessage = await this.client.PostAsync(@$"{AppSettings.ApiUrl}{this.ControllerName}", data);
             if (responseMessage.StatusCode == System.Net.HttpStatusCode.BadRequest)
             {
                 var responseData = await responseMessage.Content.ReadAsStringAsync();
                 var response = JsonSerializer.Deserialize<Result>(responseData, this.jsonSerializerOptions);
 
-                this.ValidationErrors = response.Errors.Select(x =>
-                {
-                    return (x as JObject).ToObject<ValidationError>();
-                }).ToList();
+                this.ValidationErrors = response.Errors.Select(x => (x as JObject).ToObject<ValidationError>()).ToList();
 
                 return Result<T>.Failure("ValidationError");
             }
 
             if (responseMessage.IsSuccessStatusCode)
             {
-                var responseData = await responseMessage.Content.ReadAsStringAsync(); 
+                var responseData = await responseMessage.Content.ReadAsStringAsync();
                 var response = JsonSerializer.Deserialize<T>(responseData, this.jsonSerializerOptions);
 
                 return Result<T>.Success(response);
@@ -100,16 +97,13 @@
             var json = JsonSerializer.Serialize(entity);
             var data = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var responseMessage = await this.client.PutAsync(@$"{AppSettings.ApiUrl}{ControllerName}", data);
+            var responseMessage = await this.client.PutAsync(@$"{AppSettings.ApiUrl}{this.ControllerName}", data);
             if (responseMessage.StatusCode == System.Net.HttpStatusCode.BadRequest)
             {
                 var responseData = await responseMessage.Content.ReadAsStringAsync();
                 var response = JsonSerializer.Deserialize<Result>(responseData, this.jsonSerializerOptions);
 
-                this.ValidationErrors = response.Errors?.Select(x =>
-                {
-                    return (x as JObject).ToObject<ValidationError>();
-                }).ToList();
+                this.ValidationErrors = response.Errors?.Select(x => (x as JObject).ToObject<ValidationError>()).ToList();
 
                 return Result<T>.Failure("ValidationError");
             }
@@ -127,7 +121,7 @@
 
         public async Task<bool> Delete(int id)
         {
-            var responseMessage = await this.client.DeleteAsync(@$"{AppSettings.ApiUrl}{ControllerName}\{id}");
+            var responseMessage = await this.client.DeleteAsync(@$"{AppSettings.ApiUrl}{this.ControllerName}\{id}");
             if (responseMessage.IsSuccessStatusCode)
             {
                 var responseData = await responseMessage.Content.ReadAsStringAsync();

@@ -17,9 +17,9 @@
         /// </summary>
         /// <param name="id">Primary Key.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        /// <response code="200">Get a notification</response>
-        /// <response code="400">Error getting a notification</response>
-        /// <response code="404">Notification not found</response>
+        /// <response code="200">Get a notification.</response>
+        /// <response code="400">Error getting a notification.</response>
+        /// <response code="404">Notification not found.</response>
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(Result<NotifyDTO>), 200)]
         [ProducesResponseType(typeof(ErrorResult), 400)]
@@ -34,9 +34,10 @@
         /// <summary>
         /// Get all Notifies.
         /// </summary>
+        /// <param name="dto">DTO.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        /// <response code="200">Notification Search</response>
-        /// <response code="400">Error searching for notifications</response>
+        /// <response code="200">Notification Search.</response>
+        /// <response code="400">Error searching for notifications.</response>
         [HttpPost]
         [ProducesResponseType(typeof(ListResult<NotifyDTO>), 200)]
         [ProducesResponseType(typeof(ErrorResult), 400)]
@@ -45,7 +46,7 @@
         {
             var result = await this.Mediator.Send(new GetNotifiesQuery
             {
-                dto = dto
+                Data = dto,
             });
             return ResponseHelper.ResponseOutcome(result, this);
         }
@@ -69,8 +70,8 @@
         /// </remarks>
         /// <param name="notify">Notification Data DTO.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        /// <response code="200">Notification created</response>
-        /// <response code="400">Error creating a notification</response>
+        /// <response code="200">Notification created.</response>
+        /// <response code="400">Error creating a notification.</response>
         [HttpPost]
         [ProducesResponseType(typeof(Result<NotifyDTO>), 200)]
         [ProducesResponseType(typeof(ErrorResult), 400)]
@@ -79,7 +80,7 @@
         {
             var result = await this.Mediator.Send(new CreateNotifyCommand
             {
-                Data = notify
+                Data = notify,
             });
 
             return ResponseHelper.ResponseOutcome(result, this);
@@ -98,9 +99,9 @@
         /// </remarks>
         /// <param name="notify">Notify Data DTO.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        /// <response code="200">Notification updated</response>
-        /// <response code="400">Error updating a notification</response>
-        /// <response code="404">Notification not found</response>
+        /// <response code="200">Notification updated.</response>
+        /// <response code="400">Error updating a notification.</response>
+        /// <response code="404">Notification not found.</response>
         [HttpPut]
         [ProducesResponseType(typeof(Result<NotifyDTO>), 200)]
         [ProducesResponseType(typeof(ErrorResult), 400)]
@@ -109,7 +110,7 @@
         {
             var result = await this.Mediator.Send(new UpdateNotifyCommand
             {
-                Data = notify
+                Data = notify,
             });
 
             return ResponseHelper.ResponseOutcome(result, this);
@@ -120,8 +121,8 @@
         /// </summary>
         /// <param name="id">Primary Key.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        /// <response code="200">Notification deleted</response>
-        /// <response code="400">Error deleting a notification</response>
+        /// <response code="200">Notification deleted.</response>
+        /// <response code="400">Error deleting a notification.</response>
         [HttpDelete("{id}")]
         [ProducesResponseType(typeof(Result), 200)]
         [ProducesResponseType(typeof(ErrorResult), 400)]

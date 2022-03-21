@@ -9,11 +9,19 @@
     {
         public static Faker faker = new Faker();
 
-        public static OrderItemDTO OrderItemDTO = new OrderItemDTO()
+        public static List<OrderDTO> OrdersDTO()
         {
-            OrderId = 1,
-            Product = ProductTestData.ProductDTO
-        };
+            var orders = new List<OrderDTO>
+            {
+                OrderDTO,
+                OrderDTO,
+                OrderDTO,
+                OrderDTO,
+                OrderDTO
+            };
+
+            return orders;
+        }
 
         public static OrderDTO OrderDTO = new OrderDTO()
         {
@@ -34,18 +42,11 @@
             }
         };
 
-        public static List<OrderDTO> OrdersDTO()
+        public static OrderItemDTO OrderItemDTO = new OrderItemDTO()
         {
-            var orders = new List<OrderDTO>
-            {
-                OrderDTO,
-                OrderDTO,
-                OrderDTO,
-                OrderDTO,
-                OrderDTO
-            };
-
-            return orders;
-        }
+            OrderId = 1,
+            Product = ProductTestData.ProductDTO
+        };
     }
+
 }

@@ -1,6 +1,6 @@
 <img align="left" width="116" height="116" src="../pezza-logo.png" />
 
-# &nbsp;**Pezza - Phase 4 - Step 2** [![.NET Core - Phase 4 - Step 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase4-step2.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase4-step2.yml)
+# &nbsp;**Pezza - Phase 4 - Step 2** [![.NET 6 - Phase 4 - Step 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase4-step2.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase4-step2.yml)
 
 <br/><br/><br/>
 
@@ -49,7 +49,7 @@ else
     var result = JsonConvert.SerializeObject(new { isSuccess = false, error = exception.Message });
     context.Response.ContentType = "application/json";
     context.Response.StatusCode = (int)code;
-    Common.Logging.Logging.LogException(exception);
+    Logging.LogException(exception);
 
     return context.Response.WriteAsync(result);
 }
@@ -64,12 +64,14 @@ namespace Pezza.Common.Behaviours
     using System.Threading;
     using System.Threading.Tasks;
     using MediatR;
+    using Microsoft.Extensions.Logging;
 
     public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+        where TRequest : IRequest<TResponse>
     {
         private readonly Stopwatch timer;
 
-        public PerformanceBehaviour()
+        public PerformanceBehaviour(ILogger<TRequest> logger)
         {
             this.timer = new Stopwatch();
         }

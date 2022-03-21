@@ -1,6 +1,8 @@
 ﻿namespace Pezza.Common.Models
 {
-    public class SearchBase
+    using Pezza.Common.Models.Base;
+
+    public class SearchBase : EntityBase
     {
         public string OrderBy { get; set; }
 

@@ -1,27 +1,51 @@
 ﻿namespace Pezza.Core.Order.Queries
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Linq.Dynamic.Core;
     using System.Threading;
     using System.Threading.Tasks;
+    using AutoMapper;
     using MediatR;
+    using Microsoft.EntityFrameworkCore;
     using Pezza.Common.DTO;
+    using Pezza.Common.Extensions;
+    using Pezza.Common.Filters;
     using Pezza.Common.Models;
-    using Pezza.DataAccess.Contracts;
+    using Pezza.DataAccess;
 
     public class GetOrdersQuery : IRequest<ListResult<OrderDTO>>
     {
-        public OrderDTO dto;
+        public OrderDTO Data { get; set; }
     }
 
     public class GetOrdersQueryHandler : IRequestHandler<GetOrdersQuery, ListResult<OrderDTO>>
     {
-        private readonly IDataAccess<OrderDTO> dataAccess;
+        private readonly DatabaseContext databaseContext;
 
-        public GetOrdersQueryHandler(IDataAccess<OrderDTO> dataAccess) => this.dataAccess = dataAccess;
+        private readonly IMapper mapper;
+
+        public GetOrdersQueryHandler(DatabaseContext databaseContext, IMapper mapper)
+            => (this.databaseContext, this.mapper) = (databaseContext, mapper);
 
         public async Task<ListResult<OrderDTO>> Handle(GetOrdersQuery request, CancellationToken cancellationToken)
         {
-            var search = await this.dataAccess.GetAllAsync(request.dto);
-            return search;
+            var dto = request.Data;
+            var entities = this.databaseContext.Orders
+                .Include(x => x.OrderItems)
+                .ThenInclude(x => x.Product)
+                .Include(x => x.Restaurant)
+                .Include(x => x.Customer)
+                .AsNoTracking()
+                .FilterByCustomerId(dto.CustomerId)
+                .FilterByRestaurantId(dto.RestaurantId)
+                .FilterByAmount(dto.Amount)
+                .FilterByCompleted(dto.Completed);
+
+            var count = entities.Count();
+            var paged = this.mapper.Map<List<OrderDTO>>(await entities.ApplyPaging(dto.PagingArgs).OrderBy(dto.OrderBy).ToListAsync(cancellationToken));
+
+            return ListResult<OrderDTO>.Success(paged, count);
         }
     }
 }

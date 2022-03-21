@@ -1,6 +1,6 @@
 <img align="left" width="116" height="116" src="./Assets/pezza-logo.png" />
 
-# &nbsp;**Pezza - Phase 1** [![.NET Core](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase1-finalsolution.yml/badge.svg?branch=master)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase1-finalsolution.yml)
+# &nbsp;**Pezza - Phase 1** [![.NET 6](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase1-finalsolution.yml/badge.svg?branch=master)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase1-finalsolution.yml)
 
 <br/><br/>
 
@@ -657,7 +657,7 @@ For every test we will create a new stock Core that will create a test session i
 ## **Create the Apis Layer**
 ### **Setup**
 
-Create a new ASP.NET Core Web Application inside **01 Apis*** <br/>![](Assets/2020-09-11-09-52-48.png)
+Create a new ASP.NET 6 Web Application inside **01 Apis*** <br/>![](Assets/2020-09-11-09-52-48.png)
 
 **Nuget Packages Required**
 - [ ] Swashbuckle.AspNetCore [Read More](https://code-maze.com/swagger-ui-asp-net-core-web-api/)

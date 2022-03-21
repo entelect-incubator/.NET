@@ -22,10 +22,7 @@ namespace Pezza.Api
 
     public class Startup
     {
-        public Startup(IConfiguration configuration)
-        {
-            this.Configuration = configuration;
-        }
+        public Startup(IConfiguration configuration) => this.Configuration = configuration;
 
         public IConfiguration Configuration { get; }
 
@@ -80,15 +77,6 @@ namespace Pezza.Api
             });
             services.AddResponseCompression();
 
-            services.AddCors(options =>
-            {
-                options.AddPolicy(
-                    "CorsPolicy",
-                    builder => builder.AllowAnyOrigin()
-                        .AllowAnyMethod()
-                        .AllowAnyHeader());
-            });
-
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
@@ -114,13 +102,9 @@ namespace Pezza.Api
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseCors("CorsPolicy");
             app.UseMiddleware(typeof(ExceptionHandlerMiddleware));
             app.UseSwagger();
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Stock API V1");
-            });
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Stock API V1"));
 
             app.UseHttpsRedirection();
 
@@ -130,10 +114,7 @@ namespace Pezza.Api
 
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            app.UseEndpoints(endpoints => endpoints.MapControllers());
 
             app.UseStaticFiles(new StaticFileOptions
             {

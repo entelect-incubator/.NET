@@ -1,15 +1,15 @@
-﻿namespace Pezza.BackEnd.Controllers
+﻿namespace Pezza.Portal.Controllers
 {
     using System;
     using System.IO;
-    using System.Linq;
     using System.Net.Http;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Mvc;
     using Newtonsoft.Json;
+    using Pezza.BackEnd.Controllers;
     using Pezza.Common;
     using Pezza.Common.DTO;
-    using Pezza.Common.Entities;
+    using Pezza.Common.Models.Base;
     using Pezza.Portal.Helpers;
     using Pezza.Portal.Models;
 
@@ -20,8 +20,10 @@
         public RestaurantController(IHttpClientFactory clientFactory)
             : base(clientFactory)
         {
-            this.apiCallHelper = new ApiCallHelper<RestaurantDTO>(this.clientFactory);
-            this.apiCallHelper.ControllerName = "Restaurant";
+            this.apiCallHelper = new ApiCallHelper<RestaurantDTO>(this.clientFactory)
+            {
+                ControllerName = "Restaurant"
+            };
         }
 
         public async Task<ActionResult> Index()
@@ -52,7 +54,7 @@
         public async Task<ActionResult> Create(RestaurantModel restaurant)
         {
             {
-                if(string.IsNullOrEmpty(restaurant.Description))
+                if (string.IsNullOrEmpty(restaurant.Description))
                 {
                     restaurant.Description = string.Empty;
                 }
@@ -68,11 +70,11 @@
                 }
                 else
                 {
-                    ModelState.AddModelError("Image", "Please select a photo of the restaurant");
+                    this.ModelState.AddModelError("Image", "Please select a photo of the restaurant");
                 }
 
                 var result = await this.apiCallHelper.Create(restaurant);
-                return Validate<RestaurantDTO>(result, this.apiCallHelper, restaurant);
+                return this.Validate(result, this.apiCallHelper, restaurant);
             }
         }
 
@@ -118,7 +120,7 @@
 
             restaurant.Id = id;
             var result = await this.apiCallHelper.Edit(restaurant);
-            return Validate<RestaurantDTO>(result, this.apiCallHelper, restaurant);
+            return this.Validate(result, this.apiCallHelper, restaurant);
         }
 
         [HttpPost]

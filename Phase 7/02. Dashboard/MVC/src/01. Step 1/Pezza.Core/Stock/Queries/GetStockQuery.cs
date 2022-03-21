@@ -2,10 +2,12 @@
 {
     using System.Threading;
     using System.Threading.Tasks;
+    using AutoMapper;
     using MediatR;
+    using Microsoft.EntityFrameworkCore;
     using Pezza.Common.DTO;
     using Pezza.Common.Models;
-    using Pezza.DataAccess.Contracts;
+    using Pezza.DataAccess;
 
     public class GetStockQuery : IRequest<Result<StockDTO>>
     {
@@ -14,14 +16,17 @@
 
     public class GetStockQueryHandler : IRequestHandler<GetStockQuery, Result<StockDTO>>
     {
-        private readonly IDataAccess<StockDTO> dataAccess;
+        private readonly DatabaseContext databaseContext;
 
-        public GetStockQueryHandler(IDataAccess<StockDTO> dataAccess) => this.dataAccess = dataAccess;
+        private readonly IMapper mapper;
+
+        public GetStockQueryHandler(DatabaseContext databaseContext, IMapper mapper)
+            => (this.databaseContext, this.mapper) = (databaseContext, mapper);
 
         public async Task<Result<StockDTO>> Handle(GetStockQuery request, CancellationToken cancellationToken)
         {
-            var search = await this.dataAccess.GetAsync(request.Id);
-            return Result<StockDTO>.Success(search);
+            var result = this.mapper.Map<StockDTO>(await this.databaseContext.Stocks.FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken));
+            return Result<StockDTO>.Success(result);
         }
     }
 }

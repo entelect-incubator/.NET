@@ -1,12 +1,12 @@
 <img align="left" width="116" height="116" src="../pezza-logo.png" />
 
-# &nbsp;**Pezza - Phase 6 - Step 3** [![.NET Core - Phase 6 - Step 3](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-step3.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-step3.yml)
+# &nbsp;**Pezza - Phase 6 - Step 3** [![.NET 6 - Phase 6 - Step 3](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-step3.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-step3.yml)
 
 <br/><br/>
 
 ## **Schedule Background Jobs**
 
-[Hangfire](https://www.hangfire.io/) provides an easy way to perform background processing in .NET and .NET Core applications. No Windows Service or separate process is required.
+[Hangfire](https://www.hangfire.io/) provides an easy way to perform background processing in .NET and .NET 6 applications. No Windows Service or separate process is required.
 
 The benefit of using Hangfire is that it comes with a Dashboard. [Hangfire Dashboard](https://docs.hangfire.io/en/latest/configuration/using-dashboard.html) is a place where you could find all the information about your background jobs. It is written as an OWIN middleware, so you can plug it into your ASP.NET, ASP.NET MVC, Nancy, ServiceStack application as well as use the OWIN Self-Host feature to host Dashboard inside console applications or in Windows Services.
 
@@ -20,7 +20,7 @@ Adding the request on a type of queue system and forgetting about the result. Yo
 
 ## **Pezza.Scheduler**
 
-Create a new ASP.NET Core Web Application Pezza.Scheduler under 01. Apis
+Create a new ASP.NET 6 Web Application Pezza.Scheduler under 01. Apis
 
 ![](Assets/2021-01-28-07-32-39.png)
 
@@ -31,7 +31,7 @@ Create a new ASP.NET Core Web Application Pezza.Scheduler under 01. Apis
 Once the project is ready, I will open the NuGet package manager UI and add the necessary NuGet packages. The three main Nuget packages needed for hangfire are:
 
 - [ ] Hangfire.Core – The core package that supports the core logic of Hangfire
-- [ ] Hangfire.AspNetCore – Support for ASP.Net Core Middleware and Middleware for the dashboard user interface
+- [ ] Hangfire.AspNetCore – Support for ASP.NET 6 Middleware and Middleware for the dashboard user interface
 - [ ] Hangfire.SqlServer - SQL Server 2008+ (including Express), SQL Server LocalDB and SQL Azure storage support for Hangfire (background job system for ASP.NET applications).
 
 ## **Connection String**
@@ -183,11 +183,12 @@ namespace Pezza.Scheduler.Jobs
     using Pezza.Common.Models;
     using Pezza.Core.Customer.Queries;
     using Pezza.Core.Email;
+    using Pezza.Core.Notify.Commands;
     using Pezza.Core.Notify.Queries;
 
     public class OrderCompleteJob : IOrderCompleteJob
     {
-        private IMediator mediator;
+        private readonly IMediator mediator;
 
         public OrderCompleteJob(IMediator mediator) => this.mediator = mediator;
 
@@ -195,7 +196,7 @@ namespace Pezza.Scheduler.Jobs
         {
             var notifiesResult = await this.mediator.Send(new GetNotifiesQuery
             {
-                dto = new NotifyDTO
+                Data = new NotifyDTO
                 {
                     Sent = false,
                     PagingArgs = PagingArgs.Default
@@ -221,7 +222,13 @@ namespace Pezza.Scheduler.Jobs
                                 HtmlContent = notification.Email
                             };
 
-                            var send = await emailService.SendEmail();
+                            var emailResult = await emailService.SendEmail();
+
+                            if (emailResult.Succeeded)
+                            {
+                                notification.Sent = true;
+                                var updateNotifyResult = await this.mediator.Send(new UpdateNotifyCommand { Data = notification });
+                            }
                         }
                     }
                 }

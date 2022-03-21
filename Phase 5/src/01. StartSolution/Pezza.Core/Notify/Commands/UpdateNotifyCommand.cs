@@ -1,12 +1,14 @@
 ﻿namespace Pezza.Core.Notify.Commands
 {
-    using System;
     using System.Threading;
     using System.Threading.Tasks;
+    using AutoMapper;
     using MediatR;
+    using Microsoft.EntityFrameworkCore;
     using Pezza.Common.DTO;
     using Pezza.Common.Models;
-    using Pezza.DataAccess.Contracts;
+    using Pezza.Core.Helpers;
+    using Pezza.DataAccess;
 
     public class UpdateNotifyCommand : IRequest<Result<NotifyDTO>>
     {
@@ -15,14 +17,30 @@
 
     public class UpdateNotifyCommandHandler : IRequestHandler<UpdateNotifyCommand, Result<NotifyDTO>>
     {
-        private readonly IDataAccess<NotifyDTO> dataAccess;
+        private readonly DatabaseContext databaseContext;
 
-        public UpdateNotifyCommandHandler(IDataAccess<NotifyDTO> dataAccess) => this.dataAccess = dataAccess;
+        private readonly IMapper mapper;
+
+        public UpdateNotifyCommandHandler(DatabaseContext databaseContext, IMapper mapper)
+            => (this.databaseContext, this.mapper) = (databaseContext, mapper);
 
         public async Task<Result<NotifyDTO>> Handle(UpdateNotifyCommand request, CancellationToken cancellationToken)
         {
-            var outcome = await this.dataAccess.UpdateAsync(request.Data);
-            return (outcome != null) ? Result<NotifyDTO>.Success(outcome) : Result<NotifyDTO>.Failure("Error updating notification");
+            var dto = request.Data;
+            var findEntity = await this.databaseContext.Notify.FirstOrDefaultAsync(x => x.Id == dto.Id, cancellationToken);
+            if (findEntity == null)
+            {
+                return null;
+            }
+
+            findEntity.CustomerId = dto.CustomerId ?? findEntity.CustomerId;
+            findEntity.Email = !string.IsNullOrEmpty(dto.Email) ? dto.Email : findEntity.Email;
+            findEntity.Sent = dto.Sent ?? findEntity.Sent;
+            findEntity.Retry = dto.Retry ?? findEntity.Retry;
+
+            this.databaseContext.Notify.Update(findEntity);
+
+            return await CoreHelper<NotifyDTO>.Outcome(this.databaseContext, this.mapper, cancellationToken, findEntity, "Error updating notification");
         }
     }
 }

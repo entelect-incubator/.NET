@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
       <CodeAnalysisRuleSet>$(SolutionDir)\StyleCopRuleSet.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Pezza.DataAccess.Contracts\Pezza.DataAccess.Contracts.csproj" />
+    <ProjectReference Include="..\Pezza.Common\Pezza.Common.csproj" />
   </ItemGroup>
 
 </Project>

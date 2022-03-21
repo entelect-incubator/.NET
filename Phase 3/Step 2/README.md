@@ -1,6 +1,6 @@
 <img align="left" width="116" height="116" src="../pezza-logo.png" />
 
-# &nbsp;**Pezza - Phase 3 - Step 2** [![.NET Core - Phase 3 - Step 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase3-step2.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase3-step2.yml)
+# &nbsp;**Pezza - Phase 3 - Step 2** [![.NET 6 - Phase 3 - Step 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase3-step2.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase3-step2.yml)
 
 <br/><br/>
 
@@ -318,7 +318,7 @@ namespace Pezza.Core.Customer.Queries
     using System.Linq.Dynamic.Core;
     using Microsoft.EntityFrameworkCore;
     using Pezza.Common.DTO;
-using Pezza.Common.Filters;
+    using Pezza.Common.Filters;
     using Pezza.Common.Models;
     using Pezza.DataAccess;
 

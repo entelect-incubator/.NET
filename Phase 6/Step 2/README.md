@@ -1,12 +1,12 @@
 <img align="left" width="116" height="116" src="../pezza-logo.png" />
 
-# &nbsp;**Pezza - Phase 6 - Step 2** [![.NET Core - Phase 6 - Step 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-step2.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-step2.yml)
+# &nbsp;**Pezza - Phase 6 - Step 2** [![.NET 6 - Phase 6 - Step 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-step2.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-step2.yml)
 
 <br/><br/>
 
 ## **Events**
 
-Mediatr allows you to publish domain events when a command is handled. This applies the SOLID principle in seperating domain events from commands. In this example, we will be sending out an email to the customer to notigy them that their pizza is ready for collection. We achieve this by creating an event that we publish with MediatR when the command for updating an order to completed is handled.
+Mediatr allows you to publish domain events when a command is handled. This applies the SOLID principle in seperating domain events from commands. In this example, we will be sending out an email to the customer to notify them that their pizza is ready for collection. We achieve this by creating an event that we publish with MediatR when the command for updating an order to completed is handled.
 
 The following material is valuable in getting a better understanding of these patterns:
 - [Domain Event Pattern](https://microservices.io/patterns/data/domain-event.html)
@@ -29,29 +29,31 @@ namespace Pezza.Core.Order.Events
     public class OrderCompletedEvent : INotification
     {
         public OrderDTO CompletedOrder { get; set; }
+    }
 
-        public class ArrivalNotificationEventHandler : INotificationHandler<OrderCompletedEvent>
+    public class OrderCompletedEventHandler : INotificationHandler<OrderCompletedEvent>
+    {
+        private readonly IMediator mediator;
+
+        public OrderCompletedEventHandler(IMediator mediator) => this.mediator = mediator;
+
+        public async Task Handle(OrderCompletedEvent notification, CancellationToken cancellationToken)
         {
-            private readonly IMediator mediator;
+            var path = AppDomain.CurrentDomain.BaseDirectory + "\\Email\\Templates\\OrderCompleted.html";
+            var html = File.ReadAllText(path);
 
-            public ArrivalNotificationEventHandler(IMediator mediator) => this.mediator = mediator;
-
-            public async Task Handle(OrderCompletedEvent notification, CancellationToken cancellationToken)
+            html = html.Replace("<%% ORDER %%>", Convert.ToString(notification.CompletedOrder.Id));
+            var emailService = new EmailService
             {
-                var path = AppDomain.CurrentDomain.BaseDirectory + "\\Email\\Templates\\OrderCompleted.html";
-                var html = File.ReadAllText(path);
+                Customer = notification.CompletedOrder?.Customer,
+                HtmlContent = html
+            };
 
-                html = html.Replace("<%% ORDER %%>", Convert.ToString(notification.CompletedOrder.Id));
-                var emailService = new EmailService
-                {
-                    Customer = notification.CompletedOrder?.Customer,
-                    HtmlContent = html
-                };
+            var send = await emailService.SendEmail();
 
-                var send = await emailService.SendEmail();
-
-                var customer = notification.CompletedOrder?.Customer;
-                var notify = await this.mediator.Send(new CreateNotifyCommand
+            var customer = notification.CompletedOrder?.Customer;
+            var notify = await this.mediator.Send(
+                new CreateNotifyCommand
                 {
                     Data = new NotifyDTO
                     {
@@ -61,11 +63,11 @@ namespace Pezza.Core.Order.Events
                         Sent = send.Succeeded,
                         Retry = 0
                     }
-                });
-            }
+                }, cancellationToken);
         }
     }
 }
+
 ```
 
 ## **Update the UpdateOrderCommand**

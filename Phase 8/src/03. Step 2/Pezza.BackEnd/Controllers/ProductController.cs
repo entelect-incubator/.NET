@@ -1,14 +1,12 @@
-﻿namespace Pezza.BackEnd.Controllers
+﻿using Pezza.BackEnd.Controllers;
+
+namespace Pezza.Portal.Controllers
 {
     using System;
-    using System.Collections.Generic;
     using System.IO;
-    using System.Linq;
     using System.Net.Http;
-    using System.Text;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Mvc;
-    using Newtonsoft.Json;
     using Pezza.Common;
     using Pezza.Common.DTO;
     using Pezza.Portal.Helpers;
@@ -21,18 +19,17 @@
         public ProductController(IHttpClientFactory clientFactory)
             : base(clientFactory)
         {
-            this.apiCallHelper = new ApiCallHelper<ProductDTO>(this.clientFactory);
-            this.apiCallHelper.ControllerName = "Product";
+            this.apiCallHelper = new ApiCallHelper<ProductDTO>(this.clientFactory)
+            {
+                ControllerName = "Product"
+            };
         }
 
-        public ActionResult Index()
+        public ActionResult Index() => this.View(new PagingModel
         {
-            return this.View(new Portal.Models.PagingModel
-            {
-                Limit = 10,
-                Page = 1
-            });
-        }
+            Limit = 10,
+            Page = 1
+        });
 
         public async Task<JsonResult> List(int limit, int page, string orderBy = "Name asc")
         {
@@ -85,7 +82,7 @@
             }
 
             var result = await this.apiCallHelper.Create(product);
-            return Validate<ProductDTO>(result, this.apiCallHelper, product);
+            return this.Validate(result, this.apiCallHelper, product);
         }
 
         [Route("Product/Edit/{id?}")]
@@ -126,12 +123,12 @@
             else
             {
                 product.PictureUrl = null;
-                ModelState.AddModelError("Image", "Please select a photo of the product");
+                this.ModelState.AddModelError("Image", "Please select a photo of the product");
             }
 
             product.Id = id;
             var result = await this.apiCallHelper.Edit(product);
-            return Validate<ProductDTO>(result, this.apiCallHelper, product);
+            return this.Validate(result, this.apiCallHelper, product);
         }
 
         [HttpPost]

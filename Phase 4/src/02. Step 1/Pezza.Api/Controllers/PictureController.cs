@@ -13,7 +13,7 @@
         /// <param name="folder">Folder.</param>
         /// <param name="thumbnail">Return thumbnail or not.</param>
         /// <returns>HttpResponseMessage.</returns>
-        /// <response code="200">Picture</response>
+        /// <response code="200">Picture.</response>
         [HttpGet]
         [ProducesResponseType(typeof(FileStreamResult), 200)]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

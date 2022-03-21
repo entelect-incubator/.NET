@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net5.0</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
     </PropertyGroup>
 
     <ItemGroup>
@@ -24,15 +24,16 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="AutoMapper" Version="10.1.1" />
-        <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
-        <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="10.0.3" />
-        <PackageReference Include="MediatR" Version="9.0.0" />
-        <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
+        <PackageReference Include="AutoMapper" Version="11.0.0" />
+        <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
+        <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="10.3.6" />
+        <PackageReference Include="MediatR" Version="10.0.1" />
+        <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
         <PackageReference Include="System.Linq.Dynamic.Core" Version="1.2.15" />
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\Pezza.Common\Pezza.Common.csproj" />
         <ProjectReference Include="..\Pezza.DataAccess\Pezza.DataAccess.csproj" />
     </ItemGroup>
 

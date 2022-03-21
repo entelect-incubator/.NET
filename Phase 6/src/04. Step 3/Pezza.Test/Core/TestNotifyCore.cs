@@ -6,22 +6,18 @@ namespace Pezza.Test.Core
     using Pezza.Common.DTO;
     using Pezza.Core.Notify.Commands;
     using Pezza.Core.Notify.Queries;
-    using Pezza.DataAccess.Data;
 
     [TestFixture]
 
     public class TestNotifyCore : QueryTestBase
     {
-        private NotifyDataAccess dataAccess;
-
         private NotifyDTO dto;
 
         [SetUp]
         public async Task Init()
         {
-            this.dataAccess = new NotifyDataAccess(this.Context, Mapper());
             this.dto = NotifyTestData.NotifyDTO;
-            var sutCreate = new CreateNotifyCommandHandler(this.dataAccess);
+            var sutCreate = new CreateNotifyCommandHandler(this.Context, Mapper());
             var resultCreate = await sutCreate.Handle(
                 new CreateNotifyCommand
                 {
@@ -39,7 +35,7 @@ namespace Pezza.Test.Core
         [Test]
         public async Task GetAsync()
         {
-            var sutGet = new GetNotifyQueryHandler(this.dataAccess);
+            var sutGet = new GetNotifyQueryHandler(this.Context, Mapper());
             var resultGet = await sutGet.Handle(
                 new GetNotifyQuery
                 {
@@ -52,29 +48,19 @@ namespace Pezza.Test.Core
         [Test]
         public async Task GetAllAsync()
         {
-            var sutGetAll = new GetNotifiesQueryHandler(this.dataAccess);
-            var resultGetAll = await sutGetAll.Handle(
-                new GetNotifiesQuery
-                {
-                    dto = new NotifyDTO
-                    {
-                        Email = this.dto.Email
-                    }
-                }, CancellationToken.None);
+            var sutGetAll = new GetNotifiesQueryHandler(this.Context, Mapper());
+            var resultGetAll = await sutGetAll.Handle(new GetNotifiesQuery(), CancellationToken.None);
 
             Assert.IsTrue(resultGetAll?.Data.Count == 1);
         }
 
         [Test]
-        public void SaveAsync()
-        {
-            Assert.IsTrue(this.dto != null);
-        }
+        public void SaveAsync() => Assert.IsTrue(this.dto != null);
 
         [Test]
         public async Task UpdateAsync()
         {
-            var sutUpdate = new UpdateNotifyCommandHandler(this.dataAccess);
+            var sutUpdate = new UpdateNotifyCommandHandler(this.Context, Mapper());
             var resultUpdate = await sutUpdate.Handle(
                 new UpdateNotifyCommand
                 {
@@ -85,13 +71,14 @@ namespace Pezza.Test.Core
                     }
                 }, CancellationToken.None);
 
+            ////Assert
             Assert.IsTrue(resultUpdate.Succeeded);
         }
 
         [Test]
         public async Task DeleteAsync()
         {
-            var sutDelete = new DeleteNotifyCommandHandler(this.dataAccess);
+            var sutDelete = new DeleteNotifyCommandHandler(this.Context);
             var outcomeDelete = await sutDelete.Handle(
                 new DeleteNotifyCommand
                 {

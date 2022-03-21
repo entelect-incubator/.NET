@@ -3,9 +3,10 @@
     using System.Threading;
     using System.Threading.Tasks;
     using MediatR;
-    using Pezza.Common.DTO;
+    using Microsoft.EntityFrameworkCore;
     using Pezza.Common.Models;
-    using Pezza.DataAccess.Contracts;
+    using Pezza.Core.Helpers;
+    using Pezza.DataAccess;
 
     public class DeleteNotifyCommand : IRequest<Result>
     {
@@ -14,15 +15,17 @@
 
     public class DeleteNotifyCommandHandler : IRequestHandler<DeleteNotifyCommand, Result>
     {
-        private readonly IDataAccess<NotifyDTO> dataAccess;
+        private readonly DatabaseContext databaseContext;
 
-        public DeleteNotifyCommandHandler(IDataAccess<NotifyDTO> dataAccess)
-            => this.dataAccess = dataAccess;
+        public DeleteNotifyCommandHandler(DatabaseContext databaseContext)
+            => this.databaseContext = databaseContext;
 
         public async Task<Result> Handle(DeleteNotifyCommand request, CancellationToken cancellationToken)
         {
-            var outcome = await this.dataAccess.DeleteAsync(request.Id);
-            return outcome ? Result.Success() : Result.Failure("Error deleting notification");
+            var findEntity = await this.databaseContext.Notify.FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
+            this.databaseContext.Notify.Remove(findEntity);
+
+            return await CoreHelper.Outcome(this.databaseContext, cancellationToken, "Error deleting a notification");
         }
     }
 }

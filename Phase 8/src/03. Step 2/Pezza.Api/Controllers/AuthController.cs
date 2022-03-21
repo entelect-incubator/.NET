@@ -42,15 +42,8 @@
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        private Result Authenticate(AuthModel auth)
-        {
+        private Result Authenticate(AuthModel auth) =>
             ////Demo Purpose, I have Passed HardCoded User Information
-            if (auth.ApiKey == "940312b1cd649122b2f29fc2a68e47dbfaf12aca")
-            {
-                return Result.Success();
-            }
-
-            return Result.Failure("Validation Error");
-        }
+            auth.ApiKey == "940312b1cd649122b2f29fc2a68e47dbfaf12aca" ? Result.Success() : Result.Failure("Validation Error");
     }
 }

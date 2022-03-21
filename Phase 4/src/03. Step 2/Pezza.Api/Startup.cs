@@ -33,7 +33,7 @@ namespace Pezza.Api
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Title = "Stock API",
-                    Version = "v1"
+                    Version = "v1",
                 });
 
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";

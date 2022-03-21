@@ -19,10 +19,7 @@ namespace Pezza.Api
 
     public class Startup
     {
-        public Startup(IConfiguration configuration)
-        {
-            this.Configuration = configuration;
-        }
+        public Startup(IConfiguration configuration) => this.Configuration = configuration;
 
         public IConfiguration Configuration { get; }
 
@@ -34,26 +31,24 @@ namespace Pezza.Api
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Title = "Stock API",
-                    Version = "v1"
+                    Version = "v1",
                 });
 
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
             });
-
-            // Add DbContext using SQL Server Provider
-            services.AddDbContext<DatabaseContext>(options =>
-                options.UseSqlServer(this.Configuration.GetConnectionString("PezzaDatabase")));
-
-            services.AddLazyCache();
-
             services.AddResponseCompression(options =>
             {
                 options.Providers.Add<BrotliCompressionProvider>();
                 options.Providers.Add<GzipCompressionProvider>();
             });
             services.AddResponseCompression();
+            services.AddLazyCache();
+
+            // Add DbContext using SQL Server Provider
+            services.AddDbContext<DatabaseContext>(options =>
+                options.UseSqlServer(this.Configuration.GetConnectionString("PezzaDatabase")));
 
             DependencyInjection.AddApplication(services);
         }
@@ -75,7 +70,6 @@ namespace Pezza.Api
             app.UseHttpsRedirection();
 
             app.UseResponseCompression();
-
             app.UseRouting();
 
             app.UseAuthorization();

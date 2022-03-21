@@ -2,10 +2,12 @@
 {
     using System.Threading;
     using System.Threading.Tasks;
+    using AutoMapper;
     using MediatR;
+    using Microsoft.EntityFrameworkCore;
     using Pezza.Common.DTO;
     using Pezza.Common.Models;
-    using Pezza.DataAccess.Contracts;
+    using Pezza.DataAccess;
 
     public class GetNotifyQuery : IRequest<Result<NotifyDTO>>
     {
@@ -14,14 +16,17 @@
 
     public class GetNotifyQueryHandler : IRequestHandler<GetNotifyQuery, Result<NotifyDTO>>
     {
-        private readonly IDataAccess<NotifyDTO> dataAccess;
+        private readonly DatabaseContext databaseContext;
 
-        public GetNotifyQueryHandler(IDataAccess<NotifyDTO> dataAccess) => this.dataAccess = dataAccess;
+        private readonly IMapper mapper;
+
+        public GetNotifyQueryHandler(DatabaseContext databaseContext, IMapper mapper)
+            => (this.databaseContext, this.mapper) = (databaseContext, mapper);
 
         public async Task<Result<NotifyDTO>> Handle(GetNotifyQuery request, CancellationToken cancellationToken)
         {
-            var search = await this.dataAccess.GetAsync(request.Id);
-            return Result<NotifyDTO>.Success(search);
+            var result = this.mapper.Map<NotifyDTO>(await this.databaseContext.Notify.FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken));
+            return Result<NotifyDTO>.Success(result);
         }
     }
 }

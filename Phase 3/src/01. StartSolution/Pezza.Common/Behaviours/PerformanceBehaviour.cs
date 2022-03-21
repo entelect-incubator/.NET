@@ -7,6 +7,7 @@
     using Microsoft.Extensions.Logging;
 
     public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+        where TRequest : IRequest<TResponse>
     {
         private readonly Stopwatch timer;
         private readonly ILogger<TRequest> logger;

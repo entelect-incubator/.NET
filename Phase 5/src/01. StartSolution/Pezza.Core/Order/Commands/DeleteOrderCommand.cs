@@ -3,9 +3,10 @@
     using System.Threading;
     using System.Threading.Tasks;
     using MediatR;
-    using Pezza.Common.DTO;
+    using Microsoft.EntityFrameworkCore;
     using Pezza.Common.Models;
-    using Pezza.DataAccess.Contracts;
+    using Pezza.Core.Helpers;
+    using Pezza.DataAccess;
 
     public class DeleteOrderCommand : IRequest<Result>
     {
@@ -14,15 +15,17 @@
 
     public class DeleteOrderCommandHandler : IRequestHandler<DeleteOrderCommand, Result>
     {
-        private readonly IDataAccess<OrderDTO> dataAccess;
+        private readonly DatabaseContext databaseContext;
 
-        public DeleteOrderCommandHandler(IDataAccess<OrderDTO> dataAccess)
-            => this.dataAccess = dataAccess;
+        public DeleteOrderCommandHandler(DatabaseContext databaseContext)
+            => this.databaseContext = databaseContext;
 
         public async Task<Result> Handle(DeleteOrderCommand request, CancellationToken cancellationToken)
         {
-            var outcome = await this.dataAccess.DeleteAsync(request.Id);
-            return outcome ? Result.Success() : Result.Failure("Error deleting a Order");
+            var findEntity = await this.databaseContext.Orders.FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken: cancellationToken);
+            this.databaseContext.Orders.Remove(findEntity);
+
+            return await CoreHelper.Outcome(this.databaseContext, cancellationToken, "Error deleting a order");
         }
     }
 }

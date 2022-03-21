@@ -1,15 +1,15 @@
-﻿namespace Pezza.Test
+﻿namespace Pezza.Test.Setup.TestData.Restaurant
 {
     using System;
     using Bogus;
     using Pezza.Common.DTO;
-    using Pezza.Common.Entities;
+    using Pezza.Common.Models.Base;
 
     public static class RestaurantTestData
     {
-        public static Faker faker = new Faker();
+        public static Faker faker = new();
 
-        public static RestaurantDTO RestaurantDTO = new RestaurantDTO()
+        public static RestaurantDTO RestaurantDTO = new()
         {
             Name = faker.Company.CompanyName(),
             Description = string.Empty,

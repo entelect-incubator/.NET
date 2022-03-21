@@ -4,6 +4,8 @@
     using System.Collections.Generic;
     using Bogus;
     using Pezza.Common.DTO;
+    using Pezza.Test.Setup.TestData.Customer;
+    using Pezza.Test.Setup.TestData.Restaurant;
 
     public static class OrderTestData
     {
@@ -18,9 +20,9 @@
         public static OrderDTO OrderDTO = new OrderDTO()
         {
             Amount = faker.Finance.Amount(),
-            Customer = null,
+            Customer = CustomerTestData.CustomerDTO,
             CustomerId = 1,
-            Restaurant = null,
+            Restaurant = RestaurantTestData.RestaurantDTO,
             RestaurantId = 1,
             DateCreated = DateTime.Now,
             Completed = false,
@@ -28,9 +30,8 @@
             {
                 new OrderItemDTO()
                 {
-                    OrderId = 0,
-                    Product = null,
-                    ProductId = 1
+                    OrderId = 1,
+                    Product = ProductTestData.ProductDTO
                 }
             }
         };

@@ -1,6 +1,6 @@
 <img align="left" width="116" height="116" src="../pezza-logo.png" />
 
-# &nbsp;**Pezza - Phase 8 - Step 1** [![.NET Core - Phase 8 - Step 1](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase8-step1.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase8-step1.yml)
+# &nbsp;**Pezza - Phase 8 - Step 1** [![.NET 6 - Phase 8 - Step 1](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase8-step1.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase8-step1.yml)
 
 <br/><br/>
 

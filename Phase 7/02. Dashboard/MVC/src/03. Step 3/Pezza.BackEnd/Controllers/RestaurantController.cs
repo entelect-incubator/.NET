@@ -1,4 +1,6 @@
-﻿namespace Pezza.BackEnd.Controllers
+﻿using Pezza.BackEnd.Controllers;
+
+namespace Pezza.Portal.Controllers
 {
     using System;
     using System.IO;
@@ -8,7 +10,7 @@
     using Newtonsoft.Json;
     using Pezza.Common;
     using Pezza.Common.DTO;
-    using Pezza.Common.Entities;
+    using Pezza.Common.Models.Base;
     using Pezza.Portal.Helpers;
     using Pezza.Portal.Models;
 
@@ -19,18 +21,17 @@
         public RestaurantController(IHttpClientFactory clientFactory)
             : base(clientFactory)
         {
-            this.apiCallHelper = new ApiCallHelper<RestaurantDTO>(this.clientFactory);
-            this.apiCallHelper.ControllerName = "Restaurant";
+            this.apiCallHelper = new ApiCallHelper<RestaurantDTO>(this.clientFactory)
+            {
+                ControllerName = "Restaurant"
+            };
         }
 
-        public ActionResult Index()
+        public ActionResult Index() => this.View(new PagingModel
         {
-            return this.View(new Portal.Models.PagingModel
-            {
-                Limit = 10,
-                Page = 1
-            });
-        }
+            Limit = 10,
+            Page = 1
+        });
 
         public async Task<JsonResult> List(int limit, int page, string orderBy = "Name asc")
         {
@@ -87,11 +88,11 @@
             else
             {
                 restaurant.PictureUrl = null;
-                ModelState.AddModelError("Image", "Please select a photo of the restaurant");
+                this.ModelState.AddModelError("Image", "Please select a photo of the restaurant");
             }
 
             var result = await this.apiCallHelper.Create(restaurant);
-            return Validate<RestaurantDTO>(result, this.apiCallHelper, restaurant);
+            return this.Validate(result, this.apiCallHelper, restaurant);
         }
 
         [Route("Restaurant/Edit/{id?}")]
@@ -136,7 +137,7 @@
 
             restaurant.Id = id;
             var result = await this.apiCallHelper.Edit(restaurant);
-            return Validate<RestaurantDTO>(result, this.apiCallHelper, restaurant);
+            return this.Validate(result, this.apiCallHelper, restaurant);
         }
 
         [HttpPost]

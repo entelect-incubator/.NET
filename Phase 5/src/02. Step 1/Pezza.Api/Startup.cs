@@ -33,7 +33,7 @@ namespace Pezza.Api
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Title = "Stock API",
-                    Version = "v1"
+                    Version = "v1",
                 });
 
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
@@ -41,11 +41,11 @@ namespace Pezza.Api
                 c.IncludeXmlComments(xmlPath);
             });
 
+            services.AddLazyCache();
+
             // Add DbContext using SQL Server Provider
             services.AddDbContext<DatabaseContext>(options =>
                 options.UseSqlServer(this.Configuration.GetConnectionString("PezzaDatabase")));
-
-            services.AddLazyCache();
 
             DependencyInjection.AddApplication(services);
         }
