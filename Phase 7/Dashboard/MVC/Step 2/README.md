@@ -959,4 +959,4 @@ Orders Index.chtml
 
 Move to Step 3 - Filtering
 
-[Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%207/02.%20Dashboard/MVC/Step%203)
+[Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%207/Dashboard/MVC/Step%203)

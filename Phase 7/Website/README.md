@@ -14,4 +14,4 @@ We will be building a basic Pizza website for Customers to order pizzas on.
 
 ## **Framework**
 
-- [ ] [HTML & JQuery](https://github.com/entelect-incubator/.NET/tree/master/Phase%203/02.%20Dashboard/MVC)
+- [ ] [HTML & JQuery](https://github.com/entelect-incubator/.NET/tree/master/Phase%203/Dashboard/MVC)

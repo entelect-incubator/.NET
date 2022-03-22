@@ -14,4 +14,4 @@ A basic Portal for Pezza to manage all their stock, products, orders, customers 
 
 #### **Framework**
 
-- [ ] [MVC](https://github.com/entelect-incubator/.NET/tree/master/Phase%207/02.%20Dashboard/MVC)
+- [ ] [MVC](https://github.com/entelect-incubator/.NET/tree/master/Phase%207/Dashboard/MVC)

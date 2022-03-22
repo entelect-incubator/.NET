@@ -36,6 +36,6 @@ app.UseCors("CorsPolicy");
 
 ## **Steps**
 
-- [ ] [Step 1 - Dashboard (Pezza back office)](https://github.com/entelect-incubator/.NET/tree/master/Phase%207/02.%20Dashboard)
-- [ ] [Step 2 - Website (Customers to order Pizza's)](https://github.com/entelect-incubator/.NET/tree/master/Phase%207/03.%20Website) 
+- [ ] [Step 1 - Dashboard (Pezza back office)](https://github.com/entelect-incubator/.NET/tree/master/Phase%207/Dashboard)
+- [ ] [Step 2 - Website (Customers to order Pizza's)](https://github.com/entelect-incubator/.NET/tree/master/Phase%207/Website) 
  
