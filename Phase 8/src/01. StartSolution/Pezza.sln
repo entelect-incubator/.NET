@@ -12,6 +12,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "04 Common", "04 Common", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01 Apis", "01 Apis", "{62BBBDBE-A110-4A76-AD08-520728FE86E0}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pezza.DataAccess.Contracts", "Pezza.DataAccess.Contracts\Pezza.DataAccess.Contracts.csproj", "{0A8F24C8-2E55-41F4-93B3-C7442E58EE87}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pezza.DataAccess", "Pezza.DataAccess\Pezza.DataAccess.csproj", "{FE42CB6B-CB36-40E0-8624-43D9E60BF918}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pezza.Core", "Pezza.Core\Pezza.Core.csproj", "{A5CA9EDE-B766-4B76-8316-69BFE7FB10E2}"
