@@ -1,6 +1,6 @@
 <img align="left" width="116" height="116" src="./Assets/net-logo.svg" />
 
-# &nbsp;**Welcome to the .NET Incubator** [![Twitter Follow](https://img.shields.io/twitter/follow/Entelect.svg?style=social&label=Follow)](https://twitter.com/Entelect)
+# &nbsp;**Welcome to the .NET Incubator** [![CodeQL](https://github.com/entelect-incubator/.NET/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/codeql-analysis.yml) [![Twitter Follow](https://img.shields.io/twitter/follow/Entelect.svg?style=social&label=Follow)](https://twitter.com/Entelect)
 
 <br/><br/>
 

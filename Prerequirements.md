@@ -10,7 +10,7 @@
 - [ ] Coding Standards - [Coding Guidelines And Best Practices](https://www.c-sharpcorner.com/blogs/c-sharp-coding-guidelines-and-best-practices-v10)
 - [ ] Only extra coding standard for this incubator is that we prefer Usings inside of the namespace for a variety of reasons.
 
-For this Incubator we will be using [.NET 5](https://dotnet.microsoft.com/download) - Scan through the basic concepts.
+For this Incubator we will be using [.NET 6](https://dotnet.microsoft.com/download) - Scan through the basic concepts.
 
     1. The Startup class
     2. Dependency injection (services)
