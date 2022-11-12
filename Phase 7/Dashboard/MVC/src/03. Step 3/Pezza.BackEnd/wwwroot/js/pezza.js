@@ -29330,7 +29330,7 @@ function debounce(n, t, i) {
     }
     function vs(n) {
         return gt(
-            n.replace("\\", "").replace(/\\(\[)|\\(\])|\[([^\]\[]*)\]|\\(.)/g, function (n, t, i, r, u) {
+            n.replace(/\\/g, "").replace(/\\(\[)|\\(\])|\[([^\]\[]*)\]|\\(.)/g, function (n, t, i, r, u) {
                 return t || i || r || u;
             })
         );

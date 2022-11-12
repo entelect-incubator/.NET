@@ -2,10 +2,10 @@
 {
     using System;
     using System.Collections.Generic;
-    using Pezza.Common.Entities;
     using Pezza.Common.Models;
+    using Pezza.Common.Models.Base;
 
-    public class OrderDTO : Entity, Data.ISearchBase
+    public class OrderDTO : EntityBase
     {
         public CustomerDTO Customer { get; set; }
 

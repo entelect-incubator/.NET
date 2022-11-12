@@ -30,7 +30,6 @@
             }
 
             var path = Path.Combine(Directory.GetCurrentDirectory(), Path.Combine("Media", file));
-
             if (thumbnail)
             {
                 var extension = Path.GetExtension(path);

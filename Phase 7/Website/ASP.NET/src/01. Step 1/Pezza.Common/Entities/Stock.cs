@@ -1,8 +1,9 @@
 namespace Pezza.Common.Entities
 {
     using System;
+    using Pezza.Common.Models.Base;
 
-    public class Stock : Entity
+    public class Stock : EntityBase
     {
         public string Name { get; set; }
 

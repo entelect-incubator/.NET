@@ -1,15 +1,13 @@
 ﻿namespace Pezza.Api.Controllers
 {
-    using System.Text.RegularExpressions;
+    using System.Threading;
     using System.Threading.Tasks;
-    using HtmlAgilityPack;
     using Microsoft.AspNetCore.Mvc;
     using Pezza.Api.Helpers;
     using Pezza.Common.DTO;
+    using Pezza.Common.Models;
     using Pezza.Core.Customer.Commands;
     using Pezza.Core.Customer.Queries;
-    using SendGrid;
-    using SendGrid.Helpers.Mail;
 
     [ApiController]
     public class CustomerController : ApiController
@@ -17,37 +15,43 @@
         /// <summary>
         /// Get Customer by Id.
         /// </summary>
-        /// <param name="id">int.</param>
+        /// <param name="id">Id.</param>
+        /// <param name="cancellationToken">Cancellation Token.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        /// <response code="200">Get a customer.</response>
+        /// <response code="400">Error getting a customer.</response>
+        /// <response code="404">Customer not found.</response>
         [HttpGet("{id}")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(404)]
-        public async Task<ActionResult> GetCustomer(int id)
+        [ProducesResponseType(typeof(Result<CustomerDTO>), 200)]
+        [ProducesResponseType(typeof(ErrorResult), 400)]
+        [ProducesResponseType(typeof(ErrorResult), 404)]
+        public async Task<ActionResult> GetCustomer(int id, CancellationToken cancellationToken = default)
         {
-            var result = await this.Mediator.Send(new GetCustomerQuery { Id = id });
-            return ResponseHelper.ResponseOutcome<CustomerDTO>(result, this);
+            var result = await this.Mediator.Send(new GetCustomerQuery { Id = id }, cancellationToken);
+            return ResponseHelper.ResponseOutcome(result, this);
         }
 
         /// <summary>
         /// Get all Customers.
         /// </summary>
-        /// <param name="searchModel">The search model.</param>
-        /// <returns>
-        /// A <see cref="Task" /> repres
-        /// enting the asynchronous operation.
-        /// </returns>
+        /// <param name="dto">DTO.</param>
+        /// <param name="cancellationToken">Cancellation Token.</param>
+        /// <returns>A <see cref="Task"/> repres
+        /// enting the asynchronous operation.</returns>
+        /// <response code="200">Customer Search.</response>
+        /// <response code="400">Error searching for customers.</response>
         [HttpPost]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
+        [ProducesResponseType(typeof(ListResult<CustomerDTO>), 200)]
+        [ProducesResponseType(typeof(ErrorResult), 400)]
         [Route("Search")]
-        public async Task<ActionResult> Search([FromBody] CustomerDTO searchModel)
+        public async Task<ActionResult> Search(CustomerDTO dto, CancellationToken cancellationToken = default)
         {
-            var result = await this.Mediator.Send(new GetCustomersQuery
-            {
-                SearchModel = searchModel ?? new CustomerDTO()
-            });
-            return ResponseHelper.ResponseOutcome<CustomerDTO>(result, this);
+            var result = await this.Mediator.Send(
+                new GetCustomersQuery
+                {
+                    Data = dto,
+                }, cancellationToken);
+            return ResponseHelper.ResponseOutcome(result, this);
         }
 
         /// <summary>
@@ -68,18 +72,22 @@
         ///     }.
         /// </remarks>
         /// <param name="customer">CustomerDTO.</param>
+        /// <param name="cancellationToken">Cancellation Token.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        /// <response code="200">Customer created.</response>
+        /// <response code="400">Error creating a customer.</response>
         [HttpPost]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        public async Task<ActionResult<CustomerDTO>> Create(CustomerDTO customer)
+        [ProducesResponseType(typeof(Result<CustomerDTO>), 200)]
+        [ProducesResponseType(typeof(ErrorResult), 400)]
+        public async Task<ActionResult<CustomerDTO>> Create(CustomerDTO customer, CancellationToken cancellationToken = default)
         {
-            var result = await this.Mediator.Send(new CreateCustomerCommand
-            {
-                Data = customer
-            });
+            var result = await this.Mediator.Send(
+                new CreateCustomerCommand
+                {
+                    Data = customer,
+                }, cancellationToken);
 
-            return ResponseHelper.ResponseOutcome<CustomerDTO>(result, this);
+            return ResponseHelper.ResponseOutcome(result, this);
         }
 
         /// <summary>
@@ -101,32 +109,40 @@
         ///     }.
         /// </remarks>
         /// <param name="customer">CustomerDTO.</param>
+        /// <param name="cancellationToken">Cancellation Token.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        /// <response code="200">Customer updated.</response>
+        /// <response code="400">Error updating a customer.</response>
+        /// <response code="404">Customer not found.</response>
         [HttpPut]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(404)]
-        public async Task<ActionResult> Update(CustomerDTO customer)
+        [ProducesResponseType(typeof(Result<CustomerDTO>), 200)]
+        [ProducesResponseType(typeof(ErrorResult), 400)]
+        [ProducesResponseType(typeof(Result), 404)]
+        public async Task<ActionResult> Update(CustomerDTO customer, CancellationToken cancellationToken = default)
         {
-            var result = await this.Mediator.Send(new UpdateCustomerCommand
-            {
-                Data = customer
-            });
+            var result = await this.Mediator.Send(
+                new UpdateCustomerCommand
+                {
+                    Data = customer,
+                }, cancellationToken);
 
-            return ResponseHelper.ResponseOutcome<CustomerDTO>(result, this);
+            return ResponseHelper.ResponseOutcome(result, this);
         }
 
         /// <summary>
         /// Remove Customer by Id.
         /// </summary>
         /// <param name="id">int.</param>
+        /// <param name="cancellationToken">Cancellation Token.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        /// <response code="200">Customer deleted.</response>
+        /// <response code="400">Error deleting a customer.</response>
         [HttpDelete("{id}")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        public async Task<ActionResult> Delete(int id)
+        [ProducesResponseType(typeof(Result), 200)]
+        [ProducesResponseType(typeof(ErrorResult), 400)]
+        public async Task<ActionResult> Delete(int id, CancellationToken cancellationToken = default)
         {
-            var result = await this.Mediator.Send(new DeleteCustomerCommand { Id = id });
+            var result = await this.Mediator.Send(new DeleteCustomerCommand { Id = id }, cancellationToken);
             return ResponseHelper.ResponseOutcome(result, this);
         }
     }

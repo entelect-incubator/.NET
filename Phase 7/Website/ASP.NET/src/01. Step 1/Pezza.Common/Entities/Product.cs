@@ -1,8 +1,9 @@
 namespace Pezza.Common.Entities
 {
     using System;
+    using Pezza.Common.Models.Base;
 
-    public class Product : Entity
+    public class Product : EntityBase
     {
         public string Name { get; set; }
 

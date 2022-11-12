@@ -3,6 +3,7 @@
     using AutoMapper;
     using Pezza.Common.DTO;
     using Pezza.Common.Entities;
+    using Pezza.Common.Models.Base;
 
     public class MappingProfile : Profile
     {
@@ -26,11 +27,14 @@
             this.CreateMap<Notify, NotifyDTO>();
             this.CreateMap<NotifyDTO, Notify>();
 
-            this.CreateMap<Order, OrderDTO>();
-            this.CreateMap<OrderDTO, Order>();
-
             this.CreateMap<OrderItem, OrderItemDTO>();
             this.CreateMap<OrderItemDTO, OrderItem>();
+
+            this.CreateMap<Order, OrderDTO>()
+                .ForMember(vm => vm.OrderItems, m => m.MapFrom(u => u.OrderItems));
+
+            this.CreateMap<OrderDTO, Order>()
+                .ForMember(vm => vm.OrderItems, m => m.MapFrom(u => u.OrderItems));
 
             this.CreateMap<Product, ProductDTO>();
             this.CreateMap<ProductDTO, Product>();

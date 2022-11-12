@@ -1,12 +1,11 @@
 namespace Pezza.Common.Entities
 {
     using System;
+    using Pezza.Common.Models.Base;
 
-    public class Notify : Entity
+    public class Notify : EntityBase
     {
         public int CustomerId { get; set; }
-
-        public virtual Customer Customer { get; set; }
 
         public string Email { get; set; }
 

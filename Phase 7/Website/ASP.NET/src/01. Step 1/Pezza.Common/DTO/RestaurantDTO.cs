@@ -1,10 +1,10 @@
 ﻿namespace Pezza.Common.DTO
 {
     using System;
-    using Pezza.Common.Entities;
     using Pezza.Common.Models;
+    using Pezza.Common.Models.Base;
 
-    public class RestaurantDTO : ImageDataBase, Data.ISearchBase
+    public class RestaurantDTO : ImageDataBase
     {
         public string Name { get; set; }
 
@@ -22,6 +22,6 @@
 
         public PagingArgs PagingArgs { get; set; }
 
-        public bool BustCache { get; set; }
+        public bool BustCache { get; set; } = false;
     }
 }

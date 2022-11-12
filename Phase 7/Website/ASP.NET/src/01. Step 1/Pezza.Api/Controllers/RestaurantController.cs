@@ -1,10 +1,12 @@
 ﻿namespace Pezza.Api.Controllers
 {
+    using System.Threading;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Mvc;
     using Pezza.Api.Helpers;
     using Pezza.Common.DTO;
     using Pezza.Common.Entities;
+    using Pezza.Common.Models;
     using Pezza.Core.Restaurant.Commands;
     using Pezza.Core.Restaurant.Queries;
 
@@ -14,36 +16,42 @@
         /// <summary>
         /// Get Restaurant by Id.
         /// </summary>
-        /// <param name="id">int.</param>
+        /// <param name="id">Id.</param>
+        /// <param name="cancellationToken">Cancellation Token.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        /// <response code="200">Get a restaurant.</response>
+        /// <response code="400">Error getting a restaurant.</response>
+        /// <response code="404">Restaurant not found.</response>
         [HttpGet("{id}")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(404)]
-        public async Task<ActionResult> Get(int id)
+        [ProducesResponseType(typeof(Result<RestaurantDTO>), 200)]
+        [ProducesResponseType(typeof(ErrorResult), 400)]
+        [ProducesResponseType(typeof(ErrorResult), 404)]
+        public async Task<ActionResult> Get(int id, CancellationToken cancellationToken = default)
         {
-            var result = await this.Mediator.Send(new GetRestaurantQuery { Id = id });
-            return ResponseHelper.ResponseOutcome<RestaurantDTO>(result, this);
+            var result = await this.Mediator.Send(new GetRestaurantQuery { Id = id }, cancellationToken);
+            return ResponseHelper.ResponseOutcome(result, this);
         }
 
         /// <summary>
         /// Get all Restaurants.
         /// </summary>
-        /// <param name="searchModel">The search model.</param>
-        /// <returns>
-        /// A <see cref="Task" /> representing the asynchronous operation.
-        /// </returns>
+        /// <param name="dto">RestaurantDTO.</param>
+        /// <param name="cancellationToken">Cancellation Token.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        /// <response code="200">Restaurant Search.</response>
+        /// <response code="400">Error searching for restaurants.</response>
         [HttpPost]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
+        [ProducesResponseType(typeof(ListResult<RestaurantDTO>), 200)]
+        [ProducesResponseType(typeof(ErrorResult), 400)]
         [Route("Search")]
-        public async Task<ActionResult> Search([FromBody] RestaurantDTO searchModel)
+        public async Task<ActionResult> Search(RestaurantDTO dto, CancellationToken cancellationToken = default)
         {
-            var result = await this.Mediator.Send(new GetRestaurantsQuery
-            {
-                SearchModel = searchModel ?? new RestaurantDTO()
-            });
-            return ResponseHelper.ResponseOutcome<RestaurantDTO>(result, this);
+            var result = await this.Mediator.Send(
+                new GetRestaurantsQuery()
+                {
+                    Data = dto,
+                }, cancellationToken);
+            return ResponseHelper.ResponseOutcome(result, this);
         }
 
         /// <summary>
@@ -66,11 +74,14 @@
         ///     }.
         /// </remarks>
         /// <param name="data">RestaurantDTO.</param>
+        /// <param name="cancellationToken">Cancellation Token.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        /// <response code="200">Restaurant created.</response>
+        /// <response code="400">Error creating a restaurant.</response>
         [HttpPost]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        public async Task<ActionResult<Restaurant>> Create(RestaurantDTO data)
+        [ProducesResponseType(typeof(Result<RestaurantDTO>), 200)]
+        [ProducesResponseType(typeof(ErrorResult), 400)]
+        public async Task<ActionResult<Restaurant>> Create(RestaurantDTO data, CancellationToken cancellationToken = default)
         {
             if (!string.IsNullOrEmpty(data.ImageData))
             {
@@ -81,12 +92,13 @@
                 }
             }
 
-            var result = await this.Mediator.Send(new CreateRestaurantCommand
-            {
-                Data = data
-            });
+            var result = await this.Mediator.Send(
+                new CreateRestaurantCommand
+                {
+                    Data = data,
+                }, cancellationToken);
 
-            return ResponseHelper.ResponseOutcome<RestaurantDTO>(result, this);
+            return ResponseHelper.ResponseOutcome(result, this);
         }
 
         /// <summary>
@@ -102,12 +114,16 @@
         ///     }.
         /// </remarks>
         /// <param name="data">RestaurantDTO.</param>
+        /// <param name="cancellationToken">Cancellation Token.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        /// <response code="200">Restaurant updated.</response>
+        /// <response code="400">Error updating a restaurant.</response>
+        /// <response code="404">Restaurant not found.</response>
         [HttpPut]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(404)]
-        public async Task<ActionResult> Update(RestaurantDTO data)
+        [ProducesResponseType(typeof(Result<RestaurantDTO>), 200)]
+        [ProducesResponseType(typeof(ErrorResult), 400)]
+        [ProducesResponseType(typeof(Result), 404)]
+        public async Task<ActionResult> Update(RestaurantDTO data, CancellationToken cancellationToken = default)
         {
             if (!string.IsNullOrEmpty(data.ImageData))
             {
@@ -118,25 +134,29 @@
                 }
             }
 
-            var result = await this.Mediator.Send(new UpdateRestaurantCommand
-            {
-                Data = data
-            });
+            var result = await this.Mediator.Send(
+                new UpdateRestaurantCommand
+                {
+                    Data = data,
+                }, cancellationToken);
 
-            return ResponseHelper.ResponseOutcome<RestaurantDTO>(result, this);
+            return ResponseHelper.ResponseOutcome(result, this);
         }
 
         /// <summary>
         /// Remove Restaurant by Id.
         /// </summary>
         /// <param name="id">int.</param>
+        /// <param name="cancellationToken">Cancellation Token.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        /// <response code="200">Restaurant deleted.</response>
+        /// <response code="400">Error deleting a restaurant.</response>
         [HttpDelete("{id}")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        public async Task<ActionResult> Delete(int id)
+        [ProducesResponseType(typeof(Result), 200)]
+        [ProducesResponseType(typeof(ErrorResult), 400)]
+        public async Task<ActionResult> Delete(int id, CancellationToken cancellationToken = default)
         {
-            var result = await this.Mediator.Send(new DeleteRestaurantCommand { Id = id });
+            var result = await this.Mediator.Send(new DeleteRestaurantCommand { Id = id }, cancellationToken);
             return ResponseHelper.ResponseOutcome(result, this);
         }
     }

@@ -597,8 +597,8 @@ namespace Pezza.Core.Customer.Commands
 
         public async Task<Result> Handle(DeleteCustomerCommand request, CancellationToken cancellationToken)
         {
-            var findEntity = await this.databaseContext.Products.FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
-            this.databaseContext.Products.Remove(findEntity);
+            var findEntity = await this.databaseContext.Customers.FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
+            this.databaseContext.Customers.Remove(findEntity);
 
             return await CoreHelper.Outcome(this.databaseContext, cancellationToken, "Error deleting a customer");
         }

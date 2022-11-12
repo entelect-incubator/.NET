@@ -8,11 +8,11 @@
   <ItemGroup>
     <PackageReference Include="BuildBundlerMinifier" Version="3.2.449" />
     <PackageReference Include="BundlerMinifier.Core" Version="3.2.449" />
-    <PackageReference Include="FluentValidation" Version="10.1.0" />
-    <PackageReference Include="FluentValidation.AspNetCore" Version="10.1.0" />
-    <PackageReference Include="Json.Net" Version="1.0.31" />
-    <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="7.24.0" />
-    <PackageReference Include="MediatR" Version="9.0.0" />
+    <PackageReference Include="FluentValidation" Version="11.0.1" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="11.0.1" />
+    <PackageReference Include="Json.Net" Version="1.0.33" />
+    <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="11.1.0" />
+    <PackageReference Include="MediatR" Version="10.0.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 

@@ -2,8 +2,9 @@ namespace Pezza.Common.Entities
 {
     using System;
     using System.Collections.Generic;
+    using Pezza.Common.Models.Base;
 
-    public class Order : Entity
+    public class Order : EntityBase
     {
         public Order() => this.OrderItems = new HashSet<OrderItem>();
 

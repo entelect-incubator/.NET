@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Pezza.DataAccess.Contracts\Pezza.DataAccess.Contracts.csproj" />
+    <ProjectReference Include="..\Pezza.Common\Pezza.Common.csproj" />
   </ItemGroup>
 
 </Project>

@@ -3,26 +3,29 @@
     using System.Threading;
     using System.Threading.Tasks;
     using MediatR;
-    using Pezza.Common.DTO;
+    using Microsoft.EntityFrameworkCore;
     using Pezza.Common.Models;
-    using Pezza.DataAccess.Contracts;
+    using Pezza.Core.Helpers;
+    using Pezza.DataAccess;
 
-    public partial class DeleteProductCommand : IRequest<Result>
+    public class DeleteProductCommand : IRequest<Result>
     {
         public int Id { get; set; }
     }
 
     public class DeleteProductCommandHandler : IRequestHandler<DeleteProductCommand, Result>
     {
-        private readonly IDataAccess<ProductDTO> dataAccess;
+        private readonly DatabaseContext databaseContext;
 
-        public DeleteProductCommandHandler(IDataAccess<ProductDTO> dataAccess)
-            => this.dataAccess = dataAccess;
+        public DeleteProductCommandHandler(DatabaseContext databaseContext)
+            => this.databaseContext = databaseContext;
 
         public async Task<Result> Handle(DeleteProductCommand request, CancellationToken cancellationToken)
         {
-            var outcome = await this.dataAccess.DeleteAsync(request.Id);
-            return outcome ? Result.Success() : Result.Failure("Error deleting a Product");
+            var findEntity = await this.databaseContext.Products.FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
+            this.databaseContext.Products.Remove(findEntity);
+
+            return await CoreHelper.Outcome(this.databaseContext, cancellationToken, "Error deleting a product");
         }
     }
 }

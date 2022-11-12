@@ -8,17 +8,14 @@ namespace Pezza.Scheduler
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
+    using Pezza.Common.Behaviours;
     using Pezza.Core;
     using Pezza.DataAccess;
-    using Pezza.DataAccess.Contracts;
     using Pezza.Scheduler.Jobs;
 
     public class Startup
     {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
+        public Startup(IConfiguration configuration) => this.Configuration = configuration;
 
         public IConfiguration Configuration { get; }
 
@@ -33,10 +30,14 @@ namespace Pezza.Scheduler
                     .UseDefaultTypeSerializer()
                     .UseSqlServerStorage(this.Configuration.GetConnectionString("PezzaDatabase")));
 
-            services.AddDbContext<IDatabaseContext, DatabaseContext>(options =>
+            services.AddHangfireServer();
+
+            services.AddDbContext<DatabaseContext>(options =>
                options.UseSqlServer(this.Configuration.GetConnectionString("PezzaDatabase")));
 
             services.AddSingleton<IOrderCompleteJob, OrderCompleteJob>();
+
+            services.AddLazyCache();
 
             DependencyInjection.AddApplication(services);
         }
@@ -51,6 +52,7 @@ namespace Pezza.Scheduler
                 );
 
             app.UseHangfireDashboard();
+            app.UseMiddleware(typeof(ExceptionHandlerMiddleware));
 
             if (env.IsDevelopment())
             {
@@ -70,10 +72,7 @@ namespace Pezza.Scheduler
 
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapRazorPages();
-            });
+            app.UseEndpoints(endpoints => endpoints.MapRazorPages());
         }
     }
 }
