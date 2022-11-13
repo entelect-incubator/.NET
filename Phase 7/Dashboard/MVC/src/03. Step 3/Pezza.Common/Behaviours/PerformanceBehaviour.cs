@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using MediatR;
 
 public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+    where TRequest : IRequest<TResponse>
 {
     private readonly Stopwatch timer;
 
