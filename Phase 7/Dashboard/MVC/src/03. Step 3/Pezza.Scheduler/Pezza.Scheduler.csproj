@@ -8,16 +8,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Hangfire.AspNetCore" Version="1.7.22" />
-        <PackageReference Include="Hangfire.Core" Version="1.7.22" />
-        <PackageReference Include="Hangfire.SqlServer" Version="1.7.22" />
+        <PackageReference Include="Hangfire.AspNetCore" Version="1.7.31" />
+        <PackageReference Include="Hangfire.Core" Version="1.7.31" />
+        <PackageReference Include="Hangfire.SqlServer" Version="1.7.31" />
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\Pezza.Core\Pezza.Core.csproj" />
-        <PackageReference Include="Hangfire.AspNetCore" Version="1.7.31" />
-    <PackageReference Include="Hangfire.Core" Version="1.7.31" />
-    <PackageReference Include="Hangfire.SqlServer" Version="1.7.31" />
     <PackageReference Include="MediatR" Version="11.0.0" />
 </ItemGroup>
 
