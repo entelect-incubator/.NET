@@ -1,7 +1,6 @@
-﻿namespace Pezza.Common
+﻿namespace Pezza.Common;
+
+public class AppSettings
 {
-    public class AppSettings
-    {
-        public static string ApiUrl { get; set; }
-    }
+    public static string ApiUrl { get; set; }
 }

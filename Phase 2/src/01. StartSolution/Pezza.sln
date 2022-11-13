@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29519.181
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "05 Tests", "05 Tests", "{2446A02E-3196-4A9D-93FE-2F18F093A466}"
 EndProject
@@ -23,6 +23,11 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pezza.Test", "Pezza.Test\Pezza.Test.csproj", "{0EECBAFB-4CE5-4FC7-A883-3CFE86F732C5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pezza.Api", "Pezza.Api\Pezza.Api.csproj", "{9F59AFC2-4EF6-4954-967B-2B45124491BA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{38ED466B-E71D-47DC-B89F-A3577CEEF06F}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

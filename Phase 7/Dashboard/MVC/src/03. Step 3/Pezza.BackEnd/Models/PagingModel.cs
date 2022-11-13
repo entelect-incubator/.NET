@@ -1,9 +1,8 @@
-﻿namespace Pezza.Portal.Models
-{
-    public class PagingModel
-    {
-        public int Page { get; set; }
+﻿namespace Pezza.Portal.Models;
 
-        public int Limit { get; set; }
-    }
+public class PagingModel
+{
+    public int Page { get; set; }
+
+    public int Limit { get; set; }
 }

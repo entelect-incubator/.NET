@@ -1,48 +1,47 @@
-﻿namespace Pezza.Portal.Models
+﻿namespace Pezza.Portal.Models;
+
+using Microsoft.AspNetCore.Http;
+using Pezza.Common.DTO;
+
+public class ProductModel : ProductDTO
 {
-    using Microsoft.AspNetCore.Http;
-    using Pezza.Common.DTO;
+    public IFormFile Image { set; get; }
 
-    public class ProductModel : ProductDTO
+    public bool HasOffer { set; get; } = false;
+
+    private decimal _price;
+
+    public decimal _Price
     {
-        public IFormFile Image { set; get; }
-
-        public bool HasOffer { set; get; } = false;
-
-        private decimal _price;
-
-        public decimal _Price
+        get { return this.Price ?? 0; }
+        set
         {
-            get { return this.Price ?? 0; }
-            set
-            {
-                this._price = value;
-                this.Price = value;
-            }
+            this._price = value;
+            this.Price = value;
         }
+    }
 
-        private bool _special;
+    private bool _special;
 
-        public bool _Special
+    public bool _Special
+    {
+        get { return this.Special ?? false; }
+        set
         {
-            get { return this.Special ?? false; }
-            set
-            {
-                this._special = value;
-                this.Special = value;
-            }
+            this._special = value;
+            this.Special = value;
         }
+    }
 
-        private bool _isActive;
+    private bool _isActive;
 
-        public bool _IsActive
+    public bool _IsActive
+    {
+        get { return this.IsActive ?? false; }
+        set
         {
-            get { return this.IsActive ?? false; }
-            set
-            {
-                this._isActive = value;
-                this.IsActive = value;
-            }
+            this._isActive = value;
+            this.IsActive = value;
         }
     }
 }

@@ -1,13 +1,12 @@
-﻿namespace Pezza.Core.Order.Commands
-{
-    using FluentValidation;
+﻿namespace Pezza.Core.Order.Commands;
 
-    public class DeleteOrderCommandValidator : AbstractValidator<DeleteOrderCommand>
+using FluentValidation;
+
+public class DeleteOrderCommandValidator : AbstractValidator<DeleteOrderCommand>
+{
+    public DeleteOrderCommandValidator()
     {
-        public DeleteOrderCommandValidator()
-        {
-            this.RuleFor(r => r.Id)
-                .NotEmpty();
-        }
+        this.RuleFor(r => r.Id)
+            .NotEmpty();
     }
 }

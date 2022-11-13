@@ -1,32 +1,31 @@
-﻿namespace Pezza.Core.Customer.Queries
+﻿namespace Pezza.Core.Customer.Queries;
+
+using System.Threading;
+using System.Threading.Tasks;
+using AutoMapper;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using Pezza.Common.DTO;
+using Pezza.Common.Models;
+using Pezza.DataAccess;
+
+public class GetCustomerQuery : IRequest<Result<CustomerDTO>>
 {
-    using System.Threading;
-    using System.Threading.Tasks;
-    using AutoMapper;
-    using MediatR;
-    using Microsoft.EntityFrameworkCore;
-    using Pezza.Common.DTO;
-    using Pezza.Common.Models;
-    using Pezza.DataAccess;
+    public int Id { get; set; }
+}
 
-    public class GetCustomerQuery : IRequest<Result<CustomerDTO>>
+public class GetCustomerQueryHandler : IRequestHandler<GetCustomerQuery, Result<CustomerDTO>>
+{
+    private readonly DatabaseContext databaseContext;
+
+    private readonly IMapper mapper;
+
+    public GetCustomerQueryHandler(DatabaseContext databaseContext, IMapper mapper)
+        => (this.databaseContext, this.mapper) = (databaseContext, mapper);
+
+    public async Task<Result<CustomerDTO>> Handle(GetCustomerQuery request, CancellationToken cancellationToken)
     {
-        public int Id { get; set; }
-    }
-
-    public class GetCustomerQueryHandler : IRequestHandler<GetCustomerQuery, Result<CustomerDTO>>
-    {
-        private readonly DatabaseContext databaseContext;
-
-        private readonly IMapper mapper;
-
-        public GetCustomerQueryHandler(DatabaseContext databaseContext, IMapper mapper)
-            => (this.databaseContext, this.mapper) = (databaseContext, mapper);
-
-        public async Task<Result<CustomerDTO>> Handle(GetCustomerQuery request, CancellationToken cancellationToken)
-        {
-            var result = this.mapper.Map<CustomerDTO>(await this.databaseContext.Customers.FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken));
-            return Result<CustomerDTO>.Success(result);
-        }
+        var result = this.mapper.Map<CustomerDTO>(await this.databaseContext.Customers.FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken));
+        return Result<CustomerDTO>.Success(result);
     }
 }

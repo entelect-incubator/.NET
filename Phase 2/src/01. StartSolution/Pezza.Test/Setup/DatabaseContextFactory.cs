@@ -1,35 +1,34 @@
-namespace Pezza.Test.Setup
+namespace Pezza.Test.Setup;
+
+using System;
+using Microsoft.EntityFrameworkCore;
+using Pezza.DataAccess;
+
+public class DatabaseContextFactory
 {
-    using System;
-    using Microsoft.EntityFrameworkCore;
-    using Pezza.DataAccess;
+	protected DatabaseContextFactory()
+	{
+	}
 
-    public class DatabaseContextFactory
-    {
-        protected DatabaseContextFactory()
-        {
-        }
+	public static DatabaseContext DBContext()
+	{
+		var options = new DbContextOptionsBuilder<DbContext>().UseInMemoryDatabase(Guid.NewGuid().ToString()).Options;
+		return new DatabaseContext(options);
+	}
 
-        public static DatabaseContext DBContext()
-        {
-            var options = new DbContextOptionsBuilder<DbContext>().UseInMemoryDatabase(Guid.NewGuid().ToString()).Options;
-            return new DatabaseContext(options);
-        }
+	public static DatabaseContext Create()
+	{
+		var context = DBContext();
 
-        public static DatabaseContext Create()
-        {
-            var context = DBContext();
+		context.Database.EnsureCreated();
 
-            context.Database.EnsureCreated();
+		return context;
+	}
 
-            return context;
-        }
+	public static void Destroy(DatabaseContext context)
+	{
+		context.Database.EnsureDeleted();
 
-        public static void Destroy(DatabaseContext context)
-        {
-            context.Database.EnsureDeleted();
-
-            context.Dispose();
-        }
-    }
+		context.Dispose();
+	}
 }

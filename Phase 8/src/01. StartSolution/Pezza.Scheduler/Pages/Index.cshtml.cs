@@ -1,25 +1,24 @@
-﻿namespace Pezza.Scheduler.Pages
+﻿namespace Pezza.Scheduler.Pages;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Logging;
+
+public class IndexModel : PageModel
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.RazorPages;
-    using Microsoft.Extensions.Logging;
+    private readonly ILogger<IndexModel> _logger;
 
-    public class IndexModel : PageModel
+    public IndexModel(ILogger<IndexModel> logger)
     {
-        private readonly ILogger<IndexModel> _logger;
+        _logger = logger;
+    }
 
-        public IndexModel(ILogger<IndexModel> logger)
-        {
-            _logger = logger;
-        }
+    public void OnGet()
+    {
 
-        public void OnGet()
-        {
-
-        }
     }
 }

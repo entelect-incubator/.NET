@@ -1,25 +1,24 @@
-﻿namespace Pezza.Common.DTO
+﻿namespace Pezza.Common.DTO;
+
+using System;
+using Pezza.Common.Models;
+using Pezza.Common.Models.Base;
+
+public class StockDTO : EntityBase
 {
-    using System;
-    using Pezza.Common.Models;
-    using Pezza.Common.Models.Base;
+    public string Name { get; set; }
 
-    public class StockDTO : EntityBase
-    {
-        public string Name { get; set; }
+    public string UnitOfMeasure { get; set; }
 
-        public string UnitOfMeasure { get; set; }
+    public double? ValueOfMeasure { get; set; }
 
-        public double? ValueOfMeasure { get; set; }
+    public int? Quantity { get; set; }
 
-        public int? Quantity { get; set; }
+    public DateTime? ExpiryDate { get; set; }
 
-        public DateTime? ExpiryDate { get; set; }
+    public string Comment { get; set; }
 
-        public string Comment { get; set; }
+    public string OrderBy { get; set; }
 
-        public string OrderBy { get; set; }
-
-        public PagingArgs PagingArgs { get; set; }
-    }
+    public PagingArgs PagingArgs { get; set; }
 }

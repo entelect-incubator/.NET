@@ -1,7 +1,6 @@
-﻿namespace Pezza.Portal.Models
+﻿namespace Pezza.Portal.Models;
+
+public class OrderUpdateModel
 {
-    public class OrderUpdateModel
-    {
-        public bool Completed { set; get; }
-    }
+    public bool Completed { set; get; }
 }

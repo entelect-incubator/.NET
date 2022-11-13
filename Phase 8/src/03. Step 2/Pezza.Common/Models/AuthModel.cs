@@ -1,7 +1,6 @@
-﻿namespace Pezza.Common.Models
+﻿namespace Pezza.Common.Models;
+
+public class AuthModel
 {
-    public class AuthModel
-    {
-        public string ApiKey { get; set; }
-    }
+    public string ApiKey { get; set; }
 }

@@ -1,13 +1,12 @@
-﻿namespace Pezza.Core.Notify.Commands
-{
-    using FluentValidation;
+﻿namespace Pezza.Core.Notify.Commands;
 
-    public class DeleteNotifyCommandValidator : AbstractValidator<DeleteNotifyCommand>
+using FluentValidation;
+
+public class DeleteNotifyCommandValidator : AbstractValidator<DeleteNotifyCommand>
+{
+    public DeleteNotifyCommandValidator()
     {
-        public DeleteNotifyCommandValidator()
-        {
-            this.RuleFor(r => r.Id)
-                .NotEmpty();
-        }
+        this.RuleFor(r => r.Id)
+            .NotEmpty();
     }
 }

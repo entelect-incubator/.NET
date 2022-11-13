@@ -1,15 +1,14 @@
-﻿namespace Pezza.Test
-{
-    using Microsoft.EntityFrameworkCore;
+﻿namespace Pezza.Test;
 
-    public class TestBase : DatabaseContextTest
+using Microsoft.EntityFrameworkCore;
+
+public class TestBase : DatabaseContextTest
+{
+    public TestBase()
+    : base(
+        new DbContextOptionsBuilder<DbContext>()
+            .UseInMemoryDatabase("PezzaDb")
+            .Options)
     {
-        public TestBase()
-        : base(
-            new DbContextOptionsBuilder<DbContext>()
-                .UseInMemoryDatabase("PezzaDb")
-                .Options)
-        {
-        }
     }
 }

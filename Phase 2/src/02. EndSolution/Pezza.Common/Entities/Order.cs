@@ -1,27 +1,26 @@
-namespace Pezza.Common.Entities
+namespace Pezza.Common.Entities;
+
+using System;
+using System.Collections.Generic;
+using Pezza.Common.Models.Base;
+
+public class Order : EntityBase
 {
-    using System;
-    using System.Collections.Generic;
-    using Pezza.Common.Models.Base;
+    public Order() => this.OrderItems = new HashSet<OrderItem>();
 
-    public class Order : EntityBase
-    {
-        public Order() => this.OrderItems = new HashSet<OrderItem>();
+    public int CustomerId { get; set; }
 
-        public int CustomerId { get; set; }
+    public int RestaurantId { get; set; }
 
-        public int RestaurantId { get; set; }
+    public decimal Amount { get; set; }
 
-        public decimal Amount { get; set; }
+    public DateTime DateCreated { get; set; }
 
-        public DateTime DateCreated { get; set; }
+    public bool Completed { get; set; }
 
-        public bool Completed { get; set; }
+    public virtual Customer Customer { get; set; }
 
-        public virtual Customer Customer { get; set; }
+    public virtual Restaurant Restaurant { get; set; }
 
-        public virtual Restaurant Restaurant { get; set; }
-
-        public virtual ICollection<OrderItem> OrderItems { get; set; }
-    }
+    public virtual ICollection<OrderItem> OrderItems { get; set; }
 }

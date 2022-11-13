@@ -1,44 +1,43 @@
-﻿namespace Pezza.Api.Helpers
+﻿namespace Pezza.Api.Helpers;
+
+using Microsoft.AspNetCore.Mvc;
+using Pezza.Api.Controllers;
+using Pezza.Common.Models;
+
+public static class ResponseHelper
 {
-    using Microsoft.AspNetCore.Mvc;
-    using Pezza.Api.Controllers;
-    using Pezza.Common.Models;
-
-    public static class ResponseHelper
+    public static ActionResult ResponseOutcome<T>(Result<T> result, ApiController controller)
     {
-        public static ActionResult ResponseOutcome<T>(Result<T> result, ApiController controller)
+        if (result.Data == null)
         {
-            if (result.Data == null)
-            {
-                return controller.NotFound();
-            }
-
-            if (!result.Succeeded)
-            {
-                return controller.BadRequest(result.Errors);
-            }
-
-            return controller.Ok(result.Data);
+            return controller.NotFound();
         }
 
-        public static ActionResult ResponseOutcome<T>(ListResult<T> result, ApiController controller)
+        if (!result.Succeeded)
         {
-            if (!result.Succeeded)
-            {
-                return controller.BadRequest(result.Errors);
-            }
-
-            return controller.Ok(result.Data);
+            return controller.BadRequest(result.Errors);
         }
 
-        public static ActionResult ResponseOutcome(Result result, ApiController controller)
-        {
-            if (!result.Succeeded)
-            {
-                return controller.BadRequest(result.Errors);
-            }
+        return controller.Ok(result.Data);
+    }
 
-            return controller.Ok(result.Succeeded);
+    public static ActionResult ResponseOutcome<T>(ListResult<T> result, ApiController controller)
+    {
+        if (!result.Succeeded)
+        {
+            return controller.BadRequest(result.Errors);
         }
+
+        return controller.Ok(result.Data);
+    }
+
+    public static ActionResult ResponseOutcome(Result result, ApiController controller)
+    {
+        if (!result.Succeeded)
+        {
+            return controller.BadRequest(result.Errors);
+        }
+
+        return controller.Ok(result.Succeeded);
     }
 }

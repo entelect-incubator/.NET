@@ -1,32 +1,31 @@
-﻿namespace Pezza.Common.Models
+﻿namespace Pezza.Common.Models;
+
+public class PagingArgs
 {
-    public class PagingArgs
+    private int limit = 20;
+
+    public static PagingArgs NoPaging => new PagingArgs { UsePaging = false };
+
+    public static PagingArgs Default => new PagingArgs { UsePaging = true, Limit = 20, Offset = 0 };
+
+    public static PagingArgs FirstItem => new PagingArgs { UsePaging = true, Limit = 1, Offset = 0 };
+
+    public int Offset { get; set; }
+
+    public int Limit
     {
-        private int limit = 20;
+        get => this.limit;
 
-        public static PagingArgs NoPaging => new PagingArgs { UsePaging = false };
-
-        public static PagingArgs Default => new PagingArgs { UsePaging = true, Limit = 20, Offset = 0 };
-
-        public static PagingArgs FirstItem => new PagingArgs { UsePaging = true, Limit = 1, Offset = 0 };
-
-        public int Offset { get; set; }
-
-        public int Limit
+        set
         {
-            get => this.limit;
-
-            set
+            if (value == 0)
             {
-                if (value == 0)
-                {
-                    value = 20;
-                }
-
-                this.limit = value;
+                value = 20;
             }
-        }
 
-        public bool UsePaging { get; set; }
+            this.limit = value;
+        }
     }
+
+    public bool UsePaging { get; set; }
 }

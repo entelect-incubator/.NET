@@ -1,7 +1,6 @@
-﻿namespace Pezza.Common.Models.Base
+﻿namespace Pezza.Common.Models.Base;
+
+public interface IEntityBase
 {
-    public interface IEntityBase
-    {
-        int Id { get; set; }
-    }
+    int Id { get; set; }
 }

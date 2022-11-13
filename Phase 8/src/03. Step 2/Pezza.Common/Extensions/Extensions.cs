@@ -1,33 +1,32 @@
-﻿namespace Pezza.Common.Extensions
+﻿namespace Pezza.Common.Extensions;
+
+using System.Collections.Generic;
+using System.Linq;
+using Pezza.Common.Models;
+
+public static class Extensions
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using Pezza.Common.Models;
-
-    public static class Extensions
+    public static IQueryable<T> ApplyPaging<T>(this IQueryable<T> query, PagingArgs pagingArgs)
     {
-        public static IQueryable<T> ApplyPaging<T>(this IQueryable<T> query, PagingArgs pagingArgs)
+        var myPagingArgs = pagingArgs;
+
+        if (pagingArgs == null)
         {
-            var myPagingArgs = pagingArgs;
-
-            if (pagingArgs == null)
-            {
-                myPagingArgs = PagingArgs.Default;
-            }
-
-            return myPagingArgs.UsePaging ? query.Skip(myPagingArgs.Offset).Take(myPagingArgs.Limit) : query;
+            myPagingArgs = PagingArgs.Default;
         }
 
-        public static IQueryable<T> ApplyPaging<T>(this List<T> query, PagingArgs pagingArgs)
+        return myPagingArgs.UsePaging ? query.Skip(myPagingArgs.Offset).Take(myPagingArgs.Limit) : query;
+    }
+
+    public static IQueryable<T> ApplyPaging<T>(this List<T> query, PagingArgs pagingArgs)
+    {
+        var myPagingArgs = pagingArgs;
+
+        if (pagingArgs == null)
         {
-            var myPagingArgs = pagingArgs;
-
-            if (pagingArgs == null)
-            {
-                myPagingArgs = PagingArgs.Default;
-            }
-
-            return query.ApplyPaging(myPagingArgs);
+            myPagingArgs = PagingArgs.Default;
         }
+
+        return query.ApplyPaging(myPagingArgs);
     }
 }

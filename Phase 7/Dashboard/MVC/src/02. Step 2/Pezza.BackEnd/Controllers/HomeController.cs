@@ -1,20 +1,19 @@
-﻿namespace Pezza.Portal.Controllers
+﻿namespace Pezza.Portal.Controllers;
+
+using System.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
+using Pezza.Common.Models.Base;
+using Pezza.Portal.Models;
+
+public class HomeController : Controller
 {
-    using System.Diagnostics;
-    using Microsoft.AspNetCore.Mvc;
-    using Pezza.BackEnd.Models;
-    using Pezza.Common.Models.Base;
+    public IActionResult Index() => this.View();
 
-    public class HomeController : Controller
-    {
-        public IActionResult Index() => this.View();
+    public IActionResult Privacy() => this.View();
 
-        public IActionResult Privacy() => this.View();
+    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+    public IActionResult Error() => this.View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? this.HttpContext.TraceIdentifier });
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error() => this.View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? this.HttpContext.TraceIdentifier });
-
-        [HttpGet]
-        public IActionResult GetAddress() => this.PartialView("_Address", new AddressBase());
-    }
+    [HttpGet]
+    public IActionResult GetAddress() => this.PartialView("_Address", new AddressBase());
 }

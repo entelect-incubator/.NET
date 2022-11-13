@@ -1,13 +1,12 @@
-﻿namespace Pezza.Core.Restaurant.Commands
-{
-    using FluentValidation;
+﻿namespace Pezza.Core.Restaurant.Commands;
 
-    public class DeleteRestaurantCommandValidator : AbstractValidator<DeleteRestaurantCommand>
+using FluentValidation;
+
+public class DeleteRestaurantCommandValidator : AbstractValidator<DeleteRestaurantCommand>
+{
+    public DeleteRestaurantCommandValidator()
     {
-        public DeleteRestaurantCommandValidator()
-        {
-            this.RuleFor(r => r.Id)
-                .NotEmpty();
-        }
+        this.RuleFor(r => r.Id)
+            .NotEmpty();
     }
 }

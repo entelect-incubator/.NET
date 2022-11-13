@@ -1,9 +1,8 @@
-﻿namespace Pezza.Common.Interfaces
-{
-    using System;
+﻿namespace Pezza.Common.Interfaces;
 
-    public interface IDateTime
-    {
-        DateTime Now { get; }
-    }
+using System;
+
+public interface IDateTime
+{
+    DateTime Now { get; }
 }

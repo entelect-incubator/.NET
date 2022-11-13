@@ -1,13 +1,12 @@
-﻿namespace Pezza.Core.Stock.Commands
-{
-    using FluentValidation;
+﻿namespace Pezza.Core.Stock.Commands;
 
-    public class DeleteStockCommandValidator : AbstractValidator<DeleteStockCommand>
+using FluentValidation;
+
+public class DeleteStockCommandValidator : AbstractValidator<DeleteStockCommand>
+{
+    public DeleteStockCommandValidator()
     {
-        public DeleteStockCommandValidator()
-        {
-            this.RuleFor(r => r.Id)
-                .NotEmpty();
-        }
+        this.RuleFor(r => r.Id)
+            .NotEmpty();
     }
 }

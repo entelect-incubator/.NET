@@ -1,21 +1,20 @@
-﻿namespace Pezza.Test
+﻿namespace Pezza.Test.Setup.TestData.Stock;
+
+using System;
+using Bogus;
+using Pezza.Common.DTO;
+
+public static class StockTestData
 {
-    using System;
-    using Bogus;
-    using Pezza.Common.DTO;
+    public static Faker faker = new Faker();
 
-    public static class StockTestData
+    public static StockDTO StockDTO = new StockDTO()
     {
-        public static Faker faker = new Faker();
-
-        public static StockDTO StockDTO = new StockDTO()
-        {
-            Comment = faker.Lorem.Sentence(),
-            ExpiryDate = DateTime.Now.AddMonths(1),
-            Name = faker.Commerce.Product(),
-            Quantity = 1,
-            UnitOfMeasure = "kg",
-            ValueOfMeasure = 10.5
-        };
-    }
+        Comment = faker.Lorem.Sentence(),
+        ExpiryDate = DateTime.Now.AddMonths(1),
+        Name = faker.Commerce.Product(),
+        Quantity = 1,
+        UnitOfMeasure = "kg",
+        ValueOfMeasure = 10.5
+    };
 }

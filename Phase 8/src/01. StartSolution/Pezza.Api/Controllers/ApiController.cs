@@ -1,16 +1,15 @@
-﻿namespace Pezza.Api.Controllers
+﻿namespace Pezza.Api.Controllers;
+
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
+
+[ApiController]
+[Route("[controller]")]
+[Produces("application/json")]
+public abstract class ApiController : ControllerBase
 {
-    using MediatR;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Extensions.DependencyInjection;
+    private IMediator mediator;
 
-    [ApiController]
-    [Route("[controller]")]
-    [Produces("application/json")]
-    public abstract class ApiController : ControllerBase
-    {
-        private IMediator mediator;
-
-        protected IMediator Mediator => this.mediator ??= this.HttpContext.RequestServices.GetService<IMediator>();
-    }
+    protected IMediator Mediator => this.mediator ??= this.HttpContext.RequestServices.GetService<IMediator>();
 }

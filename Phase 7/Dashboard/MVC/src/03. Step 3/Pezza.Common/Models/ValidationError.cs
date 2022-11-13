@@ -1,9 +1,8 @@
-﻿namespace Pezza.Common.Models
-{
-    public class ValidationError
-    {
-        public string Property { get; set; }
+﻿namespace Pezza.Common.Models;
 
-        public string Error { get; set; }
-    }
+public class ValidationError
+{
+    public string Property { get; set; }
+
+    public string Error { get; set; }
 }

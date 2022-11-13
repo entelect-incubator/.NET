@@ -1,57 +1,56 @@
-﻿namespace Pezza.Scheduler.Jobs
+﻿namespace Pezza.Scheduler.Jobs;
+
+using System.Threading.Tasks;
+using MediatR;
+using Pezza.Common.DTO;
+using Pezza.Common.Models;
+using Pezza.Core.Customer.Queries;
+using Pezza.Core.Email;
+using Pezza.Core.Notify.Commands;
+using Pezza.Core.Notify.Queries;
+
+public class OrderCompleteJob : IOrderCompleteJob
 {
-    using System.Threading.Tasks;
-    using MediatR;
-    using Pezza.Common.DTO;
-    using Pezza.Common.Models;
-    using Pezza.Core.Customer.Queries;
-    using Pezza.Core.Email;
-    using Pezza.Core.Notify.Commands;
-    using Pezza.Core.Notify.Queries;
+    private readonly IMediator mediator;
 
-    public class OrderCompleteJob : IOrderCompleteJob
+    public OrderCompleteJob(IMediator mediator) => this.mediator = mediator;
+
+    public async Task SendNotificationAsync()
     {
-        private readonly IMediator mediator;
-
-        public OrderCompleteJob(IMediator mediator) => this.mediator = mediator;
-
-        public async Task SendNotificationAsync()
+        var notifiesResult = await this.mediator.Send(new GetNotifiesQuery
         {
-            var notifiesResult = await this.mediator.Send(new GetNotifiesQuery
+            Data = new NotifyDTO
             {
-                Data = new NotifyDTO
-                {
-                    Sent = false,
-                    PagingArgs = PagingArgs.Default
-                }
-            });
+                Sent = false,
+                PagingArgs = PagingArgs.Default
+            }
+        });
 
-            if (notifiesResult.Succeeded)
+        if (notifiesResult.Succeeded)
+        {
+            foreach (var notification in notifiesResult.Data)
             {
-                foreach (var notification in notifiesResult.Data)
+                if (notification.CustomerId.HasValue)
                 {
-                    if (notification.CustomerId.HasValue)
+                    var customerResult = await this.mediator.Send(new GetCustomerQuery
                     {
-                        var customerResult = await this.mediator.Send(new GetCustomerQuery
+                        Id = notification.CustomerId.Value
+                    });
+
+                    if (customerResult.Succeeded)
+                    {
+                        var emailService = new EmailService
                         {
-                            Id = notification.CustomerId.Value
-                        });
+                            Customer = customerResult.Data,
+                            HtmlContent = notification.Email
+                        };
 
-                        if (customerResult.Succeeded)
+                        var emailResult = await emailService.SendEmail();
+
+                        if (emailResult.Succeeded)
                         {
-                            var emailService = new EmailService
-                            {
-                                Customer = customerResult.Data,
-                                HtmlContent = notification.Email
-                            };
-
-                            var emailResult = await emailService.SendEmail();
-
-                            if (emailResult.Succeeded)
-                            {
-                                notification.Sent = true;
-                                var updateNotifyResult = await this.mediator.Send(new UpdateNotifyCommand { Data = notification });
-                            }
+                            notification.Sent = true;
+                            var updateNotifyResult = await this.mediator.Send(new UpdateNotifyCommand { Data = notification });
                         }
                     }
                 }

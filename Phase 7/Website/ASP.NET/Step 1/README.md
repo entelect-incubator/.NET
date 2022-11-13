@@ -1,6 +1,6 @@
 <img align="left" width="116" height="116" src="../../../pezza-logo.png" />
 
-# &nbsp;**Pezza - Phase 7 - Dashboard - MVC - Step 1** [![.NET 6 - Phase 7 - Dashboard - MVC - Step 1](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase7-dashboard-mvc-step1.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase7-dashboard-mvc-step1.yml)
+# &nbsp;**Pezza - Phase 7 - Dashboard - MVC - Step 1** [![.NET 7 - Phase 7 - Dashboard - MVC - Step 1](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase7-dashboard-mvc-step1.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase7-dashboard-mvc-step1.yml)
 
 <br/><br/>
 
@@ -16,7 +16,7 @@ A basic Portal for Pezza to manage all their stock, products, orders, customers 
 
 - [ ] Create a new Solution Folder - 00 UI
 - [ ] Create a new Web Application Project
-![ASP.NET 6 Web Application](Assets/2020-12-10-21-28-37.png)
+![ASP.NET 7 Web Application](Assets/2020-12-10-21-28-37.png)
 ![Configure your new project - Pezza.Portal](Assets/2020-12-11-05-36-48.png)
 ![Model-View-Controller](Assets/2020-12-10-21-31-09.png)
 - [ ] Copy the Pezza Branding Guide & Design System files found in [Download]() 

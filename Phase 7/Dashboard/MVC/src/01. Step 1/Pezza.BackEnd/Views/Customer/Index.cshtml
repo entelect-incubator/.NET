@@ -2,7 +2,7 @@
 
 @{
     ViewBag.Title = "Customer";
-    ViewBag.ActiveMenu = "Customer";
+ViewBag.ActiveMenu = "Customer";
 }
 
 <div>
@@ -29,8 +29,8 @@
         </thead>
         <tbody>
             @foreach (var Customer in Model)
-            {
-                <tr>
+        {
+            <tr>
                     <td>@Customer.Id</td>
                     <td>@Customer.Name</td>
                     <td><a class="btn btn-sm" target="_blank" href="tel:@Customer.Phone">@Customer.Phone</a></td>
@@ -52,7 +52,7 @@
                         </button>
                     </td>
                 </tr>
-            }
+        }
         </tbody>
     </table>
 

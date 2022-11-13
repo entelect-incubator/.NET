@@ -1,9 +1,8 @@
-﻿namespace Pezza.Common.Models
-{
-    public class SearchBase
-    {
-        public string OrderBy { get; set; }
+﻿namespace Pezza.Common.Models;
 
-        public PagingArgs PagingArgs { get; set; }
-    }
+public class SearchBase
+{
+    public string OrderBy { get; set; }
+
+    public PagingArgs PagingArgs { get; set; }
 }

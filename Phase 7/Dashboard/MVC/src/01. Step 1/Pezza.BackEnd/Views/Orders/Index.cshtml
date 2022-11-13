@@ -2,7 +2,7 @@
 
 @{
     ViewBag.Title = "Order";
-    ViewBag.ActiveMenu = "Order";
+ViewBag.ActiveMenu = "Order";
 }
 
 <div>
@@ -15,11 +15,11 @@
 @if (Model.Any())
 {
     @foreach (var restaurant in Model)
-    {
-        @restaurant.Key
-        <hr />
+{
+    @restaurant.Key
+    <hr />
 
-        <table class="table">
+    <table class="table">
             <thead>
                 <tr>
                     <th>Id</th>
@@ -32,8 +32,8 @@
             </thead>
             <tbody>
                 @foreach (var Order in restaurant.Value)
-                {
-                    <tr>
+            {
+                <tr>
                         <td>@Order.Id</td>
                         <td>
                             @Order.Customer?.Name<br />
@@ -42,10 +42,10 @@
                         </td>
                         <td>
                             @foreach (var order in Order.OrderItems)
-                            {
-                                @order.Product?.Name<br />
-                                @order.Quantity<br />
-                            }
+                        {
+                            @order.Product?.Name<br />
+                            @order.Quantity<br />
+                        }
                         </td>
                         <td class="text-right">@Order.Amount</td>
                         <td>@(Order.DateCreated.HasValue ? Order.DateCreated.Value.ToShortDateString() : string.Empty)</td>
@@ -58,10 +58,10 @@
                             </button>
                         </td>
                     </tr>
-                }
+            }
             </tbody>
         </table>
-    }
+}
     @await Html.PartialAsync("_Modals")
 }
 else

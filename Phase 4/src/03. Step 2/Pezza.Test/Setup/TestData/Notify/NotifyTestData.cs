@@ -1,22 +1,20 @@
-﻿namespace Pezza.Test
+﻿namespace Pezza.Test.Setup.TestData.Notify;
+
+using System;
+using Bogus;
+using Pezza.Common.DTO;
+using Pezza.Common.Entities;
+
+public static class NotifyTestData
 {
-    using System;
-    using Bogus;
-    using Pezza.Common.DTO;
-    using Pezza.Common.Entities;
+    public static Faker faker = new Faker();
 
-    public static class NotifyTestData
+    public static NotifyDTO NotifyDTO = new NotifyDTO()
     {
-        public static Faker faker = new Faker();
-
-        public static NotifyDTO NotifyDTO = new NotifyDTO()
-        {
-            CustomerId = 1,
-            Email = faker.Person.Email,
-            DateSent = DateTime.Now,
-            Retry = 0,
-            Sent = true
-        };
-    }
-
+        CustomerId = 1,
+        Email = faker.Person.Email,
+        DateSent = DateTime.Now,
+        Retry = 0,
+        Sent = true
+    };
 }

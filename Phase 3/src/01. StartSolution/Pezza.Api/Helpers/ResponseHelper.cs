@@ -1,44 +1,43 @@
-﻿namespace Pezza.Api.Helpers
+﻿namespace Pezza.Api.Helpers;
+
+using Microsoft.AspNetCore.Mvc;
+using Pezza.Api.Controllers;
+using Pezza.Common.Models;
+
+public static class ResponseHelper
 {
-    using Microsoft.AspNetCore.Mvc;
-    using Pezza.Api.Controllers;
-    using Pezza.Common.Models;
-
-    public static class ResponseHelper
+    public static ActionResult ResponseOutcome<T>(Result<T> result, ApiController controller)
     {
-        public static ActionResult ResponseOutcome<T>(Result<T> result, ApiController controller)
+        if (result.Data == null)
         {
-            if (result.Data == null)
-            {
-                return controller.NotFound(Result.Failure($"{typeof(T).Name.Replace("DTO", string.Empty)} not found"));
-            }
-
-            if (!result.Succeeded)
-            {
-                return controller.BadRequest(result);
-            }
-
-            return controller.Ok(result);
+            return controller.NotFound(Result.Failure($"{typeof(T).Name.Replace("DTO", string.Empty)} not found"));
         }
 
-        public static ActionResult ResponseOutcome<T>(ListResult<T> result, ApiController controller)
+        if (!result.Succeeded)
         {
-            if (!result.Succeeded)
-            {
-                return controller.BadRequest(result);
-            }
-
-            return controller.Ok(result);
+            return controller.BadRequest(result);
         }
 
-        public static ActionResult ResponseOutcome(Result result, ApiController controller)
-        {
-            if (!result.Succeeded)
-            {
-                return controller.BadRequest(result);
-            }
+        return controller.Ok(result);
+    }
 
-            return controller.Ok(result);
+    public static ActionResult ResponseOutcome<T>(ListResult<T> result, ApiController controller)
+    {
+        if (!result.Succeeded)
+        {
+            return controller.BadRequest(result);
         }
+
+        return controller.Ok(result);
+    }
+
+    public static ActionResult ResponseOutcome(Result result, ApiController controller)
+    {
+        if (!result.Succeeded)
+        {
+            return controller.BadRequest(result);
+        }
+
+        return controller.Ok(result);
     }
 }

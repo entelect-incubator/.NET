@@ -1,11 +1,10 @@
-﻿namespace Pezza.Common.Helpers
+﻿namespace Pezza.Common.Models;
+
+public class UploadMediaResult
 {
-    public class UploadMediaResult
-    {
-        public string FullPath { get; set; }
+    public string FullPath { get; set; }
 
-        public string Path { get; set; }
+    public string Path { get; set; }
 
-        public string Thumbnail { get; set; }
-    }
+    public string Thumbnail { get; set; }
 }

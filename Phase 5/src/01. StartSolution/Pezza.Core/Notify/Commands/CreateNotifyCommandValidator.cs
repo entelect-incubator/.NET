@@ -1,17 +1,15 @@
-﻿namespace Pezza.Core.Customer.Commands
+﻿namespace Pezza.Core.Notify.Commands;
+
+using FluentValidation;
+
+public class CreateNotifyCommandValidator : AbstractValidator<CreateNotifyCommand>
 {
-    using FluentValidation;
-    using Pezza.Core.Notify.Commands;
-
-    public class CreateNotifyCommandValidator : AbstractValidator<CreateNotifyCommand>
+    public CreateNotifyCommandValidator()
     {
-        public CreateNotifyCommandValidator()
-        {
-            this.RuleFor(r => r.Data.CustomerId)
-                .NotNull();
+        this.RuleFor(r => r.Data.CustomerId)
+            .NotNull();
 
-            this.RuleFor(r => r.Data.Email)
-                .NotEmpty();
-        }
+        this.RuleFor(r => r.Data.Email)
+            .NotEmpty();
     }
 }

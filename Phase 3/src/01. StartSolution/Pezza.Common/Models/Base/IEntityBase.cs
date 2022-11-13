@@ -1,9 +1,8 @@
-﻿namespace Pezza.Common.Models.Base
-{
-    using Microsoft.EntityFrameworkCore.Metadata;
+﻿namespace Pezza.Common.Models.Base;
 
-    public interface IEntityBase
-    {
-        int Id { get; set; }
-    }
+using Microsoft.EntityFrameworkCore.Metadata;
+
+public interface IEntityBase
+{
+    int Id { get; set; }
 }

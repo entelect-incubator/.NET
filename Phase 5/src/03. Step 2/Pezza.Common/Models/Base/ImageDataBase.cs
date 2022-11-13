@@ -1,7 +1,6 @@
-﻿namespace Pezza.Common.Models.Base
+﻿namespace Pezza.Common.Models.Base;
+
+public class ImageDataBase : EntityBase
 {
-    public class ImageDataBase : EntityBase
-    {
-        public string ImageData { get; set; }
-    }
+    public string ImageData { get; set; }
 }

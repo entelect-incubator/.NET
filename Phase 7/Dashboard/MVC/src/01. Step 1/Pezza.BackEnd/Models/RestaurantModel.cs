@@ -1,22 +1,21 @@
-﻿namespace Pezza.Portal.Models
+﻿namespace Pezza.Portal.Models;
+
+using Microsoft.AspNetCore.Http;
+using Pezza.Common.DTO;
+
+public class RestaurantModel : RestaurantDTO
 {
-    using Microsoft.AspNetCore.Http;
-    using Pezza.Common.DTO;
+    public IFormFile Image { set; get; }
 
-    public class RestaurantModel : RestaurantDTO
+    private bool _isActive;
+
+    public bool _IsActive
     {
-        public IFormFile Image { set; get; }
-
-        private bool _isActive;
-
-        public bool _IsActive
+        get { return this.IsActive ?? false; }
+        set
         {
-            get { return this.IsActive ?? false; }
-            set
-            {
-                this._isActive = value;
-                this.IsActive = value;
-            }
+            this._isActive = value;
+            this.IsActive = value;
         }
     }
 }

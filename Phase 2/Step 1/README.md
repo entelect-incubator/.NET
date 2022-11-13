@@ -40,22 +40,19 @@ This is for any DTO or Entity that has an address.
 ![](Assets/2020-11-20-08-30-10.png)
 
 ```cs
-namespace Pezza.Common.Entities
+namespace Pezza.Common.Entities;
+
+public class AddressBase
 {
-    public class AddressBase
-    {
-        public string Address { get; set; }
+    public string Address { get; set; }
 
-        public string City { get; set; }
+    public string City { get; set; }
 
-        public string Province { get; set; }
+    public string Province { get; set; }
 
-        public string PostalCode { get; set; }
-    }
+    public string PostalCode { get; set; }
 }
 ```
-
-
 
 ### **Create Image Data Base**
 
@@ -64,12 +61,11 @@ This is for any DTO or Entity that has an Image that needs to be created.
 ![](Assets/2020-11-20-09-09-20.png)
 
 ```cs
-namespace Pezza.Common.Entities
+namespace Pezza.Common.Entities;
+
+public class ImageDataBase
 {
-    public class ImageDataBase
-    {
-        public string ImageData { get; set; }
-    }
+    public string ImageData { get; set; }
 }
 ```
 
@@ -121,54 +117,50 @@ Create common base models in Pezza.Common\Models\base
 EntityBase.cs
 
 ```cs
-namespace Pezza.Common.Models.Base
+namespace Pezza.Common.Models.Base;
+
+public abstract class EntityBase : IEntityBase
 {
-    public abstract class EntityBase : IEntityBase
-    {
-        public virtual int Id { get; set; }
-    }
+    public virtual int Id { get; set; }
 }
 ```
 
 IEntityBase.cs
 
 ```cs
-namespace Pezza.Common.Models.Base
+namespace Pezza.Common.Models.Base;
+
+public interface IEntityBase
 {
-    public interface IEntityBase
-    {
-        int Id { get; set; }
-    }
+    int Id { get; set; }
 }
 ```
 
 ImageDataBase.cs
 
 ```cs
-namespace Pezza.Common.Models.Base
+namespace Pezza.Common.Models.Base;
+
+public class ImageDataBase : EntityBase
 {
-    public class ImageDataBase : EntityBase
-    {
-        public string ImageData { get; set; }
-    }
+    public string ImageData { get; set; }
 }
 ```
 
 AddressBase.cs
 
 ```cs
-namespace Pezza.Common.Models.Base
+namespace Pezza.Common.Models.Base;
+
+public class AddressBase : EntityBase
 {
-    public class AddressBase : EntityBase
-    {
-        public string Address { get; set; }
+    public string Address { get; set; }
 
-        public string City { get; set; }
+    public string City { get; set; }
 
-        public string Province { get; set; }
+    public string Province { get; set; }
 
-        public string PostalCode { get; set; }
-    }
+    public string PostalCode { get; set; }
 }
 ```
 
@@ -183,37 +175,35 @@ public int Id { get; set; }
 Customer.cs
 
 ```cs
-namespace Pezza.Common.Entities
+namespace Pezza.Common.Entities;
+
+using System.Collections.Generic;
+
+public class Customer
 {
-    using System;
-    using System.Collections.Generic;
+    public Customer() => this.Orders = new HashSet<Order>();
 
-    public class Customer
-    {
-        public Customer() => this.Orders = new HashSet<Order>();
+    public int Id { get; set; }
 
-        public int Id { get; set; }
+    public string Name { get; set; }
 
-        public string Name { get; set; }
+    public string Address { get; set; }
 
-        public string Address { get; set; }
+    public string City { get; set; }
 
-        public string City { get; set; }
+    public string Province { get; set; }
 
-        public string Province { get; set; }
+    public string PostalCode { get; set; }
 
-        public string PostalCode { get; set; }
+    public string Phone { get; set; }
 
-        public string Phone { get; set; }
+    public string Email { get; set; }
 
-        public string Email { get; set; }
+    public string ContactPerson { get; set; }
 
-        public string ContactPerson { get; set; }
+    public DateTime DateCreated { get; set; }
 
-        public DateTime DateCreated { get; set; }
-
-        public virtual ICollection<Order> Orders { get; set; }
-    }
+    public virtual ICollection<Order> Orders { get; set; }
 }
 ```
 
@@ -222,147 +212,146 @@ Copy MimeTypes.cs from Phase 2\src\02. EndSolution\Pezza.Common\Models
 ![MimeTypes.cs](Assets/2021-01-14-08-05-17.png)
 
 ```cs
-namespace Pezza.Common.Models
+namespace Pezza.Common.Models;
+
+using System.Collections.Generic;
+using System.Linq;
+
+public class Result
 {
-    using System.Collections.Generic;
-    using System.Linq;
-
-    public class Result
+    public Result()
     {
-        public Result()
-        {
-        }
-
-        internal Result(bool succeeded, string error)
-        {
-            this.Succeeded = succeeded;
-
-            this.Errors = new List<object>
-            {
-                error
-            };
-        }
-
-        internal Result(bool succeeded, List<object> errors)
-        {
-            this.Succeeded = succeeded;
-            this.Errors = errors;
-        }
-
-        internal Result(bool succeeded, List<string> errors)
-        {
-            this.Succeeded = succeeded;
-            this.Errors = errors.ToList<object>();
-        }
-
-        public bool Succeeded { get; set; }
-
-        public List<object> Errors { get; set; }
-
-        public static Result Success() => new Result(true, new List<object> { });
-
-        public static Result Failure(List<object> errors) => new Result(false, errors);
-
-        public static Result Failure(List<string> errors) => new Result(false, errors);
-
-        public static Result Failure(string error) => new Result(false, error);
     }
 
-    public class Result<T>
+    internal Result(bool succeeded, string error)
     {
-        internal Result(bool succeeded, string error)
+        this.Succeeded = succeeded;
+
+        this.Errors = new List<object>
         {
-            this.Succeeded = succeeded;
-            this.Errors = new List<object>
-            {
-                error
-            };
-        }
-
-        internal Result(bool succeeded, List<object> errors)
-        {
-            this.Succeeded = succeeded;
-            this.Errors = errors;
-        }
-
-        internal Result(bool succeeded, T data, List<object> errors)
-        {
-            this.Succeeded = succeeded;
-            this.Errors = errors;
-            this.Data = data;
-        }
-
-        public bool Succeeded { get; set; }
-
-        public T Data { get; set; }
-
-        public List<object> Errors { get; set; }
-
-        public static Result<T> Success(T data) => new Result<T>(true, data, new List<object> { });
-
-        public static Result<T> Failure(string error) => new Result<T>(false, error);
-
-        public static Result<T> Failure(List<object> errors) => new Result<T>(false, errors);
+            error
+        };
     }
 
-    public class ListResult<T>
+    internal Result(bool succeeded, List<object> errors)
     {
-        internal ListResult(bool succeeded, string error)
-        {
-            this.Succeeded = succeeded;
-            this.Errors = new List<object>
-            {
-                error
-            };
-        }
-
-        internal ListResult(bool succeeded, List<object> errors)
-        {
-            this.Succeeded = succeeded;
-            this.Errors = errors;
-        }
-
-        internal ListResult(bool succeeded, List<T> data, int count, List<object> errors)
-        {
-            this.Succeeded = succeeded;
-            this.Errors = errors;
-            this.Data = data;
-            this.Count = count;
-        }
-
-        internal ListResult(bool succeeded, IEnumerable<T> data, int count, List<object> errors)
-        {
-            this.Succeeded = succeeded;
-            this.Errors = errors;
-            this.Data = data.ToList();
-            this.Count = count;
-        }
-
-        public bool Succeeded { get; set; }
-
-        public List<T> Data { get; set; }
-
-        public List<object> Errors { get; set; }
-
-        public int Count { get; set; }
-
-        public static ListResult<T> Success(List<T> data, int count) => new ListResult<T>(true, data, count, new List<object> { });
-
-        public static ListResult<T> Success(IEnumerable<T> data, int count) => new ListResult<T>(true, data, count, new List<object> { });
-
-        public static ListResult<T> Failure(string error) => new ListResult<T>(false, error);
-
-        public static ListResult<T> Failure(List<object> errors) => new ListResult<T>(false, errors);
+        this.Succeeded = succeeded;
+        this.Errors = errors;
     }
 
-    public class ListOutcome<T>
+    internal Result(bool succeeded, List<string> errors)
     {
-        public List<T> Data { get; set; }
-
-        public int Count { get; set; }
-
-        public List<string> Errors { get; set; }
+        this.Succeeded = succeeded;
+        this.Errors = errors.ToList<object>();
     }
+
+    public bool Succeeded { get; set; }
+
+    public List<object> Errors { get; set; }
+
+    public static Result Success() => new Result(true, new List<object> { });
+
+    public static Result Failure(List<object> errors) => new Result(false, errors);
+
+    public static Result Failure(List<string> errors) => new Result(false, errors);
+
+    public static Result Failure(string error) => new Result(false, error);
+}
+
+public class Result<T>
+{
+    internal Result(bool succeeded, string error)
+    {
+        this.Succeeded = succeeded;
+        this.Errors = new List<object>
+        {
+            error
+        };
+    }
+
+    internal Result(bool succeeded, List<object> errors)
+    {
+        this.Succeeded = succeeded;
+        this.Errors = errors;
+    }
+
+    internal Result(bool succeeded, T data, List<object> errors)
+    {
+        this.Succeeded = succeeded;
+        this.Errors = errors;
+        this.Data = data;
+    }
+
+    public bool Succeeded { get; set; }
+
+    public T Data { get; set; }
+
+    public List<object> Errors { get; set; }
+
+    public static Result<T> Success(T data) => new Result<T>(true, data, new List<object> { });
+
+    public static Result<T> Failure(string error) => new Result<T>(false, error);
+
+    public static Result<T> Failure(List<object> errors) => new Result<T>(false, errors);
+}
+
+public class ListResult<T>
+{
+    internal ListResult(bool succeeded, string error)
+    {
+        this.Succeeded = succeeded;
+        this.Errors = new List<object>
+        {
+            error
+        };
+    }
+
+    internal ListResult(bool succeeded, List<object> errors)
+    {
+        this.Succeeded = succeeded;
+        this.Errors = errors;
+    }
+
+    internal ListResult(bool succeeded, List<T> data, int count, List<object> errors)
+    {
+        this.Succeeded = succeeded;
+        this.Errors = errors;
+        this.Data = data;
+        this.Count = count;
+    }
+
+    internal ListResult(bool succeeded, IEnumerable<T> data, int count, List<object> errors)
+    {
+        this.Succeeded = succeeded;
+        this.Errors = errors;
+        this.Data = data.ToList();
+        this.Count = count;
+    }
+
+    public bool Succeeded { get; set; }
+
+    public List<T> Data { get; set; }
+
+    public List<object> Errors { get; set; }
+
+    public int Count { get; set; }
+
+    public static ListResult<T> Success(List<T> data, int count) => new ListResult<T>(true, data, count, new List<object> { });
+
+    public static ListResult<T> Success(IEnumerable<T> data, int count) => new ListResult<T>(true, data, count, new List<object> { });
+
+    public static ListResult<T> Failure(string error) => new ListResult<T>(false, error);
+
+    public static ListResult<T> Failure(List<object> errors) => new ListResult<T>(false, errors);
+}
+
+public class ListOutcome<T>
+{
+    public List<T> Data { get; set; }
+
+    public int Count { get; set; }
+
+    public List<string> Errors { get; set; }
 }
 ```
 
@@ -370,33 +359,31 @@ namespace Pezza.Common.Models
 To something like this. You can also have a look at **Phase 2\src\02. EndSolution** on how it is suppose to look.
 
 ```cs
-namespace Pezza.Common.DTO
+namespace Pezza.Common.DTO;
+
+using Pezza.Common.Entities;
+
+public class ProductDTO : ImageDataBase
 {
-    using System;
-    using Pezza.Common.Entities;
+    public int Id { get; set; }
 
-    public class ProductDTO : ImageDataBase
-    {
-        public int Id { get; set; }
+    public string Name { get; set; }
 
-        public string Name { get; set; }
+    public string Description { get; set; }
 
-        public string Description { get; set; }
+    public string PictureUrl { get; set; }
 
-        public string PictureUrl { get; set; }
+    public decimal? Price { get; set; }
 
-        public decimal? Price { get; set; }
+    public bool? Special { get; set; }
 
-        public bool? Special { get; set; }
+    public DateTime? OfferEndDate { get; set; }
 
-        public DateTime? OfferEndDate { get; set; }
+    public decimal? OfferPrice { get; set; }
 
-        public decimal? OfferPrice { get; set; }
+    public bool? IsActive { get; set; }
 
-        public bool? IsActive { get; set; }
-
-        public DateTime DateCreated { get; set; }
-    }
+    public DateTime DateCreated { get; set; }
 }
 ```
 
@@ -411,62 +398,61 @@ Create DTO's that we will use in the calling projects for SOLID principal. Only 
 In Pezza.Common ammend changes to the MappingProfile.cs. 
 
 ```cs
-namespace Pezza.Common.Profiles
+namespace Pezza.Common.Profiles;
+
+using AutoMapper;
+using Pezza.Common.DTO;
+using Pezza.Common.Entities;
+
+public class MappingProfile : Profile
 {
-    using AutoMapper;
-    using Pezza.Common.DTO;
-    using Pezza.Common.Entities;
-
-    public class MappingProfile : Profile
+    public MappingProfile()
     {
-        public MappingProfile()
-        {
-            this.CreateMap<Customer, CustomerDTO>()
-                .ForMember(x => x.Address, x => x.MapFrom((src) => new AddressBase() { 
-                    Address = src.Address,
-                    City = src.City,
-                    Province = src.Province,
-                    PostalCode = src.PostalCode
-                }))
-                .ReverseMap();
-            this.CreateMap<CustomerDTO, Customer>()
-                .ForMember(vm => vm.Address, m => m.MapFrom(u => u.Address.Address))
-                .ForMember(vm => vm.City, m => m.MapFrom(u => u.Address.City))
-                .ForMember(vm => vm.Province, m => m.MapFrom(u => u.Address.Province))
-                .ForMember(vm => vm.PostalCode, m => m.MapFrom(u => u.Address.PostalCode));
+        this.CreateMap<Customer, CustomerDTO>()
+            .ForMember(x => x.Address, x => x.MapFrom((src) => new AddressBase() { 
+                Address = src.Address,
+                City = src.City,
+                Province = src.Province,
+                PostalCode = src.PostalCode
+            }))
+            .ReverseMap();
+        this.CreateMap<CustomerDTO, Customer>()
+            .ForMember(vm => vm.Address, m => m.MapFrom(u => u.Address.Address))
+            .ForMember(vm => vm.City, m => m.MapFrom(u => u.Address.City))
+            .ForMember(vm => vm.Province, m => m.MapFrom(u => u.Address.Province))
+            .ForMember(vm => vm.PostalCode, m => m.MapFrom(u => u.Address.PostalCode));
 
-            this.CreateMap<Notify, NotifyDTO>();
-            this.CreateMap<NotifyDTO, Notify>();
+        this.CreateMap<Notify, NotifyDTO>();
+        this.CreateMap<NotifyDTO, Notify>();
 
-            this.CreateMap<Order, OrderDTO>()
-                .ForMember(vm => vm.OrderItems, m => m.MapFrom(u => u.OrderItems));            
-            this.CreateMap<OrderDTO, Order>()
-                .ForMember(vm => vm.OrderItems, m => m.MapFrom(u => u.OrderItems));
+        this.CreateMap<Order, OrderDTO>()
+            .ForMember(vm => vm.OrderItems, m => m.MapFrom(u => u.OrderItems));            
+        this.CreateMap<OrderDTO, Order>()
+            .ForMember(vm => vm.OrderItems, m => m.MapFrom(u => u.OrderItems));
 
-            this.CreateMap<OrderItem, OrderItemDTO>();
-            this.CreateMap<OrderItemDTO, OrderItem>();
+        this.CreateMap<OrderItem, OrderItemDTO>();
+        this.CreateMap<OrderItemDTO, OrderItem>();
 
-            this.CreateMap<Product, ProductDTO>();
-            this.CreateMap<ProductDTO, Product>();
+        this.CreateMap<Product, ProductDTO>();
+        this.CreateMap<ProductDTO, Product>();
 
-            this.CreateMap<Restaurant, RestaurantDTO>()
-                .ForMember(x => x.Address, x => x.MapFrom((src) => new AddressBase()
-                {
-                    Address = src.Address,
-                    City = src.City,
-                    Province = src.Province,
-                    PostalCode = src.PostalCode
-                }))
-                .ReverseMap();
-            this.CreateMap<RestaurantDTO, Restaurant>()
-                .ForMember(vm => vm.Address, m => m.MapFrom(u => u.Address.Address))
-                .ForMember(vm => vm.City, m => m.MapFrom(u => u.Address.City))
-                .ForMember(vm => vm.Province, m => m.MapFrom(u => u.Address.Province))
-                .ForMember(vm => vm.PostalCode, m => m.MapFrom(u => u.Address.PostalCode));
+        this.CreateMap<Restaurant, RestaurantDTO>()
+            .ForMember(x => x.Address, x => x.MapFrom((src) => new AddressBase()
+            {
+                Address = src.Address,
+                City = src.City,
+                Province = src.Province,
+                PostalCode = src.PostalCode
+            }))
+            .ReverseMap();
+        this.CreateMap<RestaurantDTO, Restaurant>()
+            .ForMember(vm => vm.Address, m => m.MapFrom(u => u.Address.Address))
+            .ForMember(vm => vm.City, m => m.MapFrom(u => u.Address.City))
+            .ForMember(vm => vm.Province, m => m.MapFrom(u => u.Address.Province))
+            .ForMember(vm => vm.PostalCode, m => m.MapFrom(u => u.Address.PostalCode));
 
-            this.CreateMap<Stock, StockDTO>();
-            this.CreateMap<StockDTO, Stock>();
-        }
+        this.CreateMap<Stock, StockDTO>();
+        this.CreateMap<StockDTO, Stock>();
     }
 }
 ```
@@ -486,44 +472,43 @@ Create a Core Helper to unify DbContext SaveChanges as well as result for all Co
 ![](Assets/2022-01-21-08-51-11.png)
 
 ```cs
-namespace Pezza.Core.Helpers
+namespace Pezza.Core.Helpers;
+
+using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
+using AutoMapper;
+using Pezza.Common.Models;
+using Pezza.DataAccess;
+
+public static class CoreHelper<T>
 {
-    using System.Diagnostics;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using AutoMapper;
-    using Pezza.Common.Models;
-    using Pezza.DataAccess;
-
-    public static class CoreHelper<T>
+    public static async Task<Result<T>> Outcome(DatabaseContext databaseContext, IMapper mapper, CancellationToken cancellationToken, EntityBase entity, string errorMessage)
     {
-        public static async Task<Result<T>> Outcome(DatabaseContext databaseContext, IMapper mapper, CancellationToken cancellationToken, EntityBase entity, string errorMessage)
-        {
-            var stackTrace = new StackTrace();
-            var methodName = stackTrace?.GetFrame(1)?.GetMethod()?.Name;
-            methodName = methodName.Replace("Query", string.Empty);
-            methodName = methodName.Replace("Command", string.Empty);
+        var stackTrace = new StackTrace();
+        var methodName = stackTrace?.GetFrame(1)?.GetMethod()?.Name;
+        methodName = methodName.Replace("Query", string.Empty);
+        methodName = methodName.Replace("Command", string.Empty);
 
-            var outcome = await databaseContext.SaveChangesAsync(cancellationToken);
-            return (outcome > 0) ? Result<T>.Success(mapper.Map<T>(entity)) : Result<T>.Failure(errorMessage);
-        }
+        var outcome = await databaseContext.SaveChangesAsync(cancellationToken);
+        return (outcome > 0) ? Result<T>.Success(mapper.Map<T>(entity)) : Result<T>.Failure(errorMessage);
     }
+}
 
-    public static class CoreHelper
+public static class CoreHelper
+{
+    public static Result CoreResult(int outcome, string errorMessage)
+        => (outcome > 0) ? Result.Success() : Result.Failure(errorMessage);
+
+    public static async Task<Result> Outcome(DatabaseContext databaseContext, CancellationToken cancellationToken, string errorMessage)
     {
-        public static Result CoreResult(int outcome, string errorMessage)
-            => (outcome > 0) ? Result.Success() : Result.Failure(errorMessage);
+        var stackTrace = new StackTrace();
+        var methodName = stackTrace?.GetFrame(1)?.GetMethod()?.Name;
+        methodName = methodName.Replace("Query", string.Empty);
+        methodName = methodName.Replace("Command", string.Empty);
 
-        public static async Task<Result> Outcome(DatabaseContext databaseContext, CancellationToken cancellationToken, string errorMessage)
-        {
-            var stackTrace = new StackTrace();
-            var methodName = stackTrace?.GetFrame(1)?.GetMethod()?.Name;
-            methodName = methodName.Replace("Query", string.Empty);
-            methodName = methodName.Replace("Command", string.Empty);
-
-            var outcome = await databaseContext.SaveChangesAsync(cancellationToken);
-            return (outcome > 0) ? Result.Success() : Result.Failure(errorMessage);
-        }
+        var outcome = await databaseContext.SaveChangesAsync(cancellationToken);
+        return (outcome > 0) ? Result.Success() : Result.Failure(errorMessage);
     }
 }
 ```
@@ -533,39 +518,38 @@ Create the following Commands for each Entity in Pezza.Core inside the Entity Na
 - Create Command
 
 ```cs
-namespace Pezza.Core.Customer.Commands
+namespace Pezza.Core.Customer.Commands;
+
+using System.Threading;
+using System.Threading.Tasks;
+using AutoMapper;
+using MediatR;
+using Pezza.Common.DTO;
+using Pezza.Common.Entities;
+using Pezza.Common.Models;
+using Pezza.Core.Helpers;
+using Pezza.DataAccess;
+
+public class CreateCustomerCommand : IRequest<Result<CustomerDTO>>
 {
-    using System.Threading;
-    using System.Threading.Tasks;
-    using AutoMapper;
-    using MediatR;
-    using Pezza.Common.DTO;
-    using Pezza.Common.Entities;
-    using Pezza.Common.Models;
-    using Pezza.Core.Helpers;
-    using Pezza.DataAccess;
+    public CustomerDTO Data { get; set; }
+}
 
-    public class CreateCustomerCommand : IRequest<Result<CustomerDTO>>
+public class CreateCustomerCommandHandler : IRequestHandler<CreateCustomerCommand, Result<CustomerDTO>>
+{
+    private readonly DatabaseContext databaseContext;
+
+    private readonly IMapper mapper;
+
+    public CreateCustomerCommandHandler(DatabaseContext databaseContext, IMapper mapper)
+        => (this.databaseContext, this.mapper) = (databaseContext, mapper);
+
+    public async Task<Result<CustomerDTO>> Handle(CreateCustomerCommand request, CancellationToken cancellationToken)
     {
-        public CustomerDTO Data { get; set; }
-    }
+        var entity = this.mapper.Map<Customer>(request.Data);
+        this.databaseContext.Customers.Add(entity);
 
-    public class CreateCustomerCommandHandler : IRequestHandler<CreateCustomerCommand, Result<CustomerDTO>>
-    {
-        private readonly DatabaseContext databaseContext;
-
-        private readonly IMapper mapper;
-
-        public CreateCustomerCommandHandler(DatabaseContext databaseContext, IMapper mapper)
-            => (this.databaseContext, this.mapper) = (databaseContext, mapper);
-
-        public async Task<Result<CustomerDTO>> Handle(CreateCustomerCommand request, CancellationToken cancellationToken)
-        {
-            var entity = this.mapper.Map<Customer>(request.Data);
-            this.databaseContext.Customers.Add(entity);
-
-            return await CoreHelper<CustomerDTO>.Outcome(this.databaseContext, this.mapper, cancellationToken, entity, "Error creating a customer");
-        }
+        return await CoreHelper<CustomerDTO>.Outcome(this.databaseContext, this.mapper, cancellationToken, entity, "Error creating a customer");
     }
 }
 ```
@@ -573,35 +557,34 @@ namespace Pezza.Core.Customer.Commands
 - Delete Command
 
 ```cs
-namespace Pezza.Core.Customer.Commands
+namespace Pezza.Core.Customer.Commands;
+
+using System.Threading;
+using System.Threading.Tasks;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using Pezza.Common.Models;
+using Pezza.Core.Helpers;
+using Pezza.DataAccess;
+
+public class DeleteCustomerCommand : IRequest<Result>
 {
-    using System.Threading;
-    using System.Threading.Tasks;
-    using MediatR;
-    using Microsoft.EntityFrameworkCore;
-    using Pezza.Common.Models;
-    using Pezza.Core.Helpers;
-    using Pezza.DataAccess;
+    public int Id { get; set; }
+}
 
-    public class DeleteCustomerCommand : IRequest<Result>
+public class DeleteCustomerCommandHandler : IRequestHandler<DeleteCustomerCommand, Result>
+{
+    private readonly DatabaseContext databaseContext;
+
+    public DeleteCustomerCommandHandler(DatabaseContext databaseContext)
+        => this.databaseContext = databaseContext;
+
+    public async Task<Result> Handle(DeleteCustomerCommand request, CancellationToken cancellationToken)
     {
-        public int Id { get; set; }
-    }
+        var findEntity = await this.databaseContext.Customers.FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
+        this.databaseContext.Customers.Remove(findEntity);
 
-    public class DeleteCustomerCommandHandler : IRequestHandler<DeleteCustomerCommand, Result>
-    {
-        private readonly DatabaseContext databaseContext;
-
-        public DeleteCustomerCommandHandler(DatabaseContext databaseContext)
-            => this.databaseContext = databaseContext;
-
-        public async Task<Result> Handle(DeleteCustomerCommand request, CancellationToken cancellationToken)
-        {
-            var findEntity = await this.databaseContext.Customers.FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
-            this.databaseContext.Customers.Remove(findEntity);
-
-            return await CoreHelper.Outcome(this.databaseContext, cancellationToken, "Error deleting a customer");
-        }
+        return await CoreHelper.Outcome(this.databaseContext, cancellationToken, "Error deleting a customer");
     }
 }
 ```
@@ -609,52 +592,51 @@ namespace Pezza.Core.Customer.Commands
 - Update Command
 
 ```cs
-namespace Pezza.Core.Customer.Commands
+namespace Pezza.Core.Customer.Commands;
+
+using System.Threading;
+using System.Threading.Tasks;
+using AutoMapper;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using Pezza.Common.DTO;
+using Pezza.Common.Models;
+using Pezza.Core.Helpers;
+using Pezza.DataAccess;
+
+public class UpdateCustomerCommand : IRequest<Result<CustomerDTO>>
 {
-    using System.Threading;
-    using System.Threading.Tasks;
-    using AutoMapper;
-    using MediatR;
-    using Microsoft.EntityFrameworkCore;
-    using Pezza.Common.DTO;
-    using Pezza.Common.Models;
-    using Pezza.Core.Helpers;
-    using Pezza.DataAccess;
+    public CustomerDTO Data { get; set; }
+}
 
-    public class UpdateCustomerCommand : IRequest<Result<CustomerDTO>>
+public class UpdateCustomerCommandHandler : IRequestHandler<UpdateCustomerCommand, Result<CustomerDTO>>
+{
+    private readonly DatabaseContext databaseContext;
+
+    private readonly IMapper mapper;
+
+    public UpdateCustomerCommandHandler(DatabaseContext databaseContext, IMapper mapper)
+        => (this.databaseContext, this.mapper) = (databaseContext, mapper);
+
+    public async Task<Result<CustomerDTO>> Handle(UpdateCustomerCommand request, CancellationToken cancellationToken)
     {
-        public CustomerDTO Data { get; set; }
-    }
-
-    public class UpdateCustomerCommandHandler : IRequestHandler<UpdateCustomerCommand, Result<CustomerDTO>>
-    {
-        private readonly DatabaseContext databaseContext;
-
-        private readonly IMapper mapper;
-
-        public UpdateCustomerCommandHandler(DatabaseContext databaseContext, IMapper mapper)
-            => (this.databaseContext, this.mapper) = (databaseContext, mapper);
-
-        public async Task<Result<CustomerDTO>> Handle(UpdateCustomerCommand request, CancellationToken cancellationToken)
+        var dto = request.Data;
+        var findEntity = await this.databaseContext.Customers.FirstOrDefaultAsync(x => x.Id == dto.Id, cancellationToken);
+        if (findEntity == null)
         {
-            var dto = request.Data;
-            var findEntity = await this.databaseContext.Customers.FirstOrDefaultAsync(x => x.Id == dto.Id, cancellationToken);
-            if (findEntity == null)
-            {
-                return null;
-            }
-
-            findEntity.Name = !string.IsNullOrEmpty(dto?.Name) ? dto?.Name : findEntity.Name;
-            findEntity.Address = !string.IsNullOrEmpty(dto?.Address?.Address) ? dto?.Address?.Address : findEntity.Address;
-            findEntity.City = !string.IsNullOrEmpty(dto?.Address?.City) ? dto?.Address?.City : findEntity.City;
-            findEntity.Province = !string.IsNullOrEmpty(dto?.Address?.Province) ? dto?.Address?.Province : findEntity.Province;
-            findEntity.PostalCode = !string.IsNullOrEmpty(dto?.Address?.PostalCode) ? dto?.Address?.PostalCode : findEntity.PostalCode;
-            findEntity.Phone = !string.IsNullOrEmpty(dto?.Phone) ? dto?.Phone : findEntity.Phone;
-            findEntity.ContactPerson = !string.IsNullOrEmpty(dto?.ContactPerson) ? dto?.ContactPerson : findEntity.ContactPerson;
-            var outcome = this.databaseContext.Customers.Update(findEntity);
-
-            return await CoreHelper<CustomerDTO>.Outcome(this.databaseContext, this.mapper, cancellationToken, findEntity, "Error updating customer");
+            return null;
         }
+
+        findEntity.Name = !string.IsNullOrEmpty(dto?.Name) ? dto?.Name : findEntity.Name;
+        findEntity.Address = !string.IsNullOrEmpty(dto?.Address?.Address) ? dto?.Address?.Address : findEntity.Address;
+        findEntity.City = !string.IsNullOrEmpty(dto?.Address?.City) ? dto?.Address?.City : findEntity.City;
+        findEntity.Province = !string.IsNullOrEmpty(dto?.Address?.Province) ? dto?.Address?.Province : findEntity.Province;
+        findEntity.PostalCode = !string.IsNullOrEmpty(dto?.Address?.PostalCode) ? dto?.Address?.PostalCode : findEntity.PostalCode;
+        findEntity.Phone = !string.IsNullOrEmpty(dto?.Phone) ? dto?.Phone : findEntity.Phone;
+        findEntity.ContactPerson = !string.IsNullOrEmpty(dto?.ContactPerson) ? dto?.ContactPerson : findEntity.ContactPerson;
+        var outcome = this.databaseContext.Customers.Update(findEntity);
+
+        return await CoreHelper<CustomerDTO>.Outcome(this.databaseContext, this.mapper, cancellationToken, findEntity, "Error updating customer");
     }
 }
 ```
@@ -670,36 +652,35 @@ Create the following Queries
 -Get Single
 
 ```cs
-namespace Pezza.Core.Customer.Queries
+namespace Pezza.Core.Customer.Queries;
+
+using System.Threading;
+using System.Threading.Tasks;
+using AutoMapper;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using Pezza.Common.DTO;
+using Pezza.Common.Models;
+using Pezza.DataAccess;
+
+public class GetCustomerQuery : IRequest<Result<CustomerDTO>>
 {
-    using System.Threading;
-    using System.Threading.Tasks;
-    using AutoMapper;
-    using MediatR;
-    using Microsoft.EntityFrameworkCore;
-    using Pezza.Common.DTO;
-    using Pezza.Common.Models;
-    using Pezza.DataAccess;
+    public int Id { get; set; }
+}
 
-    public class GetCustomerQuery : IRequest<Result<CustomerDTO>>
+public class GetCustomerQueryHandler : IRequestHandler<GetCustomerQuery, Result<CustomerDTO>>
+{
+    private readonly DatabaseContext databaseContext;
+
+    private readonly IMapper mapper;
+
+    public GetCustomerQueryHandler(DatabaseContext databaseContext, IMapper mapper)
+        => (this.databaseContext, this.mapper) = (databaseContext, mapper);
+
+    public async Task<Result<CustomerDTO>> Handle(GetCustomerQuery request, CancellationToken cancellationToken)
     {
-        public int Id { get; set; }
-    }
-
-    public class GetCustomerQueryHandler : IRequestHandler<GetCustomerQuery, Result<CustomerDTO>>
-    {
-        private readonly DatabaseContext databaseContext;
-
-        private readonly IMapper mapper;
-
-        public GetCustomerQueryHandler(DatabaseContext databaseContext, IMapper mapper)
-            => (this.databaseContext, this.mapper) = (databaseContext, mapper);
-
-        public async Task<Result<CustomerDTO>> Handle(GetCustomerQuery request, CancellationToken cancellationToken)
-        {
-            var result = this.mapper.Map<CustomerDTO>(await this.databaseContext.Customers.FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken));
-            return Result<CustomerDTO>.Success(result);
-        }
+        var result = this.mapper.Map<CustomerDTO>(await this.databaseContext.Customers.FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken));
+        return Result<CustomerDTO>.Success(result);
     }
 }
 ```
@@ -707,41 +688,40 @@ namespace Pezza.Core.Customer.Queries
 - Get All
 
 ```cs
-namespace Pezza.Core.Customer.Queries
+namespace Pezza.Core.Customer.Queries;
+
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using AutoMapper;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using Pezza.Common.DTO;
+using Pezza.Common.Models;
+using Pezza.DataAccess;
+
+public class GetCustomersQuery : IRequest<ListResult<CustomerDTO>>
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using AutoMapper;
-    using MediatR;
-    using Microsoft.EntityFrameworkCore;
-    using Pezza.Common.DTO;
-    using Pezza.Common.Models;
-    using Pezza.DataAccess;
+}
 
-    public class GetCustomersQuery : IRequest<ListResult<CustomerDTO>>
+public class GetCustomersQueryHandler : IRequestHandler<GetCustomersQuery, ListResult<CustomerDTO>>
+{
+    private readonly DatabaseContext databaseContext;
+
+    private readonly IMapper mapper;
+
+    public GetCustomersQueryHandler(DatabaseContext databaseContext, IMapper mapper)
+        => (this.databaseContext, this.mapper) = (databaseContext, mapper);
+
+    public async Task<ListResult<CustomerDTO>> Handle(GetCustomersQuery request, CancellationToken cancellationToken)
     {
-    }
+        var entities = this.databaseContext.Customers.Select(x => x).AsNoTracking();
 
-    public class GetCustomersQueryHandler : IRequestHandler<GetCustomersQuery, ListResult<CustomerDTO>>
-    {
-        private readonly DatabaseContext databaseContext;
+        var count = entities.Count();
+        var paged = this.mapper.Map<List<CustomerDTO>>(await entities.ToListAsync(cancellationToken));
 
-        private readonly IMapper mapper;
-
-        public GetCustomersQueryHandler(DatabaseContext databaseContext, IMapper mapper)
-            => (this.databaseContext, this.mapper) = (databaseContext, mapper);
-
-        public async Task<ListResult<CustomerDTO>> Handle(GetCustomersQuery request, CancellationToken cancellationToken)
-        {
-            var entities = this.databaseContext.Customers.Select(x => x).AsNoTracking();
-
-            var count = entities.Count();
-            var paged = this.mapper.Map<List<CustomerDTO>>(await entities.ToListAsync(cancellationToken));
-
-            return ListResult<CustomerDTO>.Success(paged, count);
-        }
+        return ListResult<CustomerDTO>.Success(paged, count);
     }
 }
 ```
@@ -758,42 +738,36 @@ For MediatR Dependency Injection we need to create 3 Behaviour Classes inside Co
 
 ```cs
 namespace Pezza.Common.Behaviours
+
+using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
+using MediatR;
+using Microsoft.Extensions.Logging;
+
+public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
 {
-    using System.Diagnostics;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using MediatR;
-    using Microsoft.Extensions.Logging;
+    private readonly Stopwatch timer;
 
-    public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+    public PerformanceBehaviour() => this.timer = new Stopwatch();
+
+    public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
     {
-        private readonly Stopwatch timer;
-        private readonly ILogger<TRequest> logger;
+        this.timer.Start();
 
-        public PerformanceBehaviour(ILogger<TRequest> logger)
+        var response = await next();
+
+        this.timer.Stop();
+
+        var elapsedMilliseconds = this.timer.ElapsedMilliseconds;
+
+        if (elapsedMilliseconds > 500)
         {
-            this.timer = new Stopwatch();
-            this.logger = logger;
+            var requestName = typeof(TRequest).Name;
+            this.logger.LogInformation($"CleanArchitecture Long Running Request: {requestName} ({elapsedMilliseconds} milliseconds)", request);
         }
 
-        public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
-        {
-            this.timer.Start();
-
-            var response = await next();
-
-            this.timer.Stop();
-
-            var elapsedMilliseconds = this.timer.ElapsedMilliseconds;
-
-            if (elapsedMilliseconds > 500)
-            {
-                var requestName = typeof(TRequest).Name;
-                this.logger.LogInformation($"CleanArchitecture Long Running Request: {requestName} ({elapsedMilliseconds} milliseconds)", request);
-            }
-
-            return response;
-        }
+        return response;
     }
 }
 ```
@@ -801,34 +775,32 @@ namespace Pezza.Common.Behaviours
 - UnhandledExceptionBehaviour.cs this will pick up any exceptions during the executio pipeline. 
 
 ```cs
-namespace Pezza.Common.Behaviours
+namespace Pezza.Common.Behaviours;
+
+using System.Threading;
+using System.Threading.Tasks;
+using MediatR;
+using Microsoft.Extensions.Logging;
+
+public class UnhandledExceptionBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
 {
-    using System;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using MediatR;
-    using Microsoft.Extensions.Logging;
+    private readonly ILogger<TRequest> logger;
 
-    public class UnhandledExceptionBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+    public UnhandledExceptionBehaviour(ILogger<TRequest> logger) => this.logger = logger;
+
+    public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
     {
-        private readonly ILogger<TRequest> logger;
-
-        public UnhandledExceptionBehaviour(ILogger<TRequest> logger) => this.logger = logger;
-
-        public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
+        try
         {
-            try
-            {
-                return await next();
-            }
-            catch (Exception ex)
-            {
-                var requestName = typeof(TRequest).Name;
+            return await next();
+        }
+        catch (Exception ex)
+        {
+            var requestName = typeof(TRequest).Name;
 
-                this.logger.LogError(ex, "Pezza Request: Unhandled Exception for Request {Name} {@Request}", requestName, request);
+            this.logger.LogError(ex, "Pezza Request: Unhandled Exception for Request {Name} {@Request}", requestName, request);
 
-                throw;
-            }
+            throw;
         }
     }
 }
@@ -837,38 +809,37 @@ namespace Pezza.Common.Behaviours
 - ValidationBehavior.cs -Will be used in Phase 3 to pick up any validation that was added for Commands or Queries.
 
 ```cs
-namespace Pezza.Common.Behaviours
+namespace Pezza.Common.Behaviours;
+
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using FluentValidation;
+using MediatR;
+
+public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+    where TRequest : IRequest<TResponse>
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using FluentValidation;
-    using MediatR;
+    private readonly IEnumerable<IValidator<TRequest>> validators;
 
-    public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
-        where TRequest : IRequest<TResponse>
+    public ValidationBehavior(IEnumerable<IValidator<TRequest>> validators) => this.validators = validators;
+
+    public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
     {
-        private readonly IEnumerable<IValidator<TRequest>> validators;
-
-        public ValidationBehavior(IEnumerable<IValidator<TRequest>> validators) => this.validators = validators;
-
-        public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
+        if (this.validators.Any())
         {
-            if (this.validators.Any())
+            var context = new ValidationContext<TRequest>(request);
+
+            var validationResults = await Task.WhenAll(this.validators.Select(v => v.ValidateAsync(context, cancellationToken)));
+            var failures = validationResults.SelectMany(r => r.Errors).Where(f => f != null);
+
+            if (!failures.Any())
             {
-                var context = new ValidationContext<TRequest>(request);
-
-                var validationResults = await Task.WhenAll(this.validators.Select(v => v.ValidateAsync(context, cancellationToken)));
-                var failures = validationResults.SelectMany(r => r.Errors).Where(f => f != null);
-
-                if (!failures.Any())
-                {
-                    throw new ValidationException(failures);
-                }
+                throw new ValidationException(failures);
             }
-            return await next();
         }
+        return await next();
     }
 }
 ```
@@ -876,34 +847,33 @@ namespace Pezza.Common.Behaviours
 DependencyInjection.cs in Pezza.Core
 
 ```cs
-namespace Pezza.Core
+namespace Pezza.Core;
+
+using System.Reflection;
+using AutoMapper;
+using FluentValidation;
+using MediatR;
+using Microsoft.Extensions.DependencyInjection;
+using Pezza.Common.Behaviours;
+using Pezza.Common.DTO;
+using Pezza.Common.Profiles;
+using Pezza.DataAccess.Contracts;
+using Pezza.DataAccess.Data;
+
+public static class DependencyInjection
 {
-    using System.Reflection;
-    using AutoMapper;
-    using FluentValidation;
-    using MediatR;
-    using Microsoft.Extensions.DependencyInjection;
-    using Pezza.Common.Behaviours;
-    using Pezza.Common.DTO;
-    using Pezza.Common.Profiles;
-    using Pezza.DataAccess.Contracts;
-    using Pezza.DataAccess.Data;
-
-    public static class DependencyInjection
+    public static IServiceCollection AddApplication(this IServiceCollection services)
     {
-        public static IServiceCollection AddApplication(this IServiceCollection services)
-        {
-            services.AddMediatR(Assembly.GetExecutingAssembly());
-            services.AddAutoMapper(Assembly.GetExecutingAssembly());
-            services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
-            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnhandledExceptionBehaviour<,>));
-            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));
+        services.AddMediatR(Assembly.GetExecutingAssembly());
+        services.AddAutoMapper(Assembly.GetExecutingAssembly());
+        services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnhandledExceptionBehaviour<,>));
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));
 
-            services.AddAutoMapper(typeof(MappingProfile));
+        services.AddAutoMapper(typeof(MappingProfile));
 
-            return services;
-        }
+        return services;
     }
 }
 ```

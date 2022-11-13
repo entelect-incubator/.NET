@@ -1,22 +1,21 @@
-namespace Pezza.Common.Entities
+namespace Pezza.Common.Entities;
+
+using System;
+using Pezza.Common.Models.Base;
+
+public class Stock : EntityBase
 {
-    using System;
-    using Pezza.Common.Models.Base;
+    public string Name { get; set; }
 
-    public class Stock : EntityBase
-    {
-        public string Name { get; set; }
+    public string UnitOfMeasure { get; set; }
 
-        public string UnitOfMeasure { get; set; }
+    public double? ValueOfMeasure { get; set; }
 
-        public double? ValueOfMeasure { get; set; }
+    public int Quantity { get; set; }
 
-        public int Quantity { get; set; }
+    public DateTime? ExpiryDate { get; set; }
 
-        public DateTime? ExpiryDate { get; set; }
+    public DateTime DateCreated { get; set; }
 
-        public DateTime DateCreated { get; set; }
-
-        public string Comment { get; set; }
-    }
+    public string Comment { get; set; }
 }

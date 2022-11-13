@@ -1,6 +1,6 @@
 <img align="left" width="116" height="116" src="../../../pezza-logo.png" />
 
-# &nbsp;**Pezza - Phase 7 - Dashboard - MVC - Step 1** [![.NET 6 - Phase 7 - Dashboard - MVC - Step 1](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase7-dashboard-mvc-step1.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase7-dashboard-mvc-step1.yml)
+# &nbsp;**Pezza - Phase 7 - Dashboard - MVC - Step 1** [![.NET 7 - Phase 7 - Dashboard - MVC - Step 1](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase7-dashboard-mvc-step1.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase7-dashboard-mvc-step1.yml)
 
 <br/><br/>
 
@@ -16,7 +16,7 @@ A basic Portal for Pezza to manage all their stock, products, orders, customers 
 
 - [ ] Create a new Solution Folder - 00 UI
 - [ ] Create a new Web Application Project
-![ASP.NET 6 Web Application](Assets/2020-12-10-21-28-37.png)
+![ASP.NET 7 Web Application](Assets/2020-12-10-21-28-37.png)
 ![Configure your new project - Pezza.Portal](Assets/2020-12-11-05-36-48.png)
 ![Model-View-Controller](Assets/2020-12-10-21-31-09.png)
 - [ ] Copy the Pezza Branding Guide & Design System files found in [Download]() 
@@ -375,7 +375,7 @@ public Startup(IHostEnvironment env, IConfiguration configuration)
 Add a new property for the HostEnviroment.
 
 ```cs
-    public IHostEnvironment CurrentEnvironment { get; }
+public IHostEnvironment CurrentEnvironment { get; }
 ```
 
 This transforms the AppSettings JSON section into a static class to be used anywhere.
@@ -514,7 +514,7 @@ You can now control the alerts\notifications using JQuery.
 
 Create a partial view in Views\Shared _Modals.cshtml. This will be used for confirmation popups.
 
-```cshtml
+```html
 <!-- Remove Confirmation Modal -->
 <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="removeModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-sm" role="document">
@@ -575,65 +575,64 @@ In Startup.cs add
 ```cs
 services.AddHttpClient();
 
-services.AddControllersWithViews()
-    .AddFluentValidation(s =>
-    {
-        s.RegisterValidatorsFromAssemblyContaining<Startup>();
-        s.RunDefaultMvcValidationAfterFluentValidationExecutes = false;
-    });
+services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters();
+services.AddControllersWithViews();
+services.AddMvc(options =>
+{
+    options.Filters.Add(typeof(ValidateModelStateAttribute));
+    options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true;
+});
 ```
 
 In the Web.API we are using Fluent Validation for Server Validation. We can automatically map this to ModelState Error in MVC by doing the following. In the BaseController.cs we are adding a Validate function that will check if any errors are retruned from the API Call and automatically mapping the model state errors. The code that you added in Startup automatically registers FluentValidation Assembly for you. 
 
 ```cs
-namespace Pezza.BackEnd.Controllers
+namespace Pezza.BackEnd.Controllers;
+
+using System.Net.Http;
+using System.Net.Http.Headers;
+using Microsoft.AspNetCore.Mvc;
+using Pezza.Common;
+
+public abstract class BaseController : Controller
 {
-    using System;
-    using System.Net.Http;
-    using System.Net.Http.Headers;
-    using Microsoft.AspNetCore.Mvc;
-    using Pezza.Common;
+    public readonly HttpClient client;
 
-    public abstract class BaseController : Controller
+    public readonly IHttpClientFactory clientFactory;
+
+    public BaseController(IHttpClientFactory clientFactory)
     {
-        public readonly HttpClient client;
+        this.clientFactory = clientFactory;
+        this.client = clientFactory.CreateClient();
+        this.client.BaseAddress = new Uri(AppSettings.ApiUrl);
+        this.client.DefaultRequestHeaders.Accept.Clear();
+        this.client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+    }
 
-        public readonly IHttpClientFactory clientFactory;
-
-        public BaseController(IHttpClientFactory clientFactory)
+    public ActionResult Validate<T>(Result<T> result, ApiCallHelper<T> apiCallHelper, object model)
+    {
+        if (!result.Succeeded)
         {
-            this.clientFactory = clientFactory;
-            this.client = clientFactory.CreateClient();
-            this.client.BaseAddress = new Uri(AppSettings.ApiUrl);
-            this.client.DefaultRequestHeaders.Accept.Clear();
-            this.client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-        }
-
-        public ActionResult Validate<T>(Result<T> result, ApiCallHelper<T> apiCallHelper, object model)
-        {
-            if (!result.Succeeded)
+            if (apiCallHelper.ValidationErrors != null)
             {
-                if (apiCallHelper.ValidationErrors != null)
+                if (apiCallHelper.ValidationErrors?.Count > 0)
                 {
-                    if (apiCallHelper.ValidationErrors?.Count > 0)
+                    foreach (var validation in apiCallHelper.ValidationErrors)
                     {
-                        foreach (var validation in apiCallHelper.ValidationErrors)
-                        {
-                            ModelState.AddModelError(validation.Property, validation.Error);
-                        }
+                        ModelState.AddModelError(validation.Property, validation.Error);
                     }
                 }
-
-                return this.View(model);
             }
 
-            if (!ModelState.IsValid)
-            {
-                return this.View(model);
-            }
-
-            return this.RedirectToAction("Index");
+            return this.View(model);
         }
+
+        if (!ModelState.IsValid)
+        {
+            return this.View(model);
+        }
+
+        return this.RedirectToAction("Index");
     }
 }
 ```
@@ -644,7 +643,7 @@ In Phase 3\Data there is a JSON file za.json copy that into your MVC solution un
 
 ![za.json](Assets/2020-12-23-23-52-46.png)
 
-In wwwroot\js create address.js. This loads the JSON data into an object. This will help us create 2 Selects for Cities and Provinces using JQuery. 
+In wwwroot\js create address.js. This loads the JSON data into an object. This will help us create 2 Selects for Cities and Provinces using JQuery.
 
 ```js
 (function () {
@@ -675,7 +674,7 @@ In wwwroot\js create address.js. This loads the JSON data into an object. This w
 
 Create a new Partial View in Views\Shared _Address.cshtml
 
-```cshtml
+```cs
 @model Pezza.Common.Entities.AddressBase
 
 <fieldset>
@@ -730,165 +729,161 @@ Create a new folder Helpers with a class ApiCallHelper.cs. This will standardize
 ![](Assets/2021-01-19-09-15-16.png)
 
 ```cs
-namespace Pezza.Portal.Helpers
+namespace Pezza.Portal.Helpers;
+
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
+using Pezza.Common;
+using Pezza.Common.Models;
+
+public class ApiCallHelper<T>
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Net.Http;
-    using System.Net.Http.Headers;
-    using System.Text;
-    using System.Text.Json;
-    using System.Threading.Tasks;
-    using Newtonsoft.Json.Linq;
-    using Pezza.Common;
-    using Pezza.Common.Models;
+    private readonly IHttpClientFactory clientFactory;
 
-    public class ApiCallHelper<T>
+    private readonly HttpClient client;
+
+    public List<ValidationError> ValidationErrors;
+
+    private readonly JsonSerializerOptions jsonSerializerOptions;
+
+    public string ControllerName { get; set; }
+
+    public ApiCallHelper(IHttpClientFactory clientFactory)
     {
-        private readonly IHttpClientFactory clientFactory;
+        this.clientFactory = clientFactory;
+        this.client = clientFactory.CreateClient();
+        this.client.BaseAddress = new Uri(AppSettings.ApiUrl);
+        this.client.DefaultRequestHeaders.Accept.Clear();
+        this.client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-        private readonly HttpClient client;
-
-        public List<ValidationError> ValidationErrors;
-
-        private readonly JsonSerializerOptions jsonSerializerOptions;
-
-        public string ControllerName { get; set; }
-
-        public ApiCallHelper(IHttpClientFactory clientFactory)
+        this.jsonSerializerOptions = new JsonSerializerOptions
         {
-            this.clientFactory = clientFactory;
-            this.client = clientFactory.CreateClient();
-            this.client.BaseAddress = new Uri(AppSettings.ApiUrl);
-            this.client.DefaultRequestHeaders.Accept.Clear();
-            this.client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            IgnoreNullValues = true,
+            MaxDepth = 20
+        };
+    }
 
-            this.jsonSerializerOptions = new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                IgnoreNullValues = true,
-                MaxDepth = 20
-            };
+    public async Task<ListOutcome<T>> GetListAsync(string jsonData)
+    {
+        var data = new StringContent(jsonData, Encoding.UTF8, "application/json");
+        var response = await this.client.PostAsync(@$"{AppSettings.ApiUrl}{ControllerName}\Search", data);
+
+        var responseData = await response.Content.ReadAsStringAsync();
+
+        var entities = System.Text.Json.JsonSerializer.Deserialize<ListOutcome<T>>(responseData, this.jsonSerializerOptions);
+        return entities;
+    }
+
+    public async Task<T> GetAsync(int id)
+    {
+        var responseMessage = await this.client.GetAsync(@$"{AppSettings.ApiUrl}{ControllerName}\{id}");
+        if (responseMessage.IsSuccessStatusCode)
+        {
+            var responseData = await responseMessage.Content.ReadAsStringAsync();
+            return System.Text.Json.JsonSerializer.Deserialize<T>(responseData, this.jsonSerializerOptions);
         }
 
-        public async Task<ListOutcome<T>> GetListAsync(string jsonData)
+        return default;
+    }
+
+    public async Task<Result<T>> Create(T entity)
+    {
+        this.ValidationErrors = new List<ValidationError>();
+        var json = JsonSerializer.Serialize(entity);
+        var data = new StringContent(json, Encoding.UTF8, "application/json");
+
+        var responseMessage = await this.client.PostAsync(@$"{AppSettings.ApiUrl}{ControllerName}", data);
+        if (responseMessage.StatusCode == System.Net.HttpStatusCode.BadRequest)
         {
-            var data = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            var response = await this.client.PostAsync(@$"{AppSettings.ApiUrl}{ControllerName}\Search", data);
+            var responseData = await responseMessage.Content.ReadAsStringAsync();
+            var response = JsonSerializer.Deserialize<Result>(responseData, this.jsonSerializerOptions);
 
-            var responseData = await response.Content.ReadAsStringAsync();
+            this.ValidationErrors = response.Errors?.Select(x =>
+            {
+                return (x as JObject).ToObject<ValidationError>();
+            }).ToList();
 
-            var entities = System.Text.Json.JsonSerializer.Deserialize<ListOutcome<T>>(responseData, this.jsonSerializerOptions);
-            return entities;
+            return Result<T>.Failure("ValidationError");
         }
 
-        public async Task<T> GetAsync(int id)
+        if (responseMessage.IsSuccessStatusCode)
         {
-            var responseMessage = await this.client.GetAsync(@$"{AppSettings.ApiUrl}{ControllerName}\{id}");
-            if (responseMessage.IsSuccessStatusCode)
-            {
-                var responseData = await responseMessage.Content.ReadAsStringAsync();
-                return System.Text.Json.JsonSerializer.Deserialize<T>(responseData, this.jsonSerializerOptions);
-            }
+            var responseData = await responseMessage.Content.ReadAsStringAsync();
+            var response = JsonSerializer.Deserialize<T>(responseData, this.jsonSerializerOptions);
 
-            return default;
+            return Result<T>.Success(response);
         }
 
-        public async Task<Result<T>> Create(T entity)
+        return Result<T>.Failure("Error");
+    }
+
+    public async Task<Result<T>> Edit(T entity)
+    {
+        this.ValidationErrors = new List<ValidationError>();
+        var json = JsonSerializer.Serialize(entity);
+        var data = new StringContent(json, Encoding.UTF8, "application/json");
+
+        var responseMessage = await this.client.PutAsync(@$"{AppSettings.ApiUrl}{ControllerName}", data);
+        if (responseMessage.StatusCode == System.Net.HttpStatusCode.BadRequest)
         {
-            this.ValidationErrors = new List<ValidationError>();
-            var json = JsonSerializer.Serialize(entity);
-            var data = new StringContent(json, Encoding.UTF8, "application/json");
+            var responseData = await responseMessage.Content.ReadAsStringAsync();
+            var response = JsonSerializer.Deserialize<Result>(responseData, this.jsonSerializerOptions);
 
-            var responseMessage = await this.client.PostAsync(@$"{AppSettings.ApiUrl}{ControllerName}", data);
-            if (responseMessage.StatusCode == System.Net.HttpStatusCode.BadRequest)
+            this.ValidationErrors = response.Errors?.Select(x =>
             {
-                var responseData = await responseMessage.Content.ReadAsStringAsync();
-                var response = JsonSerializer.Deserialize<Result>(responseData, this.jsonSerializerOptions);
+                return (x as JObject).ToObject<ValidationError>();
+            }).ToList();
 
-                this.ValidationErrors = response.Errors?.Select(x =>
-                {
-                    return (x as JObject).ToObject<ValidationError>();
-                }).ToList();
-
-                return Result<T>.Failure("ValidationError");
-            }
-
-            if (responseMessage.IsSuccessStatusCode)
-            {
-                var responseData = await responseMessage.Content.ReadAsStringAsync();
-                var response = JsonSerializer.Deserialize<T>(responseData, this.jsonSerializerOptions);
-
-                return Result<T>.Success(response);
-            }
-
-            return Result<T>.Failure("Error");
+            return Result<T>.Failure("ValidationError");
         }
 
-        public async Task<Result<T>> Edit(T entity)
+        if (responseMessage.IsSuccessStatusCode)
         {
-            this.ValidationErrors = new List<ValidationError>();
-            var json = JsonSerializer.Serialize(entity);
-            var data = new StringContent(json, Encoding.UTF8, "application/json");
+            var responseData = await responseMessage.Content.ReadAsStringAsync();
+            var response = JsonSerializer.Deserialize<T>(responseData, this.jsonSerializerOptions);
 
-            var responseMessage = await this.client.PutAsync(@$"{AppSettings.ApiUrl}{ControllerName}", data);
-            if (responseMessage.StatusCode == System.Net.HttpStatusCode.BadRequest)
-            {
-                var responseData = await responseMessage.Content.ReadAsStringAsync();
-                var response = JsonSerializer.Deserialize<Result>(responseData, this.jsonSerializerOptions);
-
-                this.ValidationErrors = response.Errors?.Select(x =>
-                {
-                    return (x as JObject).ToObject<ValidationError>();
-                }).ToList();
-
-                return Result<T>.Failure("ValidationError");
-            }
-
-            if (responseMessage.IsSuccessStatusCode)
-            {
-                var responseData = await responseMessage.Content.ReadAsStringAsync();
-                var response = JsonSerializer.Deserialize<T>(responseData, this.jsonSerializerOptions);
-
-                return Result<T>.Success(response);
-            }
-
-            return Result<T>.Failure("Error");
+            return Result<T>.Success(response);
         }
 
-        public async Task<bool> Delete(int id)
-        {
-            var responseMessage = await this.client.DeleteAsync(@$"{AppSettings.ApiUrl}{ControllerName}\{id}");
-            if (responseMessage.IsSuccessStatusCode)
-            {
-                var responseData = await responseMessage.Content.ReadAsStringAsync();
-                return System.Text.Json.JsonSerializer.Deserialize<bool>(responseData, this.jsonSerializerOptions);
-            }
+        return Result<T>.Failure("Error");
+    }
 
-            return false;
+    public async Task<bool> Delete(int id)
+    {
+        var responseMessage = await this.client.DeleteAsync(@$"{AppSettings.ApiUrl}{ControllerName}\{id}");
+        if (responseMessage.IsSuccessStatusCode)
+        {
+            var responseData = await responseMessage.Content.ReadAsStringAsync();
+            return System.Text.Json.JsonSerializer.Deserialize<bool>(responseData, this.jsonSerializerOptions);
         }
+
+        return false;
     }
 }
-
 ```
 
 Create ValidateModelStateAttribute in Helpers
 
 ```cs
-namespace Pezza.Portal.Helpers
-{
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.Filters;
+namespace Pezza.Portal.Helpers;
 
-    public class ValidateModelStateAttribute : ActionFilterAttribute
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+
+public class ValidateModelStateAttribute : ActionFilterAttribute
+{
+    public override void OnActionExecuting(ActionExecutingContext context)
     {
-        public override void OnActionExecuting(ActionExecutingContext context)
+        if (!context.ModelState.IsValid)
         {
-            if (!context.ModelState.IsValid)
-            {
-                context.Result = new BadRequestObjectResult(context.ModelState);
-            }
+            context.Result = new BadRequestObjectResult(context.ModelState);
         }
     }
 }
@@ -936,129 +931,128 @@ public async Task<JsonResult> Delete(int id)
 Full Controller
 
 ```cs
-namespace Pezza.BackEnd.Controllers
+namespace Pezza.BackEnd.Controllers;
+
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using Pezza.Common;
+using Pezza.Common.DTO;
+using Pezza.Portal.Helpers;
+
+public class StockController : BaseController
 {
-    using System.Collections.Generic;
-    using System.Net.Http;
-    using System.Text;
-    using System.Threading.Tasks;
-    using Microsoft.AspNetCore.Mvc;
-    using Newtonsoft.Json;
-    using Pezza.Common;
-    using Pezza.Common.DTO;
-    using Pezza.Portal.Helpers;
+    private readonly ApiCallHelper<StockDTO> apiCallHelper;
 
-    public class StockController : BaseController
+    public StockController(IHttpClientFactory clientFactory)
+        : base(clientFactory)
     {
-        private readonly ApiCallHelper<StockDTO> apiCallHelper;
+        this.apiCallHelper = new ApiCallHelper<StockDTO>(this.clientFactory);
+        this.apiCallHelper.ControllerName = "Stock";
+    }
 
-        public StockController(IHttpClientFactory clientFactory)
-            : base(clientFactory)
+    public async Task<ActionResult> Index()
+    {
+        var json = JsonConvert.SerializeObject(new StockDTO
         {
-            this.apiCallHelper = new ApiCallHelper<StockDTO>(this.clientFactory);
-            this.apiCallHelper.ControllerName = "Stock";
+            PagingArgs = Common.Models.PagingArgs.NoPaging
+        });
+        var entities = await this.apiCallHelper.GetListAsync(json);
+        return this.View(entities);
+    }
+
+    public async Task<ActionResult> Details(int id)
+    {
+        var entity = await this.apiCallHelper.GetAsync(id);
+        return this.View(entity);
+    }
+
+    public ActionResult Create()
+    {
+        return this.View(new StockDTO());
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<ActionResult> Create(StockDTO stock)
+    {
+        if (!this.ModelState.IsValid)
+        {
+            return this.View(stock);
         }
 
-        public async Task<ActionResult> Index()
+        var result = await this.apiCallHelper.Create(stock);
+        return Validate<StockDTO>(result, this.apiCallHelper, stock);
+    }
+
+    [Route("Stock/Edit/{id?}")]
+    public async Task<ActionResult> Edit(int id)
+    {
+        var entity = await this.apiCallHelper.GetAsync(id);
+        return this.View(entity);
+    }
+
+    [HttpPost]
+    [Route("Stock/Edit/{id?}")]
+    [ValidateAntiForgeryToken]
+    public async Task<ActionResult> Edit(int id, StockDTO stock)
+    {
+        if (!this.ModelState.IsValid)
         {
-            var json = JsonConvert.SerializeObject(new StockDTO
-            {
-                PagingArgs = Common.Models.PagingArgs.NoPaging
-            });
-            var entities = await this.apiCallHelper.GetListAsync(json);
-            return this.View(entities);
+            return this.View(stock);
         }
 
-        public async Task<ActionResult> Details(int id)
+        stock.Id = id;
+        var result = await this.apiCallHelper.Edit(stock);
+        return Validate<StockDTO>(result, this.apiCallHelper, stock);
+    }
+
+    [HttpPost]
+    [Route("Stock/Delete/{id?}")]
+    public async Task<JsonResult> Delete(int id)
+    {
+        if (id == 0)
         {
-            var entity = await this.apiCallHelper.GetAsync(id);
-            return this.View(entity);
+            return this.Json(false);
         }
 
-        public ActionResult Create()
+        if (!this.ModelState.IsValid)
         {
-            return this.View(new StockDTO());
+            return this.Json(false);
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(StockDTO stock)
-        {
-            if (!this.ModelState.IsValid)
-            {
-                return this.View(stock);
-            }
-
-            var result = await this.apiCallHelper.Create(stock);
-            return Validate<StockDTO>(result, this.apiCallHelper, stock);
-        }
-
-        [Route("Stock/Edit/{id?}")]
-        public async Task<ActionResult> Edit(int id)
-        {
-            var entity = await this.apiCallHelper.GetAsync(id);
-            return this.View(entity);
-        }
-
-        [HttpPost]
-        [Route("Stock/Edit/{id?}")]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(int id, StockDTO stock)
-        {
-            if (!this.ModelState.IsValid)
-            {
-                return this.View(stock);
-            }
-
-            stock.Id = id;
-            var result = await this.apiCallHelper.Edit(stock);
-            return Validate<StockDTO>(result, this.apiCallHelper, stock);
-        }
-
-        [HttpPost]
-        [Route("Stock/Delete/{id?}")]
-        public async Task<JsonResult> Delete(int id)
-        {
-            if (id == 0)
-            {
-                return this.Json(false);
-            }
-
-            if (!this.ModelState.IsValid)
-            {
-                return this.Json(false);
-            }
-
-            var result = await this.apiCallHelper.Delete(id);
-            return this.Json(result);
-        }
+        var result = await this.apiCallHelper.Delete(id);
+        return this.Json(result);
     }
 }
 ```
+
 Restaurant and Product needs a bit extra information.
 
 Create a RestaurantModel in Models folder.
 
 ```cs
-namespace Pezza.Portal.Models
+namespace Pezza.Portal.Models;
+
+using Microsoft.AspNetCore.Http;
+using Pezza.Common.DTO;
+
+public class RestaurantModel : RestaurantDTO
 {
-    using Microsoft.AspNetCore.Http;
-    using Pezza.Common.DTO;
+    public IFormFile Image { set; get; }
 
-    public class RestaurantModel : RestaurantDTO
+    private bool _isActive;
+
+    public bool _IsActive
     {
-        public IFormFile Image { set; get; }
-
-        private bool _isActive;
-
-        public bool _IsActive
+        get { return this.IsActive ?? false; }
+        set
         {
-            get { return this.IsActive ?? false; }
-            set
-            {
-                this._isActive = value;
-                this.IsActive = value;
-            }
+            this._isActive = value;
+            this.IsActive = value;
         }
     }
 }
@@ -1112,115 +1106,65 @@ return this.View(new RestaurantModel
 Full Controllers
 
 ```cs
-namespace Pezza.BackEnd.Controllers
+namespace Pezza.BackEnd.Controllers;
+
+using System.IO;
+using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using Pezza.Common;
+using Pezza.Common.DTO;
+using Pezza.Common.Entities;
+using Pezza.Portal.Helpers;
+using Pezza.Portal.Models;
+
+public class RestaurantController : BaseController
 {
-    using System;
-    using System.IO;
-    using System.Linq;
-    using System.Net.Http;
-    using System.Threading.Tasks;
-    using Microsoft.AspNetCore.Mvc;
-    using Newtonsoft.Json;
-    using Pezza.Common;
-    using Pezza.Common.DTO;
-    using Pezza.Common.Entities;
-    using Pezza.Portal.Helpers;
-    using Pezza.Portal.Models;
+    private readonly ApiCallHelper<RestaurantDTO> apiCallHelper;
 
-    public class RestaurantController : BaseController
+    public RestaurantController(IHttpClientFactory clientFactory)
+        : base(clientFactory)
     {
-        private readonly ApiCallHelper<RestaurantDTO> apiCallHelper;
+        this.apiCallHelper = new ApiCallHelper<RestaurantDTO>(this.clientFactory);
+        this.apiCallHelper.ControllerName = "Restaurant";
+    }
 
-        public RestaurantController(IHttpClientFactory clientFactory)
-            : base(clientFactory)
+    public async Task<ActionResult> Index()
+    {
+        var json = JsonConvert.SerializeObject(new RestaurantDTO
         {
-            this.apiCallHelper = new ApiCallHelper<RestaurantDTO>(this.clientFactory);
-            this.apiCallHelper.ControllerName = "Restaurant";
+            PagingArgs = Common.Models.PagingArgs.NoPaging
+        });
+        var entities = await this.apiCallHelper.GetListAsync(json);
+        for (var i = 0; i < entities.Count; i++)
+        {
+            var picture = entities[i].PictureUrl;
+            entities[i].PictureUrl = $"{AppSettings.ApiUrl}Picture?file={picture}&folder=restaurant";
         }
+        return this.View(entities);
+    }
 
-        public async Task<ActionResult> Index()
+    public async Task<ActionResult> Details(int id)
+    {
+        var entity = await this.apiCallHelper.GetAsync(id);
+        return this.View(entity);
+    }
+
+    public ActionResult Create() => this.View(new RestaurantModel());
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<ActionResult> Create(RestaurantModel restaurant)
+    {
         {
-            var json = JsonConvert.SerializeObject(new RestaurantDTO
+            if(string.IsNullOrEmpty(restaurant.Description))
             {
-                PagingArgs = Common.Models.PagingArgs.NoPaging
-            });
-            var entities = await this.apiCallHelper.GetListAsync(json);
-            for (var i = 0; i < entities.Count; i++)
-            {
-                var picture = entities[i].PictureUrl;
-                entities[i].PictureUrl = $"{AppSettings.ApiUrl}Picture?file={picture}&folder=restaurant";
+                restaurant.Description = string.Empty;
             }
-            return this.View(entities);
-        }
-
-        public async Task<ActionResult> Details(int id)
-        {
-            var entity = await this.apiCallHelper.GetAsync(id);
-            return this.View(entity);
-        }
-
-        public ActionResult Create() => this.View(new RestaurantModel());
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(RestaurantModel restaurant)
-        {
-            {
-                if(string.IsNullOrEmpty(restaurant.Description))
-                {
-                    restaurant.Description = string.Empty;
-                }
-                restaurant.IsActive = true;
-                restaurant.DateCreated = DateTime.Now;
-
-                if (restaurant.Image?.Length > 0)
-                {
-                    using var ms = new MemoryStream();
-                    restaurant.Image.CopyTo(ms);
-                    var fileBytes = ms.ToArray();
-                    restaurant.ImageData = $"data:{MimeTypeMap.GetMimeType(Path.GetExtension(restaurant.Image.FileName))};base64,{Convert.ToBase64String(fileBytes)}";
-                }
-                else
-                {
-                    ModelState.AddModelError("Image", "Please select a photo of the restaurant");
-                }
-
-                var result = await this.apiCallHelper.Create(restaurant);
-                return Validate<RestaurantDTO>(result, this.apiCallHelper, restaurant);
-            }
-        }
-
-        [Route("Restaurant/Edit/{id?}")]
-        public async Task<ActionResult> Edit(int id)
-        {
-            var entity = await this.apiCallHelper.GetAsync(id);
-
-            return this.View(new RestaurantModel
-            {
-                Id = id,
-                Name = entity.Name,
-                PictureUrl = $"{AppSettings.ApiUrl}Picture?file={entity.PictureUrl}&folder=restaurant",
-                Description = entity.Description,
-                Address = new AddressBase
-                {
-                    Address = entity.Address?.Address,
-                    City = entity.Address?.City,
-                    Province = entity.Address?.Province,
-                    PostalCode = entity.Address?.PostalCode
-                },
-                IsActive = entity.IsActive
-            });
-        }
-
-        [HttpPost]
-        [Route("Restaurant/Edit/{id?}")]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(int id, RestaurantModel restaurant)
-        {
-            if (!this.ModelState.IsValid)
-            {
-                return this.View(restaurant);
-            }
+            restaurant.IsActive = true;
+            restaurant.DateCreated = DateTime.Now;
 
             if (restaurant.Image?.Length > 0)
             {
@@ -1229,29 +1173,77 @@ namespace Pezza.BackEnd.Controllers
                 var fileBytes = ms.ToArray();
                 restaurant.ImageData = $"data:{MimeTypeMap.GetMimeType(Path.GetExtension(restaurant.Image.FileName))};base64,{Convert.ToBase64String(fileBytes)}";
             }
+            else
+            {
+                ModelState.AddModelError("Image", "Please select a photo of the restaurant");
+            }
 
-            restaurant.Id = id;
-            var result = await this.apiCallHelper.Edit(restaurant);
+            var result = await this.apiCallHelper.Create(restaurant);
             return Validate<RestaurantDTO>(result, this.apiCallHelper, restaurant);
         }
+    }
 
-        [HttpPost]
-        [Route("Restaurant/Delete/{id?}")]
-        public async Task<JsonResult> Delete(int id)
+    [Route("Restaurant/Edit/{id?}")]
+    public async Task<ActionResult> Edit(int id)
+    {
+        var entity = await this.apiCallHelper.GetAsync(id);
+
+        return this.View(new RestaurantModel
         {
-            if (id == 0)
+            Id = id,
+            Name = entity.Name,
+            PictureUrl = $"{AppSettings.ApiUrl}Picture?file={entity.PictureUrl}&folder=restaurant",
+            Description = entity.Description,
+            Address = new AddressBase
             {
-                return this.Json(false);
-            }
+                Address = entity.Address?.Address,
+                City = entity.Address?.City,
+                Province = entity.Address?.Province,
+                PostalCode = entity.Address?.PostalCode
+            },
+            IsActive = entity.IsActive
+        });
+    }
 
-            if (!this.ModelState.IsValid)
-            {
-                return this.Json(false);
-            }
-
-            var result = await this.apiCallHelper.Delete(id);
-            return this.Json(result);
+    [HttpPost]
+    [Route("Restaurant/Edit/{id?}")]
+    [ValidateAntiForgeryToken]
+    public async Task<ActionResult> Edit(int id, RestaurantModel restaurant)
+    {
+        if (!this.ModelState.IsValid)
+        {
+            return this.View(restaurant);
         }
+
+        if (restaurant.Image?.Length > 0)
+        {
+            using var ms = new MemoryStream();
+            restaurant.Image.CopyTo(ms);
+            var fileBytes = ms.ToArray();
+            restaurant.ImageData = $"data:{MimeTypeMap.GetMimeType(Path.GetExtension(restaurant.Image.FileName))};base64,{Convert.ToBase64String(fileBytes)}";
+        }
+
+        restaurant.Id = id;
+        var result = await this.apiCallHelper.Edit(restaurant);
+        return Validate<RestaurantDTO>(result, this.apiCallHelper, restaurant);
+    }
+
+    [HttpPost]
+    [Route("Restaurant/Delete/{id?}")]
+    public async Task<JsonResult> Delete(int id)
+    {
+        if (id == 0)
+        {
+            return this.Json(false);
+        }
+
+        if (!this.ModelState.IsValid)
+        {
+            return this.Json(false);
+        }
+
+        var result = await this.apiCallHelper.Delete(id);
+        return this.Json(result);
     }
 }
 ```
@@ -1266,241 +1258,239 @@ The Orders Controller is a bit different, because it has quite a bit of complexi
 How the Order Create works is, it loads a Partial view with all the Products. There's is also a drop down to select a Customer or the capability to create a Customer using a modal.
 
 ```cs
-namespace Pezza.BackEnd.Controllers
+namespace Pezza.BackEnd.Controllers;
+
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Newtonsoft.Json;
+using Pezza.Common;
+using Pezza.Common.DTO;
+using Pezza.Portal.Helpers;
+using Pezza.Portal.Models;
+
+public class OrdersController : BaseController
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Net.Http;
-    using System.Text;
-    using System.Threading.Tasks;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.Rendering;
-    using Newtonsoft.Json;
-    using Pezza.Common;
-    using Pezza.Common.DTO;
-    using Pezza.Portal.Helpers;
-    using Pezza.Portal.Models;
+    private readonly ApiCallHelper<OrderDTO> apiCallHelper;
 
-    public class OrdersController : BaseController
+    public OrdersController(IHttpClientFactory clientFactory)
+        : base(clientFactory)
     {
-        private readonly ApiCallHelper<OrderDTO> apiCallHelper;
+        this.apiCallHelper = new ApiCallHelper<OrderDTO>(this.clientFactory);
+        this.apiCallHelper.ControllerName = "Order";
+    }
 
-        public OrdersController(IHttpClientFactory clientFactory)
-            : base(clientFactory)
+    public async Task<ActionResult> Index()
+    {
+        var json = JsonConvert.SerializeObject(new OrderDTO
         {
-            this.apiCallHelper = new ApiCallHelper<OrderDTO>(this.clientFactory);
-            this.apiCallHelper.ControllerName = "Order";
-        }
-
-        public async Task<ActionResult> Index()
+            Completed = false,
+            PagingArgs = Common.Models.PagingArgs.NoPaging
+        });
+        var entities = await this.apiCallHelper.GetListAsync(json);
+        var entitiesByRestaurant = entities.OrderBy(o => o.Restaurant.Name).GroupBy(g => g.Restaurant.Name);
+        var ordersByRestaurant = new Dictionary<string, List<OrderDTO>>();
+        foreach (var restaurant in entitiesByRestaurant)
         {
-            var json = JsonConvert.SerializeObject(new OrderDTO
+            var tempEntities = new List<OrderDTO>();
+            foreach (var order in restaurant)
             {
-                Completed = false,
-                PagingArgs = Common.Models.PagingArgs.NoPaging
-            });
-            var entities = await this.apiCallHelper.GetListAsync(json);
-            var entitiesByRestaurant = entities.OrderBy(o => o.Restaurant.Name).GroupBy(g => g.Restaurant.Name);
-            var ordersByRestaurant = new Dictionary<string, List<OrderDTO>>();
-            foreach (var restaurant in entitiesByRestaurant)
-            {
-                var tempEntities = new List<OrderDTO>();
-                foreach (var order in restaurant)
-                {
-                    tempEntities.Add(order);
-                }
-                ordersByRestaurant.Add(restaurant.Key, tempEntities);
+                tempEntities.Add(order);
             }
-
-            return this.View(ordersByRestaurant);
+            ordersByRestaurant.Add(restaurant.Key, tempEntities);
         }
 
-        public async Task<IActionResult> OrderItem()
+        return this.View(ordersByRestaurant);
+    }
+
+    public async Task<IActionResult> OrderItem()
+    {
+        return this.PartialView("~/views/Orders/_Products.cshtml", new OrderItemModel
         {
-            return this.PartialView("~/views/Orders/_Products.cshtml", new OrderItemModel
-            {
-                Products = await this.GetProducts()
-            });
+            Products = await this.GetProducts()
+        });
+    }
+
+    public async Task<ActionResult> Details(int id)
+    {
+        var entity = await this.apiCallHelper.GetAsync(id);
+        return this.View(entity);
+    }
+
+    public async Task<ActionResult> Create()
+    {
+        return this.View(new OrderModel
+        {
+            Customers = await this.GetCustomers(),
+            Restaurants = await this.GetRestaurants()
+        });
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<ActionResult> Create(OrderDTO order)
+    {
+        if (!this.ModelState.IsValid)
+        {
+            return this.View(order);
         }
 
-        public async Task<ActionResult> Details(int id)
-        {
-            var entity = await this.apiCallHelper.GetAsync(id);
-            return this.View(entity);
-        }
+        var result = await this.apiCallHelper.Create(order);
+        return Validate<OrderDTO>(result, this.apiCallHelper, order);
+    }
 
-        public async Task<ActionResult> Create()
+    private async Task<List<SelectListItem>> GetCustomers()
+    {
+        var json = JsonConvert.SerializeObject(new CustomerDTO
         {
-            return this.View(new OrderModel
-            {
-                Customers = await this.GetCustomers(),
-                Restaurants = await this.GetRestaurants()
-            });
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(OrderDTO order)
+            PagingArgs = Common.Models.PagingArgs.NoPaging
+        });
+        var apiHelper = new ApiCallHelper<CustomerDTO>(this.clientFactory)
         {
-            if (!this.ModelState.IsValid)
-            {
-                return this.View(order);
-            }
-
-            var result = await this.apiCallHelper.Create(order);
-            return Validate<OrderDTO>(result, this.apiCallHelper, order);
-        }
-
-        private async Task<List<SelectListItem>> GetCustomers()
+            ControllerName = "Customer"
+        };
+        var entities = await apiHelper.GetListAsync(json);
+        return entities.Select(x =>
         {
-            var json = JsonConvert.SerializeObject(new CustomerDTO
+            return new SelectListItem
             {
-                PagingArgs = Common.Models.PagingArgs.NoPaging
-            });
-            var apiHelper = new ApiCallHelper<CustomerDTO>(this.clientFactory)
-            {
-                ControllerName = "Customer"
+                Value = $"{x.Id}",
+                Text = $"{x.Name} {x.Phone}"
             };
-            var entities = await apiHelper.GetListAsync(json);
-            return entities.Select(x =>
-            {
-                return new SelectListItem
-                {
-                    Value = $"{x.Id}",
-                    Text = $"{x.Name} {x.Phone}"
-                };
-            }).ToList();
+        }).ToList();
+    }
+
+    private async Task<List<SelectListItem>> GetRestaurants()
+    {
+        var json = JsonConvert.SerializeObject(new RestaurantDTO
+        {
+            PagingArgs = Common.Models.PagingArgs.NoPaging
+        });
+        var apiHelper = new ApiCallHelper<RestaurantDTO>(this.clientFactory)
+        {
+            ControllerName = "Restaurant"
+        };
+        var entities = await apiHelper.GetListAsync(json);
+        for (var i = 0; i < entities.Count; i++)
+        {
+            entities[i].PictureUrl = $"{AppSettings.ApiUrl}Picture?file={entities[i].PictureUrl}&folder=restaurant";
         }
 
-        private async Task<List<SelectListItem>> GetRestaurants()
+        return entities.Select(x =>
         {
-            var json = JsonConvert.SerializeObject(new RestaurantDTO
+            return new SelectListItem
             {
-                PagingArgs = Common.Models.PagingArgs.NoPaging
-            });
-            var apiHelper = new ApiCallHelper<RestaurantDTO>(this.clientFactory)
-            {
-                ControllerName = "Restaurant"
+                Value = $"{x.Id}",
+                Text = $"{x.Name}"
             };
-            var entities = await apiHelper.GetListAsync(json);
+        }).ToList();
+    }
+
+    private async Task<List<ProductModel>> GetProducts()
+    {
+        var json = JsonConvert.SerializeObject(new ProductDTO
+        {
+            PagingArgs = Common.Models.PagingArgs.NoPaging
+        });
+        var apiHelper = new ApiCallHelper<ProductDTO>(this.clientFactory)
+        {
+            ControllerName = "Product"
+        };
+        var entities = await apiHelper.GetListAsync(json);
+        if (entities.Any())
+        {
             for (var i = 0; i < entities.Count; i++)
             {
-                entities[i].PictureUrl = $"{AppSettings.ApiUrl}Picture?file={entities[i].PictureUrl}&folder=restaurant";
+                entities[i].PictureUrl = $"{AppSettings.ApiUrl}Picture?file={entities[i].PictureUrl}&folder=Product";
             }
-
-            return entities.Select(x =>
-            {
-                return new SelectListItem
-                {
-                    Value = $"{x.Id}",
-                    Text = $"{x.Name}"
-                };
-            }).ToList();
         }
 
-        private async Task<List<ProductModel>> GetProducts()
+        return entities.Select(x =>
         {
-            var json = JsonConvert.SerializeObject(new ProductDTO
+            return new ProductModel
             {
-                PagingArgs = Common.Models.PagingArgs.NoPaging
-            });
-            var apiHelper = new ApiCallHelper<ProductDTO>(this.clientFactory)
-            {
-                ControllerName = "Product"
+                Id = x.Id,
+                DateCreated = x.DateCreated,
+                Description = x.Description,
+                HasOffer = x.OfferEndDate.HasValue ? true : false,
+                IsActive = x.IsActive,
+                OfferEndDate = x.OfferEndDate,
+                OfferPrice = x.OfferPrice,
+                Name = x.Name,
+                Price = x.Price,
+                PictureUrl = x.PictureUrl,
+                Special = x.Special
             };
-            var entities = await apiHelper.GetListAsync(json);
-            if (entities.Any())
-            {
-                for (var i = 0; i < entities.Count; i++)
-                {
-                    entities[i].PictureUrl = $"{AppSettings.ApiUrl}Picture?file={entities[i].PictureUrl}&folder=Product";
-                }
-            }
+        }).ToList();
+    }
 
-            return entities.Select(x =>
-            {
-                return new ProductModel
-                {
-                    Id = x.Id,
-                    DateCreated = x.DateCreated,
-                    Description = x.Description,
-                    HasOffer = x.OfferEndDate.HasValue ? true : false,
-                    IsActive = x.IsActive,
-                    OfferEndDate = x.OfferEndDate,
-                    OfferPrice = x.OfferPrice,
-                    Name = x.Name,
-                    Price = x.Price,
-                    PictureUrl = x.PictureUrl,
-                    Special = x.Special
-                };
-            }).ToList();
-        }
+    [Route("Order/Edit/{id?}")]
+    public async Task<ActionResult> Edit(int id)
+    {
+        var entity = await this.apiCallHelper.GetAsync(id);
+        return this.View(entity);
+    }
 
-        [Route("Order/Edit/{id?}")]
-        public async Task<ActionResult> Edit(int id)
+    [HttpPost]
+    [Route("Order/Edit/{id?}")]
+    [ValidateAntiForgeryToken]
+    public async Task<ActionResult> Edit(int id, OrderDTO order)
+    {
+        if (!this.ModelState.IsValid)
         {
-            var entity = await this.apiCallHelper.GetAsync(id);
-            return this.View(entity);
+            return this.View(order);
         }
 
-        [HttpPost]
-        [Route("Order/Edit/{id?}")]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(int id, OrderDTO order)
+        order.Id = id;
+        var result = await this.apiCallHelper.Edit(order);
+        return Validate<OrderDTO>(result, this.apiCallHelper, order);
+    }
+
+    [HttpPost]
+    [Route("Order/Delete/{id?}")]
+    public async Task<JsonResult> Delete(int id)
+    {
+        if (id == 0)
         {
-            if (!this.ModelState.IsValid)
-            {
-                return this.View(order);
-            }
-
-            order.Id = id;
-            var result = await this.apiCallHelper.Edit(order);
-            return Validate<OrderDTO>(result, this.apiCallHelper, order);
+            return this.Json(false);
         }
 
-        [HttpPost]
-        [Route("Order/Delete/{id?}")]
-        public async Task<JsonResult> Delete(int id)
+        if (!this.ModelState.IsValid)
         {
-            if (id == 0)
-            {
-                return this.Json(false);
-            }
-
-            if (!this.ModelState.IsValid)
-            {
-                return this.Json(false);
-            }
-
-            var result = await this.apiCallHelper.Delete(id);
-            return this.Json(result);
+            return this.Json(false);
         }
 
-        [HttpPost]
-        [Route("Order/Complete/{id?}")]
-        public async Task<JsonResult> Complete(int id)
+        var result = await this.apiCallHelper.Delete(id);
+        return this.Json(result);
+    }
+
+    [HttpPost]
+    [Route("Order/Complete/{id?}")]
+    public async Task<JsonResult> Complete(int id)
+    {
+        if (id == 0)
         {
-            if (id == 0)
-            {
-                return this.Json(false);
-            }
-
-            if (!this.ModelState.IsValid)
-            {
-                return this.Json(false);
-            }
-
-            var result = await this.apiCallHelper.Edit(new OrderDTO
-            {
-                Id = id,
-                DateCreated = null,
-                Completed = true
-            });
-            return this.Json(result != null ? true : false);
+            return this.Json(false);
         }
+
+        if (!this.ModelState.IsValid)
+        {
+            return this.Json(false);
+        }
+
+        var result = await this.apiCallHelper.Edit(new OrderDTO
+        {
+            Id = id,
+            DateCreated = null,
+            Completed = true
+        });
+        return this.Json(result != null ? true : false);
     }
 }
-
 ```
 
 **Order Models**
@@ -1508,56 +1498,53 @@ namespace Pezza.BackEnd.Controllers
 OrderModel.cs
 
 ```cs
-namespace Pezza.Portal.Models
+namespace Pezza.Portal.Models;
+
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Pezza.Common.DTO;
+
+public class OrderModel : OrderDTO
 {
-    using System.Collections.Generic;
-    using Microsoft.AspNetCore.Mvc.Rendering;
-    using Pezza.Common.DTO;
-
-    public class OrderModel : OrderDTO
+    public OrderModel()
     {
-        public OrderModel()
-        {
-            this.Amount = 0;
-        }
-
-        public List<SelectListItem> Restaurants { set; get; }
-
-        public List<SelectListItem> Customers { set; get; }
+        this.Amount = 0;
     }
+
+    public List<SelectListItem> Restaurants { set; get; }
+
+    public List<SelectListItem> Customers { set; get; }
 }
 ```
 
 OrderItemModel.cs
 
 ```cs
-namespace Pezza.Portal.Models
+namespace Pezza.Portal.Models;
+
+using System.Collections.Generic;
+using Pezza.Common.DTO;
+using Pezza.Common.Entities;
+
+public class OrderItemModel : OrderItemDTO
 {
-    using System.Collections.Generic;
-    using Pezza.Common.DTO;
-    using Pezza.Common.Entities;
-
-    public class OrderItemModel : OrderItemDTO
+    public OrderItemModel()
     {
-        public OrderItemModel()
-        {
-            this.Quantity = 0;
-        }
-
-        public List<ProductModel> Products { set; get; }
+        this.Quantity = 0;
     }
+
+    public List<ProductModel> Products { set; get; }
 }
 ```
 
 OrderUpdateModel.cs
 
 ```cs
-namespace Pezza.Portal.Models
+namespace Pezza.Portal.Models;
+
+public class OrderUpdateModel
 {
-    public class OrderUpdateModel
-    {
-        public bool Completed { set; get; }
-    }
+    public bool Completed { set; get; }
 }
 ```
 
@@ -1578,51 +1565,50 @@ Razor doesn't handle nullable fields well so to fix this is using _ of the nulla
 ProductModel.cs
 
 ```cs
-namespace Pezza.Portal.Models
+namespace Pezza.Portal.Models;
+
+using Microsoft.AspNetCore.Http;
+using Pezza.Common.DTO;
+
+public class ProductModel : ProductDTO
 {
-    using Microsoft.AspNetCore.Http;
-    using Pezza.Common.DTO;
+    public IFormFile Image { set; get; }
 
-    public class ProductModel : ProductDTO
+    public bool HasOffer { set; get; } = false;
+
+    private decimal _price;
+
+    public decimal _Price
     {
-        public IFormFile Image { set; get; }
-
-        public bool HasOffer { set; get; } = false;
-
-        private decimal _price;
-
-        public decimal _Price
+        get { return this.Price ?? 0; }
+        set
         {
-            get { return this.Price ?? 0; }
-            set
-            {
-                this._price = value;
-                this.Price = value;
-            }
+            this._price = value;
+            this.Price = value;
         }
+    }
 
-        private bool _special;
+    private bool _special;
 
-        public bool _Special
+    public bool _Special
+    {
+        get { return this.Special ?? false; }
+        set
         {
-            get { return this.Special ?? false; }
-            set
-            {
-                this._special = value;
-                this.Special = value;
-            }
+            this._special = value;
+            this.Special = value;
         }
+    }
 
-        private bool _isActive;
+    private bool _isActive;
 
-        public bool _IsActive
+    public bool _IsActive
+    {
+        get { return this.IsActive ?? false; }
+        set
         {
-            get { return this.IsActive ?? false; }
-            set
-            {
-                this._isActive = value;
-                this.IsActive = value;
-            }
+            this._isActive = value;
+            this.IsActive = value;
         }
     }
 }
@@ -1642,7 +1628,7 @@ namespace Pezza.Portal.Models
 
 This is the main table that contains all the Stock Items.
 
-```cshtml
+```razor
 @model IEnumerable<Pezza.Common.DTO.StockDTO>
 
 @{
@@ -1743,7 +1729,7 @@ else
 
 ## Create.cshtml
 
-```cshtml
+```cs
 @model Pezza.Common.DTO.StockDTO
 
 @{
@@ -1839,7 +1825,7 @@ else
 
 ## Edit.cshtml
 
-```cshtml
+```cs html
 @model Pezza.Common.DTO.StockDTO
 
 @{
@@ -1939,7 +1925,7 @@ For better UI/UX Restaurant we will be using Cards on the main page and cover im
 
 ### Index.cshtml - Uses Cards
 
-```cshtml
+```cs html
 @model IEnumerable<Pezza.Common.DTO.RestaurantDTO>
 
 @{
@@ -2031,7 +2017,7 @@ else
 
 ### Create.cshtml - Uses a Cover Image for better UI/UX
 
-```cshtml
+```cs html
 @model Pezza.Portal.Models.RestaurantModel
 
 @{
@@ -2137,7 +2123,7 @@ else
 
 Edit.cshtml
 
-```cshtml
+```cs html
 @model Pezza.Portal.Models.RestaurantModel
 
 @{
@@ -2266,7 +2252,7 @@ With Product we Use Cards in Create/Edit in a different way
 
 Index.cshtml
 
-```cshtml
+```cs html
 @model IEnumerable<Pezza.Common.DTO.ProductDTO>
 
 @{
@@ -2361,7 +2347,7 @@ else
 
 Create.cshtml
 
-```cshtml
+```cs html
 @model Pezza.Portal.Models.ProductModel
 
 @{
@@ -2540,7 +2526,7 @@ Create.cshtml
 
 Edit.cshtml
 
-```cshtml
+```cs html
 @model Pezza.Portal.Models.ProductModel
 
 @{
@@ -2738,7 +2724,7 @@ Order are complex with a lot of functionality on the front-end. Remember there i
 
 Index.cshtml
 
-```cshtml
+```cs html
 @model Dictionary<string, List<Pezza.Common.DTO.OrderDTO>>
 
 @{
@@ -2938,7 +2924,7 @@ else
 
 Create.cshtml
 
-```cshtml
+```cs html
 @model Pezza.Portal.Models.OrderModel
 
 @{
@@ -3120,7 +3106,7 @@ Create.cshtml
 
 _Products_.cshtml
 
-```cshtml
+```cs html
 @model Pezza.Portal.Models.OrderItemModel
 
 <div class="orderItem">

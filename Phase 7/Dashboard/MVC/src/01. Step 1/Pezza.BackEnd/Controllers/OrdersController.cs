@@ -1,234 +1,233 @@
-﻿namespace Pezza.BackEnd.Controllers
+﻿namespace Pezza.BackEnd.Controllers;
+
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Newtonsoft.Json;
+using Pezza.Common;
+using Pezza.Common.DTO;
+using Pezza.Portal.Helpers;
+using Pezza.Portal.Models;
+
+public class OrdersController : BaseController
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Net.Http;
-    using System.Text;
-    using System.Threading.Tasks;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.Rendering;
-    using Newtonsoft.Json;
-    using Pezza.Common;
-    using Pezza.Common.DTO;
-    using Pezza.Portal.Helpers;
-    using Pezza.Portal.Models;
+    private readonly ApiCallHelper<OrderDTO> apiCallHelper;
 
-    public class OrdersController : BaseController
+    public OrdersController(IHttpClientFactory clientFactory)
+        : base(clientFactory)
     {
-        private readonly ApiCallHelper<OrderDTO> apiCallHelper;
+        this.apiCallHelper = new ApiCallHelper<OrderDTO>(this.clientFactory);
+        this.apiCallHelper.ControllerName = "Order";
+    }
 
-        public OrdersController(IHttpClientFactory clientFactory)
-            : base(clientFactory)
+    public async Task<ActionResult> Index()
+    {
+        var json = JsonConvert.SerializeObject(new OrderDTO
         {
-            this.apiCallHelper = new ApiCallHelper<OrderDTO>(this.clientFactory);
-            this.apiCallHelper.ControllerName = "Order";
-        }
-
-        public async Task<ActionResult> Index()
+            Completed = false,
+            PagingArgs = Common.Models.PagingArgs.NoPaging
+        });
+        var entities = await this.apiCallHelper.GetListAsync(json);
+        var entitiesByRestaurant = entities.Data?.OrderBy(o => o.Restaurant.Name).GroupBy(g => g.Restaurant.Name);
+        var ordersByRestaurant = new Dictionary<string, List<OrderDTO>>();
+        foreach (var restaurant in entitiesByRestaurant)
         {
-            var json = JsonConvert.SerializeObject(new OrderDTO
+            var tempEntities = new List<OrderDTO>();
+            foreach (var order in restaurant)
             {
-                Completed = false,
-                PagingArgs = Common.Models.PagingArgs.NoPaging
-            });
-            var entities = await this.apiCallHelper.GetListAsync(json);
-            var entitiesByRestaurant = entities.Data?.OrderBy(o => o.Restaurant.Name).GroupBy(g => g.Restaurant.Name);
-            var ordersByRestaurant = new Dictionary<string, List<OrderDTO>>();
-            foreach (var restaurant in entitiesByRestaurant)
-            {
-                var tempEntities = new List<OrderDTO>();
-                foreach (var order in restaurant)
-                {
-                    tempEntities.Add(order);
-                }
-                ordersByRestaurant.Add(restaurant.Key, tempEntities);
+                tempEntities.Add(order);
             }
-
-            return this.View(ordersByRestaurant);
+            ordersByRestaurant.Add(restaurant.Key, tempEntities);
         }
 
-        public async Task<IActionResult> OrderItem()
+        return this.View(ordersByRestaurant);
+    }
+
+    public async Task<IActionResult> OrderItem()
+    {
+        return this.PartialView("~/views/Orders/_Products.cshtml", new OrderItemModel
         {
-            return this.PartialView("~/views/Orders/_Products.cshtml", new OrderItemModel
-            {
-                Products = await this.GetProducts()
-            });
+            Products = await this.GetProducts()
+        });
+    }
+
+    public async Task<ActionResult> Details(int id)
+    {
+        var entity = await this.apiCallHelper.GetAsync(id);
+        return this.View(entity);
+    }
+
+    public async Task<ActionResult> Create()
+    {
+        return this.View(new OrderModel
+        {
+            Customers = await this.GetCustomers(),
+            Restaurants = await this.GetRestaurants()
+        });
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<ActionResult> Create(OrderDTO order)
+    {
+        if (!this.ModelState.IsValid)
+        {
+            return this.View(order);
         }
 
-        public async Task<ActionResult> Details(int id)
-        {
-            var entity = await this.apiCallHelper.GetAsync(id);
-            return this.View(entity);
-        }
+        var result = await this.apiCallHelper.Create(order);
+        return Validate<OrderDTO>(result, this.apiCallHelper, order);
+    }
 
-        public async Task<ActionResult> Create()
+    private async Task<List<SelectListItem>> GetCustomers()
+    {
+        var json = JsonConvert.SerializeObject(new CustomerDTO
         {
-            return this.View(new OrderModel
-            {
-                Customers = await this.GetCustomers(),
-                Restaurants = await this.GetRestaurants()
-            });
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(OrderDTO order)
+            PagingArgs = Common.Models.PagingArgs.NoPaging
+        });
+        var apiHelper = new ApiCallHelper<CustomerDTO>(this.clientFactory)
         {
-            if (!this.ModelState.IsValid)
-            {
-                return this.View(order);
-            }
-
-            var result = await this.apiCallHelper.Create(order);
-            return Validate<OrderDTO>(result, this.apiCallHelper, order);
-        }
-
-        private async Task<List<SelectListItem>> GetCustomers()
+            ControllerName = "Customer"
+        };
+        var entities = await apiHelper.GetListAsync(json);
+        return entities.Data.Select(x =>
         {
-            var json = JsonConvert.SerializeObject(new CustomerDTO
+            return new SelectListItem
             {
-                PagingArgs = Common.Models.PagingArgs.NoPaging
-            });
-            var apiHelper = new ApiCallHelper<CustomerDTO>(this.clientFactory)
-            {
-                ControllerName = "Customer"
+                Value = $"{x.Id}",
+                Text = $"{x.Name} {x.Phone}"
             };
-            var entities = await apiHelper.GetListAsync(json);
-            return entities.Data.Select(x =>
-            {
-                return new SelectListItem
-                {
-                    Value = $"{x.Id}",
-                    Text = $"{x.Name} {x.Phone}"
-                };
-            }).ToList();
+        }).ToList();
+    }
+
+    private async Task<List<SelectListItem>> GetRestaurants()
+    {
+        var json = JsonConvert.SerializeObject(new RestaurantDTO
+        {
+            PagingArgs = Common.Models.PagingArgs.NoPaging
+        });
+        var apiHelper = new ApiCallHelper<RestaurantDTO>(this.clientFactory)
+        {
+            ControllerName = "Restaurant"
+        };
+        var entities = await apiHelper.GetListAsync(json);
+        for (var i = 0; i < entities.Count; i++)
+        {
+            entities.Data[i].PictureUrl = $"{AppSettings.ApiUrl}Picture?file={entities.Data[i].PictureUrl}&folder=restaurant";
         }
 
-        private async Task<List<SelectListItem>> GetRestaurants()
+        return entities.Data?.Select(x =>
         {
-            var json = JsonConvert.SerializeObject(new RestaurantDTO
+            return new SelectListItem
             {
-                PagingArgs = Common.Models.PagingArgs.NoPaging
-            });
-            var apiHelper = new ApiCallHelper<RestaurantDTO>(this.clientFactory)
-            {
-                ControllerName = "Restaurant"
+                Value = $"{x.Id}",
+                Text = $"{x.Name}"
             };
-            var entities = await apiHelper.GetListAsync(json);
+        }).ToList();
+    }
+
+    private async Task<List<ProductModel>> GetProducts()
+    {
+        var json = JsonConvert.SerializeObject(new ProductDTO
+        {
+            PagingArgs = Common.Models.PagingArgs.NoPaging
+        });
+        var apiHelper = new ApiCallHelper<ProductDTO>(this.clientFactory)
+        {
+            ControllerName = "Product"
+        };
+        var entities = await apiHelper.GetListAsync(json);
+        if (entities.Data.Any())
+        {
             for (var i = 0; i < entities.Count; i++)
             {
-                entities.Data[i].PictureUrl = $"{AppSettings.ApiUrl}Picture?file={entities.Data[i].PictureUrl}&folder=restaurant";
+                entities.Data[i].PictureUrl = $"{AppSettings.ApiUrl}Picture?file={entities.Data[i].PictureUrl}&folder=Product";
             }
-
-            return entities.Data?.Select(x =>
-            {
-                return new SelectListItem
-                {
-                    Value = $"{x.Id}",
-                    Text = $"{x.Name}"
-                };
-            }).ToList();
         }
 
-        private async Task<List<ProductModel>> GetProducts()
+        return entities.Data?.Select(x =>
         {
-            var json = JsonConvert.SerializeObject(new ProductDTO
+            return new ProductModel
             {
-                PagingArgs = Common.Models.PagingArgs.NoPaging
-            });
-            var apiHelper = new ApiCallHelper<ProductDTO>(this.clientFactory)
-            {
-                ControllerName = "Product"
+                Id = x.Id,
+                DateCreated = x.DateCreated,
+                Description = x.Description,
+                HasOffer = x.OfferEndDate.HasValue ? true : false,
+                IsActive = x.IsActive,
+                OfferEndDate = x.OfferEndDate,
+                OfferPrice = x.OfferPrice,
+                Name = x.Name,
+                Price = x.Price,
+                PictureUrl = x.PictureUrl,
+                Special = x.Special
             };
-            var entities = await apiHelper.GetListAsync(json);
-            if (entities.Data.Any())
-            {
-                for (var i = 0; i < entities.Count; i++)
-                {
-                    entities.Data[i].PictureUrl = $"{AppSettings.ApiUrl}Picture?file={entities.Data[i].PictureUrl}&folder=Product";
-                }
-            }
+        }).ToList();
+    }
 
-            return entities.Data?.Select(x =>
-            {
-                return new ProductModel
-                {
-                    Id = x.Id,
-                    DateCreated = x.DateCreated,
-                    Description = x.Description,
-                    HasOffer = x.OfferEndDate.HasValue ? true : false,
-                    IsActive = x.IsActive,
-                    OfferEndDate = x.OfferEndDate,
-                    OfferPrice = x.OfferPrice,
-                    Name = x.Name,
-                    Price = x.Price,
-                    PictureUrl = x.PictureUrl,
-                    Special = x.Special
-                };
-            }).ToList();
-        }
+    [Route("Order/Edit/{id?}")]
+    public async Task<ActionResult> Edit(int id)
+    {
+        var entity = await this.apiCallHelper.GetAsync(id);
+        return this.View(entity);
+    }
 
-        [Route("Order/Edit/{id?}")]
-        public async Task<ActionResult> Edit(int id)
+    [HttpPost]
+    [Route("Order/Edit/{id?}")]
+    [ValidateAntiForgeryToken]
+    public async Task<ActionResult> Edit(int id, OrderDTO order)
+    {
+        if (!this.ModelState.IsValid)
         {
-            var entity = await this.apiCallHelper.GetAsync(id);
-            return this.View(entity);
+            return this.View(order);
         }
 
-        [HttpPost]
-        [Route("Order/Edit/{id?}")]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(int id, OrderDTO order)
+        order.Id = id;
+        var result = await this.apiCallHelper.Edit(order);
+        return Validate<OrderDTO>(result, this.apiCallHelper, order);
+    }
+
+    [HttpPost]
+    [Route("Order/Delete/{id?}")]
+    public async Task<JsonResult> Delete(int id)
+    {
+        if (id == 0)
         {
-            if (!this.ModelState.IsValid)
-            {
-                return this.View(order);
-            }
-
-            order.Id = id;
-            var result = await this.apiCallHelper.Edit(order);
-            return Validate<OrderDTO>(result, this.apiCallHelper, order);
+            return this.Json(false);
         }
 
-        [HttpPost]
-        [Route("Order/Delete/{id?}")]
-        public async Task<JsonResult> Delete(int id)
+        if (!this.ModelState.IsValid)
         {
-            if (id == 0)
-            {
-                return this.Json(false);
-            }
-
-            if (!this.ModelState.IsValid)
-            {
-                return this.Json(false);
-            }
-
-            var result = await this.apiCallHelper.Delete(id);
-            return this.Json(result);
+            return this.Json(false);
         }
 
-        [HttpPost]
-        [Route("Order/Complete/{id?}")]
-        public async Task<JsonResult> Complete(int id)
+        var result = await this.apiCallHelper.Delete(id);
+        return this.Json(result);
+    }
+
+    [HttpPost]
+    [Route("Order/Complete/{id?}")]
+    public async Task<JsonResult> Complete(int id)
+    {
+        if (id == 0)
         {
-            if (id == 0)
-            {
-                return this.Json(false);
-            }
-
-            if (!this.ModelState.IsValid)
-            {
-                return this.Json(false);
-            }
-
-            var result = await this.apiCallHelper.Edit(new OrderDTO
-            {
-                Id = id,
-                DateCreated = null,
-                Completed = true
-            });
-            return this.Json(result != null ? true : false);
+            return this.Json(false);
         }
+
+        if (!this.ModelState.IsValid)
+        {
+            return this.Json(false);
+        }
+
+        var result = await this.apiCallHelper.Edit(new OrderDTO
+        {
+            Id = id,
+            DateCreated = null,
+            Completed = true
+        });
+        return this.Json(result != null ? true : false);
     }
 }

@@ -1,21 +1,20 @@
-namespace Pezza.Test.Setup
+namespace Pezza.Test.Setup;
+
+using System;
+using AutoMapper;
+using Pezza.Common.Profiles;
+using Pezza.DataAccess;
+using static DatabaseContextFactory;
+
+public class QueryTestBase : IDisposable
 {
-    using System;
-    using AutoMapper;
-    using Pezza.Common.Profiles;
-    using Pezza.DataAccess;
-    using static DatabaseContextFactory;
+	public DatabaseContext Context => Create();
 
-    public class QueryTestBase : IDisposable
-    {
-        public DatabaseContext Context => Create();
+	public static IMapper Mapper()
+	{
+		var mappingConfig = new MapperConfiguration(mc => mc.AddProfile(new MappingProfile()));
+		return mappingConfig.CreateMapper();
+	}
 
-        public static IMapper Mapper()
-        {
-            var mappingConfig = new MapperConfiguration(mc => mc.AddProfile(new MappingProfile()));
-            return mappingConfig.CreateMapper();
-        }
-
-        public void Dispose() => Destroy(this.Context);
-    }
+	public void Dispose() => Destroy(this.Context);
 }

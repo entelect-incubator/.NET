@@ -7,7 +7,7 @@
 
 - [ ] Setup your environment - [How to video](https://www.youtube.com/watch?v=G1-Zfr9-3zs&list=PLLWMQd6PeGY2GVsQZ-u3DPXqwwKW8MkiP)
   - [ ] [Visual Studio 2019 Community](https://visualstudio.microsoft.com/downloads/) Installed
-  - [ ] [.NET 5](https://dotnet.microsoft.com/download) Installed
+  - [ ] [.NET 7](https://dotnet.microsoft.com/download) Installed
   - [ ] [SQL Server Developer](https://www.microsoft.com/en-us/sql-server/sql-server-downloads) Installed
   - [ ] [SQL Server Management Studio SSMS](https://docs.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-ssms?view=sql-server-ver15) Installed
 - [ ] SQL Incubator - [SQL basics for Beginners](https://www.youtube.com/watch?v=9Pzj7Aj25lw)
@@ -17,46 +17,42 @@ Setup Visual Studio
 - [ ]  Open the following file in a text editor
 
 ```
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\ItemTemplates\CSharp\Code\1033\Class\Class.cs
+C:\Program Files (x86)\Microsoft Visual Studio\2022\Community\Common7\IDE\ItemTemplates\CSharp\Code\1033\Class\Class.cs
 ```
 
 Change the template to the following, move using inside of the namespace and public before the class.
 
 ```cs
-namespace $rootnamespace$
-{
-    using System;
-    using System.Collections.Generic;
-    $if$ ($targetframeworkversion$ >= 3.5)using System.Linq;
-    $endif$using System.Text;
-    $if$ ($targetframeworkversion$ >= 4.5)using System.Threading.Tasks;
-    $endif$
+namespace $rootnamespace$;
 
-    public class $safeitemrootname$
-    {
-    }
+using System.Collections.Generic;
+$if$ ($targetframeworkversion$ >= 3.5)using System.Linq;
+$endif$using System.Text;
+$if$ ($targetframeworkversion$ >= 4.5)using System.Threading.Tasks;
+$endif$
+
+public class $safeitemrootname$
+{
 }
 ```
 
 Do the same with the Interface Template
 
 ```
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\ItemTemplates\CSharp\Code\1033\Interface\Interface.cs
+C:\Program Files (x86)\Microsoft Visual Studio\2022\Community\Common7\IDE\ItemTemplates\CSharp\Code\1033\Interface\Interface.cs
 ```
 
 ```cs
-namespace $rootnamespace$
-{
-    using System;
-    using System.Collections.Generic;
-    $if$ ($targetframeworkversion$ >= 3.5)using System.Linq;
-    $endif$using System.Text;
-    $if$ ($targetframeworkversion$ >= 4.5)using System.Threading.Tasks;
-    $endif$
+namespace $rootnamespace$;
 
-    public interface $safeitemrootname$
-    {
-    }
+using System.Collections.Generic;
+$if$ ($targetframeworkversion$ >= 3.5)using System.Linq;
+$endif$using System.Text;
+$if$ ($targetframeworkversion$ >= 4.5)using System.Threading.Tasks;
+$endif$
+
+public interface $safeitemrootname$
+{
 }
 ```
 

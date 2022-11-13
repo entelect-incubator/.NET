@@ -1,6 +1,6 @@
 <img align="left" width="116" height="116" src="../../../pezza-logo.png" />
 
-# &nbsp;**Pezza - Phase 7 - Dashboard - MVC - Step 2** [![.NET 6 - Phase 7 - Dashboard - MVC - Step 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase7-dashboard-mvc-step2.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase7-dashboard-mvc-step2.yml)
+# &nbsp;**Pezza - Phase 7 - Dashboard - MVC - Step 2** [![.NET 7 - Phase 7 - Dashboard - MVC - Step 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase7-dashboard-mvc-step2.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase7-dashboard-mvc-step2.yml)
 
 <br/><br/>
 
@@ -18,14 +18,13 @@ Create a new PagingModel.cs in Models
 ![](Assets/2021-01-19-15-13-38.png)
 
 ```cs
-namespace Pezza.Portal.Models
-{
-    public class PagingModel
-    {
-        public int Page { get; set; }
+namespace Pezza.Portal.Models;
 
-        public int Limit { get; set; }
-    }
+public class PagingModel
+{
+    public int Page { get; set; }
+
+    public int Limit { get; set; }
 }
 ```
 
@@ -196,7 +195,7 @@ New Card Structure.
 
 Add Hidden Input to keep track of PaginationModel. 
 
-```html
+```cs html
 <input type="hidden" id="Count" />
 <input type="hidden" id="OrderBy" value="Name asc" />
 @Html.HiddenFor(model => model.Limit)
@@ -439,137 +438,134 @@ Orders we need to send in Completed flag of false through. For this we need to s
 In Models create a new model SearchModel.cs. T is your DTO
 
 ```cs
-namespace Pezza.Portal.Models
+namespace Pezza.Portal.Models;
+
+public class SearchModel<T>
 {
-    public class SearchModel<T>
-    {
-        public T SearchData { get; set; }
+    public T SearchData { get; set; }
 
-        public int Limit { get; set; }
+    public int Limit { get; set; }
 
-        public int Page { get; set; }
+    public int Page { get; set; }
 
-        public string OrderBy { get; set; }
-    }
+    public string OrderBy { get; set; }
 }
 ```
 
 Add new JsonSerializerOptions to ApiCallHelper
 
 ```cs
-namespace Pezza.Portal.Helpers
+namespace Pezza.Portal.Helpers;
+
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
+using System.Threading.Tasks;
+using Pezza.Common;
+using System.Text.Json;
+using Pezza.Common.Models;
+
+public class ApiCallHelper<T>
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Net.Http;
-    using System.Net.Http.Headers;
-    using System.Text;
-    using System.Threading.Tasks;
-    using Pezza.Common;
-    using System.Text.Json;
-    using Pezza.Common.Models;
+    private readonly IHttpClientFactory clientFactory;
 
-    public class ApiCallHelper<T>
+    private readonly HttpClient client;
+
+    private readonly JsonSerializerOptions jsonSerializerOptions;
+
+    public string ControllerName { get; set; }
+
+    public ApiCallHelper(IHttpClientFactory clientFactory)
     {
-        private readonly IHttpClientFactory clientFactory;
+        this.clientFactory = clientFactory;
+        this.client = clientFactory.CreateClient();
+        this.client.BaseAddress = new Uri(AppSettings.ApiUrl);
+        this.client.DefaultRequestHeaders.Accept.Clear();
+        this.client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-        private readonly HttpClient client;
-
-        private readonly JsonSerializerOptions jsonSerializerOptions;
-
-        public string ControllerName { get; set; }
-
-        public ApiCallHelper(IHttpClientFactory clientFactory)
+        this.jsonSerializerOptions = new JsonSerializerOptions
         {
-            this.clientFactory = clientFactory;
-            this.client = clientFactory.CreateClient();
-            this.client.BaseAddress = new Uri(AppSettings.ApiUrl);
-            this.client.DefaultRequestHeaders.Accept.Clear();
-            this.client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            IgnoreNullValues = true,
+            MaxDepth = 20
+        };
+    }
 
-            this.jsonSerializerOptions = new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                IgnoreNullValues = true,
-                MaxDepth = 20
-            };
+    public async Task<ListOutcome<T>> GetListAsync(string jsonData)
+    {
+        var data = new StringContent(jsonData, Encoding.UTF8, "application/json");
+        var response = await this.client.PostAsync(@$"{AppSettings.ApiUrl}{ControllerName}\Search", data);
+
+        var responseData = await response.Content.ReadAsStringAsync();
+
+        var entities = JsonSerializer.Deserialize<ListOutcome<T>>(responseData, this.jsonSerializerOptions);
+        return entities;
+    }
+
+    public async Task<T> GetAsync(int id)
+    {
+        var responseMessage = await this.client.GetAsync(@$"{AppSettings.ApiUrl}{ControllerName}\{id}");
+        if (responseMessage.IsSuccessStatusCode)
+        {
+            var responseData = await responseMessage.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<T>(responseData, this.jsonSerializerOptions);
         }
 
-        public async Task<ListOutcome<T>> GetListAsync(string jsonData)
+        return default;
+    }
+
+    public async Task<T> Create(T entity)
+    {
+        var json = JsonSerializer.Serialize(entity);
+        var data = new StringContent(json, Encoding.UTF8, "application/json");
+
+        var responseMessage = await this.client.PostAsync(@$"{AppSettings.ApiUrl}{ControllerName}", data);
+        if (responseMessage.StatusCode == System.Net.HttpStatusCode.BadRequest)
         {
-            var data = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            var response = await this.client.PostAsync(@$"{AppSettings.ApiUrl}{ControllerName}\Search", data);
+            var responseData = await responseMessage.Content.ReadAsStringAsync();
+            var response = JsonSerializer.Deserialize<T>(responseData, this.jsonSerializerOptions);
 
-            var responseData = await response.Content.ReadAsStringAsync();
-
-            var entities = JsonSerializer.Deserialize<ListOutcome<T>>(responseData, this.jsonSerializerOptions);
-            return entities;
+            return response;
         }
 
-        public async Task<T> GetAsync(int id)
+        if (responseMessage.IsSuccessStatusCode)
         {
-            var responseMessage = await this.client.GetAsync(@$"{AppSettings.ApiUrl}{ControllerName}\{id}");
-            if (responseMessage.IsSuccessStatusCode)
-            {
-                var responseData = await responseMessage.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<T>(responseData, this.jsonSerializerOptions);
-            }
+            var responseData = await responseMessage.Content.ReadAsStringAsync();
+            var response = JsonSerializer.Deserialize<T>(responseData, this.jsonSerializerOptions);
 
-            return default;
+            return response;
         }
 
-        public async Task<T> Create(T entity)
+        return default;
+    }
+
+    public async Task<T> Edit(T entity)
+    {
+        var json = JsonSerializer.Serialize(entity);
+        var data = new StringContent(json, Encoding.UTF8, "application/json");
+
+        var responseMessage = await this.client.PutAsync(@$"{AppSettings.ApiUrl}{ControllerName}", data);
+        if (responseMessage.IsSuccessStatusCode)
         {
-            var json = JsonSerializer.Serialize(entity);
-            var data = new StringContent(json, Encoding.UTF8, "application/json");
-
-            var responseMessage = await this.client.PostAsync(@$"{AppSettings.ApiUrl}{ControllerName}", data);
-            if (responseMessage.StatusCode == System.Net.HttpStatusCode.BadRequest)
-            {
-                var responseData = await responseMessage.Content.ReadAsStringAsync();
-                var response = JsonSerializer.Deserialize<T>(responseData, this.jsonSerializerOptions);
-
-                return response;
-            }
-
-            if (responseMessage.IsSuccessStatusCode)
-            {
-                var responseData = await responseMessage.Content.ReadAsStringAsync();
-                var response = JsonSerializer.Deserialize<T>(responseData, this.jsonSerializerOptions);
-
-                return response;
-            }
-
-            return default;
+            var responseData = await responseMessage.Content.ReadAsStringAsync();
+            var response = JsonSerializer.Deserialize<T>(responseData, this.jsonSerializerOptions);
+            return response;
         }
 
-        public async Task<T> Edit(T entity)
+        return default;
+    }
+
+    public async Task<bool> Delete(int id)
+    {
+        var responseMessage = await this.client.DeleteAsync(@$"{AppSettings.ApiUrl}{ControllerName}\{id}");
+        if (responseMessage.IsSuccessStatusCode)
         {
-            var json = JsonSerializer.Serialize(entity);
-            var data = new StringContent(json, Encoding.UTF8, "application/json");
-
-            var responseMessage = await this.client.PutAsync(@$"{AppSettings.ApiUrl}{ControllerName}", data);
-            if (responseMessage.IsSuccessStatusCode)
-            {
-                var responseData = await responseMessage.Content.ReadAsStringAsync();
-                var response = JsonSerializer.Deserialize<T>(responseData, this.jsonSerializerOptions);
-                return response;
-            }
-
-            return default;
+            var responseData = await responseMessage.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<bool>(responseData, this.jsonSerializerOptions);
         }
 
-        public async Task<bool> Delete(int id)
-        {
-            var responseMessage = await this.client.DeleteAsync(@$"{AppSettings.ApiUrl}{ControllerName}\{id}");
-            if (responseMessage.IsSuccessStatusCode)
-            {
-                var responseData = await responseMessage.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<bool>(responseData, this.jsonSerializerOptions);
-            }
-
-            return false;
-        }
+        return false;
     }
 }
 ```
@@ -596,7 +592,7 @@ public async Task<JsonResult> List([FromBody] SearchModel<OrderDTO> searchmodel)
 
 Orders Index.chtml
 
-```cshtml
+```cs html
 @model Pezza.Portal.Models.PagingModel
 
 @{

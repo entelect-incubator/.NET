@@ -1,23 +1,28 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <CodeAnalysisRuleSet>$(SolutionDir)\StyleCopRuleSet.ruleset</CodeAnalysisRuleSet>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <NoWarn>1701;1702;1591</NoWarn>
-    <DocumentationFile>bin\Debug\Pezza.Api.xml</DocumentationFile>
-  </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+        <NoWarn>1701;1702;1591</NoWarn>
+        <DocumentationFile>bin\Debug\Pezza.Api.xml</DocumentationFile>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="8.2.1" />
-    <PackageReference Include="Magick.NET.Core" Version="8.2.1" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.2" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="12.2.1" />
+        <PackageReference Include="Magick.NET.Core" Version="12.2.1" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="7.0.0" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Pezza.Core\Pezza.Core.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Pezza.Core\Pezza.Core.csproj" />
+    </ItemGroup>
 
 
 </Project>

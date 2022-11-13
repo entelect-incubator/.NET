@@ -2,7 +2,7 @@
 
 @{
     ViewBag.Title = "Stock";
-    ViewBag.ActiveMenu = "Stock";
+ViewBag.ActiveMenu = "Stock";
 }
 
 <div>
@@ -28,8 +28,8 @@
         </thead>
         <tbody>
             @foreach (var stock in Model)
-            {
-                <tr>
+        {
+            <tr>
                     <td>@stock.Id</td>
                     <td align="right">@stock.Quantity</td>
                     <td>@stock.Name</td>
@@ -45,7 +45,7 @@
                         </button>
                     </td>
                 </tr>
-            }
+        }
         </tbody>
     </table>
 

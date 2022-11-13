@@ -1,9 +1,8 @@
-﻿namespace Pezza.Scheduler.Jobs
-{
-    using System.Threading.Tasks;
+﻿namespace Pezza.Scheduler.Jobs;
 
-    public interface IOrderCompleteJob
-    {
-        Task SendNotificationAsync();
-    }
+using System.Threading.Tasks;
+
+public interface IOrderCompleteJob
+{
+    Task SendNotificationAsync();
 }

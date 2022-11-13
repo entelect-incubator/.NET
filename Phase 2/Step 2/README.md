@@ -25,92 +25,85 @@ CustomerTestData.cs - We will use Bogus package to help us out in creating Test 
 ![Customer Test Data](Assets/2020-11-20-09-39-27.png)
 
 ```cs
-namespace Pezza.Test
+namespace Pezza.Test;
+
+using Bogus;
+using Pezza.Common.DTO;
+using Pezza.Common.Entities;
+
+public static class CustomerTestData
 {
-    using System;
-    using Bogus;
-    using Pezza.Common.DTO;
-    using Pezza.Common.Entities;
+    public static Faker faker = new Faker();
 
-    public static class CustomerTestData
+    public static CustomerDTO CustomerDTO = new CustomerDTO()
     {
-        public static Faker faker = new Faker();
-
-        public static CustomerDTO CustomerDTO = new CustomerDTO()
+        ContactPerson = faker.Person.FullName,
+        Email = faker.Person.Email,
+        Phone = faker.Person.Phone,
+        Address = new AddressBase
         {
-            ContactPerson = faker.Person.FullName,
-            Email = faker.Person.Email,
-            Phone = faker.Person.Phone,
-            Address = new AddressBase
-            {
-                Address = faker.Address.FullAddress(),
-                City = faker.Address.City(),
-                Province = faker.Address.State(),
-                PostalCode = faker.Address.PostalCode(),
-            },
-            DateCreated = DateTime.Now
-        };
-    }
-
+            Address = faker.Address.FullAddress(),
+            City = faker.Address.City(),
+            Province = faker.Address.State(),
+            PostalCode = faker.Address.PostalCode(),
+        },
+        DateCreated = DateTime.Now
+    };
 }
 ```
 
 OrderTestData is a bit different, because of Orders having Order Items.
 
 ```cs
-namespace Pezza.Test
+namespace Pezza.Test;
+
+using System.Collections.Generic;
+using Bogus;
+using Pezza.Common.DTO;
+
+public static class OrderTestData
 {
-    using System;
-    using System.Collections.Generic;
-    using Bogus;
-    using Pezza.Common.DTO;
+    public static Faker faker = new Faker();
 
-    public static class OrderTestData
+    public static List<OrderDTO> OrdersDTO()
     {
-        public static Faker faker = new Faker();
-
-        public static List<OrderDTO> OrdersDTO()
+        var orders = new List<OrderDTO>
         {
-            var orders = new List<OrderDTO>
-            {
-                OrderDTO,
-                OrderDTO,
-                OrderDTO,
-                OrderDTO,
-                OrderDTO
-            };
-
-            return orders;
-        }
-
-        public static OrderDTO OrderDTO = new OrderDTO()
-        {
-            Amount = faker.Finance.Amount(),
-            Customer = CustomerTestData.CustomerDTO,
-            CustomerId = 1,
-            Restaurant = RestaurantTestData.RestaurantDTO,
-            RestaurantId = 1,
-            DateCreated = DateTime.Now,
-            Completed = false,
-            OrderItems = new List<OrderItemDTO>
-            {
-                new OrderItemDTO()
-                {
-                    OrderId = 1,
-                    Product = ProductTestData.ProductDTO
-                }
-            }
+            OrderDTO,
+            OrderDTO,
+            OrderDTO,
+            OrderDTO,
+            OrderDTO
         };
 
-        public static OrderItemDTO OrderItemDTO = new OrderItemDTO()
-        {
-            OrderId = 1,
-            Product = ProductTestData.ProductDTO
-        };
+        return orders;
     }
 
-}
+    public static OrderDTO OrderDTO = new OrderDTO()
+    {
+        Amount = faker.Finance.Amount(),
+        Customer = CustomerTestData.CustomerDTO,
+        CustomerId = 1,
+        Restaurant = RestaurantTestData.RestaurantDTO,
+        RestaurantId = 1,
+        DateCreated = DateTime.Now,
+        Completed = false,
+        OrderItems = new List<OrderItemDTO>
+        {
+            new OrderItemDTO()
+            {
+                OrderId = 1,
+                Product = ProductTestData.ProductDTO
+            }
+        }
+    };
 
+    public static OrderItemDTO OrderItemDTO = new OrderItemDTO()
+    {
+        OrderId = 1,
+        Product = ProductTestData.ProductDTO
+    };
+}
 ```
 
 Create a Test Data Class for every entity or you can copy it from Phase2/Data.
@@ -141,93 +134,92 @@ It will contain a new Handler with the In Memory DBContext and AutoMapper.
 TestCustomerCore.cs in Core folder
 
 ```cs
-namespace Pezza.Test.Core
+namespace Pezza.Test.Core;
+
+using System.Threading;
+using System.Threading.Tasks;
+using NUnit.Framework;
+using Pezza.Common.DTO;
+using Pezza.Core.Customer.Commands;
+using Pezza.Core.Customer.Queries;
+
+[TestFixture]
+public class TestCustomerCore : QueryTestBase
 {
-    using System.Threading;
-    using System.Threading.Tasks;
-    using NUnit.Framework;
-    using Pezza.Common.DTO;
-    using Pezza.Core.Customer.Commands;
-    using Pezza.Core.Customer.Queries;
+    private CustomerDTO dto;
 
-    [TestFixture]
-    public class TestCustomerCore : QueryTestBase
+    [SetUp]
+    public async Task Init()
     {
-        private CustomerDTO dto;
-
-        [SetUp]
-        public async Task Init()
-        {
-            this.dto = CustomerTestData.CustomerDTO;
-            var sutCreate = new CreateCustomerCommandHandler(this.Context, Mapper());
-            var resultCreate = await sutCreate.Handle(
-                new CreateCustomerCommand
-                {
-                    Data = this.dto
-                }, CancellationToken.None);
-
-            if (!resultCreate.Succeeded)
+        this.dto = CustomerTestData.CustomerDTO;
+        var sutCreate = new CreateCustomerCommandHandler(this.Context, Mapper());
+        var resultCreate = await sutCreate.Handle(
+            new CreateCustomerCommand
             {
-                Assert.IsTrue(false);
-            }
+                Data = this.dto
+            }, CancellationToken.None);
 
-            this.dto = resultCreate.Data;
+        if (!resultCreate.Succeeded)
+        {
+            Assert.IsTrue(false);
         }
 
-        [Test]
-        public async Task GetAsync()
-        {
-            var sutGet = new GetCustomerQueryHandler(this.Context, Mapper());
-            var resultGet = await sutGet.Handle(
-                new GetCustomerQuery
+        this.dto = resultCreate.Data;
+    }
+
+    [Test]
+    public async Task GetAsync()
+    {
+        var sutGet = new GetCustomerQueryHandler(this.Context, Mapper());
+        var resultGet = await sutGet.Handle(
+            new GetCustomerQuery
+            {
+                Id = this.dto.Id
+            }, CancellationToken.None);
+
+        Assert.IsTrue(resultGet?.Data != null);
+    }
+
+    [Test]
+    public async Task GetAllAsync()
+    {
+        var sutGetAll = new GetCustomersQueryHandler(this.Context, Mapper());
+        var resultGetAll = await sutGetAll.Handle(new GetCustomersQuery(), CancellationToken.None);
+
+        Assert.IsTrue(resultGetAll?.Data.Count == 1);
+    }
+
+    [Test]
+    public void SaveAsync() => Assert.IsTrue(this.dto != null);
+
+    [Test]
+    public async Task UpdateAsync()
+    {
+        var sutUpdate = new UpdateCustomerCommandHandler(this.Context, Mapper());
+        var resultUpdate = await sutUpdate.Handle(
+            new UpdateCustomerCommand
+            {
+                Data = new CustomerDTO
                 {
-                    Id = this.dto.Id
-                }, CancellationToken.None);
+                    Id = this.dto.Id,
+                    Phone = "0721230000"
+                }
+            }, CancellationToken.None);
 
-            Assert.IsTrue(resultGet?.Data != null);
-        }
+        Assert.IsTrue(resultUpdate.Succeeded);
+    }
 
-        [Test]
-        public async Task GetAllAsync()
-        {
-            var sutGetAll = new GetCustomersQueryHandler(this.Context, Mapper());
-            var resultGetAll = await sutGetAll.Handle(new GetCustomersQuery(), CancellationToken.None);
+    [Test]
+    public async Task DeleteAsync()
+    {
+        var sutDelete = new DeleteCustomerCommandHandler(this.Context);
+        var outcomeDelete = await sutDelete.Handle(
+            new DeleteCustomerCommand
+            {
+                Id = this.dto.Id
+            }, CancellationToken.None);
 
-            Assert.IsTrue(resultGetAll?.Data.Count == 1);
-        }
-
-        [Test]
-        public void SaveAsync() => Assert.IsTrue(this.dto != null);
-
-        [Test]
-        public async Task UpdateAsync()
-        {
-            var sutUpdate = new UpdateCustomerCommandHandler(this.Context, Mapper());
-            var resultUpdate = await sutUpdate.Handle(
-                new UpdateCustomerCommand
-                {
-                    Data = new CustomerDTO
-                    {
-                        Id = this.dto.Id,
-                        Phone = "0721230000"
-                    }
-                }, CancellationToken.None);
-
-            Assert.IsTrue(resultUpdate.Succeeded);
-        }
-
-        [Test]
-        public async Task DeleteAsync()
-        {
-            var sutDelete = new DeleteCustomerCommandHandler(this.Context);
-            var outcomeDelete = await sutDelete.Handle(
-                new DeleteCustomerCommand
-                {
-                    Id = this.dto.Id
-                }, CancellationToken.None);
-
-            Assert.IsTrue(outcomeDelete.Succeeded);
-        }
+        Assert.IsTrue(outcomeDelete.Succeeded);
     }
 }
 ```

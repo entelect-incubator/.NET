@@ -1,6 +1,6 @@
 <img align="left" width="116" height="116" src="../pezza-logo.png" />
 
-# &nbsp;**Pezza - Phase 3 - Step 2** [![.NET 6 - Phase 3 - Step 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase3-step2.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase3-step2.yml)
+# &nbsp;**Pezza - Phase 3 - Step 2** [![.NET 7 - Phase 3 - Step 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase3-step2.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase3-step2.yml)
 
 <br/><br/>
 
@@ -12,61 +12,59 @@ Let's extend our data DTO's to cater for filtering and pagination. In Pezza.Comm
 
 
 ```cs
-namespace Pezza.Common.Models
+namespace Pezza.Common.Models;
+
+public class PagingArgs
 {
-    public class PagingArgs
+    private int limit = 20;
+
+    public static PagingArgs NoPaging => new PagingArgs { UsePaging = false };
+
+    public static PagingArgs Default => new PagingArgs { UsePaging = true, Limit = 20, Offset = 0 };
+
+    public static PagingArgs FirstItem => new PagingArgs { UsePaging = true, Limit = 1, Offset = 0 };
+
+    public int Offset { get; set; }
+
+    public int Limit
     {
-        private int limit = 20;
+        get => this.limit;
 
-        public static PagingArgs NoPaging => new PagingArgs { UsePaging = false };
-
-        public static PagingArgs Default => new PagingArgs { UsePaging = true, Limit = 20, Offset = 0 };
-
-        public static PagingArgs FirstItem => new PagingArgs { UsePaging = true, Limit = 1, Offset = 0 };
-
-        public int Offset { get; set; }
-
-        public int Limit
+        set
         {
-            get => this.limit;
-
-            set
+            if (value == 0)
             {
-                if (value == 0)
-                {
-                    value = 20;
-                }
-
-                this.limit = value;
+                value = 20;
             }
-        }
 
-        public bool UsePaging { get; set; }
+            this.limit = value;
+        }
     }
+
+    public bool UsePaging { get; set; }
 }
 ```
 
 Add an extension method in Pezza.Common to do the Pagination. Create a new folder called Extensions in Pezza.Common and add Extensions.cs
 
 ```cs
-namespace Pezza.Common.Extensions
+namespace Pezza.Common.Extensions;
+
+using System.Linq;
+using Pezza.Common.Models;
+
+public static class Extensions
 {
-    using System.Linq;
-    using Pezza.Common.Models;
-
-    public static class Extensions
+    public static IQueryable<T> ApplyPaging<T>(this IQueryable<T> query, PagingArgs pagingArgs)
     {
-        public static IQueryable<T> ApplyPaging<T>(this IQueryable<T> query, PagingArgs pagingArgs)
+        var myPagingArgs = pagingArgs;
+
+        if (pagingArgs == null)
         {
-            var myPagingArgs = pagingArgs;
-
-            if (pagingArgs == null)
-            {
-                myPagingArgs = PagingArgs.Default;
-            }
-
-            return myPagingArgs.UsePaging ? query.Skip(myPagingArgs.Offset).Take(myPagingArgs.Limit) : query;
+            myPagingArgs = PagingArgs.Default;
         }
+
+        return myPagingArgs.UsePaging ? query.Skip(myPagingArgs.Offset).Take(myPagingArgs.Limit) : query;
     }
 }
 ```
@@ -84,88 +82,81 @@ Extend the DTO's in Pezza.Common\DTO by inheriting from EntityBase. In the cases
 ![](2021-01-15-07-08-27.png)
 
 ```cs
-namespace Pezza.Common.DTO
+namespace Pezza.Common.DTO;
+
+using Pezza.Common.Models;
+using Pezza.Common.Models.Base;
+
+public class CustomerDTO : EntityBase
 {
-    using System;
-    using Pezza.Common.Models;
-    using Pezza.Common.Models.Base;
-
-    public class CustomerDTO : EntityBase
+    public CustomerDTO()
     {
-        public CustomerDTO()
-        {
-            this.Address = new AddressBase();
-            this.DateCreated = DateTime.Now;
-        }
-
-        public string Name { get; set; }
-
-        public string Phone { get; set; }
-
-        public string Email { get; set; }
-
-        public string ContactPerson { get; set; }
-
-        public AddressBase Address { get; set; }
-
-        public DateTime? DateCreated { get; set; }
-
-        public PagingArgs MyProperty { get; set; }
-
-        public string OrderBy { get; set; }
-
-        public PagingArgs PagingArgs { get; set; }
+        this.Address = new AddressBase();
+        this.DateCreated = DateTime.Now;
     }
+
+    public string Name { get; set; }
+
+    public string Phone { get; set; }
+
+    public string Email { get; set; }
+
+    public string ContactPerson { get; set; }
+
+    public AddressBase Address { get; set; }
+
+    public DateTime? DateCreated { get; set; }
+
+    public PagingArgs MyProperty { get; set; }
+
+    public string OrderBy { get; set; }
+
+    public PagingArgs PagingArgs { get; set; }
 }
 ```
 
 ImageDataBase
 
 ```cs
-namespace Pezza.Common.Entities
+namespace Pezza.Common.Entities;
+
+using Pezza.Common.DTO.Data;
+
+public class ImageDataBase : EntityBase
 {
-    using Pezza.Common.DTO.Data;
-
-    public class ImageDataBase : EntityBase
-    {
-        public string ImageData { get; set; }
-    }
+    public string ImageData { get; set; }
 }
-
 ```
 
 Product DTO
 
 ```cs
-namespace Pezza.Common.DTO
+namespace Pezza.Common.DTO;
+
+using Pezza.Common.Entities;
+
+public class ProductDTO : ImageDataBase
 {
-    using System;
-    using Pezza.Common.Entities;
+    public int Id { get; set; }
 
-    public class ProductDTO : ImageDataBase
-    {
-        public int Id { get; set; }
+    public string Name { get; set; }
 
-        public string Name { get; set; }
+    public string Description { get; set; }
 
-        public string Description { get; set; }
+    public string PictureUrl { get; set; }
 
-        public string PictureUrl { get; set; }
+    public decimal? Price { get; set; }
 
-        public decimal? Price { get; set; }
+    public bool? Special { get; set; }
 
-        public bool? Special { get; set; }
+    public DateTime? OfferEndDate { get; set; }
 
-        public DateTime? OfferEndDate { get; set; }
+    public decimal? OfferPrice { get; set; }
 
-        public decimal? OfferPrice { get; set; }
+    public bool? IsActive { get; set; }
 
-        public bool? IsActive { get; set; }
-
-        public DateTime DateCreated { get; set; }
-    }
+    public DateTime DateCreated { get; set; }
 }
-
 ```
 
 ![](Assets\2021-01-18-09-58-18.png)
@@ -177,103 +168,101 @@ Filter classes are created for every entity. These filters will make use of flue
 Create a folder called Filters in Pezza.Common and add CustomerFilter.cs.
 
 ```cs
-namespace Pezza.Common.Filters
+namespace Pezza.Common.Filters;
+
+using System.Linq;
+using Pezza.Common.Entities;
+
+public static class CustomerFilter
 {
-    using System;
-    using System.Linq;
-    using Pezza.Common.Entities;
-
-    public static class CustomerFilter
+    public static IQueryable<Customer> FilterByName(this IQueryable<Customer> query, string name)
     {
-        public static IQueryable<Customer> FilterByName(this IQueryable<Customer> query, string name)
+        if (string.IsNullOrWhiteSpace(name))
         {
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                return query;
-            }
-
-            return query.Where(x => x.Name.Contains(name));
+            return query;
         }
 
-        public static IQueryable<Customer> FilterByAddress(this IQueryable<Customer> query, string address)
-        {
-            if (string.IsNullOrWhiteSpace(address))
-            {
-                return query;
-            }
+        return query.Where(x => x.Name.Contains(name));
+    }
 
-            return query.Where(x => x.Address.Contains(address));
+    public static IQueryable<Customer> FilterByAddress(this IQueryable<Customer> query, string address)
+    {
+        if (string.IsNullOrWhiteSpace(address))
+        {
+            return query;
         }
 
-        public static IQueryable<Customer> FilterByCity(this IQueryable<Customer> query, string city)
-        {
-            if (string.IsNullOrWhiteSpace(city))
-            {
-                return query;
-            }
+        return query.Where(x => x.Address.Contains(address));
+    }
 
-            return query.Where(x => x.City.Contains(city));
+    public static IQueryable<Customer> FilterByCity(this IQueryable<Customer> query, string city)
+    {
+        if (string.IsNullOrWhiteSpace(city))
+        {
+            return query;
         }
 
-        public static IQueryable<Customer> FilterByProvince(this IQueryable<Customer> query, string province)
-        {
-            if (string.IsNullOrWhiteSpace(province))
-            {
-                return query;
-            }
+        return query.Where(x => x.City.Contains(city));
+    }
 
-            return query.Where(x => x.Province.Contains(province));
+    public static IQueryable<Customer> FilterByProvince(this IQueryable<Customer> query, string province)
+    {
+        if (string.IsNullOrWhiteSpace(province))
+        {
+            return query;
         }
 
-        public static IQueryable<Customer> FilterByPostalCode(this IQueryable<Customer> query, string postalCode)
-        {
-            if (string.IsNullOrWhiteSpace(postalCode))
-            {
-                return query;
-            }
+        return query.Where(x => x.Province.Contains(province));
+    }
 
-            return query.Where(x => x.PostalCode.Contains(postalCode));
+    public static IQueryable<Customer> FilterByPostalCode(this IQueryable<Customer> query, string postalCode)
+    {
+        if (string.IsNullOrWhiteSpace(postalCode))
+        {
+            return query;
         }
 
-        public static IQueryable<Customer> FilterByPhone(this IQueryable<Customer> query, string phone)
-        {
-            if (string.IsNullOrWhiteSpace(phone))
-            {
-                return query;
-            }
+        return query.Where(x => x.PostalCode.Contains(postalCode));
+    }
 
-            return query.Where(x => x.Phone.Contains(phone));
+    public static IQueryable<Customer> FilterByPhone(this IQueryable<Customer> query, string phone)
+    {
+        if (string.IsNullOrWhiteSpace(phone))
+        {
+            return query;
         }
 
-        public static IQueryable<Customer> FilterByEmail(this IQueryable<Customer> query, string email)
-        {
-            if (string.IsNullOrWhiteSpace(email))
-            {
-                return query;
-            }
+        return query.Where(x => x.Phone.Contains(phone));
+    }
 
-            return query.Where(x => x.Email.Contains(email));
+    public static IQueryable<Customer> FilterByEmail(this IQueryable<Customer> query, string email)
+    {
+        if (string.IsNullOrWhiteSpace(email))
+        {
+            return query;
         }
 
-        public static IQueryable<Customer> FilterByContactPerson(this IQueryable<Customer> query, string contactPerson)
-        {
-            if (string.IsNullOrWhiteSpace(contactPerson))
-            {
-                return query;
-            }
+        return query.Where(x => x.Email.Contains(email));
+    }
 
-            return query.Where(x => x.ContactPerson.Contains(contactPerson));
+    public static IQueryable<Customer> FilterByContactPerson(this IQueryable<Customer> query, string contactPerson)
+    {
+        if (string.IsNullOrWhiteSpace(contactPerson))
+        {
+            return query;
         }
 
-        public static IQueryable<Customer> FilterByDateCreated(this IQueryable<Customer> query, DateTime? dateCreated)
-        {
-            if (!dateCreated.HasValue)
-            {
-                return query;
-            }
+        return query.Where(x => x.ContactPerson.Contains(contactPerson));
+    }
 
-            return query.Where(x => x.DateCreated == dateCreated.Value);
+    public static IQueryable<Customer> FilterByDateCreated(this IQueryable<Customer> query, DateTime? dateCreated)
+    {
+        if (!dateCreated.HasValue)
+        {
+            return query;
         }
+
+        return query.Where(x => x.DateCreated == dateCreated.Value);
     }
 }
 ```
@@ -288,7 +277,7 @@ The GetAllAsync method of IDataAccess gets enhanced in two ways. Firstly, a gene
 
 ![](Assets/2021-01-15-07-27-11.png)
 
-```
+```cs
 Task<ListResult<T>> GetAllAsync(T dto);
 ```
 
@@ -304,64 +293,64 @@ public class GetCustomersQuery : IRequest<ListResult<CustomerDTO>>
     public CustomerDTO Data { get; set; }
 }
 ```
+
 Together
 
 ```cs
-namespace Pezza.Core.Customer.Queries
+namespace Pezza.Core.Customer.Queries;
+
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using AutoMapper;
+using MediatR;
+using System.Linq.Dynamic.Core;
+using Microsoft.EntityFrameworkCore;
+using Pezza.Common.DTO;
+using Pezza.Common.Filters;
+using Pezza.Common.Models;
+using Pezza.DataAccess;
+
+public class GetCustomersQuery : IRequest<ListResult<CustomerDTO>>
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using AutoMapper;
-    using MediatR;
-    using System.Linq.Dynamic.Core;
-    using Microsoft.EntityFrameworkCore;
-    using Pezza.Common.DTO;
-    using Pezza.Common.Filters;
-    using Pezza.Common.Models;
-    using Pezza.DataAccess;
+    public CustomerDTO Data { get; set; }
+}
 
-    public class GetCustomersQuery : IRequest<ListResult<CustomerDTO>>
+public class GetCustomersQueryHandler : IRequestHandler<GetCustomersQuery, ListResult<CustomerDTO>>
+{
+    private readonly DatabaseContext databaseContext;
+
+    private readonly IMapper mapper;
+
+    public GetCustomersQueryHandler(DatabaseContext databaseContext, IMapper mapper)
+        => (this.databaseContext, this.mapper) = (databaseContext, mapper);
+
+    public async Task<ListResult<CustomerDTO>> Handle(GetCustomersQuery request, CancellationToken cancellationToken)
     {
-        public CustomerDTO Data { get; set; }
-    }
+        var dto = request.Data;
 
-    public class GetCustomersQueryHandler : IRequestHandler<GetCustomersQuery, ListResult<CustomerDTO>>
-    {
-        private readonly DatabaseContext databaseContext;
-
-        private readonly IMapper mapper;
-
-        public GetCustomersQueryHandler(DatabaseContext databaseContext, IMapper mapper)
-            => (this.databaseContext, this.mapper) = (databaseContext, mapper);
-
-        public async Task<ListResult<CustomerDTO>> Handle(GetCustomersQuery request, CancellationToken cancellationToken)
+        if (string.IsNullOrEmpty(dto.OrderBy))
         {
-            var dto = request.Data;
-
-            if (string.IsNullOrEmpty(dto.OrderBy))
-            {
-                dto.OrderBy = "DateCreated desc";
-            }
-
-            var entities = this.databaseContext.Customers.Select(x => x)
-                .AsNoTracking()
-                .FilterByName(dto.Name)
-                .FilterByAddress(dto.Address?.Address)
-                .FilterByCity(dto.Address?.City)
-                .FilterByProvince(dto.Address?.Province)
-                .FilterByPostalCode(dto.Address?.PostalCode)
-                .FilterByPhone(dto.Phone)
-                .FilterByEmail(dto.Email)
-                .FilterByContactPerson(dto.ContactPerson)
-                .OrderBy(dto.OrderBy);
-
-            var count = entities.Count();
-            var paged = this.mapper.Map<List<CustomerDTO>>(await entities.ToListAsync(cancellationToken));
-
-            return ListResult<CustomerDTO>.Success(paged, count);
+            dto.OrderBy = "DateCreated desc";
         }
+
+        var entities = this.databaseContext.Customers.Select(x => x)
+            .AsNoTracking()
+            .FilterByName(dto.Name)
+            .FilterByAddress(dto.Address?.Address)
+            .FilterByCity(dto.Address?.City)
+            .FilterByProvince(dto.Address?.Province)
+            .FilterByPostalCode(dto.Address?.PostalCode)
+            .FilterByPhone(dto.Phone)
+            .FilterByEmail(dto.Email)
+            .FilterByContactPerson(dto.ContactPerson)
+            .OrderBy(dto.OrderBy);
+
+        var count = entities.Count();
+        var paged = this.mapper.Map<List<CustomerDTO>>(await entities.ToListAsync(cancellationToken));
+
+        return ListResult<CustomerDTO>.Success(paged, count);
     }
 }
 ```
@@ -371,41 +360,40 @@ The only exception will be on the GetRestaurantsQuery implementation for Restaur
 Modify GetRestaurantsQuery.cs as follows.
 
 ```cs
-namespace Pezza.Core.Restaurant.Queries
+namespace Pezza.Core.Restaurant.Queries;
+
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using AutoMapper;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using Pezza.Common.DTO;
+using Pezza.Common.Models;
+using Pezza.DataAccess;
+
+public class GetRestaurantsQuery : IRequest<ListResult<RestaurantDTO>>
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using AutoMapper;
-    using MediatR;
-    using Microsoft.EntityFrameworkCore;
-    using Pezza.Common.DTO;
-    using Pezza.Common.Models;
-    using Pezza.DataAccess;
+}
 
-    public class GetRestaurantsQuery : IRequest<ListResult<RestaurantDTO>>
+public class GetRestaurantsQueryHandler : IRequestHandler<GetRestaurantsQuery, ListResult<RestaurantDTO>>
+{
+    private readonly DatabaseContext databaseContext;
+
+    private readonly IMapper mapper;
+
+    public GetRestaurantsQueryHandler(DatabaseContext databaseContext, IMapper mapper)
+        => (this.databaseContext, this.mapper) = (databaseContext, mapper);
+
+    public async Task<ListResult<RestaurantDTO>> Handle(GetRestaurantsQuery request, CancellationToken cancellationToken)
     {
-    }
+        var entities = this.databaseContext.Restaurants.Select(x => x).AsNoTracking();
 
-    public class GetRestaurantsQueryHandler : IRequestHandler<GetRestaurantsQuery, ListResult<RestaurantDTO>>
-    {
-        private readonly DatabaseContext databaseContext;
+        var count = entities.Count();
+        var paged = this.mapper.Map<List<RestaurantDTO>>(await entities.ToListAsync(cancellationToken));
 
-        private readonly IMapper mapper;
-
-        public GetRestaurantsQueryHandler(DatabaseContext databaseContext, IMapper mapper)
-            => (this.databaseContext, this.mapper) = (databaseContext, mapper);
-
-        public async Task<ListResult<RestaurantDTO>> Handle(GetRestaurantsQuery request, CancellationToken cancellationToken)
-        {
-            var entities = this.databaseContext.Restaurants.Select(x => x).AsNoTracking();
-
-            var count = entities.Count();
-            var paged = this.mapper.Map<List<RestaurantDTO>>(await entities.ToListAsync(cancellationToken));
-
-            return ListResult<RestaurantDTO>.Success(paged, count);
-        }
+        return ListResult<RestaurantDTO>.Success(paged, count);
     }
 }
 ```
@@ -445,4 +433,5 @@ public async Task<ActionResult> Search(CustomerDTO dto)
 Modify unit tests to incorporate our changes.
 
 ## **Move to Phase 4**
+
 [Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%204)

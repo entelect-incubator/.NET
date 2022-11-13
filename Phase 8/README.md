@@ -1,14 +1,14 @@
 <img align="left" width="116" height="116" src="pezza-logo.png" />
 
-# &nbsp;**Pezza - Phase 8** [![.NET 6 - Phase 8 - Start Solution](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase8-startsolution.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase8-startsolution.yml)
+# &nbsp;**Pezza - Phase 8** [![.NET 7 - Phase 8 - Start Solution](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase8-startsolution.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase8-startsolution.yml)
 
 <br/><br/>
 
 ### **Security**
 
-ASP.NET 6 enables developers to easily configure and manage security for their apps.
+.NET enables developers to easily configure and manage security for their apps.
 
-[Overview of ASP.NET 6 Security](https://docs.microsoft.com/en-us/aspnet/core/security/?view=aspnetcore-5.0)
+[Overview of .NET Security](https://docs.microsoft.com/en-us/aspnet/core/security/?view=aspnetcore-5.0)
 
 ## **Setup**
 

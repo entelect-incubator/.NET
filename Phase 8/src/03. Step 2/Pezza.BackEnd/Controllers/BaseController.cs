@@ -1,50 +1,49 @@
-﻿namespace Pezza.BackEnd.Controllers
+﻿namespace Pezza.BackEnd.Controllers;
+
+using System;
+using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using Microsoft.AspNetCore.Mvc;
+using Pezza.Common;
+using Pezza.Common.Models;
+using Pezza.Portal.Helpers;
+
+public abstract class BaseController : Controller
 {
-    using System;
-    using System.Linq;
-    using System.Net.Http;
-    using System.Net.Http.Headers;
-    using Microsoft.AspNetCore.Mvc;
-    using Pezza.Common;
-    using Pezza.Common.Models;
-    using Pezza.Portal.Helpers;
+    public readonly HttpClient client;
 
-    public abstract class BaseController : Controller
+    public readonly IHttpClientFactory clientFactory;
+
+    public BaseController(IHttpClientFactory clientFactory)
     {
-        public readonly HttpClient client;
+        this.clientFactory = clientFactory;
+        this.client = clientFactory.CreateClient();
+        this.client.BaseAddress = new Uri(AppSettings.ApiUrl);
+        this.client.DefaultRequestHeaders.Accept.Clear();
+        this.client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+    }
 
-        public readonly IHttpClientFactory clientFactory;
-
-        public BaseController(IHttpClientFactory clientFactory)
+    public ActionResult Validate<T>(Result<T> result, ApiCallHelper<T> apiCallHelper, object model)
+    {
+        if (!result.Succeeded)
         {
-            this.clientFactory = clientFactory;
-            this.client = clientFactory.CreateClient();
-            this.client.BaseAddress = new Uri(AppSettings.ApiUrl);
-            this.client.DefaultRequestHeaders.Accept.Clear();
-            this.client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-        }
-
-        public ActionResult Validate<T>(Result<T> result, ApiCallHelper<T> apiCallHelper, object model)
-        {
-            if (!result.Succeeded)
+            if (apiCallHelper.ValidationErrors?.Count > 0)
             {
-                if (apiCallHelper.ValidationErrors?.Count > 0)
+                foreach (var validation in apiCallHelper.ValidationErrors)
                 {
-                    foreach (var validation in apiCallHelper.ValidationErrors)
-                    {
-                        ModelState.AddModelError(validation.Property, validation.Error);
-                    }
+                    ModelState.AddModelError(validation.Property, validation.Error);
                 }
-
-                return this.View(model);
             }
 
-            if (!ModelState.IsValid)
-            {
-                return this.View(model);
-            }
-
-            return this.RedirectToAction("Index");
+            return this.View(model);
         }
+
+        if (!ModelState.IsValid)
+        {
+            return this.View(model);
+        }
+
+        return this.RedirectToAction("Index");
     }
 }

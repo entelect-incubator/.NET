@@ -1,4 +1,4 @@
-name: .NET 6 - Phase 1
+name: .NET 7 - Phase 1
 
 on:
   push:
@@ -13,10 +13,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Setup .NET 6
+    - name: Setup .NET 7
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 6.0.x
+        dotnet-version: 7.0.x
     - name: Install dependencies
       run: dotnet restore "./Phase 1/src/02. EndSolution/Pezza.sln"
     - name: Build

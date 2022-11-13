@@ -1,103 +1,102 @@
-﻿namespace Pezza.BackEnd.Controllers
+﻿namespace Pezza.BackEnd.Controllers;
+
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using Pezza.Common;
+using Pezza.Common.DTO;
+using Pezza.Common.Entities;
+using Pezza.Portal.Helpers;
+
+public class CustomerController : BaseController
 {
-    using System.Collections.Generic;
-    using System.Net.Http;
-    using System.Text;
-    using System.Threading.Tasks;
-    using Microsoft.AspNetCore.Mvc;
-    using Newtonsoft.Json;
-    using Pezza.Common;
-    using Pezza.Common.DTO;
-    using Pezza.Common.Entities;
-    using Pezza.Portal.Helpers;
+    private readonly ApiCallHelper<CustomerDTO> apiCallHelper;
 
-    public class CustomerController : BaseController
+    public CustomerController(IHttpClientFactory clientFactory)
+        :base(clientFactory)
     {
-        private readonly ApiCallHelper<CustomerDTO> apiCallHelper;
+        this.apiCallHelper = new ApiCallHelper<CustomerDTO>(this.clientFactory);
+        this.apiCallHelper.ControllerName = "Customer";
+    }
 
-        public CustomerController(IHttpClientFactory clientFactory)
-            :base(clientFactory)
+    public async Task<ActionResult> Index()
+    {
+        var json = JsonConvert.SerializeObject(new CustomerDTO
         {
-            this.apiCallHelper = new ApiCallHelper<CustomerDTO>(this.clientFactory);
-            this.apiCallHelper.ControllerName = "Customer";
+            PagingArgs = Common.Models.PagingArgs.NoPaging
+        });
+        var entities = await this.apiCallHelper.GetListAsync(json);
+        return this.View(entities.Data);
+    }
+
+    public IActionResult CreatePartial()
+    {
+        return this.PartialView("~/views/Customer/_Create.cshtml", new CustomerDTO());
+    }
+
+    public async Task<ActionResult> Details(int id)
+    {
+        var entity = await this.apiCallHelper.GetAsync(id);
+        return this.View(entity);
+    }
+
+    public ActionResult Create()
+    {
+        return this.View(new CustomerDTO());
+    }
+
+    [HttpPost]
+    public async Task<ActionResult> Create(CustomerDTO customer)
+    {
+        if (!this.ModelState.IsValid)
+        {
+            return this.View(customer);
         }
 
-        public async Task<ActionResult> Index()
+        var result = await this.apiCallHelper.Create(customer); 
+        return Validate<CustomerDTO>(result, this.apiCallHelper, customer);
+    }
+
+    [Route("Customer/Edit/{id?}")]
+    public async Task<ActionResult> Edit(int id)
+    {
+        var entity = await this.apiCallHelper.GetAsync(id);
+        return this.View(entity);
+    }
+
+    [HttpPost]
+    [Route("Customer/Edit/{id?}")]
+    [ValidateAntiForgeryToken]
+    public async Task<ActionResult> Edit(int id, CustomerDTO customer)
+    {
+        if (!this.ModelState.IsValid)
         {
-            var json = JsonConvert.SerializeObject(new CustomerDTO
-            {
-                PagingArgs = Common.Models.PagingArgs.NoPaging
-            });
-            var entities = await this.apiCallHelper.GetListAsync(json);
-            return this.View(entities.Data);
+            return this.View(customer);
         }
 
-        public IActionResult CreatePartial()
+        customer.Id = id;
+        var result = await this.apiCallHelper.Edit(customer);
+        return Validate<CustomerDTO>(result, this.apiCallHelper, customer);
+    }
+
+    [HttpPost]
+    [Route("Customer/Delete/{id?}")]
+    public async Task<JsonResult> Delete(int id)
+    {
+        if (id == 0)
         {
-            return this.PartialView("~/views/Customer/_Create.cshtml", new CustomerDTO());
+            return this.Json(false);
         }
 
-        public async Task<ActionResult> Details(int id)
+        if (!this.ModelState.IsValid)
         {
-            var entity = await this.apiCallHelper.GetAsync(id);
-            return this.View(entity);
+            return this.Json(false);
         }
 
-        public ActionResult Create()
-        {
-            return this.View(new CustomerDTO());
-        }
-
-        [HttpPost]
-        public async Task<ActionResult> Create(CustomerDTO customer)
-        {
-            if (!this.ModelState.IsValid)
-            {
-                return this.View(customer);
-            }
-
-            var result = await this.apiCallHelper.Create(customer); 
-            return Validate<CustomerDTO>(result, this.apiCallHelper, customer);
-        }
-
-        [Route("Customer/Edit/{id?}")]
-        public async Task<ActionResult> Edit(int id)
-        {
-            var entity = await this.apiCallHelper.GetAsync(id);
-            return this.View(entity);
-        }
-
-        [HttpPost]
-        [Route("Customer/Edit/{id?}")]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(int id, CustomerDTO customer)
-        {
-            if (!this.ModelState.IsValid)
-            {
-                return this.View(customer);
-            }
-
-            customer.Id = id;
-            var result = await this.apiCallHelper.Edit(customer);
-            return Validate<CustomerDTO>(result, this.apiCallHelper, customer);
-        }
-
-        [HttpPost]
-        [Route("Customer/Delete/{id?}")]
-        public async Task<JsonResult> Delete(int id)
-        {
-            if (id == 0)
-            {
-                return this.Json(false);
-            }
-
-            if (!this.ModelState.IsValid)
-            {
-                return this.Json(false);
-            }
-
-            var result = await this.apiCallHelper.Delete(id);
-            return this.Json(result);
-        }
+        var result = await this.apiCallHelper.Delete(id);
+        return this.Json(result);
     }
 }

@@ -61,7 +61,7 @@ Overview
 
 [Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%201)
 
-[![.NET 6 - Phase 1](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase1-finalsolution.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase1-finalsolution.yml)
+[![.NET 7 - Phase 1](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase1-finalsolution.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase1-finalsolution.yml)
 ### **Phase 2 - Scaffolding** 
 
 We will be extending the foundation from Phase 1 to all Entities CRUD operations, we will also be moving to use CQRS Pattern and Mediatr NuGet Package.
@@ -71,7 +71,7 @@ Overview
 
 [Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%202)
 
-[![.NET 6 - Phase 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase2-finalsolution.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase2-finalsolution.yml)
+[![.NET 7 - Phase 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase2-finalsolution.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase2-finalsolution.yml)
 
 ### **Phase 3 - Data Validation and Data Pagination**
 
@@ -89,7 +89,7 @@ Improve how data is displayed and validated
 
 [Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%203)
 
-[![.NET 6 - Phase 3 - Step 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase3-step2.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase3-step2.yml)
+[![.NET 7 - Phase 3 - Step 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase3-step2.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase3-step2.yml)
 
 ### **Phase 4 - Coding Standards and Error Handling**
 
@@ -102,7 +102,7 @@ Overview
 
 [Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%204)
 
-[![.NET 6 - Phase 4 - Step 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase4-step2.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase4-step2.yml)
+[![.NET 7 - Phase 4 - Step 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase4-step2.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase4-step2.yml)
   
 ### **Phase 5 - Performance Improvement**
 
@@ -117,7 +117,7 @@ Increasing Performance
 
 [Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%205)
 
-[![.NET 6 - Phase 5 - Step 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase5-step2.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase5-step2.yml)
+[![.NET 7 - Phase 5 - Step 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase5-step2.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase5-step2.yml)
 
 ### **Phase 6 - Events**
 
@@ -132,7 +132,7 @@ Increasing Performance
 
 [Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%206)
 
-[![.NET 6 - Phase 6 - Step 3](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-step3.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-step3.yml)
+[![.NET 7 - Phase 6 - Step 3](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-step3.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-step3.yml)
 
 ### **Phase 7 - User Interface** 
 
@@ -153,7 +153,7 @@ We will be building a basic Pizza website for Customers and a basic Admin Back-E
 **Pezza Admin Back-End**
 
 - MVC - [Click here to get started](https://web.microsoftstream.com/video/315b2034-0aa5-43ee-b030-562f4a597cfd?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9) 
-<br/>[![.NET 6 - Phase 7 - Dashboard - MVC](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase7-dashboard-mvc.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase7-dashboard-mvc.yml)
+<br/>[![.NET 7 - Phase 7 - Dashboard - MVC](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase7-dashboard-mvc.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase7-dashboard-mvc.yml)
 - AngularJS - Coming Soon
 - ReactJS - Coming Soon
 - 
@@ -173,7 +173,7 @@ Add Security
 
 [Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%208)
 
-[![.NET 6 - Phase 8 - Step 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase8-step2.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase8-step2.yml)
+[![.NET 7 - Phase 8 - Step 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase8-step2.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase8-step2.yml)
   
 ### **Phase 9** - Coming soon
 

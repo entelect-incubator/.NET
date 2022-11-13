@@ -1,27 +1,26 @@
-﻿namespace Pezza.Test.Setup.TestData.Customer
+﻿namespace Pezza.Test.Setup.TestData.Customer;
+
+using System;
+using Bogus;
+using Pezza.Common.DTO;
+using Pezza.Common.Models.Base;
+
+public static class CustomerTestData
 {
-    using System;
-    using Bogus;
-    using Pezza.Common.DTO;
-    using Pezza.Common.Models.Base;
+    public static Faker faker = new();
 
-    public static class CustomerTestData
+    public static CustomerDTO CustomerDTO = new()
     {
-        public static Faker faker = new();
-
-        public static CustomerDTO CustomerDTO = new()
+        ContactPerson = faker.Person.FullName,
+        Email = faker.Person.Email,
+        Phone = faker.Person.Phone,
+        Address = new AddressBase
         {
-            ContactPerson = faker.Person.FullName,
-            Email = faker.Person.Email,
-            Phone = faker.Person.Phone,
-            Address = new AddressBase
-            {
-                Address = faker.Address.FullAddress(),
-                City = faker.Address.City(),
-                Province = faker.Address.State(),
-                PostalCode = faker.Address.ZipCode(),
-            },
-            DateCreated = DateTime.Now
-        };
-    }
+            Address = faker.Address.FullAddress(),
+            City = faker.Address.City(),
+            Province = faker.Address.State(),
+            PostalCode = faker.Address.ZipCode(),
+        },
+        DateCreated = DateTime.Now
+    };
 }

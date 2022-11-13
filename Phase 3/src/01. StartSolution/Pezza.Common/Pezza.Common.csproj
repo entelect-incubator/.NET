@@ -1,16 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net7.0</TargetFramework>
         <CodeAnalysisRuleSet>$(SolutionDir)\StyleCopRuleSet.ruleset</CodeAnalysisRuleSet>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AutoMapper" Version="11.0.0" />
-        <PackageReference Include="FluentValidation" Version="10.3.6" />
-        <PackageReference Include="MediatR" Version="10.0.1" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.1" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="6.0.1" />
+        <PackageReference Include="AutoMapper" Version="12.0.0" />
+        <PackageReference Include="FluentValidation" Version="11.3.0" />
+        <PackageReference Include="MediatR" Version="11.0.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.0" />
         <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

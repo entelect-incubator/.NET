@@ -1,6 +1,6 @@
 <img align="left" width="116" height="116" src="./Assets/pezza-logo.png" />
 
-# &nbsp;**Pezza - Phase 1** [![.NET 6](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase1-finalsolution.yml/badge.svg?branch=master)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase1-finalsolution.yml)
+# &nbsp;**Pezza - Phase 1** [![.NET 7](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase1-finalsolution.yml/badge.svg?branch=master)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase1-finalsolution.yml)
 
 <br/><br/>
 
@@ -39,31 +39,28 @@ Create a folder *Entities* where all database models will go into <br/> ![](./As
 
 Create a Entity Stock.cs in a folder **Entities** <br/>![](Assets/2020-09-11-10-03-20.png)
 
-Stock.cs 
+Stock.cs
 
 ```cs
-namespace Pezza.Common.Entities
+namespace Pezza.Common.Entities;
+
+public class Stock
 {
-    using System;
+    public int Id { get; set; }
 
-    public class Stock
-    {
-        public int Id { get; set; }
+    public string Name { get; set; }
 
-        public string Name { get; set; }
+    public string UnitOfMeasure { get; set; }
 
-        public string UnitOfMeasure { get; set; }
+    public double? ValueOfMeasure { get; set; }
 
-        public double? ValueOfMeasure { get; set; }
+    public int Quantity { get; set; }
 
-        public int Quantity { get; set; }
+    public DateTime? ExpiryDate { get; set; }
 
-        public DateTime? ExpiryDate { get; set; }
+    public DateTime DateCreated { get; set; }
 
-        public DateTime DateCreated { get; set; }
-
-        public string Comment { get; set; }
-    }
+    public string Comment { get; set; }
 }
 ```
 
@@ -74,26 +71,23 @@ Create a Entity StockDTO.cs in a folder **DTO** <br/>![](./Assets/2021-08-26-19-
 StockDTO.cs 
 
 ```cs
-namespace Pezza.Common.DTO
+namespace Pezza.Common.DTO;
+
+public class StockDTO
 {
-    using System;
+    public int Id { get; set; }
 
-    public class StockDTO
-    {
-        public int Id { get; set; }
+    public string Name { get; set; }
 
-        public string Name { get; set; }
+    public string UnitOfMeasure { get; set; }
 
-        public string UnitOfMeasure { get; set; }
+    public double? ValueOfMeasure { get; set; }
 
-        public double? ValueOfMeasure { get; set; }
+    public int? Quantity { get; set; }
 
-        public int? Quantity { get; set; }
+    public DateTime? ExpiryDate { get; set; }
 
-        public DateTime? ExpiryDate { get; set; }
-
-        public string Comment { get; set; }
-    }
+    public string Comment { get; set; }
 }
 ```
 
@@ -104,19 +98,18 @@ Create a Entity MappingProfile.cs in a folder **Profiles** <br/>![](./Assets/202
 MappingProfile.cs
 
 ```cs
-namespace Pezza.Common.Profiles
-{
-    using AutoMapper;
-    using Pezza.Common.DTO;
-    using Pezza.Common.Entities;
+namespace Pezza.Common.Profiles;
 
-    public class MappingProfile : Profile
+using AutoMapper;
+using Pezza.Common.DTO;
+using Pezza.Common.Entities;
+
+public class MappingProfile : Profile
+{
+    public MappingProfile()
     {
-        public MappingProfile()
-        {
-            this.CreateMap<Stock, StockDTO>();
-            this.CreateMap<StockDTO, Stock>();
-        }
+        this.CreateMap<Stock, StockDTO>();
+        this.CreateMap<StockDTO, Stock>();
     }
 }
 ```
@@ -139,28 +132,27 @@ We need to create a DbContext.cs inside of Pezza.DataAccess. A [DbContext](https
  DatabaseContext.cs
 
 ```cs
-namespace Pezza.DataAccess
+namespace Pezza.DataAccess;
+
+using Microsoft.EntityFrameworkCore;
+using Pezza.Common.Entities;
+using Pezza.DataAccess.Mapping;
+
+public class DatabaseContext : DbContext
 {
-    using Microsoft.EntityFrameworkCore;
-    using Pezza.Common.Entities;
-    using Pezza.DataAccess.Mapping;
-
-    public class DatabaseContext : DbContext
+    public DatabaseContext()
     {
-        public DatabaseContext()
-        {
-        }
+    }
 
-        public DatabaseContext(DbContextOptions options) : base(options)
-        {
-        }
+    public DatabaseContext(DbContextOptions options) : base(options)
+    {
+    }
 
-        public virtual DbSet<Stock> Stocks { get; set; }
+    public virtual DbSet<Stock> Stocks { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.ApplyConfiguration(new StockMap());
-        }
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.ApplyConfiguration(new StockMap());
     }
 }
 ```
@@ -172,60 +164,59 @@ To be able to map the Database Table to the Entity we use Mappings from EF Core.
 StockMap.cs
 
 ```cs
-namespace Pezza.DataAccess.Mapping
+namespace Pezza.DataAccess.Mapping;
+
+using Microsoft.EntityFrameworkCore;
+using Pezza.Common.Entities;
+
+public partial class StockMap : IEntityTypeConfiguration<Stock>
 {
-    using Microsoft.EntityFrameworkCore;
-    using Pezza.Common.Entities;
-
-    public partial class StockMap : IEntityTypeConfiguration<Stock>
+    public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Stock> builder)
     {
-        public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Stock> builder)
-        {
-            builder.ToTable("Stock", "dbo");
+        builder.ToTable("Stock", "dbo");
 
-            builder.HasKey(t => t.Id);
+        builder.HasKey(t => t.Id);
 
-            builder.Property(t => t.Id)
-                .IsRequired()
-                .HasColumnName("Id")
-                .HasColumnType("int")
-                .ValueGeneratedOnAdd();
+        builder.Property(t => t.Id)
+            .IsRequired()
+            .HasColumnName("Id")
+            .HasColumnType("int")
+            .ValueGeneratedOnAdd();
 
-            builder.Property(t => t.Name)
-                .IsRequired()
-                .HasColumnName("Name")
-                .HasColumnType("varchar(100)")
-                .HasMaxLength(100);
+        builder.Property(t => t.Name)
+            .IsRequired()
+            .HasColumnName("Name")
+            .HasColumnType("varchar(100)")
+            .HasMaxLength(100);
 
-            builder.Property(t => t.UnitOfMeasure)
-                .HasColumnName("UnitOfMeasure")
-                .HasColumnType("varchar(20)")
-                .HasMaxLength(20);
+        builder.Property(t => t.UnitOfMeasure)
+            .HasColumnName("UnitOfMeasure")
+            .HasColumnType("varchar(20)")
+            .HasMaxLength(20);
 
-            builder.Property(t => t.ValueOfMeasure)
-                .HasColumnName("ValueOfMeasure")
-                .HasColumnType("decimal(18, 2)");
+        builder.Property(t => t.ValueOfMeasure)
+            .HasColumnName("ValueOfMeasure")
+            .HasColumnType("decimal(18, 2)");
 
-            builder.Property(t => t.Quantity)
-                .IsRequired()
-                .HasColumnName("Quantity")
-                .HasColumnType("int");
+        builder.Property(t => t.Quantity)
+            .IsRequired()
+            .HasColumnName("Quantity")
+            .HasColumnType("int");
 
-            builder.Property(t => t.ExpiryDate)
-                .HasColumnName("ExpiryDate")
-                .HasColumnType("datetime");
+        builder.Property(t => t.ExpiryDate)
+            .HasColumnName("ExpiryDate")
+            .HasColumnType("datetime");
 
-            builder.Property(t => t.DateCreated)
-                .IsRequired()
-                .HasColumnName("DateCreated")
-                .HasColumnType("datetime")
-                .HasDefaultValueSql("(getdate())");
+        builder.Property(t => t.DateCreated)
+            .IsRequired()
+            .HasColumnName("DateCreated")
+            .HasColumnType("datetime")
+            .HasDefaultValueSql("(getdate())");
 
-            builder.Property(t => t.Comment)
-                .HasColumnName("Comment")
-                .HasColumnType("varchar(1000)")
-                .HasMaxLength(1000);
-        }
+        builder.Property(t => t.Comment)
+            .HasColumnName("Comment")
+            .HasColumnType("varchar(1000)")
+            .HasMaxLength(1000);
     }
 }
 ```
@@ -255,30 +246,29 @@ On the root folder create the following 2 classes.
 DatabaseContextTest.cs
 
 ```cs
-namespace Pezza.Test
+namespace Pezza.Test;
+
+using Microsoft.EntityFrameworkCore;
+using Pezza.DataAccess;
+
+public class DatabaseContextTest
 {
-    using Microsoft.EntityFrameworkCore;
-    using Pezza.DataAccess;
-
-    public class DatabaseContextTest
+    protected DatabaseContextTest(DbContextOptions<DbContext> contextOptions)
     {
-        protected DatabaseContextTest(DbContextOptions<DbContext> contextOptions)
-        {
-            this.ContextOptions = contextOptions;
-            this.Seed();
-        }
+        this.ContextOptions = contextOptions;
+        this.Seed();
+    }
 
-        protected DbContextOptions<DbContext> ContextOptions { get; }
+    protected DbContextOptions<DbContext> ContextOptions { get; }
 
-        private void Seed()
-        {
-            using var context = new DatabaseContext(this.ContextOptions);
+    private void Seed()
+    {
+        using var context = new DatabaseContext(this.ContextOptions);
 
-            context.Database.EnsureDeleted();
-            context.Database.EnsureCreated();
+        context.Database.EnsureDeleted();
+        context.Database.EnsureCreated();
 
-            context.SaveChanges();
-        }
+        context.SaveChanges();
     }
 }
 ```
@@ -286,19 +276,18 @@ namespace Pezza.Test
 TestBase.cs - Create a In Memory DBContext.
 
 ```cs
-namespace Pezza.Test
-{
-    using Microsoft.EntityFrameworkCore;
+namespace Pezza.Test;
 
-    public class TestBase : DatabaseContextTest
+using Microsoft.EntityFrameworkCore;
+
+public class TestBase : DatabaseContextTest
+{
+    public TestBase()
+    : base(
+        new DbContextOptionsBuilder<DbContext>()
+            .UseInMemoryDatabase("PezzaDb")
+            .Options)
     {
-        public TestBase()
-        : base(
-            new DbContextOptionsBuilder<DbContext>()
-                .UseInMemoryDatabase("PezzaDb")
-                .Options)
-        {
-        }
     }
 }
 ```
@@ -316,24 +305,22 @@ What you will be creating in the Setup Folder
 QueryTestBase.cs
 
 ```cs
-namespace Pezza.Test.Setup
+namespace Pezza.Test.Setup;
+
+using Pezza.DataAccess;
+using static DatabaseContextFactory;
+
+public class QueryTestBase : IDisposable
 {
-    using System;
-    using Pezza.DataAccess;
-    using static DatabaseContextFactory;
+    public DatabaseContext Context => Create();
 
-    public class QueryTestBase : IDisposable
+    public static IMapper Mapper()
     {
-        public DatabaseContext Context => Create();
-
-        public static IMapper Mapper()
-        {
-            var mappingConfig = new MapperConfiguration(mc => mc.AddProfile(new MappingProfile()));
-            return mappingConfig.CreateMapper();
-        }
-
-        public void Dispose() => Destroy(this.Context);
+        var mappingConfig = new MapperConfiguration(mc => mc.AddProfile(new MappingProfile()));
+        return mappingConfig.CreateMapper();
     }
+
+    public void Dispose() => Destroy(this.Context);
 }
 ```
 
@@ -342,39 +329,37 @@ Create DatabaseContextFactory.cs class in **Setup folder** that will be used to 
 DatabaseContextFactory.cs
 
 ```cs
-namespace Pezza.Test.Setup
+namespace Pezza.Test.Setup;
+
+using Microsoft.EntityFrameworkCore;
+using Pezza.DataAccess;
+
+public class DatabaseContextFactory
 {
-    using System;
-    using Microsoft.EntityFrameworkCore;
-    using Pezza.DataAccess;
-
-    public class DatabaseContextFactory
+    protected DatabaseContextFactory()
     {
-        protected DatabaseContextFactory()
-        {
-        }
+    }
 
-        public static DatabaseContext DBContext()
-        {
-            var options = new DbContextOptionsBuilder<DbContext>().UseInMemoryDatabase(Guid.NewGuid().ToString()).Options;
-            return new DatabaseContext(options);
-        }
+    public static DatabaseContext DBContext()
+    {
+        var options = new DbContextOptionsBuilder<DbContext>().UseInMemoryDatabase(Guid.NewGuid().ToString()).Options;
+        return new DatabaseContext(options);
+    }
 
-        public static DatabaseContext Create()
-        {
-            var context = DBContext();
+    public static DatabaseContext Create()
+    {
+        var context = DBContext();
 
-            context.Database.EnsureCreated();
+        context.Database.EnsureCreated();
 
-            return context;
-        }
+        return context;
+    }
 
-        public static void Destroy(DatabaseContext context)
-        {
-            context.Database.EnsureDeleted();
+    public static void Destroy(DatabaseContext context)
+    {
+        context.Database.EnsureDeleted();
 
-            context.Dispose();
-        }
+        context.Dispose();
     }
 }
 ```
@@ -384,27 +369,25 @@ next we will create Test Data for each Entity. Inside the folder **TestData**, t
 StockTestData.cs
 
 ```cs
-namespace Pezza.Test
+namespace Pezza.Test;
+
+using Bogus;
+using Pezza.Common.Entities;
+
+public static class StockTestData
 {
-    using System;
-    using Bogus;
-    using Pezza.Common.Entities;
+    public static Faker faker = new Faker();
 
-    public static class StockTestData
+    public static Stock Stock = new Stock()
     {
-        public static Faker faker = new Faker();
-
-        public static Stock Stock = new Stock()
-        {
-            Comment = faker.Lorem.Sentence(),
-            DateCreated = DateTime.Now,
-            ExpiryDate = DateTime.Now.AddMonths(1),
-            Name = faker.Commerce.Product(),
-            Quantity = 1,
-            UnitOfMeasure = "kg",
-            ValueOfMeasure = 10.5
-        };
-    }
+        Comment = faker.Lorem.Sentence(),
+        DateCreated = DateTime.Now,
+        ExpiryDate = DateTime.Now.AddMonths(1),
+        Name = faker.Commerce.Product(),
+        Quantity = 1,
+        UnitOfMeasure = "kg",
+        ValueOfMeasure = 10.5
+    };
 }
 ```
 
@@ -428,24 +411,23 @@ Create a new IStockCore Interface in *Pezza.Core.Contracts* <br/> ![](./Assets/2
 IStockCore.cs
 
 ```cs
-namespace Pezza.Core.Contracts
+namespace Pezza.Core.Contracts;
+
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Pezza.Common.DTO;
+
+public interface IStockCore
 {
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using Pezza.Common.DTO;
+    Task<StockDTO> GetAsync(int id);
 
-    public interface IStockCore
-    {
-        Task<StockDTO> GetAsync(int id);
+    Task<IEnumerable<StockDTO>> GetAllAsync();
 
-        Task<IEnumerable<StockDTO>> GetAllAsync();
+    Task<StockDTO> UpdateAsync(StockDTO stock);
 
-        Task<StockDTO> UpdateAsync(StockDTO stock);
+    Task<StockDTO> SaveAsync(StockDTO stock);
 
-        Task<StockDTO> SaveAsync(StockDTO stock);
-
-        Task<bool> DeleteAsync(int id);
-    }
+    Task<bool> DeleteAsync(int id);
 }
 ```
 
@@ -456,68 +438,67 @@ Create a new StockCore.cs inside of *Pezza.Core* <br/> ![](Assets/2020-09-15-05-
 StockCore.cs
 
 ```cs
-namespace Pezza.Core
+namespace Pezza.Core;
+
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using Pezza.Common.DTO;
+using Pezza.Common.Entities;
+using Pezza.Core.Contracts;
+using Pezza.DataAccess;
+
+public class StockCore : IStockCore
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using AutoMapper;
-    using Microsoft.EntityFrameworkCore;
-    using Pezza.Common.DTO;
-    using Pezza.Common.Entities;
-    using Pezza.Core.Contracts;
-    using Pezza.DataAccess;
+    private readonly DatabaseContext databaseContext;
 
-    public class StockCore : IStockCore
+    private readonly IMapper mapper;
+
+    public StockCore(DatabaseContext databaseContext, IMapper mapper)
+        => (this.databaseContext, this.mapper) = (databaseContext, mapper);
+
+    public async Task<StockDTO> GetAsync(int id)
+        => this.mapper.Map<StockDTO>(await this.databaseContext.Stocks.FirstOrDefaultAsync(x => x.Id == id));
+
+    public async Task<IEnumerable<StockDTO>> GetAllAsync()
     {
-        private readonly DatabaseContext databaseContext;
+        var entities = await this.databaseContext.Stocks.Select(x => x).AsNoTracking().ToListAsync();
+        return this.mapper.Map<List<StockDTO>>(entities);
+    }
 
-        private readonly IMapper mapper;
+    public async Task<StockDTO> SaveAsync(StockDTO stock)
+    {
+        var entity = this.mapper.Map<Stock>(stock);
+        this.databaseContext.Stocks.Add(entity);
+        await this.databaseContext.SaveChangesAsync();
+        return this.mapper.Map<StockDTO>(entity);
+    }
 
-        public StockCore(DatabaseContext databaseContext, IMapper mapper)
-            => (this.databaseContext, this.mapper) = (databaseContext, mapper);
+    public async Task<StockDTO> UpdateAsync(StockDTO stock)
+    {
+        var findEntity = await this.databaseContext.Stocks.FirstOrDefaultAsync(x => x.Id == stock.Id);
 
-        public async Task<StockDTO> GetAsync(int id)
-            => this.mapper.Map<StockDTO>(await this.databaseContext.Stocks.FirstOrDefaultAsync(x => x.Id == id));
+        findEntity.Name = !string.IsNullOrEmpty(stock.Name) ? stock.Name : findEntity.Name;
+        findEntity.UnitOfMeasure = !string.IsNullOrEmpty(stock.UnitOfMeasure) ? stock.UnitOfMeasure : findEntity.UnitOfMeasure;
+        findEntity.ValueOfMeasure = stock.ValueOfMeasure ?? findEntity.ValueOfMeasure;
+        findEntity.Quantity = stock.Quantity ?? findEntity.Quantity;
+        findEntity.ExpiryDate = stock.ExpiryDate ?? findEntity.ExpiryDate;
+        findEntity.Comment = stock.Comment;
+        this.databaseContext.Stocks.Update(findEntity);
+        await this.databaseContext.SaveChangesAsync();
 
-        public async Task<IEnumerable<StockDTO>> GetAllAsync()
-        {
-            var entities = await this.databaseContext.Stocks.Select(x => x).AsNoTracking().ToListAsync();
-            return this.mapper.Map<List<StockDTO>>(entities);
-        }
+        return this.mapper.Map<StockDTO>(findEntity);
+    }
 
-        public async Task<StockDTO> SaveAsync(StockDTO stock)
-        {
-            var entity = this.mapper.Map<Stock>(stock);
-            this.databaseContext.Stocks.Add(entity);
-            await this.databaseContext.SaveChangesAsync();
-            return this.mapper.Map<StockDTO>(entity);
-        }
+    public async Task<bool> DeleteAsync(int id)
+    {
+        var entity = await this.databaseContext.Stocks.FirstOrDefaultAsync(x => x.Id == id);
+        this.databaseContext.Stocks.Remove(entity);
+        var result = await this.databaseContext.SaveChangesAsync();
 
-        public async Task<StockDTO> UpdateAsync(StockDTO stock)
-        {
-            var findEntity = await this.databaseContext.Stocks.FirstOrDefaultAsync(x => x.Id == stock.Id);
-
-            findEntity.Name = !string.IsNullOrEmpty(stock.Name) ? stock.Name : findEntity.Name;
-            findEntity.UnitOfMeasure = !string.IsNullOrEmpty(stock.UnitOfMeasure) ? stock.UnitOfMeasure : findEntity.UnitOfMeasure;
-            findEntity.ValueOfMeasure = stock.ValueOfMeasure ?? findEntity.ValueOfMeasure;
-            findEntity.Quantity = stock.Quantity ?? findEntity.Quantity;
-            findEntity.ExpiryDate = stock.ExpiryDate ?? findEntity.ExpiryDate;
-            findEntity.Comment = stock.Comment;
-            this.databaseContext.Stocks.Update(findEntity);
-            await this.databaseContext.SaveChangesAsync();
-
-            return this.mapper.Map<StockDTO>(findEntity);
-        }
-
-        public async Task<bool> DeleteAsync(int id)
-        {
-            var entity = await this.databaseContext.Stocks.FirstOrDefaultAsync(x => x.Id == id);
-            this.databaseContext.Stocks.Remove(entity);
-            var result = await this.databaseContext.SaveChangesAsync();
-
-            return result == 1;
-        }
+        return result == 1;
     }
 }
 ```
@@ -530,21 +511,20 @@ The interesting part here is, when you call SaveChangesAsync it will return the 
 To keep the Dependency Injection clean and relevant to **Pezza.Core**, create a DependencyInjection.cs class that can be called from any Startup.cs class. <br/> ![](Assets/2020-09-15-05-10-13.png)
 
 ```cs
-namespace Pezza.Core
+namespace Pezza.Core;
+
+using Microsoft.Extensions.DependencyInjection;
+using Pezza.Common.Profiles;
+using Pezza.Core.Contracts;
+
+public static class DependencyInjection
 {
-    using Microsoft.Extensions.DependencyInjection;
-    using Pezza.Common.Profiles;
-    using Pezza.Core.Contracts;
-
-    public static class DependencyInjection
+    public static IServiceCollection AddApplication(this IServiceCollection services)
     {
-        public static IServiceCollection AddApplication(this IServiceCollection services)
-        {
-            services.AddTransient(typeof(IStockCore), typeof(StockCore));
-            services.AddAutoMapper(typeof(MappingProfile));
+        services.AddTransient(typeof(IStockCore), typeof(StockCore));
+        services.AddAutoMapper(typeof(MappingProfile));
 
-            return services;
-        }
+        return services;
     }
 }
 ```
@@ -582,70 +562,69 @@ public static StockDTO StockDTO = new StockDTO()
 Core\TestStockCore.cs
 
 ```cs
-namespace Pezza.Test.Core
+namespace Pezza.Test.Core;
+
+using System.Linq;
+using System.Threading.Tasks;
+using Bogus;
+using NUnit.Framework;
+using Pezza.Common.DTO;
+using Pezza.Core;
+using Pezza.Test.Setup;
+using Pezza.Test.Setup.TestData.Stock;
+
+[TestFixture]
+public class TestStockCore : QueryTestBase
 {
-    using System.Linq;
-    using System.Threading.Tasks;
-    using Bogus;
-    using NUnit.Framework;
-    using Pezza.Common.DTO;
-    using Pezza.Core;
-    using Pezza.Test.Setup;
-    using Pezza.Test.Setup.TestData.Stock;
+    private StockCore handler;
 
-    [TestFixture]
-    public class TestStockCore : QueryTestBase
+    private StockDTO stock;
+
+    [SetUp]
+    public async Task Init()
     {
-        private StockCore handler;
+        this.handler = new StockCore(this.Context, Mapper());
+        this.stock = StockTestData.StockDTO;
+        this.stock = await this.handler.SaveAsync(this.stock);
+    }
 
-        private StockDTO stock;
+    [Test]
+    public async Task GetAsync()
+    {
+        var response = await this.handler.GetAsync(this.stock.Id);
+        Assert.IsTrue(response != null);
+    }
 
-        [SetUp]
-        public async Task Init()
-        {
-            this.handler = new StockCore(this.Context, Mapper());
-            this.stock = StockTestData.StockDTO;
-            this.stock = await this.handler.SaveAsync(this.stock);
-        }
+    [Test]
+    public async Task GetAllAsync()
+    {
+        var response = await this.handler.GetAllAsync();
+        Assert.IsTrue(response.Count() == 1);
+    }
 
-        [Test]
-        public async Task GetAsync()
-        {
-            var response = await this.handler.GetAsync(this.stock.Id);
-            Assert.IsTrue(response != null);
-        }
+    [Test]
+    public void SaveAsync()
+    {
+        var outcome = this.stock.Id != 0;
+        Assert.IsTrue(outcome);
+    }
 
-        [Test]
-        public async Task GetAllAsync()
-        {
-            var response = await this.handler.GetAllAsync();
-            Assert.IsTrue(response.Count() == 1);
-        }
+    [Test]
+    public async Task UpdateAsync()
+    {
+        var originalStock = this.stock;
+        this.stock.Name = new Faker().Commerce.Product();
+        var response = await this.handler.UpdateAsync(this.stock);
+        var outcome = response.Name.Equals(originalStock.Name);
 
-        [Test]
-        public void SaveAsync()
-        {
-            var outcome = this.stock.Id != 0;
-            Assert.IsTrue(outcome);
-        }
+        Assert.IsTrue(outcome);
+    }
 
-        [Test]
-        public async Task UpdateAsync()
-        {
-            var originalStock = this.stock;
-            this.stock.Name = new Faker().Commerce.Product();
-            var response = await this.handler.UpdateAsync(this.stock);
-            var outcome = response.Name.Equals(originalStock.Name);
-
-            Assert.IsTrue(outcome);
-        }
-
-        [Test]
-        public async Task DeleteAsync()
-        {
-            var response = await this.handler.DeleteAsync(this.stock.Id);
-            Assert.IsTrue(response);
-        }
+    [Test]
+    public async Task DeleteAsync()
+    {
+        var response = await this.handler.DeleteAsync(this.stock.Id);
+        Assert.IsTrue(response);
     }
 }
 ```
@@ -663,10 +642,12 @@ For every test we will create a new stock Core that will create a test session i
 ## **Create the Apis Layer**
 ### **Setup**
 
-Create a new ASP.NET 6 Web Application inside **01 Apis*** <br/>![](Assets/2020-09-11-09-52-48.png)
+Create a new ASP.NET 7 Web Application inside **01 Apis*** <br/>![](Assets/2020-09-11-09-52-48.png)
 
 **Nuget Packages Required**
 - [ ] Swashbuckle.AspNetCore [Read More](https://code-maze.com/swagger-ui-asp-net-core-web-api/)
+- [ ] Newtonsoft.Json
+- [ ] Microsoft.AspNetCore.Mvc.NewtonsoftJson
 
 ### **Configuration**
 
@@ -680,7 +661,10 @@ public void ConfigureServices(IServiceCollection services)
     {
         c.SwaggerDoc("v1", new OpenApiInfo { Title = "Stock API", Version = "v1" });
     });
-    services.AddControllers();
+    services.AddControllers(options => options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true)
+            .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()))
+            .AddNewtonsoftJson(x => x.SerializerSettings.ContractResolver = new DefaultContractResolver())
+            .AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 }
 ```
 
@@ -753,88 +737,86 @@ Create a new **StockController.cs**. We will create a restfull endpoint for **St
 StockController.cs
 
 ```cs
-namespace Pezza.Api.Controllers
+namespace Pezza.Api.Controllers;
+
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Pezza.Common.DTO;
+using Pezza.Common.Entities;
+using Pezza.Core;
+using Pezza.Core.Contracts;
+
+[ApiController]
+[Route("api/[controller]")]
+public class StockController : ControllerBase
 {
-    using System;
-    using System.Threading.Tasks;
-    using Microsoft.AspNetCore.Mvc;
-    using Pezza.Common.DTO;
-    using Pezza.Common.Entities;
-    using Pezza.Core;
-    using Pezza.Core.Contracts;
+    private readonly IStockCore StockCore;
 
-    [ApiController]
-    [Route("api/[controller]")]
-    public class StockController : ControllerBase
+    public StockController(IStockCore StockCore) => this.StockCore = StockCore;
+
+    [HttpGet("{id}")]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(404)]
+    public async Task<ActionResult> Get(int id)
     {
-        private readonly IStockCore StockCore;
-
-        public StockController(IStockCore StockCore) => this.StockCore = StockCore;
-
-        [HttpGet("{id}")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(404)]
-        public async Task<ActionResult> Get(int id)
+        var search = await this.StockCore.GetAsync(id);
+        if (search == null)
         {
-            var search = await this.StockCore.GetAsync(id);
-            if (search == null)
-            {
-                return this.NotFound();
-            }
-
-            return this.Ok(search);
+            return this.NotFound();
         }
 
-        [HttpGet()]
-        [ProducesResponseType(200)]
-        public async Task<ActionResult> Search()
-        {
-            var result = await this.StockCore.GetAllAsync();
+        return this.Ok(search);
+    }
 
-            return this.Ok(result);
+    [HttpGet()]
+    [ProducesResponseType(200)]
+    public async Task<ActionResult> Search()
+    {
+        var result = await this.StockCore.GetAllAsync();
+
+        return this.Ok(result);
+    }
+
+    [HttpPost]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(400)]
+    public async Task<ActionResult<Stock>> Create([FromBody] Stock model)
+    {
+        var result = await this.StockCore.SaveAsync(model);
+        if (result == null)
+        {
+            return this.BadRequest();
         }
 
-        [HttpPost]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        public async Task<ActionResult<Stock>> Create([FromBody] Stock model)
-        {
-            var result = await this.StockCore.SaveAsync(model);
-            if (result == null)
-            {
-                return this.BadRequest();
-            }
+        return this.Ok(result);
+    }
 
-            return this.Ok(result);
+    [HttpPut("{id}")]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(400)]
+    public async Task<ActionResult> Update(int id, [FromBody] StockDTO model)
+    {
+        var result = await this.StockCore.UpdateAsync(model);
+        if (result == null)
+        {
+            return this.BadRequest();
         }
 
-        [HttpPut("{id}")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        public async Task<ActionResult> Update(int id, [FromBody] StockDTO model)
-        {
-            var result = await this.StockCore.UpdateAsync(model);
-            if (result == null)
-            {
-                return this.BadRequest();
-            }
+        return this.Ok(result);
+    }
 
-            return this.Ok(result);
+    [HttpDelete("{id}")]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(400)]
+    public async Task<ActionResult> Delete(int id)
+    {
+        var result = await this.StockCore.DeleteAsync(id);
+        if (!result)
+        {
+            return this.BadRequest();
         }
 
-        [HttpDelete("{id}")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        public async Task<ActionResult> Delete(int id)
-        {
-            var result = await this.StockCore.DeleteAsync(id);
-            if (!result)
-            {
-                return this.BadRequest();
-            }
-
-            return this.Ok(result);
-        }
+        return this.Ok(result);
     }
 }
 ```
@@ -844,113 +826,112 @@ namespace Pezza.Api.Controllers
 StockController.cs
 
 ```cs
-namespace Pezza.Api.Controllers
+namespace Pezza.Api.Controllers;
+
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Pezza.Common.DTO;
+using Pezza.Common.Entities;
+using Pezza.Core.Contracts;
+
+[ApiController]
+[Route("api/[controller]")]
+public class StockController : ControllerBase
 {
-    using System.Threading.Tasks;
-    using Microsoft.AspNetCore.Mvc;
-    using Pezza.Common.DTO;
-    using Pezza.Common.Entities;
-    using Pezza.Core.Contracts;
+    private readonly IStockCore stockCore;
 
-    [ApiController]
-    [Route("api/[controller]")]
-    public class StockController : ControllerBase
+    public StockController(IStockCore stockCore) => this.stockCore = stockCore;
+
+    /// <summary>
+    /// Get Stock by Id.
+    /// </summary>
+    /// <param name="id">Stock Id</param>
+    /// <returns>ActionResult</returns>
+    [HttpGet("{id}")]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(404)]
+    public async Task<ActionResult> Get(int id)
     {
-        private readonly IStockCore stockCore;
+        var search = await this.stockCore.GetAsync(id);
 
-        public StockController(IStockCore stockCore) => this.stockCore = stockCore;
+        return (search == null) ? this.NotFound() : this.Ok(search);
+    }
 
-        /// <summary>
-        /// Get Stock by Id.
-        /// </summary>
-        /// <param name="id">Stock Id</param>
-        /// <returns>ActionResult</returns>
-        [HttpGet("{id}")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(404)]
-        public async Task<ActionResult> Get(int id)
-        {
-            var search = await this.stockCore.GetAsync(id);
+    /// <summary>
+    /// Get all Stock.
+    /// </summary>
+    /// <returns>ActionResult</returns>
+    [HttpGet]
+    [ProducesResponseType(200)]
+    public async Task<ActionResult> Search()
+    {
+        var result = await this.stockCore.GetAllAsync();
 
-            return (search == null) ? this.NotFound() : this.Ok(search);
-        }
+        return this.Ok(result);
+    }
 
-        /// <summary>
-        /// Get all Stock.
-        /// </summary>
-        /// <returns>ActionResult</returns>
-        [HttpGet]
-        [ProducesResponseType(200)]
-        public async Task<ActionResult> Search()
-        {
-            var result = await this.stockCore.GetAllAsync();
+    /// <summary>
+    /// Create Stock.
+    /// </summary>
+    /// <remarks>
+    /// Sample request:
+    ///
+    ///     POST api/Stock
+    ///     {
+    ///       "name": "Tomatoes",
+    ///       "UnitOfMeasure": "Kg",
+    ///       "ValueOfMeasure": "1",
+    ///       "Quantity": "50"
+    ///     }
+    /// </remarks>
+    /// <param name="dto">Stock Model</param>
+    /// <returns>ActionResult</returns>
+    [HttpPost]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(400)]
+    public async Task<ActionResult<Stock>> Create([FromBody] StockDTO dto)
+    {
+        var result = await this.stockCore.SaveAsync(dto);
 
-            return this.Ok(result);
-        }
+        return (result == null) ? this.BadRequest() : this.Ok(result);
+    }
 
-        /// <summary>
-        /// Create Stock.
-        /// </summary>
-        /// <remarks>
-        /// Sample request:
-        ///
-        ///     POST api/Stock
-        ///     {
-        ///       "name": "Tomatoes",
-        ///       "UnitOfMeasure": "Kg",
-        ///       "ValueOfMeasure": "1",
-        ///       "Quantity": "50"
-        ///     }
-        /// </remarks>
-        /// <param name="dto">Stock Model</param>
-        /// <returns>ActionResult</returns>
-        [HttpPost]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        public async Task<ActionResult<Stock>> Create([FromBody] StockDTO dto)
-        {
-            var result = await this.stockCore.SaveAsync(dto);
+    /// <summary>
+    /// Update Stock.
+    /// </summary>
+    /// <remarks>
+    /// Sample request:
+    ///
+    ///     PUT api/Stock/1
+    ///     {
+    ///       "Quantity": "30"
+    ///     }
+    /// </remarks>
+    /// <param name="dto">Stock Model</param>
+    /// <returns>ActionResult</returns>
+    [HttpPut]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(400)]
+    public async Task<ActionResult> Update([FromBody] StockDTO dto)
+    {
+        var result = await this.stockCore.UpdateAsync(dto);
 
-            return (result == null) ? this.BadRequest() : this.Ok(result);
-        }
+        return (result == null) ? this.BadRequest() : this.Ok(result);
+    }
 
-        /// <summary>
-        /// Update Stock.
-        /// </summary>
-        /// <remarks>
-        /// Sample request:
-        ///
-        ///     PUT api/Stock/1
-        ///     {
-        ///       "Quantity": "30"
-        ///     }
-        /// </remarks>
-        /// <param name="dto">Stock Model</param>
-        /// <returns>ActionResult</returns>
-        [HttpPut]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        public async Task<ActionResult> Update([FromBody] StockDTO dto)
-        {
-            var result = await this.stockCore.UpdateAsync(dto);
+    /// <summary>
+    /// Remove Stock by Id.
+    /// </summary>
+    /// <param name="id">Stock Id</param>
+    /// <returns>ActionResult</returns>
+    [HttpDelete("{id}")]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(400)]
+    public async Task<ActionResult> Delete(int id)
+    {
+        var result = await this.stockCore.DeleteAsync(id);
 
-            return (result == null) ? this.BadRequest() : this.Ok(result);
-        }
-
-        /// <summary>
-        /// Remove Stock by Id.
-        /// </summary>
-        /// <param name="id">Stock Id</param>
-        /// <returns>ActionResult</returns>
-        [HttpDelete("{id}")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        public async Task<ActionResult> Delete(int id)
-        {
-            var result = await this.stockCore.DeleteAsync(id);
-
-            return (!result) ? this.BadRequest() : this.Ok(result);
-        }
+        return (!result) ? this.BadRequest() : this.Ok(result);
     }
 }
 ```

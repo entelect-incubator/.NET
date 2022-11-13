@@ -1,24 +1,23 @@
-﻿namespace Pezza.Test
+﻿namespace Pezza.Test.Setup.TestData.Product;
+
+using System;
+using Bogus;
+using Pezza.Common.DTO;
+
+public static class ProductTestData
 {
-    using System;
-    using Bogus;
-    using Pezza.Common.DTO;
+    public static Faker faker = new Faker();
 
-    public static class ProductTestData
+    public static ProductDTO ProductDTO = new ProductDTO()
     {
-        public static Faker faker = new Faker();
-
-        public static ProductDTO ProductDTO = new ProductDTO()
-        {
-            Name = faker.Commerce.Product(),
-            Description = string.Empty,
-            Price = faker.Finance.Amount(),
-            PictureUrl = string.Empty,
-            OfferEndDate = null,
-            OfferPrice = null,
-            Special = false,
-            DateCreated = DateTime.Now,
-            IsActive = true
-        };
-    }
+        Name = faker.Commerce.Product(),
+        Description = string.Empty,
+        Price = faker.Finance.Amount(),
+        PictureUrl = string.Empty,
+        OfferEndDate = null,
+        OfferPrice = null,
+        Special = false,
+        DateCreated = DateTime.Now,
+        IsActive = true
+    };
 }

@@ -2,7 +2,7 @@
 
 @{
     ViewBag.Title = "Restaurant";
-    ViewBag.ActiveMenu = "Restaurants";
+ViewBag.ActiveMenu = "Restaurants";
 }
 
 <div>
@@ -15,8 +15,8 @@
 @if (Model.Any())
 {
     @foreach (var restaurant in Model)
-    {
-        <div class="card" style="width: 18rem;float: left; margin-right: 15px;">
+{
+    <div class="card" style="width: 18rem;float: left; margin-right: 15px;">
             <img src="@restaurant.PictureUrl" class="card-img-top" alt="@restaurant.Name Store Front">
             <div class="card-body">
                 <h4 class="card-title">@restaurant.Name - <small>@(restaurant.IsActive.HasValue ? "Open" : "Close")</small></h4>
@@ -38,7 +38,7 @@
                 </div>
             </div>
         </div>
-    }
+}
 
     @await Html.PartialAsync("_Modals")
 }

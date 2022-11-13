@@ -1,23 +1,25 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net7.0</TargetFramework>
         <CodeAnalysisRuleSet>$(SolutionDir)\StyleCopRuleSet.ruleset</CodeAnalysisRuleSet>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="LazyCache.AspNetCore" Version="2.4.0" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.1">
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.0">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="6.0.1" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.1" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.0" />
         <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="System.Linq.Dynamic.Core" Version="1.2.15" />
+        <PackageReference Include="System.Linq.Dynamic.Core" Version="1.2.23" />
     </ItemGroup>
 
     <ItemGroup>

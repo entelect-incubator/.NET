@@ -1,6 +1,6 @@
 <img align="left" width="116" height="116" src="../pezza-logo.png" />
 
-# &nbsp;**Pezza - Phase 4 - Step 2** [![.NET 6 - Phase 4 - Step 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase4-step2.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase4-step2.yml)
+# &nbsp;**Pezza - Phase 4 - Step 2** [![.NET 7 - Phase 4 - Step 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase4-step2.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase4-step2.yml)
 
 <br/><br/><br/>
 
@@ -14,32 +14,31 @@ In the root of Pezza.Common, create Logging.cs as per the following code snippet
 
 
 ```cs
-namespace Pezza.Common
+namespace Pezza.Common;
+
+using Serilog;
+
+public static class Logging
 {
-    using System;
-    using Serilog;
-
-    public static class Logging
+    public static void LogInfo(string name, object data)
     {
-        public static void LogInfo(string name, object data)
-        {
-            Setup();
-            Log.Information(name, data);
-        }
-
-        public static void LogException(Exception e)
-        {
-            Setup();
-            Log.Fatal(e, "Exception");
-        }
-
-        private static void Setup() => Log.Logger = new LoggerConfiguration()
-            .Enrich.FromLogContext()
-            .WriteTo.File(@"logs\log.txt", rollingInterval: RollingInterval.Day)
-            .CreateLogger();
+        Setup();
+        Log.Information(name, data);
     }
+
+    public static void LogException(Exception e)
+    {
+        Setup();
+        Log.Fatal(e, "Exception");
+    }
+
+    private static void Setup() => Log.Logger = new LoggerConfiguration()
+        .Enrich.FromLogContext()
+        .WriteTo.File(@"logs\log.txt", rollingInterval: RollingInterval.Day)
+        .CreateLogger();
 }
 ```
+
 Modify ExceptionHandlerMiddleware.cs by logging an exception in the final else of the HandleExceptionAsync Method. All exceptions that we have not defined behaviour for gets handled here.
 
 ```cs
@@ -58,50 +57,47 @@ else
 Update PerformanceBehaviour.cs by removing the old logging and using the new static Logging class instead.
 
 ```cs
-namespace Pezza.Common.Behaviours
+namespace Pezza.Common.Behaviours;
+
+using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
+using MediatR;
+using Microsoft.Extensions.Logging;
+
+public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+    where TRequest : IRequest<TResponse>
 {
-    using System.Diagnostics;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using MediatR;
-    using Microsoft.Extensions.Logging;
+    private readonly Stopwatch timer;
 
-    public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
-        where TRequest : IRequest<TResponse>
+    public PerformanceBehaviour(ILogger<TRequest> logger)
     {
-        private readonly Stopwatch timer;
+        this.timer = new Stopwatch();
+    }
 
-        public PerformanceBehaviour(ILogger<TRequest> logger)
+    public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
+    {
+        this.timer.Start();
+
+        var response = await next();
+
+        this.timer.Stop();
+
+        var elapsedMilliseconds = this.timer.ElapsedMilliseconds;
+
+        if (elapsedMilliseconds > 500)
         {
-            this.timer = new Stopwatch();
+            var requestName = typeof(TRequest).Name;
+            Logging.LogInfo($"CleanArchitecture Long Running Request: {requestName} ({elapsedMilliseconds} milliseconds)", request);
         }
 
-        public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
-        {
-            this.timer.Start();
-
-            var response = await next();
-
-            this.timer.Stop();
-
-            var elapsedMilliseconds = this.timer.ElapsedMilliseconds;
-
-            if (elapsedMilliseconds > 500)
-            {
-                var requestName = typeof(TRequest).Name;
-                Logging.LogInfo($"CleanArchitecture Long Running Request: {requestName} ({elapsedMilliseconds} milliseconds)", request);
-            }
-
-            return response;
-        }
+        return response;
     }
 }
 ```
 
 Serilog provides sinks for writing log events to storage in various formats. Read more on [provided sinks](https://github.com/serilog/serilog/wiki/Provided-Sinks) or move on to the next phase.
 
-
-
 ## **Move to Phase 5**
 
-[Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%205) 
+[Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%205)

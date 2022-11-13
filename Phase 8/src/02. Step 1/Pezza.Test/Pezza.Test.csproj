@@ -1,33 +1,35 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <CodeAnalysisRuleSet>$(SolutionDir)\StyleCopRuleSet.ruleset</CodeAnalysisRuleSet>
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <CodeAnalysisRuleSet>$(SolutionDir)\StyleCopRuleSet.ruleset</CodeAnalysisRuleSet>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
 
-    <IsPackable>false</IsPackable>
-  </PropertyGroup>
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="Apis\**" />
-    <EmbeddedResource Remove="Apis\**" />
-    <None Remove="Apis\**" />
-  </ItemGroup>
+    <ItemGroup>
+        <Compile Remove="Apis\**" />
+        <EmbeddedResource Remove="Apis\**" />
+        <None Remove="Apis\**" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Bogus" Version="33.0.2" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="5.0.5" />
-    <PackageReference Include="nunit" Version="3.13.1" />
-    <PackageReference Include="NUnit3TestAdapter" Version="3.17.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
-    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Bogus" Version="34.0.2" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.0" />
+        <PackageReference Include="nunit" Version="3.13.3" />
+        <PackageReference Include="NUnit3TestAdapter" Version="4.3.0" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.0" />
+        <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Pezza.Core\Pezza.Core.csproj" />
-    <ProjectReference Include="..\Pezza.DataAccess\Pezza.DataAccess.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Pezza.Core\Pezza.Core.csproj" />
+        <ProjectReference Include="..\Pezza.DataAccess\Pezza.DataAccess.csproj" />
+    </ItemGroup>
 
 </Project>

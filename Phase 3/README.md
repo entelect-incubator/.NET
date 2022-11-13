@@ -1,6 +1,6 @@
 <img align="left" width="116" height="116" src="pezza-logo.png" />
 
-# &nbsp;**Pezza - Phase 3 - Handling Data** [![.NET 6 - Phase 3 - Start Solution](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase3-start.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase3-start.yml)
+# &nbsp;**Pezza - Phase 3 - Handling Data** [![.NET 7 - Phase 3 - Start Solution](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase3-start.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase3-start.yml)
 
 <br/><br/>
 
