@@ -10,17 +10,17 @@ using Pezza.Test.Setup;
 using Pezza.Test.Setup.TestData.Stock;
 
 [TestFixture]
-public class TestStockCore : QueryTestBase
+public class TestPizzaCore : QueryTestBase
 {
 	private StockCore handler;
 
-	private StockDTO stock;
+	private StockModel stock;
 
 	[SetUp]
 	public async Task Init()
 	{
 		this.handler = new StockCore(this.Context, Mapper());
-		this.stock = StockTestData.StockDTO;
+		this.stock = PizzaTestData.StockDTO;
 		this.stock = await this.handler.SaveAsync(this.stock);
 	}
 

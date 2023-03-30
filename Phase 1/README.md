@@ -14,7 +14,7 @@ We will be looking at creating a solution for Pezza's customers only. We will st
 
 Run [SQL file](pezza-db.sql) on your local SQL Server
 
-![](./Assets/2021-08-26-20-04-56.png)
+![](./Assets/2023-03-21-22-34-23.png)
 
 Create a new Pezza Solution - CMD Run dotnet new sln
 
@@ -29,9 +29,10 @@ Create Clean Architecture Folder Structure in your new Solution as below.
 This will contain all entities, enums, exceptions, interfaces and types.
 
 **Nuget Packages Required**
+
 - [ ] AutoMapper
 
-Create a new Class Library Pezza.Common <br/> ![](Assets/2020-09-11-10-01-34.png) <br/> ![](Assets/2020-09-11-10-02-26.png)
+Create a new Class Library Pezza.Common <br/> ![](Assets/2020-09-11-10-01-34.png) <br/> ![](./Assets/2020-09-11-10-02-26.png)
 
 ![Phase 1 Common Project](./Assets/2021-08-26-19-41-58.png)
 
@@ -44,56 +45,51 @@ Stock.cs
 ```cs
 namespace Pezza.Common.Entities;
 
-public class Stock
+public class Pizza
 {
     public int Id { get; set; }
 
     public string Name { get; set; }
 
-    public string UnitOfMeasure { get; set; }
+    public string Description { get; set; }
 
-    public double? ValueOfMeasure { get; set; }
+    public string PictureUrl { get; set; }
 
-    public int Quantity { get; set; }
-
-    public DateTime? ExpiryDate { get; set; }
+    public decimal Price { get; set; }
 
     public DateTime DateCreated { get; set; }
-
-    public string Comment { get; set; }
 }
 ```
 
-Create a folder *DTO* where all data transfer objects will go into <br/>  ![](./Assets/2021-08-26-19-49-57.png)
+Create a folder *Models* where all data transfer objects will go into <br/>  
+![](./Assets/2023-03-21-22-14-08.png)
 
-Create a Entity StockDTO.cs in a folder **DTO** <br/>![](./Assets/2021-08-26-19-50-19.png)
+Create a Entity StockModel.cs in a folder **Models** <br/>![](./Assets/2023-03-21-22-29-23.png)
 
-StockDTO.cs 
+StockModel.cs
 
 ```cs
-namespace Pezza.Common.DTO;
+namespace Pezza.Common.Models;
 
-public class StockDTO
+public class PizzaModel
 {
     public int Id { get; set; }
 
     public string Name { get; set; }
 
-    public string UnitOfMeasure { get; set; }
+    public string Description { get; set; }
 
-    public double? ValueOfMeasure { get; set; }
+    public string PictureUrl { get; set; }
 
-    public int? Quantity { get; set; }
+    public decimal Price { get; set; }
 
-    public DateTime? ExpiryDate { get; set; }
-
-    public string Comment { get; set; }
+    public DateTime DateCreated { get; set; }
 }
 ```
 
-Create a folder **Profiles** where all AutoMapper Profiles will go into. [What is AutoMapper?](https://docs.automapper.org/en/stable/Getting-started.html) <br/>  ![](./Assets/2021-08-26-19-52-29.png)
+Create a folder **Profiles** where all AutoMapper Profiles will go into. [What is AutoMapper?](https://docs.automapper.org/en/stable/Getting-started.html) <br/>  ![](./Assets/2023-03-21-22-24-11.png)
 
-Create a Entity MappingProfile.cs in a folder **Profiles** <br/>![](./Assets/2021-08-26-19-52-54.png)
+Create a Entity MappingProfile.cs in a folder **Profiles** <br/>![](./Assets/2023-03-21-22-24-34.png)
 
 MappingProfile.cs
 
@@ -101,15 +97,15 @@ MappingProfile.cs
 namespace Pezza.Common.Profiles;
 
 using AutoMapper;
-using Pezza.Common.DTO;
 using Pezza.Common.Entities;
+using Pezza.Common.Models;
 
 public class MappingProfile : Profile
 {
     public MappingProfile()
     {
-        this.CreateMap<Stock, StockDTO>();
-        this.CreateMap<StockDTO, Stock>();
+        this.CreateMap<Stock, StockModel>();
+        this.CreateMap<StockModel, Stock>();
     }
 }
 ```
@@ -148,20 +144,20 @@ public class DatabaseContext : DbContext
     {
     }
 
-    public virtual DbSet<Stock> Stocks { get; set; }
+    public virtual DbSet<Pizza> Pizzas { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConfiguration(new StockMap());
+        modelBuilder.ApplyConfiguration(new PizzaMap());
     }
 }
 ```
 
-To be able to map the Database Table to the Entity we use Mappings from EF Core. We also prefer using Mappings for Single Responsibility instead of using Attributes inside of an Entity. This allows the code to stay clean. Create a new folder inside Pezza.DataAccess *Mapping* with a class StockMap.cs
+To be able to map the Database Table to the Entity we use Mappings from EF Core. We also prefer using Mappings for Single Responsibility instead of using Attributes inside of an Entity. This allows the code to stay clean. Create a new folder inside Pezza.DataAccess *Mapping* with a class PizzaMap.cs
 
-![](Assets/2020-09-11-10-19-06.png)
+![](./Assets/2023-03-21-22-37-58.png)
 
-StockMap.cs
+PizzaMap.cs
 
 ```cs
 namespace Pezza.DataAccess.Mapping;
@@ -169,55 +165,45 @@ namespace Pezza.DataAccess.Mapping;
 using Microsoft.EntityFrameworkCore;
 using Pezza.Common.Entities;
 
-public partial class StockMap : IEntityTypeConfiguration<Stock>
+public partial class PizzaMap : IEntityTypeConfiguration<Pizza>
 {
-    public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Stock> builder)
-    {
-        builder.ToTable("Stock", "dbo");
+	public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Pizza> builder)
+	{
+		builder.ToTable("Pizza", "dbo");
 
-        builder.HasKey(t => t.Id);
+		builder.HasKey(t => t.Id);
 
-        builder.Property(t => t.Id)
-            .IsRequired()
-            .HasColumnName("Id")
-            .HasColumnType("int")
-            .ValueGeneratedOnAdd();
+		builder.Property(t => t.Id)
+			.IsRequired()
+			.HasColumnName("Id")
+			.HasColumnType("int")
+			.ValueGeneratedOnAdd();
 
-        builder.Property(t => t.Name)
-            .IsRequired()
-            .HasColumnName("Name")
-            .HasColumnType("varchar(100)")
-            .HasMaxLength(100);
+		builder.Property(t => t.Name)
+			.IsRequired()
+			.HasColumnName("Name")
+			.HasColumnType("varchar(100)")
+			.HasMaxLength(100);
 
-        builder.Property(t => t.UnitOfMeasure)
-            .HasColumnName("UnitOfMeasure")
-            .HasColumnType("varchar(20)")
-            .HasMaxLength(20);
+		builder.Property(t => t.Description)
+			.HasColumnName("Description")
+			.HasColumnType("varchar(500)")
+			.HasMaxLength(20);
 
-        builder.Property(t => t.ValueOfMeasure)
-            .HasColumnName("ValueOfMeasure")
-            .HasColumnType("decimal(18, 2)");
+		builder.Property(t => t.PictureUrl)
+			.HasColumnName("PictureUrl")
+			.HasColumnType("varchar(1000)");
 
-        builder.Property(t => t.Quantity)
-            .IsRequired()
-            .HasColumnName("Quantity")
-            .HasColumnType("int");
+		builder.Property(t => t.Price)
+			.HasColumnName("Price")
+			.HasColumnType("decimal(17, 2)");
 
-        builder.Property(t => t.ExpiryDate)
-            .HasColumnName("ExpiryDate")
-            .HasColumnType("datetime");
-
-        builder.Property(t => t.DateCreated)
-            .IsRequired()
-            .HasColumnName("DateCreated")
-            .HasColumnType("datetime")
-            .HasDefaultValueSql("(getdate())");
-
-        builder.Property(t => t.Comment)
-            .HasColumnName("Comment")
-            .HasColumnType("varchar(1000)")
-            .HasMaxLength(1000);
-    }
+		builder.Property(t => t.DateCreated)
+			.IsRequired()
+			.HasColumnName("DateCreated")
+			.HasColumnType("datetime")
+			.HasDefaultValueSql("(getdate())");
+	}
 }
 ```
 
@@ -300,7 +286,7 @@ The **Setup folder**, create QueryTestBase.cs class this will be inherited by di
 
 What you will be creating in the Setup Folder
 
-![](Assets/2021-10-21-08-25-59.png)
+![](./Assets/2023-03-21-22-39-59.png)
 
 QueryTestBase.cs
 
@@ -364,7 +350,7 @@ public class DatabaseContextFactory
 }
 ```
 
-next we will create Test Data for each Entity. Inside the folder **TestData**, then create a folder **Stock**. Create a **StockTestData.cs** class. This will create a fake Stock Entity for testing. <br/> ![](Assets/2020-09-14-05-58-42.png)
+next we will create Test Data for each Entity. Inside the folder **TestData**, then create a folder **Pizza**. Create a **PizzaTestData.cs** class. This will create a fake Pizza Entity for testing. <br/> ![](./Assets/2023-03-21-22-41-17.png)
 
 StockTestData.cs
 

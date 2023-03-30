@@ -4,7 +4,6 @@
 
 <br/><br/><br/>
 
-
 - [ ] Setup your environment - [How to video](https://www.youtube.com/watch?v=G1-Zfr9-3zs&list=PLLWMQd6PeGY2GVsQZ-u3DPXqwwKW8MkiP)
   - [ ] [Visual Studio 2022 Community](https://visualstudio.microsoft.com/downloads/) Installed
   - [ ] [.NET 7](https://dotnet.microsoft.com/download) Installed
@@ -16,7 +15,7 @@ Setup Visual Studio
 - [ ] Update the default C# Class in Visual Studio, everytime you create a new class it will use this template.
 - [ ]  Open the following file in a text editor
 
-```
+```cmd
 C:\Program Files (x86)\Microsoft Visual Studio\2022\Community\Common7\IDE\ItemTemplates\CSharp\Code\1033\Class\Class.cs
 ```
 
@@ -38,7 +37,7 @@ public class $safeitemrootname$
 
 Do the same with the Interface Template
 
-```
+```cmd
 C:\Program Files (x86)\Microsoft Visual Studio\2022\Community\Common7\IDE\ItemTemplates\CSharp\Code\1033\Interface\Interface.cs
 ```
 
@@ -55,7 +54,6 @@ public interface $safeitemrootname$
 {
 }
 ```
-
 
 - [ ] [Import new Settings](./Assets/visualstudio.vssettings)
 
@@ -75,6 +73,6 @@ At the bottom of Visual Studio click on the broom and choose **Configure Code Cl
 
 Note on any file you can press Ctr+K and then Ctrl+E to cleanup your code. This helps for consitency and clean code.
 
-### **Pezza Digital Solutions Intro**
+# Intro
 
-- [ ] [Pezza Intro](https://github.com/entelect-incubator/.NET#intro)
+- [ ] [Intro](https://github.com/entelect-incubator/.NET#intro)

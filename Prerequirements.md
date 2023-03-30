@@ -29,6 +29,6 @@ For this Incubator we will be using [.NET 7](https://dotnet.microsoft.com/downlo
 
 In this Incubator, we will build a solution based on the Single Responsibility Principle. To help us achieve this we will be making use of the CQRS pattern alongside a Clean Code Architecture. If you have never heard about these terms, don't worry we will be discussing them in detail.
 
-### **Pezza Digital Solutions Intro**
+### Intro
 
-- [ ] [Pezza Setup](https://github.com/entelect-incubator/.NET/blob/master/Setup.md)
+- [ ] [Setup](https://github.com/entelect-incubator/.NET/blob/master/Setup.md)

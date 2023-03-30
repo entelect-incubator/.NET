@@ -10,7 +10,7 @@ using Pezza.Common.Entities;
 using Pezza.Core.Contracts;
 using Pezza.DataAccess;
 
-public class StockCore : IStockCore
+public class StockCore : IPizzaCore
 {
 	private readonly DatabaseContext databaseContext;
 

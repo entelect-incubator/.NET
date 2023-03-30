@@ -10,9 +10,9 @@ using Pezza.Core.Contracts;
 [Route("api/[controller]")]
 public class StockController : ControllerBase
 {
-	private readonly IStockCore stockCore;
+	private readonly IPizzaCore stockCore;
 
-	public StockController(IStockCore stockCore) => this.stockCore = stockCore;
+	public StockController(IPizzaCore stockCore) => this.stockCore = stockCore;
 
 	/// <summary>
 	/// Get Stock by Id.

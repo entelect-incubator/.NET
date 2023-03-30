@@ -14,8 +14,8 @@ public class DatabaseContext : DbContext
 	{
 	}
 
-	public virtual DbSet<Stock> Stocks { get; set; }
+	public virtual DbSet<Pizza> Pizzas { get; set; }
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
-		=> modelBuilder.ApplyConfiguration(new StockMap());
+		=> modelBuilder.ApplyConfiguration(new PizzaMap());
 }

@@ -2,7 +2,6 @@
 
 	<PropertyGroup>
 		<TargetFramework>net7.0</TargetFramework>
-		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 
 		<IsPackable>false</IsPackable>
@@ -23,6 +22,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\Pezza.Common\Pezza.Common.csproj" />
 		<ProjectReference Include="..\Pezza.Core\Pezza.Core.csproj" />
 		<ProjectReference Include="..\Pezza.DataAccess\Pezza.DataAccess.csproj" />
 	</ItemGroup>

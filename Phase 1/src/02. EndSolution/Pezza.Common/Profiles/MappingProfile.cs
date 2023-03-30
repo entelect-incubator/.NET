@@ -1,14 +1,14 @@
 ﻿namespace Pezza.Common.Profiles;
 
 using AutoMapper;
-using Pezza.Common.DTO;
 using Pezza.Common.Entities;
+using Pezza.Common.Models;
 
 public class MappingProfile : Profile
 {
 	public MappingProfile()
 	{
-		this.CreateMap<Stock, StockDTO>();
-		this.CreateMap<StockDTO, Stock>();
+		this.CreateMap<Pizza, PizzaModel>();
+		this.CreateMap<PizzaModel, Pizza>();
 	}
 }
