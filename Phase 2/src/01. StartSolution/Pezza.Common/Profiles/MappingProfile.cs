@@ -1,8 +1,8 @@
-﻿namespace Pezza.Common.Profiles;
+﻿namespace Common.Profiles;
 
 using AutoMapper;
-using Pezza.Common.DTO;
-using Pezza.Common.Entities;
+using Common.DTO;
+using Common.Entities;
 
 public class MappingProfile : Profile
 {

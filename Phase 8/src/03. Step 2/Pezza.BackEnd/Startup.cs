@@ -1,4 +1,4 @@
-namespace Pezza.Portal;
+namespace Portal;
 
 using System.Threading.Tasks;
 using FluentValidation.AspNetCore;
@@ -10,8 +10,8 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Pezza.Common;
-using Pezza.Portal.Helpers;
+using Common;
+using Portal.Helpers;
 
 public class Startup
 {

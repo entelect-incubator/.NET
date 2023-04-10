@@ -10,14 +10,14 @@ Finishing up the API to use CQRS
 
 In order to return clean unified responses consumers of the API, ActionResult Helper class. Depending on the data retrieved from the Core layer it will cater for the HTTP response and prevent duplicating code in controllers.
 
-Create a Helpers folder in Pezza.Api and ResultHelper.cs inside it with the following code.
+Create a Helpers folder in Api and ResultHelper.cs inside it with the following code.
 
 ```cs
-namespace Pezza.Api.Helpers;
+namespace Api.Helpers;
 
 using Microsoft.AspNetCore.Mvc;
-using Pezza.Api.Controllers;
-using Pezza.Common.Models;
+using Api.Controllers;
+using Common.Models;
 
 public static class ResponseHelper
 {
@@ -63,15 +63,15 @@ We have some images we want to upload for Products and Restaurants. We will be u
 MediaHelper.cs
 
 ```cs
-namespace Pezza.Api.Helpers;
+namespace Api.Helpers;
 
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using ImageMagick;
-using Pezza.Common;
-using Pezza.Common.Helpers;
-using Pezza.Common.Models;
+using Common;
+using Common.Helpers;
+using Common.Models;
 
 public static class MediaHelper
 {
@@ -166,10 +166,10 @@ To show negative errors results inside of Swagger UI we need to create ErrorResu
 ErrorResult.cs
 
 ```cs
-namespace Pezza.Api.Helpers;
+namespace Api.Helpers;
 
     using System.ComponentModel;
-    using Pezza.Common.Models;
+    using Common.Models;
 
     public class ErrorResult : Result
     {
@@ -193,7 +193,7 @@ Helpers should like this when you are.
 ApiController.cs
 
 ```cs
-namespace Pezza.Api.Controllers;
+namespace Api.Controllers;
 
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -221,15 +221,15 @@ public class StockController : ApiController
 Modify all the functions to use Mediatr and the new DataDTO's
 
 ```cs
-namespace Pezza.Api.Controllers;
+namespace Api.Controllers;
 
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Pezza.Api.Helpers;
-using Pezza.Common.DTO;
-using Pezza.Common.Models;
-using Pezza.Core.Customer.Commands;
-using Pezza.Core.Customer.Queries;
+using Api.Helpers;
+using Common.DTO;
+using Common.Models;
+using Core.Customer.Commands;
+using Core.Customer.Queries;
 
 [ApiController]
 public class CustomerController : ApiController
@@ -380,11 +380,11 @@ Remember to Right Click on the Image and choose Properties. Change Copy to Outpu
 ![Not found image copy always](Assets/2020-12-23-23-28-22.png)
 
 ```cs
-namespace Pezza.Api.Controllers;
+namespace Api.Controllers;
 
 using System.IO;
 using Microsoft.AspNetCore.Mvc;
-using Pezza.Common;
+using Common;
 
 public class PictureController : ApiController
 {
@@ -456,7 +456,7 @@ Complete all the other Controllers
 
 ![Controllers Structure!](Assets/2020-12-23-23-26-10.png)
 
-Right-Click on you Pezza.Api project -> Properties -> Debug.
+Right-Click on you Api project -> Properties -> Debug.
 
 Change Launch Browser to Open "swagger"
 
@@ -465,7 +465,7 @@ Change Launch Browser to Open "swagger"
 Startup.cs should look like this when you are done.
 
 ```cs
-namespace Pezza.Api;
+namespace Api;
 
 using System;
 using System.IO;
@@ -479,8 +479,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using Pezza.Core;
-using Pezza.DataAccess;
+using Core;
+using DataAccess;
 
 public class Startup
 {

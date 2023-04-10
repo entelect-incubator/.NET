@@ -1,11 +1,11 @@
-﻿namespace Pezza.Test.Setup.TestData.Stock;
+﻿namespace Test.Setup.TestData.Stock;
 
 using System;
 using Bogus;
-using Pezza.Common.DTO;
-using Pezza.Common.Entities;
+using Common.DTO;
+using Common.Entities;
 
-public static class StockTestData
+public static class PizzaTestData
 {
 	public static Faker faker = new Faker();
 

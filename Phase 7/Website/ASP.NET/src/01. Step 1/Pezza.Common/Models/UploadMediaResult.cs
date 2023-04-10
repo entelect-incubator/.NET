@@ -1,4 +1,4 @@
-﻿namespace Pezza.Common.Helpers
+﻿namespace Common.Helpers
 {
     public class UploadMediaResult
     {

@@ -1,11 +1,11 @@
-﻿namespace Pezza.Test;
+﻿namespace Test;
 
 using System;
 using System.Collections.Generic;
 using Bogus;
-using Pezza.Common.DTO;
-using Pezza.Test.Setup.TestData.Customer;
-using Pezza.Test.Setup.TestData.Restaurant;
+using Common.DTO;
+using Test.Setup.TestData.Customer;
+using Test.Setup.TestData.Restaurant;
 
 public static class OrderTestData
 {

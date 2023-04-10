@@ -1,10 +1,10 @@
-namespace Pezza.Test
+namespace Test
 {
     using System;
     using AutoMapper;
     using LazyCache;
-    using Pezza.Common.Profiles;
-    using Pezza.DataAccess;
+    using Common.Profiles;
+    using DataAccess;
     using static DatabaseContextFactory;
 
     public class QueryTestBase : IDisposable

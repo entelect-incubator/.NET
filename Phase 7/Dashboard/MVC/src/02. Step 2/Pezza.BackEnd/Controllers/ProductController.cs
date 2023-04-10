@@ -1,4 +1,4 @@
-﻿namespace Pezza.Portal.Controllers;
+﻿namespace Portal.Controllers;
 
 using System;
 using System.IO;
@@ -6,11 +6,11 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using Pezza.Common;
-using Pezza.Common.DTO;
-using Pezza.Common.Models;
-using Pezza.Portal.Helpers;
-using Pezza.Portal.Models;
+using Common;
+using Common.DTO;
+using Common.Models;
+using Portal.Helpers;
+using Portal.Models;
 
 public class ProductController : BaseController
 {

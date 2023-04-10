@@ -1,4 +1,4 @@
-﻿@model Pezza.Portal.Models.PagingModel
+﻿@model Portal.Models.PagingModel
 
 @{
     ViewBag.Title = "Stock";
@@ -104,12 +104,12 @@ ViewBag.ActiveMenu = "Stock";
                         });
                     }
                     else {
-                        $.alertWarning('Error removing stock');
+                        $.alertWarning('Error removing pizza');
                     }
                 },
                 error: function (error) {
                     console.log(error);
-                    $.alertWarning('Error removing stock');
+                    $.alertWarning('Error removing pizza');
                 }
             });
         }
@@ -213,22 +213,22 @@ ViewBag.ActiveMenu = "Stock";
                             }
                             else {
                                 for (var i = 0; i < result.data.length; i++) {
-                                    var stock = result.data[i];
+                                    var pizza = result.data[i];
                                     tableBody += '<tr>';
-                                    tableBody += '<td>' + stock.id + '</td>';
-                                    tableBody += '<td align="right">' + stock.quantity + '</td>';
-                                    tableBody += '<td>' + stock.name + '</td>';
+                                    tableBody += '<td>' + pizza.id + '</td>';
+                                    tableBody += '<td align="right">' + pizza.quantity + '</td>';
+                                    tableBody += '<td>' + pizza.name + '</td>';
                                     tableBody += '<td>';
-                                    tableBody += stock.unitOfMeasure + ' ';
-                                    tableBody += stock.valueOfMeasure;
+                                    tableBody += pizza.unitOfMeasure + ' ';
+                                    tableBody += pizza.valueOfMeasure;
                                     tableBody += '</td>';
-                                    tableBody += '<td>' + stock.comment + '</td>';
-                                    tableBody += '<td>' + new Date(stock.expiryDate).toLocaleDateString() + '</td>';
+                                    tableBody += '<td>' + pizza.comment + '</td>';
+                                    tableBody += '<td>' + new Date(pizza.expiryDate).toLocaleDateString() + '</td>';
                                     tableBody += `<td align="right">
-                                    <a rel="tooltip" class="btn btn-info btn-sm btn-round btn-icon edit" href="/Stock/Edit/` + stock.id + `">
+                                    <a rel="tooltip" class="btn btn-info btn-sm btn-round btn-icon edit" href="/Stock/Edit/` + pizza.id + `">
                                         <i class="fa fa-wrench" aria-hidden="true"></i>
                                      </a>
-                                    <button onclick="remove(` + stock.id + `, '` + stock.name + `')" type="button" rel="tooltip" class="btn btn-danger btn-sm btn-round btn-icon remove">
+                                    <button onclick="remove(` + pizza.id + `, '` + pizza.name + `')" type="button" rel="tooltip" class="btn btn-danger btn-sm btn-round btn-icon remove">
                                         <i class="fa fa-times" aria-hidden="true"></i>
                                     </button>
                                 </td>`

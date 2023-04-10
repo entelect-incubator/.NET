@@ -1,13 +1,13 @@
-﻿namespace Pezza.Api.Controllers
+﻿namespace Api.Controllers
 {
     using System.Threading;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Mvc;
-    using Pezza.Api.Helpers;
-    using Pezza.Common.DTO;
-    using Pezza.Common.Models;
-    using Pezza.Core.Customer.Commands;
-    using Pezza.Core.Customer.Queries;
+    using Api.Helpers;
+    using Common.DTO;
+    using Common.Models;
+    using Core.Customer.Commands;
+    using Core.Customer.Queries;
 
     [ApiController]
     public class CustomerController : ApiController

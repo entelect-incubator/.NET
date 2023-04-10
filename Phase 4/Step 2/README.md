@@ -6,15 +6,15 @@
 
 ## Error handling
 
-Install Nuget Package Serilog.AspNetCore and Serilog.Sinks.File on all but the Pezza.Test project.
+Install Nuget Package Serilog.AspNetCore and Serilog.Sinks.File on all but the Test project.
 
 ![](./Assets/2021-01-15-11-13-06.png)
 
-In the root of Pezza.Common, create Logging.cs as per the following code snippet. Notice that Logging is a static class. This makes it easy to use in any calling code without the need of injecting it.
+In the root of Common, create Logging.cs as per the following code snippet. Notice that Logging is a static class. This makes it easy to use in any calling code without the need of injecting it.
 
 
 ```cs
-namespace Pezza.Common;
+namespace Common;
 
 using Serilog;
 
@@ -57,7 +57,7 @@ else
 Update PerformanceBehaviour.cs by removing the old logging and using the new static Logging class instead.
 
 ```cs
-namespace Pezza.Common.Behaviours;
+namespace Common.Behaviours;
 
 using System.Diagnostics;
 using System.Threading;

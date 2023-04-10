@@ -10,14 +10,14 @@ Start with your finished solution from Phase 2 or in Phase 3 > 01. StartSolution
 
 ### **What are we building?**
 
-A basic Portal for Pezza to manage all their stock, products, orders, customers and restaurant data using MVC.
+A basic Portal for Pezza to manage all their pizza, products, orders, customers and restaurant data using MVC.
 
 ### **Create a new MVC project**
 
 - [ ] Create a new Solution Folder - 00 UI
 - [ ] Create a new Web Application Project
 ![ASP.NET 7 Web Application](Assets/2020-12-10-21-28-37.png)
-![Configure your new project - Pezza.Portal](Assets/2020-12-11-05-36-48.png)
+![Configure your new project - Portal](Assets/2020-12-11-05-36-48.png)
 ![Model-View-Controller](Assets/2020-12-10-21-31-09.png)
 - [ ] Copy the Pezza Branding Guide & Design System files found in [Download]() 
 
@@ -71,7 +71,7 @@ After the *`<body>`*
                 <a href="/"> Home </a>
             </li>
             <li class="@((ViewBag.ActiveMenu == "Stock") ? "active bd-sidenav-active" : "")">
-                <a href="/stock"> Stock </a>
+                <a href="/pizza"> Stock </a>
             </li>
             <li class="@((ViewBag.ActiveMenu == "Restaurants") ? "active bd-sidenav-active" : "")">
                 <a href="/restaurant"> Restaurants </a>
@@ -96,7 +96,7 @@ After the *`<body>`*
                 <div class="bd-toc-item active">
                     <ul class="nav bd-sidenav">
                         <li class="active bd-sidenav-active">
-                            <a href="/stock"> Stock </a>
+                            <a href="/pizza"> Stock </a>
                         </li>
                         <li class="">
                             <a href="/restaurant"> Restaurant </a>
@@ -322,10 +322,10 @@ Should look like this now when you run it.
 
 ![New branding for the portal](Assets/2020-12-15-08-03-21.png)
 
-In Pezza.Common create a new class AppSettings.cs
+In Common create a new class AppSettings.cs
 
 ```cs
-namespace Pezza.Common
+namespace Common
 {
     public class AppSettings
     {
@@ -336,7 +336,7 @@ namespace Pezza.Common
 
 ![AppSettings](Assets/2020-12-15-08-05-32.png)
 
-In Pezza.Portal open appsettings.json and add the AppSettings into it
+In Portal open appsettings.json and add the AppSettings into it
 
 ```json
 {
@@ -355,7 +355,7 @@ In Pezza.Portal open appsettings.json and add the AppSettings into it
 
 ```
 
-In Pezza.Portal Startup.cs modify the Startup Constructor to look like this.
+In Portal Startup.cs modify the Startup Constructor to look like this.
 
 ```cs
 public Startup(IHostEnvironment env, IConfiguration configuration)
@@ -500,7 +500,7 @@ Create a new JavaScript file called alert.js in wwwroot\js. This creates a basic
 } (jQuery))
 ```
 
-Now you can just call $.alertWarning('Error removing stock'); for example
+Now you can just call $.alertWarning('Error removing pizza'); for example
 
 In your Views\Shared\_Layout.cshtml bfore you import the site.js file add the following:
 
@@ -586,13 +586,13 @@ services.AddControllersWithViews()
 In the Web.API we are using Fluent Validation for Server Validation. We can automatically map this to ModelState Error in MVC by doing the following. In the BaseController.cs we are adding a Validate function that will check if any errors are retruned from the API Call and automatically mapping the model state errors. The code that you added in Startup automatically registers FluentValidation Assembly for you. 
 
 ```cs
-namespace Pezza.BackEnd.Controllers
+namespace BackEnd.Controllers
 {
     using System;
     using System.Net.Http;
     using System.Net.Http.Headers;
     using Microsoft.AspNetCore.Mvc;
-    using Pezza.Common;
+    using Common;
 
     public abstract class BaseController : Controller
     {
@@ -676,7 +676,7 @@ In wwwroot\js create address.js. This loads the JSON data into an object. This w
 Create a new Partial View in Views\Shared _Address.cshtml
 
 ```cshtml
-@model Pezza.Common.Entities.AddressBase
+@model Common.Entities.AddressBase
 
 <fieldset>
     <legend>Address</legend>
@@ -730,7 +730,7 @@ Create a new folder Helpers with a class ApiCallHelper.cs. This will standardize
 ![](Assets/2021-01-19-09-15-16.png)
 
 ```cs
-namespace Pezza.Portal.Helpers
+namespace Portal.Helpers
 {
     using System;
     using System.Collections.Generic;
@@ -741,8 +741,8 @@ namespace Pezza.Portal.Helpers
     using System.Text.Json;
     using System.Threading.Tasks;
     using Newtonsoft.Json.Linq;
-    using Pezza.Common;
-    using Pezza.Common.Models;
+    using Common;
+    using Common.Models;
 
     public class ApiCallHelper<T>
     {
@@ -876,7 +876,7 @@ namespace Pezza.Portal.Helpers
 Create ValidateModelStateAttribute in Helpers
 
 ```cs
-namespace Pezza.Portal.Helpers
+namespace Portal.Helpers
 {
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Filters;
@@ -903,12 +903,12 @@ We will only create a CRUD Controller. The Delete will be called using Jquery AJ
 YOu need to intialise ApiCallHelper for all Controllers
 
 ```cs
-private readonly ApiCallHelper<StockDTO> apiCallHelper;
+private readonly ApiCallHelper<PizzaModel> apiCallHelper;
 
 public StockController(IHttpClientFactory clientFactory)
     : base(clientFactory)
 {
-    this.apiCallHelper = new ApiCallHelper<StockDTO>(this.clientFactory);
+    this.apiCallHelper = new ApiCallHelper<PizzaModel>(this.clientFactory);
     this.apiCallHelper.ControllerName = "Stock";
 }
 ```
@@ -924,11 +924,11 @@ public async Task<ActionResult> Details(int id)
 
 public ActionResult Create()
 
-public async Task<ActionResult> Create(StockDTO stock)
+public async Task<ActionResult> Create(PizzaModel pizza)
 
 public async Task<ActionResult> Edit(int id)
 
-public async Task<ActionResult> Edit(int id, StockDTO stock)
+public async Task<ActionResult> Edit(int id, PizzaModel pizza)
 
 public async Task<JsonResult> Delete(int id)
 ```
@@ -936,7 +936,7 @@ public async Task<JsonResult> Delete(int id)
 Full Controller
 
 ```cs
-namespace Pezza.BackEnd.Controllers
+namespace BackEnd.Controllers
 {
     using System.Collections.Generic;
     using System.Net.Http;
@@ -944,24 +944,24 @@ namespace Pezza.BackEnd.Controllers
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Mvc;
     using Newtonsoft.Json;
-    using Pezza.Common;
-    using Pezza.Common.DTO;
-    using Pezza.Portal.Helpers;
+    using Common;
+    using Common.DTO;
+    using Portal.Helpers;
 
     public class StockController : BaseController
     {
-        private readonly ApiCallHelper<StockDTO> apiCallHelper;
+        private readonly ApiCallHelper<PizzaModel> apiCallHelper;
 
         public StockController(IHttpClientFactory clientFactory)
             : base(clientFactory)
         {
-            this.apiCallHelper = new ApiCallHelper<StockDTO>(this.clientFactory);
+            this.apiCallHelper = new ApiCallHelper<PizzaModel>(this.clientFactory);
             this.apiCallHelper.ControllerName = "Stock";
         }
 
         public async Task<ActionResult> Index()
         {
-            var json = JsonConvert.SerializeObject(new StockDTO
+            var json = JsonConvert.SerializeObject(new PizzaModel
             {
                 PagingArgs = Common.Models.PagingArgs.NoPaging
             });
@@ -977,20 +977,20 @@ namespace Pezza.BackEnd.Controllers
 
         public ActionResult Create()
         {
-            return this.View(new StockDTO());
+            return this.View(new PizzaModel());
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(StockDTO stock)
+        public async Task<ActionResult> Create(PizzaModel pizza)
         {
             if (!this.ModelState.IsValid)
             {
-                return this.View(stock);
+                return this.View(pizza);
             }
 
-            var result = await this.apiCallHelper.Create(stock);
-            return Validate<StockDTO>(result, this.apiCallHelper, stock);
+            var result = await this.apiCallHelper.Create(pizza);
+            return Validate<PizzaModel>(result, this.apiCallHelper, pizza);
         }
 
         [Route("Stock/Edit/{id?}")]
@@ -1003,16 +1003,16 @@ namespace Pezza.BackEnd.Controllers
         [HttpPost]
         [Route("Stock/Edit/{id?}")]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(int id, StockDTO stock)
+        public async Task<ActionResult> Edit(int id, PizzaModel pizza)
         {
             if (!this.ModelState.IsValid)
             {
-                return this.View(stock);
+                return this.View(pizza);
             }
 
-            stock.Id = id;
-            var result = await this.apiCallHelper.Edit(stock);
-            return Validate<StockDTO>(result, this.apiCallHelper, stock);
+            pizza.Id = id;
+            var result = await this.apiCallHelper.Edit(pizza);
+            return Validate<PizzaModel>(result, this.apiCallHelper, pizza);
         }
 
         [HttpPost]
@@ -1040,10 +1040,10 @@ Restaurant and Product needs a bit extra information.
 Create a RestaurantModel in Models folder.
 
 ```cs
-namespace Pezza.Portal.Models
+namespace Portal.Models
 {
     using Microsoft.AspNetCore.Http;
-    using Pezza.Common.DTO;
+    using Common.DTO;
 
     public class RestaurantModel : RestaurantDTO
     {
@@ -1066,7 +1066,7 @@ namespace Pezza.Portal.Models
 
 ![RestaurantModel](2020-12-24-00-25-23.png)
 
-For pictures you need to reference the Picture Controller in Pezza.Api
+For pictures you need to reference the Picture Controller in Api
 
 Index() Method add the following after var entities
 
@@ -1112,7 +1112,7 @@ return this.View(new RestaurantModel
 Full Controllers
 
 ```cs
-namespace Pezza.BackEnd.Controllers
+namespace BackEnd.Controllers
 {
     using System;
     using System.IO;
@@ -1121,11 +1121,11 @@ namespace Pezza.BackEnd.Controllers
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Mvc;
     using Newtonsoft.Json;
-    using Pezza.Common;
-    using Pezza.Common.DTO;
-    using Pezza.Common.Entities;
-    using Pezza.Portal.Helpers;
-    using Pezza.Portal.Models;
+    using Common;
+    using Common.DTO;
+    using Common.Entities;
+    using Portal.Helpers;
+    using Portal.Models;
 
     public class RestaurantController : BaseController
     {
@@ -1266,7 +1266,7 @@ The Orders Controller is a bit different, because it has quite a bit of complexi
 How the Order Create works is, it loads a Partial view with all the Products. There's is also a drop down to select a Customer or the capability to create a Customer using a modal.
 
 ```cs
-namespace Pezza.BackEnd.Controllers
+namespace BackEnd.Controllers
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -1276,10 +1276,10 @@ namespace Pezza.BackEnd.Controllers
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Rendering;
     using Newtonsoft.Json;
-    using Pezza.Common;
-    using Pezza.Common.DTO;
-    using Pezza.Portal.Helpers;
-    using Pezza.Portal.Models;
+    using Common;
+    using Common.DTO;
+    using Portal.Helpers;
+    using Portal.Models;
 
     public class OrdersController : BaseController
     {
@@ -1508,11 +1508,11 @@ namespace Pezza.BackEnd.Controllers
 OrderModel.cs
 
 ```cs
-namespace Pezza.Portal.Models
+namespace Portal.Models
 {
     using System.Collections.Generic;
     using Microsoft.AspNetCore.Mvc.Rendering;
-    using Pezza.Common.DTO;
+    using Common.DTO;
 
     public class OrderModel : OrderDTO
     {
@@ -1531,11 +1531,11 @@ namespace Pezza.Portal.Models
 OrderItemModel.cs
 
 ```cs
-namespace Pezza.Portal.Models
+namespace Portal.Models
 {
     using System.Collections.Generic;
-    using Pezza.Common.DTO;
-    using Pezza.Common.Entities;
+    using Common.DTO;
+    using Common.Entities;
 
     public class OrderItemModel : OrderItemDTO
     {
@@ -1552,7 +1552,7 @@ namespace Pezza.Portal.Models
 OrderUpdateModel.cs
 
 ```cs
-namespace Pezza.Portal.Models
+namespace Portal.Models
 {
     public class OrderUpdateModel
     {
@@ -1578,10 +1578,10 @@ Razor doesn't handle nullable fields well so to fix this is using _ of the nulla
 ProductModel.cs
 
 ```cs
-namespace Pezza.Portal.Models
+namespace Portal.Models
 {
     using Microsoft.AspNetCore.Http;
-    using Pezza.Common.DTO;
+    using Common.DTO;
 
     public class ProductModel : ProductDTO
     {
@@ -1643,7 +1643,7 @@ namespace Pezza.Portal.Models
 This is the main table that contains all the Stock Items.
 
 ```cshtml
-@model IEnumerable<Pezza.Common.DTO.StockDTO>
+@model IEnumerable<Common.DTO.PizzaModel>
 
 @{
     ViewBag.Title = "Stock";
@@ -1672,20 +1672,20 @@ This is the main table that contains all the Stock Items.
             </tr>
         </thead>
         <tbody>
-            @foreach (var stock in Model)
+            @foreach (var pizza in Model)
             {
                 <tr>
-                    <td>@stock.Id</td>
-                    <td align="right">@stock.Quantity</td>
-                    <td>@stock.Name</td>
-                    <td>@stock.ValueOfMeasure @stock.UnitOfMeasure</td>
-                    <td>@stock.ExpiryDate</td>
-                    <td>@stock.Comment</td>
+                    <td>@pizza.Id</td>
+                    <td align="right">@pizza.Quantity</td>
+                    <td>@pizza.Name</td>
+                    <td>@pizza.ValueOfMeasure @pizza.UnitOfMeasure</td>
+                    <td>@pizza.ExpiryDate</td>
+                    <td>@pizza.Comment</td>
                     <td align="right">
-                        <a rel="tooltip" class="btn btn-info btn-sm btn-round btn-icon edit" href="/Stock/Edit/@stock.Id">
+                        <a rel="tooltip" class="btn btn-info btn-sm btn-round btn-icon edit" href="/Stock/Edit/@pizza.Id">
                             <i class="fa fa-wrench" aria-hidden="true"></i>
                         </a>
-                        <button onclick="remove(@stock.Id, '@stock.Name')" type="button" rel="tooltip" class="btn btn-danger btn-sm btn-round btn-icon remove">
+                        <button onclick="remove(@pizza.Id, '@pizza.Name')" type="button" rel="tooltip" class="btn btn-danger btn-sm btn-round btn-icon remove">
                             <i class="fa fa-times" aria-hidden="true"></i>
                         </button>
                     </td>
@@ -1728,12 +1728,12 @@ else
                         });
                     }
                     else {
-                        $.alertWarning('Error removing stock');
+                        $.alertWarning('Error removing pizza');
                     }
                 },
                 error: function (error) {
                     console.log(error);
-                    $.alertWarning('Error removing stock');
+                    $.alertWarning('Error removing pizza');
                 }
             });
         }
@@ -1744,7 +1744,7 @@ else
 ## Create.cshtml
 
 ```cshtml
-@model Pezza.Common.DTO.StockDTO
+@model Common.DTO.PizzaModel
 
 @{
     ViewBag.Title = "Add Stock";
@@ -1840,7 +1840,7 @@ else
 ## Edit.cshtml
 
 ```cshtml
-@model Pezza.Common.DTO.StockDTO
+@model Common.DTO.PizzaModel
 
 @{
     ViewBag.Title = "Edit Stock";
@@ -1940,7 +1940,7 @@ For better UI/UX Restaurant we will be using Cards on the main page and cover im
 ### Index.cshtml - Uses Cards
 
 ```cshtml
-@model IEnumerable<Pezza.Common.DTO.RestaurantDTO>
+@model IEnumerable<Common.DTO.RestaurantDTO>
 
 @{
     ViewBag.Title = "Restaurant";
@@ -2016,12 +2016,12 @@ else
                         });
                     }
                     else {
-                        $.alertWarning('Error removing stock');
+                        $.alertWarning('Error removing pizza');
                     }
                 },
                 error: function (error) {
                     console.log(error);
-                    $.alertWarning('Error removing stock');
+                    $.alertWarning('Error removing pizza');
                 }
             });
         }
@@ -2032,7 +2032,7 @@ else
 ### Create.cshtml - Uses a Cover Image for better UI/UX
 
 ```cshtml
-@model Pezza.Portal.Models.RestaurantModel
+@model Portal.Models.RestaurantModel
 
 @{
     ViewBag.Title = "Add Restaurant";
@@ -2138,7 +2138,7 @@ else
 Edit.cshtml
 
 ```cshtml
-@model Pezza.Portal.Models.RestaurantModel
+@model Portal.Models.RestaurantModel
 
 @{
     ViewBag.Title = "Edit Restaurant";
@@ -2267,7 +2267,7 @@ With Product we Use Cards in Create/Edit in a different way
 Index.cshtml
 
 ```cshtml
-@model IEnumerable<Pezza.Common.DTO.ProductDTO>
+@model IEnumerable<Common.DTO.ProductDTO>
 
 @{
     ViewBag.Title = "Product";
@@ -2346,12 +2346,12 @@ else
                         });
                     }
                     else {
-                        $.alertWarning('Error removing stock');
+                        $.alertWarning('Error removing pizza');
                     }
                 },
                 error: function (error) {
                     console.log(error);
-                    $.alertWarning('Error removing stock');
+                    $.alertWarning('Error removing pizza');
                 }
             });
         }
@@ -2362,7 +2362,7 @@ else
 Create.cshtml
 
 ```cshtml
-@model Pezza.Portal.Models.ProductModel
+@model Portal.Models.ProductModel
 
 @{
     ViewBag.Title = "Add Product";
@@ -2541,7 +2541,7 @@ Create.cshtml
 Edit.cshtml
 
 ```cshtml
-@model Pezza.Portal.Models.ProductModel
+@model Portal.Models.ProductModel
 
 @{
     ViewBag.Title = "Edit Product";
@@ -2739,7 +2739,7 @@ Order are complex with a lot of functionality on the front-end. Remember there i
 Index.cshtml
 
 ```cshtml
-@model Dictionary<string, List<Pezza.Common.DTO.OrderDTO>>
+@model Dictionary<string, List<Common.DTO.OrderDTO>>
 
 @{
     ViewBag.Title = "Order";
@@ -2939,7 +2939,7 @@ else
 Create.cshtml
 
 ```cshtml
-@model Pezza.Portal.Models.OrderModel
+@model Portal.Models.OrderModel
 
 @{
     ViewBag.Title = "Add Order";
@@ -3012,7 +3012,7 @@ Create.cshtml
         var orderItems = new Array();
 
         function createCustomer() {
-            var apiUrl = '@Pezza.Common.AppSettings.ApiUrl';
+            var apiUrl = '@Common.AppSettings.ApiUrl';
 
             var cust = new Object();
             cust.Name = $('#CustomerName').val();
@@ -3121,7 +3121,7 @@ Create.cshtml
 _Products_.cshtml
 
 ```cshtml
-@model Pezza.Portal.Models.OrderItemModel
+@model Portal.Models.OrderItemModel
 
 <div class="orderItem">
     @foreach (var Product in Model.Products)

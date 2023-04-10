@@ -1,4 +1,4 @@
-﻿namespace Pezza.Scheduler.Jobs;
+﻿namespace Scheduler.Jobs;
 
 using System.Threading.Tasks;
 

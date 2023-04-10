@@ -1,4 +1,4 @@
-﻿namespace Pezza.Api.Controllers
+﻿namespace Api.Controllers
 {
     using MediatR;
     using Microsoft.AspNetCore.Mvc;

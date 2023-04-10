@@ -1,18 +1,18 @@
-﻿namespace Pezza.Api.Controllers;
+﻿namespace Api.Controllers;
 
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Pezza.Common.DTO;
-using Pezza.Common.Entities;
-using Pezza.Core.Contracts;
+using Common.DTO;
+using Common.Entities;
+using Core.Contracts;
 
 [ApiController]
 [Route("api/[controller]")]
 public class StockController : ControllerBase
 {
-	private readonly IStockCore stockCore;
+	private readonly IPizzaCore pizzaCore;
 
-	public StockController(IStockCore stockCore) => this.stockCore = stockCore;
+	public StockController(IPizzaCore pizzaCore) => this.pizzaCore = pizzaCore;
 
 	/// <summary>
 	/// Get Stock by Id.
@@ -24,7 +24,7 @@ public class StockController : ControllerBase
 	[ProducesResponseType(404)]
 	public async Task<ActionResult> Get(int id)
 	{
-		var search = await this.stockCore.GetAsync(id);
+		var search = await this.pizzaCore.GetAsync(id);
 
 		return (search == null) ? this.NotFound() : this.Ok(search);
 	}
@@ -37,7 +37,7 @@ public class StockController : ControllerBase
 	[ProducesResponseType(200)]
 	public async Task<ActionResult> Search()
 	{
-		var result = await this.stockCore.GetAllAsync();
+		var result = await this.pizzaCore.GetAllAsync();
 
 		return this.Ok(result);
 	}
@@ -63,7 +63,7 @@ public class StockController : ControllerBase
 	[ProducesResponseType(400)]
 	public async Task<ActionResult<Stock>> Create([FromBody] StockDTO dto)
 	{
-		var result = await this.stockCore.SaveAsync(dto);
+		var result = await this.pizzaCore.SaveAsync(dto);
 
 		return (result == null) ? this.BadRequest() : this.Ok(result);
 	}
@@ -86,7 +86,7 @@ public class StockController : ControllerBase
 	[ProducesResponseType(400)]
 	public async Task<ActionResult> Update([FromBody] StockDTO dto)
 	{
-		var result = await this.stockCore.UpdateAsync(dto);
+		var result = await this.pizzaCore.UpdateAsync(dto);
 
 		return (result == null) ? this.BadRequest() : this.Ok(result);
 	}
@@ -101,7 +101,7 @@ public class StockController : ControllerBase
 	[ProducesResponseType(400)]
 	public async Task<ActionResult> Delete(int id)
 	{
-		var result = await this.stockCore.DeleteAsync(id);
+		var result = await this.pizzaCore.DeleteAsync(id);
 
 		return (!result) ? this.BadRequest() : this.Ok(result);
 	}

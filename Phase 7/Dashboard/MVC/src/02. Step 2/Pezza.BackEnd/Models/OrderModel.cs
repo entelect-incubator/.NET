@@ -1,8 +1,8 @@
-﻿namespace Pezza.Portal.Models;
+﻿namespace Portal.Models;
 
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Pezza.Common.DTO;
+using Common.DTO;
 
 public class OrderModel : OrderDTO
 {

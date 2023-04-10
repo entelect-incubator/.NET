@@ -1,4 +1,4 @@
-﻿namespace Pezza.Portal.Helpers;
+﻿namespace Portal.Helpers;
 
 using System;
 using System.Collections.Generic;
@@ -9,8 +9,8 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
-using Pezza.Common;
-using Pezza.Common.Models;
+using Common;
+using Common.Models;
 
 public class ApiCallHelper<T>
 {

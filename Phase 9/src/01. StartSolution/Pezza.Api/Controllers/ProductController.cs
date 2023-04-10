@@ -1,14 +1,14 @@
-﻿namespace Pezza.Api.Controllers;
+﻿namespace Api.Controllers;
 
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Pezza.Api.Helpers;
-using Pezza.Common.DTO;
-using Pezza.Common.Entities;
-using Pezza.Common.Models;
-using Pezza.Core.Product.Commands;
-using Pezza.Core.Product.Queries;
+using Api.Helpers;
+using Common.DTO;
+using Common.Entities;
+using Common.Models;
+using Core.Product.Commands;
+using Core.Product.Queries;
 
 [ApiController]
 public class ProductController : ApiController

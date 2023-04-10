@@ -1,10 +1,10 @@
-﻿namespace Pezza.Common.DTO;
+﻿namespace Common.DTO;
 
 using System;
-using Pezza.Common.Models;
-using Pezza.Common.Models.Base;
+using Common.Models;
+using Common.Models.Base;
 
-public class StockDTO : EntityBase
+public class PizzaModel : EntityBase
 {
     public string Name { get; set; }
 

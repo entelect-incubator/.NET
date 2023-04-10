@@ -1,4 +1,4 @@
-﻿namespace Pezza.Common;
+﻿namespace Common;
 
 public class AppSettings
 {

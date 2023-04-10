@@ -1,6 +1,6 @@
 <img align="left" width="116" height="116" src="./Assets/pezza-logo.png" />
 
-# &nbsp;**Pezza - Phase 1** [![.NET 7](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase1-finalsolution.yml/badge.svg?branch=master)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase1-finalsolution.yml)
+# &nbsp;**Pezza - Phase 1** [![.NET](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase1-finalsolution.yml/badge.svg?branch=master)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase1-finalsolution.yml)
 
 <br/><br/>
 
@@ -12,9 +12,7 @@ We will be looking at creating a solution for Pezza's customers only. We will st
 
 ## **Setup**
 
-Run [SQL file](pezza-db.sql) on your local SQL Server
-
-![](./Assets/2023-03-21-22-34-23.png)
+For the database we will be using InMemory Database that can be modified at a later stage to MSSQL, MySQL or Postgres.
 
 Create a new Pezza Solution - CMD Run dotnet new sln
 
@@ -30,20 +28,21 @@ This will contain all entities, enums, exceptions, interfaces and types.
 
 **Nuget Packages Required**
 
-- [ ] AutoMapper
+- [ ] [Mapperly](https://github.com/riok/mapperly)
 
-Create a new Class Library Pezza.Common <br/> ![](Assets/2020-09-11-10-01-34.png) <br/> ![](./Assets/2020-09-11-10-02-26.png)
+Create a new Class Library **Common** <br/> ![](Assets/2020-09-11-10-01-34.png) <br/> 
+![](./Assets/2023-03-30-08-55-11.png)
 
-![Phase 1 Common Project](./Assets/2021-08-26-19-41-58.png)
+![](./Assets/2023-03-30-08-53-07.png)
 
-Create a folder *Entities* where all database models will go into <br/> ![](./Assets/2021-08-15-17-18-46.png)
+Create a folder *Entities* where all database models will go into <br/> ![](./Assets/2023-03-30-09-05-46.png)
 
-Create a Entity Stock.cs in a folder **Entities** <br/>![](Assets/2020-09-11-10-03-20.png)
+Create a Entity Pizza.cs in a folder **Entities** <br/>![](./Assets/2023-03-30-09-06-16.png)
 
-Stock.cs
+Pizza.cs
 
 ```cs
-namespace Pezza.Common.Entities;
+namespace Common.Entities;
 
 public class Pizza
 {
@@ -53,23 +52,22 @@ public class Pizza
 
     public string Description { get; set; }
 
-    public string PictureUrl { get; set; }
-
     public decimal Price { get; set; }
 
     public DateTime DateCreated { get; set; }
 }
 ```
 
-Create a folder *Models* where all data transfer objects will go into <br/>  
-![](./Assets/2023-03-21-22-14-08.png)
+Create a folder *Models* where all models will go into <br/>  
+![](./Assets/2023-03-30-08-58-05.png)
 
-Create a Entity StockModel.cs in a folder **Models** <br/>![](./Assets/2023-03-21-22-29-23.png)
+Create a model PizzaModel.cs in a folder **Models** <br/>
+![](./Assets/2023-03-30-08-58-51.png)
 
-StockModel.cs
+PizzaModel.cs
 
 ```cs
-namespace Pezza.Common.Models;
+namespace Common.Models;
 
 public class PizzaModel
 {
@@ -79,60 +77,56 @@ public class PizzaModel
 
     public string Description { get; set; }
 
-    public string PictureUrl { get; set; }
-
     public decimal Price { get; set; }
 
     public DateTime DateCreated { get; set; }
 }
 ```
 
-Create a folder **Profiles** where all AutoMapper Profiles will go into. [What is AutoMapper?](https://docs.automapper.org/en/stable/Getting-started.html) <br/>  ![](./Assets/2023-03-21-22-24-11.png)
+Create a folder **Mappers**. Create a **Mapper.cs** declaration as a partial class and apply the Riok.Mapperly.Abstractions.MapperAttribute attribute. Mapperly generates mapping method implementations for the defined mapping methods in the mapper.. [What is Mapperly?](https://mapperly.riok.app/docs/intro) <br/> 
 
-Create a Entity MappingProfile.cs in a folder **Profiles** <br/>![](./Assets/2023-03-21-22-24-34.png)
+![](./Assets/2023-03-30-09-03-49.png)
 
-MappingProfile.cs
+Mapper.cs
 
 ```cs
-namespace Pezza.Common.Profiles;
+namespace Common.Mappers;
 
-using AutoMapper;
-using Pezza.Common.Entities;
-using Pezza.Common.Models;
+using Common.Entities;
+using Common.Models;
+using Riok.Mapperly.Abstractions;
 
-public class MappingProfile : Profile
+[Mapper]
+public static partial class Mapper
 {
-    public MappingProfile()
-    {
-        this.CreateMap<Stock, StockModel>();
-        this.CreateMap<StockModel, Stock>();
-    }
+	public static partial PizzaModel Map(this Pizza pizza);
 }
 ```
 
 ## **Create the Database Layer**
 
-Create a new Class Library Pezza.DataAccess <br/> ![](![](Assets/2020-09-11-10-06-58.png).png)
+Create a new Class Library DataAccess <br/> ![](![](Assets/2020-09-11-10-06-58.png).png)
 
 For accessing the Database we will be using [Entity Framework Core](https://github.com/dotnet/efcore).
 
 **Nuget Packages Required**
 - [ ]  Microsoft.EntityFrameworkCore.Relational
+- [ ]  Microsoft.EntityFrameworkCore.InMemory
 
-DbSet will act as a Repository to the Database. You will see we have added SaveChangesAsync into the interface, this is to expose DbContext Entity Framework Core methods in your interface.
+DbSet will act as a Repository to the Database. You will see we have added SaveChangesAsync into the interface, this is to expose DbContext Entity Framework Core mffethods in your interface.
 
-We need to create a DbContext.cs inside of Pezza.DataAccess. A [DbContext](https://docs.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.dbcontext?view=efcore-5.0) instance represents a session with the database and can be used to query and save instances of your entities. DbContext is a combination of the Unit Of Work and Repository patterns.
+We need to create a DatabaseContext.cs inside of DataAccess. A [DbContext](https://docs.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.dbcontext?view=efcore-5.0) instance represents a session with the database and can be used to query and save instances of your entities. DbContext is a combination of the Unit Of Work and Repository patterns.
 
- ![](Assets/2020-09-11-10-22-16.png)
+![](./Assets/2023-03-30-21-10-51.png)
 
  DatabaseContext.cs
 
 ```cs
-namespace Pezza.DataAccess;
+namespace DataAccess;
 
+using Common.Entities;
+using DataAccess.Mapping;
 using Microsoft.EntityFrameworkCore;
-using Pezza.Common.Entities;
-using Pezza.DataAccess.Mapping;
 
 public class DatabaseContext : DbContext
 {
@@ -150,22 +144,25 @@ public class DatabaseContext : DbContext
     {
         modelBuilder.ApplyConfiguration(new PizzaMap());
     }
+
+	protected override void OnConfiguring
+	   (DbContextOptionsBuilder optionsBuilder) => optionsBuilder.UseInMemoryDatabase(databaseName: "PezzaDb");
 }
 ```
 
-To be able to map the Database Table to the Entity we use Mappings from EF Core. We also prefer using Mappings for Single Responsibility instead of using Attributes inside of an Entity. This allows the code to stay clean. Create a new folder inside Pezza.DataAccess *Mapping* with a class PizzaMap.cs
+To be able to map the Database Table to the Entity we use Mappings from EF Core. We also prefer using Mappings for Single Responsibility instead of using Attributes inside of an Entity. This allows the code to stay clean. Create a new folder inside DataAccess *Mapping* with a class PizzaMap.cs
 
-![](./Assets/2023-03-21-22-37-58.png)
+![](./Assets/2023-03-30-21-12-40.png)
 
 PizzaMap.cs
 
 ```cs
-namespace Pezza.DataAccess.Mapping;
+namespace DataAccess.Mapping;
 
 using Microsoft.EntityFrameworkCore;
-using Pezza.Common.Entities;
+using Common.Entities;
 
-public partial class PizzaMap : IEntityTypeConfiguration<Pizza>
+public sealed class PizzaMap : IEntityTypeConfiguration<Pizza>
 {
 	public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Pizza> builder)
 	{
@@ -224,7 +221,6 @@ Create a new NUnit Test Project <br/> ![](Assets/2020-09-14-05-50-19.png)
 
 **Nuget Packages Required**
   - [ ]  Microsoft.EntityFrameworkCore.InMemory
-  - [ ]  AutoMapper
   - [ ]  Bogus
 
 On the root folder create the following 2 classes.
@@ -232,10 +228,10 @@ On the root folder create the following 2 classes.
 DatabaseContextTest.cs
 
 ```cs
-namespace Pezza.Test;
+namespace Test;
 
 using Microsoft.EntityFrameworkCore;
-using Pezza.DataAccess;
+using DataAccess;
 
 public class DatabaseContextTest
 {
@@ -262,7 +258,7 @@ public class DatabaseContextTest
 TestBase.cs - Create a In Memory DBContext.
 
 ```cs
-namespace Pezza.Test;
+namespace Test;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -280,31 +276,25 @@ public class TestBase : DatabaseContextTest
 
 Create the following folders
 
-![](Assets/2021-10-21-08-25-02.png)
+![](./Assets/2023-03-30-21-42-40.png)
 
 The **Setup folder**, create QueryTestBase.cs class this will be inherited by different Entity Data Access Test classes to expose Create() function.
 
 What you will be creating in the Setup Folder
 
-![](./Assets/2023-03-21-22-39-59.png)
+![](./Assets/2023-03-30-21-14-12.png)
 
 QueryTestBase.cs
 
 ```cs
-namespace Pezza.Test.Setup;
+namespace Test.Setup;
 
-using Pezza.DataAccess;
+using DataAccess;
 using static DatabaseContextFactory;
 
 public class QueryTestBase : IDisposable
 {
     public DatabaseContext Context => Create();
-
-    public static IMapper Mapper()
-    {
-        var mappingConfig = new MapperConfiguration(mc => mc.AddProfile(new MappingProfile()));
-        return mappingConfig.CreateMapper();
-    }
 
     public void Dispose() => Destroy(this.Context);
 }
@@ -315,10 +305,10 @@ Create DatabaseContextFactory.cs class in **Setup folder** that will be used to 
 DatabaseContextFactory.cs
 
 ```cs
-namespace Pezza.Test.Setup;
+namespace Test.Setup;
 
 using Microsoft.EntityFrameworkCore;
-using Pezza.DataAccess;
+using DataAccess;
 
 public class DatabaseContextFactory
 {
@@ -352,29 +342,50 @@ public class DatabaseContextFactory
 
 next we will create Test Data for each Entity. Inside the folder **TestData**, then create a folder **Pizza**. Create a **PizzaTestData.cs** class. This will create a fake Pizza Entity for testing. <br/> ![](./Assets/2023-03-21-22-41-17.png)
 
-StockTestData.cs
+PizzaTestData.cs
 
 ```cs
-namespace Pezza.Test;
+namespace Test.Setup.TestData.Pizza;
 
+using System;
 using Bogus;
-using Pezza.Common.Entities;
+using Common.Entities;
+using Common.Models;
 
-public static class StockTestData
+public static class PizzaTestData
 {
-    public static Faker faker = new Faker();
+	public static Faker faker = new();
 
-    public static Stock Stock = new Stock()
-    {
-        Comment = faker.Lorem.Sentence(),
-        DateCreated = DateTime.Now,
-        ExpiryDate = DateTime.Now.AddMonths(1),
-        Name = faker.Commerce.Product(),
-        Quantity = 1,
-        UnitOfMeasure = "kg",
-        ValueOfMeasure = 10.5
-    };
+	public static Pizza Pizza = new()
+	{
+		Id = 1,
+		Name = faker.PickRandom(pizzas),
+		Description = string.Empty,
+		Price = faker.Finance.Amount(),
+		DateCreated = DateTime.Now,
+	};
+
+	public static PizzaModel PizzaModel = new()
+	{
+		Id = 1,
+		Name = faker.PickRandom(pizzas),
+		Description = string.Empty,
+		Price = faker.Finance.Amount(),
+		DateCreated = DateTime.Now
+		
+	};
+
+	private static readonly List<string> pizzas = new() 
+	{ 
+		"Veggie Pizza",
+		"Pepperoni Pizza",
+		"Meat Pizza",
+		"Margherita Pizza",
+		"BBQ Chicken Pizza",
+		"Hawaiian Pizza"
+	};
 }
+
 ```
 
 ## **Create the Core Layer**
@@ -385,33 +396,35 @@ The Core Layer is where all of your business logic will live. Imagine this as th
 
 ### **Setup**
 
-Create 2 new Class Libraries inside of *02 Core* - Pezza.Core and Pezza.Core.Contracts. We will start by using very basic Stock Core.
+Create 2 new Class Libraries inside of *02 Core* - Core and Core.Contracts. We will start by using very basic Pizza Core.
 
 **Nuget Packages Required**
-  - [ ] Automapper
+  - [ ] Mapperly
+  - [ ] MediatR
 
 ### **Building the Core Contracts Project**
 
-Create a new IStockCore Interface in *Pezza.Core.Contracts* <br/> ![](./Assets/2021-08-26-20-33-00.png)
+Create a new IPizzaCore Interface in *Core.Contracts* <br/> 
+![](./Assets/2023-04-01-15-31-18.png)
 
-IStockCore.cs
+IPizzaCore.cs
 
 ```cs
-namespace Pezza.Core.Contracts;
+namespace Core.Contracts;
 
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Pezza.Common.DTO;
+using Common.DTO;
 
-public interface IStockCore
+public interface IPizzaCore
 {
-    Task<StockDTO> GetAsync(int id);
+    Task<PizzaModel> GetAsync(int id);
 
-    Task<IEnumerable<StockDTO>> GetAllAsync();
+    Task<IEnumerable<PizzaModel>> GetAllAsync();
 
-    Task<StockDTO> UpdateAsync(StockDTO stock);
+    Task<PizzaModel> UpdateAsync(PizzaModel pizza);
 
-    Task<StockDTO> SaveAsync(StockDTO stock);
+    Task<PizzaModel> SaveAsync(PizzaModel pizza);
 
     Task<bool> DeleteAsync(int id);
 }
@@ -419,73 +432,77 @@ public interface IStockCore
 
 ### **Building the Core Project**
 
-Create a new StockCore.cs inside of *Pezza.Core* <br/> ![](Assets/2020-09-15-05-07-13.png)
+Create a new PizzaCore.cs inside of *Core* <br/> 
+![](./Assets/2023-04-01-15-34-20.png)
 
-StockCore.cs
+PizzaCore.cs
 
 ```cs
-namespace Pezza.Core;
+namespace Core;
 
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
+using Common.Mappers;
+using Common.Models;
+using Core.Contracts;
+using DataAccess;
 using Microsoft.EntityFrameworkCore;
-using Pezza.Common.DTO;
-using Pezza.Common.Entities;
-using Pezza.Core.Contracts;
-using Pezza.DataAccess;
 
-public class StockCore : IStockCore
+public class PizzaCore : IPizzaCore
 {
-    private readonly DatabaseContext databaseContext;
+	private readonly DatabaseContext databaseContext;
 
-    private readonly IMapper mapper;
+	public PizzaCore(DatabaseContext databaseContext)
+		=> (this.databaseContext) = (databaseContext);
 
-    public StockCore(DatabaseContext databaseContext, IMapper mapper)
-        => (this.databaseContext, this.mapper) = (databaseContext, mapper);
+	public async Task<PizzaModel> GetAsync(int id)
+		=> (await this.databaseContext.Pizzas.FirstOrDefaultAsync(x => x.Id == id)).Map();
 
-    public async Task<StockDTO> GetAsync(int id)
-        => this.mapper.Map<StockDTO>(await this.databaseContext.Stocks.FirstOrDefaultAsync(x => x.Id == id));
+	public async Task<IEnumerable<PizzaModel>> GetAllAsync()
+		=> (await this.databaseContext.Pizzas.Select(x => x).AsNoTracking().ToListAsync()).Map();
 
-    public async Task<IEnumerable<StockDTO>> GetAllAsync()
-    {
-        var entities = await this.databaseContext.Stocks.Select(x => x).AsNoTracking().ToListAsync();
-        return this.mapper.Map<List<StockDTO>>(entities);
-    }
+	public async Task<PizzaModel> SaveAsync(PizzaModel pizza)
+	{
+		var entity = pizza.Map();
+		entity.DateCreated = DateTime.UtcNow;
+		this.databaseContext.Pizzas.Add(entity);
+		await this.databaseContext.SaveChangesAsync();
+		pizza.Id = entity.Id;
 
-    public async Task<StockDTO> SaveAsync(StockDTO stock)
-    {
-        var entity = this.mapper.Map<Stock>(stock);
-        this.databaseContext.Stocks.Add(entity);
-        await this.databaseContext.SaveChangesAsync();
-        return this.mapper.Map<StockDTO>(entity);
-    }
+		return entity.Map();
+	}
 
-    public async Task<StockDTO> UpdateAsync(StockDTO stock)
-    {
-        var findEntity = await this.databaseContext.Stocks.FirstOrDefaultAsync(x => x.Id == stock.Id);
+	public async Task<PizzaModel> UpdateAsync(PizzaModel Pizza)
+	{
+		var findEntity = await this.databaseContext.Pizzas.FirstOrDefaultAsync(x => x.Id == Pizza.Id);
+		if (findEntity == null)
+		{
+			return null;
+		}
 
-        findEntity.Name = !string.IsNullOrEmpty(stock.Name) ? stock.Name : findEntity.Name;
-        findEntity.UnitOfMeasure = !string.IsNullOrEmpty(stock.UnitOfMeasure) ? stock.UnitOfMeasure : findEntity.UnitOfMeasure;
-        findEntity.ValueOfMeasure = stock.ValueOfMeasure ?? findEntity.ValueOfMeasure;
-        findEntity.Quantity = stock.Quantity ?? findEntity.Quantity;
-        findEntity.ExpiryDate = stock.ExpiryDate ?? findEntity.ExpiryDate;
-        findEntity.Comment = stock.Comment;
-        this.databaseContext.Stocks.Update(findEntity);
-        await this.databaseContext.SaveChangesAsync();
+		findEntity.Name = !string.IsNullOrEmpty(Pizza.Name) ? Pizza.Name : findEntity.Name;
+		findEntity.Description = !string.IsNullOrEmpty(Pizza.Description) ? Pizza.Description : findEntity.Description;
+		findEntity.Price = Pizza.Price ?? findEntity.Price;
+		this.databaseContext.Pizzas.Update(findEntity);
+		await this.databaseContext.SaveChangesAsync();
 
-        return this.mapper.Map<StockDTO>(findEntity);
-    }
+		return findEntity.Map();
+	}
 
-    public async Task<bool> DeleteAsync(int id)
-    {
-        var entity = await this.databaseContext.Stocks.FirstOrDefaultAsync(x => x.Id == id);
-        this.databaseContext.Stocks.Remove(entity);
-        var result = await this.databaseContext.SaveChangesAsync();
+	public async Task<bool> DeleteAsync(int id)
+	{
+		var findEntity = await this.databaseContext.Pizzas.FirstOrDefaultAsync(x => x.Id == id);
+		if (findEntity == null)
+		{
+			return false;
+		}
 
-        return result == 1;
-    }
+		this.databaseContext.Pizzas.Remove(findEntity);
+		var result = await this.databaseContext.SaveChangesAsync();
+
+		return result == 1;
+	}
 }
 ```
 
@@ -494,25 +511,24 @@ public class StockCore : IStockCore
 The interesting part here is, when you call SaveChangesAsync it will return the number of changed records in the database. If you save a new record it will return the result of 1.
 
 
-To keep the Dependency Injection clean and relevant to **Pezza.Core**, create a DependencyInjection.cs class that can be called from any Startup.cs class. <br/> ![](Assets/2020-09-15-05-10-13.png)
+To keep the Dependency Injection clean and relevant to **Core**, create a DependencyInjection.cs class that can be called from any Startup.cs class. <br/> ![](./Assets/2023-04-01-15-35-31.png)
 
 ```cs
-namespace Pezza.Core;
+namespace Core;
 
 using Microsoft.Extensions.DependencyInjection;
-using Pezza.Common.Profiles;
-using Pezza.Core.Contracts;
+using Core.Contracts;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddApplication(this IServiceCollection services)
-    {
-        services.AddTransient(typeof(IStockCore), typeof(StockCore));
-        services.AddAutoMapper(typeof(MappingProfile));
+	public static IServiceCollection AddApplication(this IServiceCollection services)
+	{
+		services.AddTransient(typeof(IPizzaCore), typeof(PizzaCore));
 
-        return services;
-    }
+		return services;
+	}
 }
+
 ```
 
 ### **Create the Core Layer Unit Tests**
@@ -523,152 +539,195 @@ For accessing the Database we will be using [Entity Framework Core](https://gith
 
 **Nuget Packages Required**
 - [ ]  Microsoft.EntityFrameworkCore.Relational
-- [ ]  Sytem.Linq.Dynamic.Core 
+- [ ]  Sytem.Linq.Dynamic.Core
 
-Inside the folder **Core** create a class **TestStockCore.cs**. Also, add new StockDTO to StockTestData.cs <br/> ![](Assets/2020-09-15-05-13-20.png)
+Inside the folder **Core** create a class **TestPizzaCore.cs**. Also, add new PizzaModel to PizzaTestData.cs <br/>
 
-![](./Assets/2021-08-15-22-59-49.png)
+![](./Assets/2023-04-01-15-37-03.png)
 
-![](Assets/2021-10-21-08-29-42.png)
-
-Inside StockTestData.cs add the follwoing <br/> ![](./Assets/2021-08-26-20-38-22.png)
+Inside PizzaTestData.cs add the follwoing
 
 ```cs
-public static StockDTO StockDTO = new StockDTO()
+namespace Test.Setup.TestData.Pizza;
+
+using System;
+using Bogus;
+using Common.Entities;
+using Common.Models;
+
+public static class PizzaTestData
 {
-    Comment = faker.Lorem.Sentence(),
-    ExpiryDate = DateTime.Now.AddMonths(1),
-    Name = faker.Commerce.Product(),
-    Quantity = 1,
-    UnitOfMeasure = "kg",
-    ValueOfMeasure = 10.5
-};
+	public static Faker faker = new Faker();
+
+	public static Pizza Pizza = new Pizza()
+	{
+		Id = 1,
+		Name = faker.PickRandom(pizzas),
+		Description = string.Empty,
+		Price = faker.Finance.Amount(),
+		DateCreated = DateTime.Now,
+	};
+
+	public static PizzaModel PizzaModel = new PizzaModel()
+	{
+		Id = 1,
+		Name = faker.PickRandom(pizzas),
+		Description = string.Empty,
+		Price = faker.Finance.Amount(),
+		DateCreated = DateTime.Now
+		
+	};
+
+	private static readonly List<string> pizzas = new() 
+	{ 
+		"Veggie Pizza",
+		"Pepperoni Pizza",
+		"Meat Pizza",
+		"Margherita Pizza",
+		"BBQ Chicken Pizza",
+		"Hawaiian Pizza"
+	};
+}
 ```
 
-Core\TestStockCore.cs
+Core\TestPizzaCore.cs
 
 ```cs
-namespace Pezza.Test.Core;
+namespace Test.Core;
 
 using System.Linq;
 using System.Threading.Tasks;
 using Bogus;
 using NUnit.Framework;
-using Pezza.Common.DTO;
-using Pezza.Core;
-using Pezza.Test.Setup;
-using Pezza.Test.Setup.TestData.Stock;
+using Test.Setup;
+using Common.Models;
+using global::Core;
+using Test.Setup.TestData.Pizza;
 
 [TestFixture]
-public class TestStockCore : QueryTestBase
+public class TestPizzaCore : QueryTestBase
 {
-    private StockCore handler;
+	private PizzaCore handler;
 
-    private StockDTO stock;
+	private PizzaModel Pizza;
 
-    [SetUp]
-    public async Task Init()
-    {
-        this.handler = new StockCore(this.Context, Mapper());
-        this.stock = StockTestData.StockDTO;
-        this.stock = await this.handler.SaveAsync(this.stock);
-    }
+	[SetUp]
+	public async Task Init()
+	{
+		this.handler = new PizzaCore(this.Context);
+		this.Pizza = PizzaTestData.PizzaModel;
+		this.Pizza = await this.handler.SaveAsync(this.Pizza);
+	}
 
-    [Test]
-    public async Task GetAsync()
-    {
-        var response = await this.handler.GetAsync(this.stock.Id);
-        Assert.IsTrue(response != null);
-    }
+	[Test]
+	public async Task GetAsync()
+	{
+		var response = await this.handler.GetAsync(this.Pizza.Id);
+		Assert.IsTrue(response != null);
+	}
 
-    [Test]
-    public async Task GetAllAsync()
-    {
-        var response = await this.handler.GetAllAsync();
-        Assert.IsTrue(response.Count() == 1);
-    }
+	[Test]
+	public async Task GetAllAsync()
+	{
+		var response = await this.handler.GetAllAsync();
+		Assert.IsTrue(response.Count() == 1);
+	}
 
-    [Test]
-    public void SaveAsync()
-    {
-        var outcome = this.stock.Id != 0;
-        Assert.IsTrue(outcome);
-    }
+	[Test]
+	public void SaveAsync()
+	{
+		var outcome = this.Pizza.Id != 0;
+		Assert.IsTrue(outcome);
+	}
 
-    [Test]
-    public async Task UpdateAsync()
-    {
-        var originalStock = this.stock;
-        this.stock.Name = new Faker().Commerce.Product();
-        var response = await this.handler.UpdateAsync(this.stock);
-        var outcome = response.Name.Equals(originalStock.Name);
+	[Test]
+	public async Task UpdateAsync()
+	{
+		var originalPizza = this.Pizza;
+		this.Pizza.Name = new Faker().Commerce.Product();
+		var response = await this.handler.UpdateAsync(this.Pizza);
+		var outcome = response.Name.Equals(originalPizza.Name);
 
-        Assert.IsTrue(outcome);
-    }
+		Assert.IsTrue(outcome);
+	}
 
-    [Test]
-    public async Task DeleteAsync()
-    {
-        var response = await this.handler.DeleteAsync(this.stock.Id);
-        Assert.IsTrue(response);
-    }
+	[Test]
+	public async Task DeleteAsync()
+	{
+		var response = await this.handler.DeleteAsync(this.Pizza.Id);
+		Assert.IsTrue(response);
+	}
 }
 ```
 
 ### **Break down**
 
-For every test we will create a new stock Core that will create a test session in memory to the database. We will then mock new stock using the stock test data. THen we will persist the new stock to the in-memory database.
+For every test we will create a new pizza Core that will create a test session in memory to the database. We will then mock new pizza using the pizza test data. THen we will persist the new pizza to the in-memory database.
 
-- GetAsync (Tests the get stock by id) - We retrieve the newly created stock from the in-memory database using the stock id. If the data that gets return is found, your unit test is successful.
-- GetAllAsync (Tests list of stock) - We retrieve a list of all the stock from the in-memory database. If the count of data returned is equalled to 1, your unit test is successful.
-- SaveAsync (Tests creating new stock) - We verify the result of records changed from the save changes should equal to 1, meaning your unit test is successful.
-- UpdateAsync (Tests updating existing stock) - We generate a new name for the stock item to be updated. We verify the updated stock's name with the updated stock if they are the same; your unit test is successful.
-- DeleteAsync (Tests removing stock) - We verify the result of deleting the stock from the in-memory database. Depending on the result being returned will determine the outcome of the unit test.
+- GetAsync (Tests the get pizza by id) - We retrieve the newly created pizza from the in-memory database using the pizza id. If the data that gets return is found, your unit test is successful.
+- GetAllAsync (Tests list of pizza) - We retrieve a list of all the pizza from the in-memory database. If the count of data returned is equalled to 1, your unit test is successful.
+- SaveAsync (Tests creating new pizza) - We verify the result of records changed from the save changes should equal to 1, meaning your unit test is successful.
+- UpdateAsync (Tests updating existing pizza) - We generate a new name for the pizza item to be updated. We verify the updated pizza's name with the updated pizza if they are the same; your unit test is successful.
+- DeleteAsync (Tests removing pizza) - We verify the result of deleting the pizza from the in-memory database. Depending on the result being returned will determine the outcome of the unit test.
 
 ## **Create the Apis Layer**
+
 ### **Setup**
 
-Create a new ASP.NET 7 Web Application inside **01 Apis*** <br/>![](Assets/2020-09-11-09-52-48.png)
+Create a new ASP.NET 7 Web Application inside **01 Apis*** <br/>![](./Assets/2023-04-01-15-39-50.png)
+
+*Make sure not to use minimal APIs
+
+![](./Assets/2023-04-01-15-42-01.png)
 
 **Nuget Packages Required**
 - [ ] Swashbuckle.AspNetCore [Read More](https://code-maze.com/swagger-ui-asp-net-core-web-api/)
 - [ ] Newtonsoft.Json
 - [ ] Microsoft.AspNetCore.Mvc.NewtonsoftJson
+- [ ] Microsoft.EntityFrameworkCore.InMemory
+
+
+You will see there will only be a Program.cs. 
+
+Create a new class named Startup.cs on the root folder
 
 ### **Configuration**
 
 Configuring the Swagger Middleware. Let's make the following changes in the ConfigureServices() method of the Startup.cs class. This adds the Swagger generator to the services collection.
 
-```cs
-public void ConfigureServices(IServiceCollection services)
-{
-    // Register the Swagger generator, defining 1 or more Swagger documents
-    services.AddSwaggerGen(c =>
-    {
-        c.SwaggerDoc("v1", new OpenApiInfo { Title = "Stock API", Version = "v1" });
-    });
-    services.AddControllers(options => options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true)
-            .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()))
-            .AddNewtonsoftJson(x => x.SerializerSettings.ContractResolver = new DefaultContractResolver())
-            .AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
-}
-```
-
 In the Configure() method, let’s enable the middleware for serving the generated JSON document and the Swagger UI
 
 ```cs
-public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-{
-    // Enable middleware to serve generated Swagger as a JSON endpoint.
-    app.UseSwagger();
-    // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
-    // specifying the Swagger JSON endpoint.
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Stock API V1");
-    });
+public class Startup {
+    public IConfiguration configRoot {
+        get;
+    }
+    public Startup(IConfiguration configuration) {
+        configRoot = configuration;
+    }
+    public void ConfigureServices(IServiceCollection services) {
+        // Register the Swagger generator, defining 1 or more Swagger documents
+        services.AddSwaggerGen(c =>
+        {
+            c.SwaggerDoc("v1", new OpenApiInfo { Title = "Pezza API", Version = "v1" });
+        });
+        services.AddControllers(options => options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true)
+                .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()))
+                .AddNewtonsoftJson(x => x.SerializerSettings.ContractResolver = new DefaultContractResolver())
+                .AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+    }
+    public void Configure(WebApplication app, IWebHostEnvironment env) {
+        app.UseSwagger();
+        // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+        // specifying the Swagger JSON endpoint.
+        app.UseSwaggerUI(c =>
+        {
+            c.SwaggerEndpoint("/swagger/v1/swagger.json", "Pezza API V1");
+        });
+        app.Run();
+    }
 }
-``` 
+```
 
 Inside of Startup.cs add DependencyInjection.cs inside of ConfigureService.
 
@@ -676,25 +735,30 @@ Inside of Startup.cs add DependencyInjection.cs inside of ConfigureService.
 DependencyInjection.AddApplication(services);
 ```
 
-![](Assets/2020-09-15-05-29-10.png)
-- [ ] Add Connection String in appsettings.json
+In Program.cs add
 
-```json
-"ConnectionStrings": {
-    "PezzaDatabase": "Server=.;Database=PezzaDb;Trusted_Connection=True;"
-  },
+```cs
+var builder = WebApplication.CreateBuilder(args);
+var startup = new Startup(builder.Configuration);
+startup.ConfigureServices(builder.Services); // calling ConfigureServices method
+var app = builder.Build();
+startup.Configure(app, builder.Environment); // calling Configure method
 ```
+
+Add Core Project to API Project
+
+![](Assets/2020-09-15-05-29-10.png)
 
 Add Dependency injection for Database Context in Startup.cs ConfigureServices
 
 ```cs
-// Add DbContext using SQL Server Provider
+// Add DbContext using InMemory
 services.AddDbContext<DatabaseContext>(options =>
-    options.UseSqlServer(this.Configuration.GetConnectionString("PezzaDatabase"))
+    options.UseInMemoryDatabase(Guid.NewGuid().ToString())
 );
 ```
 
-Let us enable XML Documentation on the *Pezza.Api* project. Right-click on the API goes to Properties. <br/> ![](Assets/2020-09-15-05-59-50.png)
+Let us enable XML Documentation on the *Api* project. Right-click on the API goes to Properties. <br/> ![](Assets/2020-09-15-05-59-50.png)
 
 In the ConfigureServices() method, configure Swagger to use the XML file that’s generated in the above step.
 
@@ -703,9 +767,9 @@ services.AddSwaggerGen(c =>
     {
         c.SwaggerDoc("v1", new OpenApiInfo
         {
-            Title = "Stock API",
+            Title = "Pezza API",
             Version = "v1",
-            Description = "An API to perform Stock operations"
+            Description = "An API to perform Pezza operations"
         });
 // Set the comments path for the Swagger JSON and UI.
         var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
@@ -718,215 +782,122 @@ Change Debug setting to open Swagger by default <br/> ![](Assets/2020-09-15-06-1
 
 ### **Create a API Controller**
 
-Create a new **StockController.cs**. We will create a restfull endpoint for **Stock Core** layer. <br/> ![](Assets/2020-09-15-05-31-22.png)
+Create a new **PizzaController.cs**. We will create a restfull endpoint for **Pizza Core** layer. <br/> ![](./Assets/2023-04-10-20-15-02.png)
 
-StockController.cs
-
-```cs
-namespace Pezza.Api.Controllers;
-
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Pezza.Common.DTO;
-using Pezza.Common.Entities;
-using Pezza.Core;
-using Pezza.Core.Contracts;
-
-[ApiController]
-[Route("api/[controller]")]
-public class StockController : ControllerBase
-{
-    private readonly IStockCore StockCore;
-
-    public StockController(IStockCore StockCore) => this.StockCore = StockCore;
-
-    [HttpGet("{id}")]
-    [ProducesResponseType(200)]
-    [ProducesResponseType(404)]
-    public async Task<ActionResult> Get(int id)
-    {
-        var search = await this.StockCore.GetAsync(id);
-        if (search == null)
-        {
-            return this.NotFound();
-        }
-
-        return this.Ok(search);
-    }
-
-    [HttpGet()]
-    [ProducesResponseType(200)]
-    public async Task<ActionResult> Search()
-    {
-        var result = await this.StockCore.GetAllAsync();
-
-        return this.Ok(result);
-    }
-
-    [HttpPost]
-    [ProducesResponseType(200)]
-    [ProducesResponseType(400)]
-    public async Task<ActionResult<Stock>> Create([FromBody] Stock model)
-    {
-        var result = await this.StockCore.SaveAsync(model);
-        if (result == null)
-        {
-            return this.BadRequest();
-        }
-
-        return this.Ok(result);
-    }
-
-    [HttpPut("{id}")]
-    [ProducesResponseType(200)]
-    [ProducesResponseType(400)]
-    public async Task<ActionResult> Update(int id, [FromBody] StockDTO model)
-    {
-        var result = await this.StockCore.UpdateAsync(model);
-        if (result == null)
-        {
-            return this.BadRequest();
-        }
-
-        return this.Ok(result);
-    }
-
-    [HttpDelete("{id}")]
-    [ProducesResponseType(200)]
-    [ProducesResponseType(400)]
-    public async Task<ActionResult> Delete(int id)
-    {
-        var result = await this.StockCore.DeleteAsync(id);
-        if (!result)
-        {
-            return this.BadRequest();
-        }
-
-        return this.Ok(result);
-    }
-}
-```
-
-### **Add XML Comments to the Stock API Controller**.
-
-StockController.cs
+PizzaController.cs
 
 ```cs
-namespace Pezza.Api.Controllers;
+namespace Api.Controllers;
 
 using System.Threading.Tasks;
+using Common.Entities;
+using Common.Models;
+using Core.Contracts;
 using Microsoft.AspNetCore.Mvc;
-using Pezza.Common.DTO;
-using Pezza.Common.Entities;
-using Pezza.Core.Contracts;
 
 [ApiController]
-[Route("api/[controller]")]
-public class StockController : ControllerBase
+[Route("[controller]")]
+public class PizzaController : ControllerBase
 {
-    private readonly IStockCore stockCore;
+	private readonly IPizzaCore PizzaCore;
 
-    public StockController(IStockCore stockCore) => this.stockCore = stockCore;
+	public PizzaController(IPizzaCore PizzaCore) => this.PizzaCore = PizzaCore;
 
-    /// <summary>
-    /// Get Stock by Id.
-    /// </summary>
-    /// <param name="id">Stock Id</param>
-    /// <returns>ActionResult</returns>
-    [HttpGet("{id}")]
-    [ProducesResponseType(200)]
-    [ProducesResponseType(404)]
-    public async Task<ActionResult> Get(int id)
-    {
-        var search = await this.stockCore.GetAsync(id);
+	/// <summary>
+	/// Get Pizza by Id.
+	/// </summary>
+	/// <param name="id">Pizza Id</param>
+	/// <returns>ActionResult</returns>
+	[HttpGet("{id}")]
+	[ProducesResponseType(200)]
+	[ProducesResponseType(404)]
+	public async Task<ActionResult> Get(int id)
+	{
+		var search = await this.PizzaCore.GetAsync(id);
 
-        return (search == null) ? this.NotFound() : this.Ok(search);
-    }
+		return (search == null) ? this.NotFound() : this.Ok(search);
+	}
 
-    /// <summary>
-    /// Get all Stock.
-    /// </summary>
-    /// <returns>ActionResult</returns>
-    [HttpGet]
-    [ProducesResponseType(200)]
-    public async Task<ActionResult> Search()
-    {
-        var result = await this.stockCore.GetAllAsync();
+	/// <summary>
+	/// Get all Pizzas.
+	/// </summary>
+	/// <returns>ActionResult</returns>
+	[HttpPost("Search")]
+	[ProducesResponseType(200)]
+	public async Task<ActionResult> Search()
+		=> this.Ok(await this.PizzaCore.GetAllAsync());
 
-        return this.Ok(result);
-    }
+	/// <summary>
+	/// Create Pizza.
+	/// </summary>
+	/// <remarks>
+	/// Sample request:
+	///
+	///     POST api/Pizza
+	///     {
+	///       "name": "Hawaiian",
+	///       "description": "Hawaiian pizza is a pizza originating in Canada, and is traditionally topped with pineapple, tomato sauce, cheese, and either ham or bacon.",
+	///       "price": "99"
+	///     }
+	/// </remarks>
+	/// <param name="model">Pizza Model</param>
+	/// <returns>ActionResult</returns>
+	[HttpPost]
+	[ProducesResponseType(200)]
+	[ProducesResponseType(400)]
+	public async Task<ActionResult<Pizza>> Create([FromBody] PizzaModel model)
+	{
+		var result = await this.PizzaCore.SaveAsync(model);
 
-    /// <summary>
-    /// Create Stock.
-    /// </summary>
-    /// <remarks>
-    /// Sample request:
-    ///
-    ///     POST api/Stock
-    ///     {
-    ///       "name": "Tomatoes",
-    ///       "UnitOfMeasure": "Kg",
-    ///       "ValueOfMeasure": "1",
-    ///       "Quantity": "50"
-    ///     }
-    /// </remarks>
-    /// <param name="dto">Stock Model</param>
-    /// <returns>ActionResult</returns>
-    [HttpPost]
-    [ProducesResponseType(200)]
-    [ProducesResponseType(400)]
-    public async Task<ActionResult<Stock>> Create([FromBody] StockDTO dto)
-    {
-        var result = await this.stockCore.SaveAsync(dto);
+		return (result == null) ? this.BadRequest() : this.Ok(result);
+	}
 
-        return (result == null) ? this.BadRequest() : this.Ok(result);
-    }
 
-    /// <summary>
-    /// Update Stock.
-    /// </summary>
-    /// <remarks>
-    /// Sample request:
-    ///
-    ///     PUT api/Stock/1
-    ///     {
-    ///       "Quantity": "30"
-    ///     }
-    /// </remarks>
-    /// <param name="dto">Stock Model</param>
-    /// <returns>ActionResult</returns>
-    [HttpPut]
-    [ProducesResponseType(200)]
-    [ProducesResponseType(400)]
-    public async Task<ActionResult> Update([FromBody] StockDTO dto)
-    {
-        var result = await this.stockCore.UpdateAsync(dto);
+	/// <summary>
+	/// Update Pizza.
+	/// </summary>
+	/// <remarks>
+	/// Sample request:
+	///
+	///     PUT api/Pizza/1
+	///     {
+	///       "price": "119"
+	///     }
+	/// </remarks>
+	/// <param name="model">Pizza Model</param>
+	/// <returns>ActionResult</returns>
+	[HttpPut]
+	[ProducesResponseType(200)]
+	[ProducesResponseType(400)]
+	public async Task<ActionResult> Update([FromBody] PizzaModel model)
+	{
+		var result = await this.PizzaCore.UpdateAsync(model);
 
-        return (result == null) ? this.BadRequest() : this.Ok(result);
-    }
+		return (result == null) ? this.BadRequest() : this.Ok(result);
+	}
 
-    /// <summary>
-    /// Remove Stock by Id.
-    /// </summary>
-    /// <param name="id">Stock Id</param>
-    /// <returns>ActionResult</returns>
-    [HttpDelete("{id}")]
-    [ProducesResponseType(200)]
-    [ProducesResponseType(400)]
-    public async Task<ActionResult> Delete(int id)
-    {
-        var result = await this.stockCore.DeleteAsync(id);
+	/// <summary>
+	/// Delete Pizza by Id.
+	/// </summary>
+	/// <param name="id">Pizza Id</param>
+	/// <returns>ActionResult</returns>
+	[HttpDelete("{id}")]
+	[ProducesResponseType(200)]
+	[ProducesResponseType(400)]
+	public async Task<ActionResult> Delete(int id)
+	{
+		var result = await this.PizzaCore.DeleteAsync(id);
 
-        return (!result) ? this.BadRequest() : this.Ok(result);
-    }
+		return (!result) ? this.BadRequest() : this.Ok(result);
+	}
 }
 ```
 
 ## **Run your Pezza API**
 
-Press F5 and Test all the Stock Methods.
+Press F5 and Test all the Pizza Methods.
 
-![](Assets/2020-09-15-06-38-33.png)
+![](./Assets/2023-04-10-20-28-04.png)
 
 ## **Phase 2 - CQRS**
 

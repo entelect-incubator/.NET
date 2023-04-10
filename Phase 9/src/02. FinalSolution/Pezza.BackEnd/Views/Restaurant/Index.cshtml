@@ -1,4 +1,4 @@
-﻿@model Pezza.Portal.Models.PagingModel
+﻿@model Portal.Models.PagingModel
 
 @{
     ViewBag.Title = "Restaurant";
@@ -73,12 +73,12 @@ ViewBag.ActiveMenu = "Restaurants";
                         });
                     }
                     else {
-                        $.alertWarning('Error removing stock');
+                        $.alertWarning('Error removing pizza');
                     }
                 },
                 error: function (error) {
                     console.log(error);
-                    $.alertWarning('Error removing stock');
+                    $.alertWarning('Error removing pizza');
                 }
             });
         }

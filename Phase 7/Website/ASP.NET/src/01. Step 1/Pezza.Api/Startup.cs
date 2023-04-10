@@ -1,4 +1,4 @@
-namespace Pezza.Api
+namespace Api
 {
     using System;
     using System.IO;
@@ -13,9 +13,9 @@ namespace Pezza.Api
     using Microsoft.Extensions.FileProviders;
     using Microsoft.Extensions.Hosting;
     using Microsoft.OpenApi.Models;
-    using Pezza.Common.Behaviours;
-    using Pezza.Core;
-    using Pezza.DataAccess;
+    using Common.Behaviours;
+    using Core;
+    using DataAccess;
 
     public class Startup
     {

@@ -5,13 +5,11 @@
 <br/><br/><br/>
 
 - [ ] Setup your environment - [How to video](https://www.youtube.com/watch?v=G1-Zfr9-3zs&list=PLLWMQd6PeGY2GVsQZ-u3DPXqwwKW8MkiP)
-  - [ ] [Visual Studio 2022 Community](https://visualstudio.microsoft.com/downloads/) Installed
-  - [ ] [.NET 7](https://dotnet.microsoft.com/download) Installed
-  - [ ] [SQL Server Developer](https://www.microsoft.com/en-us/sql-server/sql-server-downloads) Installed
-  - [ ] [SQL Server Management Studio SSMS](https://docs.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-ssms?view=sql-server-ver15) Installed
-- [ ] SQL Incubator - [SQL basics for Beginners](https://www.youtube.com/watch?v=9Pzj7Aj25lw)
+  - [ ] [Visual Studio Community](https://visualstudio.microsoft.com/downloads/) Install the latest version
+  - [ ] [.NET](https://dotnet.microsoft.com/download) Install the latest version
 
-Setup Visual Studio
+## Setup Visual Studio
+
 - [ ] Update the default C# Class in Visual Studio, everytime you create a new class it will use this template.
 - [ ]  Open the following file in a text editor
 

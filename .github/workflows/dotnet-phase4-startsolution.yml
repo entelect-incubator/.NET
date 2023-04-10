@@ -18,6 +18,6 @@ jobs:
       with:
         dotnet-version: 7.0.x
     - name: Install dependencies
-      run: dotnet restore "./Phase 4/src/01. StartSolution/Pezza.sln"
+      run: dotnet restore "./Phase 4/src/01. StartSolution/sln"
     - name: Build
-      run: dotnet build "./Phase 4/src/01. StartSolution/Pezza.sln" --configuration Release --no-restore
+      run: dotnet build "./Phase 4/src/01. StartSolution/sln" --configuration Release --no-restore

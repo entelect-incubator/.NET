@@ -1,7 +1,7 @@
-﻿namespace Pezza.Core.Customer.Commands
+﻿namespace Core.Customer.Commands
 {
     using FluentValidation;
-    using Pezza.Core.Notify.Commands;
+    using Core.Notify.Commands;
 
     public class UpdateNotifyCommandValidator : AbstractValidator<UpdateNotifyCommand>
     {

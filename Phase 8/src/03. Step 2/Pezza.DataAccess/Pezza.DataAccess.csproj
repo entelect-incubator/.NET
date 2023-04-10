@@ -23,7 +23,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Pezza.Common\Pezza.Common.csproj" />
+        <ProjectReference Include="..\Common\Common.csproj" />
     </ItemGroup>
 
 </Project>

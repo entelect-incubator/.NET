@@ -1,4 +1,4 @@
-﻿namespace Pezza.Core.Notify.Commands
+﻿namespace Core.Notify.Commands
 {
     using FluentValidation;
 

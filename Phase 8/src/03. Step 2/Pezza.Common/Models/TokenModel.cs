@@ -1,4 +1,4 @@
-﻿namespace Pezza.Common.Models;
+﻿namespace Common.Models;
 
 public class TokenModel
 {

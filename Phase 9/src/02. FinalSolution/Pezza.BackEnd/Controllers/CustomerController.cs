@@ -1,12 +1,12 @@
-﻿namespace Pezza.Portal.Controllers;
+﻿namespace Portal.Controllers;
 
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Pezza.BackEnd.Controllers;
-using Pezza.Common.DTO;
-using Pezza.Portal.Helpers;
-using Pezza.Portal.Models;
+using BackEnd.Controllers;
+using Common.DTO;
+using Portal.Helpers;
+using Portal.Models;
 
 public class CustomerController : BaseController
 {

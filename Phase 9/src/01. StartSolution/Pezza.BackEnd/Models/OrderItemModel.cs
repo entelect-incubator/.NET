@@ -1,8 +1,8 @@
-﻿namespace Pezza.Portal.Models;
+﻿namespace Portal.Models;
 
 using System.Collections.Generic;
-using Pezza.Common.DTO;
-using Pezza.Common.Entities;
+using Common.DTO;
+using Common.Entities;
 
 public class OrderItemModel : OrderItemDTO
 {

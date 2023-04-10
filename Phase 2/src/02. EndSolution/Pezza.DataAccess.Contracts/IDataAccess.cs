@@ -1,8 +1,8 @@
-namespace Pezza.DataAccess.Contracts
+namespace DataAccess.Contracts
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using Pezza.Common.Models.Base;
+    using Common.Models.Base;
 
     public interface IDataAccess<TEntity> where TEntity : EntityBase
     {

@@ -1,22 +1,22 @@
-namespace Pezza.Test.Core
+namespace Test.Core
 {
     using System.Threading;
     using System.Threading.Tasks;
     using NUnit.Framework;
-    using Pezza.Common.DTO;
-    using Pezza.Core.Stock.Commands;
-    using Pezza.Core.Stock.Queries;
+    using Common.DTO;
+    using Core.Stock.Commands;
+    using Core.Stock.Queries;
 
     [TestFixture]
 
-    public class TestStockCore : QueryTestBase
+    public class TestPizzaCore : QueryTestBase
     {
-        private StockDTO dto;
+        private PizzaModel dto;
 
         [SetUp]
         public async Task Init()
         {
-            this.dto = StockTestData.StockDTO;
+            this.dto = PizzaTestData.PizzaModel;
             var sutCreate = new CreateStockCommandHandler(this.Context, Mapper());
             var resultCreate = await sutCreate.Handle(
                 new CreateStockCommand
@@ -64,7 +64,7 @@ namespace Pezza.Test.Core
             var resultUpdate = await sutUpdate.Handle(
                 new UpdateStockCommand
                 {
-                    Data = new StockDTO
+                    Data = new PizzaModel
                     {
                         Id = this.dto.Id,
                         Quantity = 50

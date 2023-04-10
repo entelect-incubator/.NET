@@ -1,14 +1,14 @@
-﻿namespace Pezza.Core.Stock.Commands;
+﻿namespace Core.Stock.Commands;
 
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using MediatR;
-using Pezza.Common.DTO;
-using Pezza.Common.Entities;
-using Pezza.Common.Models;
-using Pezza.Core.Helpers;
-using Pezza.DataAccess;
+using Common.DTO;
+using Common.Entities;
+using Common.Models;
+using Core.Helpers;
+using DataAccess;
 
 public class CreateStockCommand : IRequest<Result<StockDTO>>
 {
@@ -29,6 +29,6 @@ public class CreateStockCommandHandler : IRequestHandler<CreateStockCommand, Res
         var entity = this.mapper.Map<Stock>(request.Data);
         this.databaseContext.Stocks.Add(entity);
 
-        return await CoreHelper<StockDTO>.Outcome(this.databaseContext, this.mapper, cancellationToken, entity, "Error creating stock");
+        return await CoreHelper<StockDTO>.Outcome(this.databaseContext, this.mapper, cancellationToken, entity, "Error creating pizza");
     }
 }

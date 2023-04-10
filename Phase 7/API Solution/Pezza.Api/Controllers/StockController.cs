@@ -1,14 +1,14 @@
-﻿namespace Pezza.Api.Controllers;
+﻿namespace Api.Controllers;
 
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Pezza.Api.Helpers;
-using Pezza.Common.DTO;
-using Pezza.Common.Entities;
-using Pezza.Common.Models;
-using Pezza.Core.Stock.Commands;
-using Pezza.Core.Stock.Queries;
+using Api.Helpers;
+using Common.DTO;
+using Common.Entities;
+using Common.Models;
+using Core.Stock.Commands;
+using Core.Stock.Queries;
 
 [ApiController]
 public class StockController : ApiController
@@ -19,8 +19,8 @@ public class StockController : ApiController
     /// <param name="id">Id.</param>
     /// <param name="cancellationToken">Cancellation Token.</param>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-    /// <response code="200">Get a stock.</response>
-    /// <response code="400">Error getting a stock.</response>
+    /// <response code="200">Get a pizza.</response>
+    /// <response code="400">Error getting a pizza.</response>
     /// <response code="404">Stock not found.</response>
     [HttpGet("{id}")]
     [ProducesResponseType(typeof(Result<StockDTO>), 200)]
@@ -39,7 +39,7 @@ public class StockController : ApiController
     /// <param name="cancellationToken">Cancellation Token.</param>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     /// <response code="200">Stock Search.</response>
-    /// <response code="400">Error searching for stock.</response>
+    /// <response code="400">Error searching for pizza.</response>
     [HttpPost]
     [ProducesResponseType(typeof(ListResult<StockDTO>), 200)]
     [ProducesResponseType(typeof(ErrorResult), 400)]
@@ -72,7 +72,7 @@ public class StockController : ApiController
     /// <param name="cancellationToken">Cancellation Token.</param>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     /// <response code="200">Stock created.</response>
-    /// <response code="400">Error creating a stock.</response>
+    /// <response code="400">Error creating a pizza.</response>
     [HttpPost]
     [ProducesResponseType(typeof(Result<StockDTO>), 200)]
     [ProducesResponseType(typeof(ErrorResult), 400)]
@@ -103,7 +103,7 @@ public class StockController : ApiController
     /// <param name="cancellationToken">Cancellation Token.</param>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     /// <response code="200">Stock updated.</response>
-    /// <response code="400">Error updating a stock.</response>
+    /// <response code="400">Error updating a pizza.</response>
     /// <response code="404">Stock not found.</response>
     [HttpPut]
     [ProducesResponseType(typeof(Result<StockDTO>), 200)]
@@ -127,7 +127,7 @@ public class StockController : ApiController
     /// <param name="cancellationToken">Cancellation Token.</param>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     /// <response code="200">Stock deleted.</response>
-    /// <response code="400">Error deleting a stock.</response>
+    /// <response code="400">Error deleting a pizza.</response>
     [HttpDelete("{id}")]
     [ProducesResponseType(typeof(Result), 200)]
     [ProducesResponseType(typeof(ErrorResult), 400)]

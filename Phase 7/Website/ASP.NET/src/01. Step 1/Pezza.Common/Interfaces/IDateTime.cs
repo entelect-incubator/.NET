@@ -1,4 +1,4 @@
-﻿namespace Pezza.Common.Interfaces
+﻿namespace Common.Interfaces
 {
     using System;
 

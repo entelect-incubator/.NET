@@ -1,8 +1,8 @@
-namespace Pezza.Common.Entities;
+namespace Common.Entities;
 
 using System;
 using System.Collections.Generic;
-using Pezza.Common.Models.Base;
+using Common.Models.Base;
 
 public class Customer : EntityBase
 {

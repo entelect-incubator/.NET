@@ -1,4 +1,4 @@
-﻿namespace Pezza.BackEnd.Controllers;
+﻿namespace BackEnd.Controllers;
 
 using System;
 using System.Collections.Generic;
@@ -9,10 +9,10 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using Pezza.Common;
-using Pezza.Common.DTO;
-using Pezza.Portal.Helpers;
-using Pezza.Portal.Models;
+using Common;
+using Common.DTO;
+using Portal.Helpers;
+using Portal.Models;
 
 public class ProductController : BaseController
 {

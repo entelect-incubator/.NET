@@ -1,7 +1,7 @@
-﻿namespace Pezza.Core.Restaurant.Commands;
+﻿namespace Core.Restaurant.Commands;
 
 using FluentValidation;
-using Pezza.Common.Validators;
+using Common.Validators;
 
 public class CreateRestaurantCommandValidator : AbstractValidator<CreateRestaurantCommand>
 {

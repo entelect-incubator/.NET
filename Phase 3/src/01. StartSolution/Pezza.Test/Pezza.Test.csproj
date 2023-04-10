@@ -28,8 +28,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Pezza.Core\Pezza.Core.csproj" />
-        <ProjectReference Include="..\Pezza.DataAccess\Pezza.DataAccess.csproj" />
+        <ProjectReference Include="..\Core\Core.csproj" />
+        <ProjectReference Include="..\DataAccess\DataAccess.csproj" />
     </ItemGroup>
 
 </Project>

@@ -1,4 +1,4 @@
-﻿namespace Pezza.Core.Customer.Commands
+﻿namespace Core.Customer.Commands
 {
     using FluentValidation;
 

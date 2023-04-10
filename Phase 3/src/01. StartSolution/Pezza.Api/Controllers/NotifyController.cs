@@ -1,13 +1,13 @@
-﻿namespace Pezza.Api.Controllers;
+﻿namespace Api.Controllers;
 
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Pezza.Api.Helpers;
-using Pezza.Common.DTO;
-using Pezza.Common.Entities;
-using Pezza.Common.Models;
-using Pezza.Core.Notify.Commands;
-using Pezza.Core.Notify.Queries;
+using Api.Helpers;
+using Common.DTO;
+using Common.Entities;
+using Common.Models;
+using Core.Notify.Commands;
+using Core.Notify.Queries;
 
 [ApiController]
 public class NotifyController : ApiController

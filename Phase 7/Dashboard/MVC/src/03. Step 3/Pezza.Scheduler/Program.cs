@@ -1,4 +1,4 @@
-namespace Pezza.Scheduler;
+namespace Scheduler;
 
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;

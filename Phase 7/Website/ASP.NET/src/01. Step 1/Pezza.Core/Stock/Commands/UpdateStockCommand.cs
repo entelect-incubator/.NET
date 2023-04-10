@@ -1,21 +1,21 @@
-﻿namespace Pezza.Core.Stock.Commands
+﻿namespace Core.Stock.Commands
 {
     using System.Threading;
     using System.Threading.Tasks;
     using AutoMapper;
     using MediatR;
     using Microsoft.EntityFrameworkCore;
-    using Pezza.Common.DTO;
-    using Pezza.Common.Models;
-    using Pezza.Core.Helpers;
-    using Pezza.DataAccess;
+    using Common.DTO;
+    using Common.Models;
+    using Core.Helpers;
+    using DataAccess;
 
-    public class UpdateStockCommand : IRequest<Result<StockDTO>>
+    public class UpdateStockCommand : IRequest<Result<PizzaModel>>
     {
-        public StockDTO Data { get; set; }
+        public PizzaModel Data { get; set; }
     }
 
-    public class UpdateStockCommandHandler : IRequestHandler<UpdateStockCommand, Result<StockDTO>>
+    public class UpdateStockCommandHandler : IRequestHandler<UpdateStockCommand, Result<PizzaModel>>
     {
         private readonly DatabaseContext databaseContext;
 
@@ -24,7 +24,7 @@
         public UpdateStockCommandHandler(DatabaseContext databaseContext, IMapper mapper)
             => (this.databaseContext, this.mapper) = (databaseContext, mapper);
 
-        public async Task<Result<StockDTO>> Handle(UpdateStockCommand request, CancellationToken cancellationToken)
+        public async Task<Result<PizzaModel>> Handle(UpdateStockCommand request, CancellationToken cancellationToken)
         {
             var dto = request.Data;
             var findEntity = await this.databaseContext.Stocks.FirstOrDefaultAsync(x => x.Id == dto.Id, cancellationToken);
@@ -42,7 +42,7 @@
 
             var outcome = this.databaseContext.Stocks.Update(findEntity);
 
-            return await CoreHelper<StockDTO>.Outcome(this.databaseContext, this.mapper, cancellationToken, findEntity, "Error updating stock");
+            return await CoreHelper<PizzaModel>.Outcome(this.databaseContext, this.mapper, cancellationToken, findEntity, "Error updating pizza");
         }
     }
 }

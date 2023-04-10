@@ -1,4 +1,4 @@
-﻿namespace Pezza.Portal.Helpers;
+﻿namespace Portal.Helpers;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;

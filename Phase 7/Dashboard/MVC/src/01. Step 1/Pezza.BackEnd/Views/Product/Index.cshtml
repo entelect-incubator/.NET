@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Pezza.Common.DTO.ProductDTO>
+﻿@model IEnumerable<Common.DTO.ProductDTO>
 
 @{
     ViewBag.Title = "Product";
@@ -77,12 +77,12 @@ else
                         });
                     }
                     else {
-                        $.alertWarning('Error removing stock');
+                        $.alertWarning('Error removing pizza');
                     }
                 },
                 error: function (error) {
                     console.log(error);
-                    $.alertWarning('Error removing stock');
+                    $.alertWarning('Error removing pizza');
                 }
             });
         }

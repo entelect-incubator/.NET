@@ -1,13 +1,13 @@
-﻿namespace Pezza.Core.Notify.Queries;
+﻿namespace Core.Notify.Queries;
 
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Pezza.Common.DTO;
-using Pezza.Common.Models;
-using Pezza.DataAccess;
+using Common.DTO;
+using Common.Models;
+using DataAccess;
 
 public class GetNotifyQuery : IRequest<Result<NotifyDTO>>
 {

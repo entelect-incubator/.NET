@@ -1,4 +1,4 @@
-﻿namespace Pezza.BackEnd.Controllers;
+﻿namespace BackEnd.Controllers;
 
 using System.Collections.Generic;
 using System.Net.Http;
@@ -6,9 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using Pezza.Common;
-using Pezza.Common.DTO;
-using Pezza.Portal.Helpers;
+using Common;
+using Common.DTO;
+using Portal.Helpers;
 
 public class StockController : BaseController
 {
@@ -44,15 +44,15 @@ public class StockController : BaseController
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<ActionResult> Create(StockDTO stock)
+    public async Task<ActionResult> Create(StockDTO pizza)
     {
         if (!this.ModelState.IsValid)
         {
-            return this.View(stock);
+            return this.View(pizza);
         }
 
-        var result = await this.apiCallHelper.Create(stock);
-        return Validate<StockDTO>(result, this.apiCallHelper, stock);
+        var result = await this.apiCallHelper.Create(pizza);
+        return Validate<StockDTO>(result, this.apiCallHelper, pizza);
     }
 
     [Route("Stock/Edit/{id?}")]
@@ -65,16 +65,16 @@ public class StockController : BaseController
     [HttpPost]
     [Route("Stock/Edit/{id?}")]
     [ValidateAntiForgeryToken]
-    public async Task<ActionResult> Edit(int id, StockDTO stock)
+    public async Task<ActionResult> Edit(int id, StockDTO pizza)
     {
         if (!this.ModelState.IsValid)
         {
-            return this.View(stock);
+            return this.View(pizza);
         }
 
-        stock.Id = id;
-        var result = await this.apiCallHelper.Edit(stock);
-        return Validate<StockDTO>(result, this.apiCallHelper, stock);
+        pizza.Id = id;
+        var result = await this.apiCallHelper.Edit(pizza);
+        return Validate<StockDTO>(result, this.apiCallHelper, pizza);
     }
 
     [HttpPost]

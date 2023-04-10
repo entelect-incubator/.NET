@@ -1,6 +1,6 @@
-﻿using Pezza.BackEnd.Controllers;
+﻿using BackEnd.Controllers;
 
-namespace Pezza.Portal.Controllers;
+namespace Portal.Controllers;
 
 using System.Collections.Generic;
 using System.Linq;
@@ -8,10 +8,10 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Pezza.Common;
-using Pezza.Common.DTO;
-using Pezza.Portal.Helpers;
-using Pezza.Portal.Models;
+using Common;
+using Common.DTO;
+using Portal.Helpers;
+using Portal.Models;
 
 public class OrdersController : BaseController
 {

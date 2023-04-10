@@ -1,21 +1,21 @@
-﻿namespace Pezza.Core.Stock.Commands
+﻿namespace Core.Stock.Commands
 {
     using System.Threading;
     using System.Threading.Tasks;
     using AutoMapper;
     using MediatR;
-    using Pezza.Common.DTO;
-    using Pezza.Common.Entities;
-    using Pezza.Common.Models;
-    using Pezza.Core.Helpers;
-    using Pezza.DataAccess;
+    using Common.DTO;
+    using Common.Entities;
+    using Common.Models;
+    using Core.Helpers;
+    using DataAccess;
 
-    public class CreateStockCommand : IRequest<Result<StockDTO>>
+    public class CreateStockCommand : IRequest<Result<PizzaModel>>
     {
-        public StockDTO Data { get; set; }
+        public PizzaModel Data { get; set; }
     }
 
-    public class CreateStockCommandHandler : IRequestHandler<CreateStockCommand, Result<StockDTO>>
+    public class CreateStockCommandHandler : IRequestHandler<CreateStockCommand, Result<PizzaModel>>
     {
         private readonly DatabaseContext databaseContext;
 
@@ -24,12 +24,12 @@
         public CreateStockCommandHandler(DatabaseContext databaseContext, IMapper mapper)
             => (this.databaseContext, this.mapper) = (databaseContext, mapper);
 
-        public async Task<Result<StockDTO>> Handle(CreateStockCommand request, CancellationToken cancellationToken)
+        public async Task<Result<PizzaModel>> Handle(CreateStockCommand request, CancellationToken cancellationToken)
         {
             var entity = this.mapper.Map<Stock>(request.Data);
             this.databaseContext.Stocks.Add(entity);
 
-            return await CoreHelper<StockDTO>.Outcome(this.databaseContext, this.mapper, cancellationToken, entity, "Error creating stock");
+            return await CoreHelper<PizzaModel>.Outcome(this.databaseContext, this.mapper, cancellationToken, entity, "Error creating pizza");
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Pezza.Common.Behaviours;
+﻿namespace Common.Behaviours;
 
 using System.Diagnostics;
 using System.Threading;

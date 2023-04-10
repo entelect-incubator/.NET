@@ -1,10 +1,10 @@
-﻿namespace Pezza.Core.Email;
+﻿namespace Core.Email;
 
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
-using Pezza.Common.DTO;
-using Pezza.Common.Models;
+using Common.DTO;
+using Common.Models;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 

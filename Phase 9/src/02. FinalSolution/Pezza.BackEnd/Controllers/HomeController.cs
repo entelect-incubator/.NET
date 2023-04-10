@@ -1,9 +1,9 @@
-﻿namespace Pezza.Portal.Controllers;
+﻿namespace Portal.Controllers;
 
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using Pezza.BackEnd.Models;
-using Pezza.Common.Models.Base;
+using BackEnd.Models;
+using Common.Models.Base;
 
 public class HomeController : Controller
 {

@@ -18,7 +18,7 @@ Create a new PagingModel.cs in Models
 ![](Assets/2021-01-19-15-13-38.png)
 
 ```cs
-namespace Pezza.Portal.Models;
+namespace Portal.Models;
 
 public class PagingModel
 {
@@ -101,7 +101,7 @@ The view will now do most of the magic.
 Start with the model it gets send in
 
 ```cs
-@model Pezza.Portal.Models.PagingModel
+@model Portal.Models.PagingModel
 ```
 
 Add a row to display information about the table. This will also be used in the next step to add filtering.
@@ -438,7 +438,7 @@ Orders we need to send in Completed flag of false through. For this we need to s
 In Models create a new model SearchModel.cs. T is your DTO
 
 ```cs
-namespace Pezza.Portal.Models;
+namespace Portal.Models;
 
 public class SearchModel<T>
 {
@@ -455,16 +455,16 @@ public class SearchModel<T>
 Add new JsonSerializerOptions to ApiCallHelper
 
 ```cs
-namespace Pezza.Portal.Helpers;
+namespace Portal.Helpers;
 
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using Pezza.Common;
+using Common;
 using System.Text.Json;
-using Pezza.Common.Models;
+using Common.Models;
 
 public class ApiCallHelper<T>
 {
@@ -593,7 +593,7 @@ public async Task<JsonResult> List([FromBody] SearchModel<OrderDTO> searchmodel)
 Orders Index.chtml
 
 ```cs html
-@model Pezza.Portal.Models.PagingModel
+@model Portal.Models.PagingModel
 
 @{
     ViewBag.Title = "Order";

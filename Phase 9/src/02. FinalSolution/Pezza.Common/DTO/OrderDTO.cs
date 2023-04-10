@@ -1,9 +1,9 @@
-﻿namespace Pezza.Common.DTO;
+﻿namespace Common.DTO;
 
 using System;
 using System.Collections.Generic;
-using Pezza.Common.Models;
-using Pezza.Common.Models.Base;
+using Common.Models;
+using Common.Models.Base;
 
 public class OrderDTO : EntityBase
 {

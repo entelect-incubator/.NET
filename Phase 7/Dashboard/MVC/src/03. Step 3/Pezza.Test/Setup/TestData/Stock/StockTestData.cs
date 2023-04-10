@@ -1,14 +1,14 @@
-﻿namespace Pezza.Test;
+﻿namespace Test;
 
 using System;
 using Bogus;
-using Pezza.Common.DTO;
+using Common.DTO;
 
-public static class StockTestData
+public static class PizzaTestData
 {
     public static Faker faker = new Faker();
 
-    public static StockDTO StockDTO = new StockDTO()
+    public static PizzaModel PizzaModel = new PizzaModel()
     {
         Comment = faker.Lorem.Sentence(),
         ExpiryDate = DateTime.Now.AddMonths(1),

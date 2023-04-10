@@ -1,4 +1,4 @@
-﻿namespace Pezza.Scheduler.Pages
+﻿namespace Scheduler.Pages
 {
     using System;
     using System.Collections.Generic;

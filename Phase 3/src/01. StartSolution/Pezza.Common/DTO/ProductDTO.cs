@@ -1,7 +1,7 @@
-﻿namespace Pezza.Common.DTO;
+﻿namespace Common.DTO;
 
 using System;
-using Pezza.Common.Models.Base;
+using Common.Models.Base;
 
 public class ProductDTO : ImageDataBase
 {

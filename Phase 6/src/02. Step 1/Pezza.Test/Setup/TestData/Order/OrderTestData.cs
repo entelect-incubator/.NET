@@ -1,9 +1,9 @@
-﻿namespace Pezza.Test;
+﻿namespace Test;
 
 using System;
 using System.Collections.Generic;
 using Bogus;
-using Pezza.Common.DTO;
+using Common.DTO;
 
 public static class OrderTestData
 {

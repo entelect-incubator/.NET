@@ -1,14 +1,14 @@
-﻿namespace Pezza.Core.Product.Commands;
+﻿namespace Core.Product.Commands;
 
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Pezza.Common.DTO;
-using Pezza.Common.Models;
-using Pezza.Core.Helpers;
-using Pezza.DataAccess;
+using Common.DTO;
+using Common.Models;
+using Core.Helpers;
+using DataAccess;
 
 public class UpdateProductCommand : IRequest<Result<ProductDTO>>
 {

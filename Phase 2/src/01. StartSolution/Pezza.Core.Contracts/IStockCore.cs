@@ -1,18 +1,18 @@
-﻿namespace Pezza.Core.Contracts;
+﻿namespace Core.Contracts;
 
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Pezza.Common.DTO;
+using Common.DTO;
 
-public interface IStockCore
+public interface IPizzaCore
 {
 	Task<StockDTO> GetAsync(int id);
 
 	Task<IEnumerable<StockDTO>> GetAllAsync();
 
-	Task<StockDTO> UpdateAsync(StockDTO stock);
+	Task<StockDTO> UpdateAsync(StockDTO pizza);
 
-	Task<StockDTO> SaveAsync(StockDTO stock);
+	Task<StockDTO> SaveAsync(StockDTO pizza);
 
 	Task<bool> DeleteAsync(int id);
 }

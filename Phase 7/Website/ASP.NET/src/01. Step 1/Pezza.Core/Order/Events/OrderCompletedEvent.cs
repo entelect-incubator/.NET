@@ -1,13 +1,13 @@
-﻿namespace Pezza.Core.Order.Events
+﻿namespace Core.Order.Events
 {
     using System;
     using System.IO;
     using System.Threading;
     using System.Threading.Tasks;
     using MediatR;
-    using Pezza.Common.DTO;
-    using Pezza.Core.Email;
-    using Pezza.Core.Notify.Commands;
+    using Common.DTO;
+    using Core.Email;
+    using Core.Notify.Commands;
 
     public class OrderCompletedEvent : INotification
     {

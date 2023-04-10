@@ -22,13 +22,13 @@ Newtonsoft.Json is a popular high-performance JSON framework typically used to s
 
 For every Command create a CommandNamevalidator.cs, because you only want to validate the data that gets send into the Command.
 
-Create AddressValidator.cs in Pezza.Common/Validators
+Create AddressValidator.cs in Common/Validators
 
 ```cs
-namespace Pezza.Common.Validators;
+namespace Common.Validators;
 
 using FluentValidation;
-using Pezza.Common.Entities;
+using Common.Entities;
 
 public class AddressValidator : AbstractValidator<AddressBase>
 {
@@ -78,10 +78,10 @@ Let's start with creating Validators for Customer Commands.
 Add a new class in the folder Customer/Commands CreateCustomerCommandValidator.cs
 
 ```cs
-namespace Pezza.Core.Customer.Commands;
+namespace Core.Customer.Commands;
 
 using FluentValidation;
-using Pezza.Common.Validators;
+using Common.Validators;
 
 public class CreateCustomerCommandValidator : AbstractValidator<CreateCustomerCommand>
 {
@@ -115,7 +115,7 @@ public class CreateCustomerCommandValidator : AbstractValidator<CreateCustomerCo
 DeleteCustomerCommandValidator.cs
 
 ```cs
-namespace Pezza.Core.Customer.Commands;
+namespace Core.Customer.Commands;
 
 using FluentValidation;
 
@@ -132,10 +132,10 @@ public class DeleteCustomerCommandValidator : AbstractValidator<DeleteCustomerCo
 UpdateCustomerCommandValidator.cs
 
 ```cs
-namespace Pezza.Core.Customer.Commands;
+namespace Core.Customer.Commands;
 
 using FluentValidation;
-using Pezza.Common.Validators;
+using Common.Validators;
 
 public class UpdateCustomerCommandValidator : AbstractValidator<UpdateCustomerCommand>
 {
@@ -172,12 +172,12 @@ All other Validators can be copied from Phase3\Data\Validators
 
 ### Validation Pipeline
 
-In Phase 2 you would have noticed ValidationBehavior.cs in Pezza.Common. This intercepts Mediatr pipeline before it hits the Command Handler for Validation. If any Fluent Validation fails it throws a ValidationException, that we can intercept in Pezza.Api.
+In Phase 2 you would have noticed ValidationBehavior.cs in Common. This intercepts Mediatr pipeline before it hits the Command Handler for Validation. If any Fluent Validation fails it throws a ValidationException, that we can intercept in Api.
 
 ![](Assets/2021-04-15-21-25-46.png)
 
 ```cs
-namespace Pezza.Common.Behaviours;
+namespace Common.Behaviours;
 
 using System.Collections.Generic;
 using System.Linq;
@@ -215,19 +215,19 @@ public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TReques
 DependencyInjection.cs
 
 ```cs
-namespace Pezza.Core;
+namespace Core;
 
 using System.Reflection;
 using AutoMapper;
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using Pezza.Common.Behaviours;
-using Pezza.Common.DTO;
-using Pezza.Common.Profiles;
-using Pezza.Core.Stock.Commands;
-using Pezza.DataAccess.Contracts;
-using Pezza.DataAccess.Data;
+using Common.Behaviours;
+using Common.DTO;
+using Common.Profiles;
+using Core.Stock.Commands;
+using DataAccess.Contracts;
+using DataAccess.Data;
 
 public static class DependencyInjection
 {
@@ -252,12 +252,12 @@ public static class DependencyInjection
 
 ## Exception Handler Middleware
 
-In Pezza.Common create a new class inside Behaviours called ExceptionHandlerMiddleware.cs.
+In Common create a new class inside Behaviours called ExceptionHandlerMiddleware.cs.
 
 ![ExceptionHandlerMiddleware](Assets/2021-04-15-21-23-31.png)
 
 ```cs
-namespace Pezza.Common.Behaviours;
+namespace Common.Behaviours;
 
 using System.Linq;
 using System.Net;
@@ -265,7 +265,7 @@ using System.Threading.Tasks;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
-using Pezza.Common.Models;
+using Common.Models;
 
 public class ExceptionHandlerMiddleware
 {

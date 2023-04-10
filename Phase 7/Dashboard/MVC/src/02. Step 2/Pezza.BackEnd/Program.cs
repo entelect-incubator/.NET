@@ -1,4 +1,4 @@
-namespace Pezza.Portal;
+namespace Portal;
 
 public class Program
 {

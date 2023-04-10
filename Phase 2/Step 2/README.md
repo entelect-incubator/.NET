@@ -20,16 +20,16 @@ Test Data for our tests. Staying with **Single Responsibility** we want to creat
 
 ![](Assets/2020-11-20-09-37-20.png)
 
-CustomerTestData.cs - We will use Bogus package to help us out in creating Test Data, by creating a Faker Object. You will end up with 3 functions i.e. Entity, DTO and DTOData, the same as you did for StockTestData.
+CustomerTestData.cs - We will use Bogus package to help us out in creating Test Data, by creating a Faker Object. You will end up with 3 functions i.e. Entity, DTO and DTOData, the same as you did for PizzaTestData.
 
 ![Customer Test Data](Assets/2020-11-20-09-39-27.png)
 
 ```cs
-namespace Pezza.Test;
+namespace Test;
 
 using Bogus;
-using Pezza.Common.DTO;
-using Pezza.Common.Entities;
+using Common.DTO;
+using Common.Entities;
 
 public static class CustomerTestData
 {
@@ -55,11 +55,11 @@ public static class CustomerTestData
 OrderTestData is a bit different, because of Orders having Order Items.
 
 ```cs
-namespace Pezza.Test;
+namespace Test;
 
 using System.Collections.Generic;
 using Bogus;
-using Pezza.Common.DTO;
+using Common.DTO;
 
 public static class OrderTestData
 {
@@ -134,14 +134,14 @@ It will contain a new Handler with the In Memory DBContext and AutoMapper.
 TestCustomerCore.cs in Core folder
 
 ```cs
-namespace Pezza.Test.Core;
+namespace Test.Core;
 
 using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
-using Pezza.Common.DTO;
-using Pezza.Core.Customer.Commands;
-using Pezza.Core.Customer.Queries;
+using Common.DTO;
+using Core.Customer.Commands;
+using Core.Customer.Queries;
 
 [TestFixture]
 public class TestCustomerCore : QueryTestBase

@@ -1,7 +1,7 @@
-﻿namespace Pezza.Core.Customer.Commands;
+﻿namespace Core.Customer.Commands;
 
 using FluentValidation;
-using Pezza.Common.Behaviours.Validators;
+using Common.Behaviours.Validators;
 
 public class UpdateCustomerCommandValidator : AbstractValidator<UpdateCustomerCommand>
 {

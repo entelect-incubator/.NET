@@ -1,7 +1,7 @@
-﻿namespace Pezza.Test;
+﻿namespace Test;
 
 using Microsoft.EntityFrameworkCore;
-using Pezza.DataAccess;
+using DataAccess;
 
 public class DatabaseContextTest
 {

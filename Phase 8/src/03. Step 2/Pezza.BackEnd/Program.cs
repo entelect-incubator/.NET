@@ -1,8 +1,8 @@
-namespace Pezza.BackEnd;
+namespace BackEnd;
 
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
-using Pezza.Portal;
+using Portal;
 
 public class Program
 {

@@ -1,11 +1,11 @@
-namespace Pezza.Test.Core
+namespace Test.Core
 {
     using System.Threading;
     using System.Threading.Tasks;
     using NUnit.Framework;
-    using Pezza.Common.DTO;
-    using Pezza.Core.Order.Commands;
-    using Pezza.Core.Order.Queries;
+    using Common.DTO;
+    using Core.Order.Commands;
+    using Core.Order.Queries;
 
     [TestFixture]
 

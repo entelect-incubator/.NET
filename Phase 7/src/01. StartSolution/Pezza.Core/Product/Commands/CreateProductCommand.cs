@@ -1,14 +1,14 @@
-﻿namespace Pezza.Core.Product.Commands;
+﻿namespace Core.Product.Commands;
 
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using MediatR;
-using Pezza.Common.DTO;
-using Pezza.Common.Entities;
-using Pezza.Common.Models;
-using Pezza.Core.Helpers;
-using Pezza.DataAccess;
+using Common.DTO;
+using Common.Entities;
+using Common.Models;
+using Core.Helpers;
+using DataAccess;
 
 public class CreateProductCommand : IRequest<Result<ProductDTO>>
 {

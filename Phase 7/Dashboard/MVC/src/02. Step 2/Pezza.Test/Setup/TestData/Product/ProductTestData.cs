@@ -1,8 +1,8 @@
-﻿namespace Pezza.Test.Setup.TestData.Product;
+﻿namespace Test.Setup.TestData.Product;
 
 using System;
 using Bogus;
-using Pezza.Common.DTO;
+using Common.DTO;
 
 public static class ProductTestData
 {

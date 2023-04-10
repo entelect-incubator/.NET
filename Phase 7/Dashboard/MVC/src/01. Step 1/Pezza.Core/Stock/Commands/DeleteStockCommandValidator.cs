@@ -1,4 +1,4 @@
-﻿namespace Pezza.Core.Stock.Commands;
+﻿namespace Core.Stock.Commands;
 
 using FluentValidation;
 

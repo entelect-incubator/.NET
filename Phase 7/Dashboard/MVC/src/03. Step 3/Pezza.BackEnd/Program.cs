@@ -1,4 +1,4 @@
-namespace Pezza.BackEnd;
+namespace BackEnd;
 
 public class Program
 {

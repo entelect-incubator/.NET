@@ -10,7 +10,7 @@
 - [ ] Coding Standards - [Coding Guidelines And Best Practices](https://www.c-sharpcorner.com/blogs/c-sharp-coding-guidelines-and-best-practices-v10)
 - [ ] Only extra coding standard for this incubator is that we prefer Usings inside of the namespace for a variety of reasons.
 
-For this Incubator we will be using [.NET 7](https://dotnet.microsoft.com/download) - Scan through the basic concepts.
+For this Incubator we will be using The latest version of .NET [Scan through the basic concepts](https://dotnet.microsoft.com/download)
 
     1. The Startup class
     2. Dependency injection (services)
@@ -27,8 +27,8 @@ For this Incubator we will be using [.NET 7](https://dotnet.microsoft.com/downlo
 
 - [ ] Principles, Frameworks and Architectures
 
-In this Incubator, we will build a solution based on the Single Responsibility Principle. To help us achieve this we will be making use of the CQRS pattern alongside a Clean Code Architecture. If you have never heard about these terms, don't worry we will be discussing them in detail.
+We will also, build a solution based on the Single Responsibility Principle. To help us achieve this we will be making use of the CQRS pattern alongside a Clean Code Architecture. If you have never heard about these terms, don't worry we will be discussing them in detail.
 
-### Intro
+# Intro
 
 - [ ] [Setup](https://github.com/entelect-incubator/.NET/blob/master/Setup.md)

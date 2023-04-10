@@ -1,13 +1,13 @@
-﻿namespace Pezza.Api.Helpers;
+﻿namespace Api.Helpers;
 
 using System;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using ImageMagick;
-using Pezza.Common;
-using Pezza.Common.Helpers;
-using Pezza.Common.Models;
+using Common;
+using Common.Helpers;
+using Common.Models;
 
 public static class MediaHelper
 {

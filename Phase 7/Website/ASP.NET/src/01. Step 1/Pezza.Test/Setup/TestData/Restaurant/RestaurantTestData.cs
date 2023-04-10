@@ -1,9 +1,9 @@
-﻿namespace Pezza.Test.Setup.TestData.Restaurant
+﻿namespace Test.Setup.TestData.Restaurant
 {
     using System;
     using Bogus;
-    using Pezza.Common.DTO;
-    using Pezza.Common.Models.Base;
+    using Common.DTO;
+    using Common.Models.Base;
 
     public static class RestaurantTestData
     {

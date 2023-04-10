@@ -1,6 +1,6 @@
-﻿namespace Pezza.Common.Models;
+﻿namespace Common.Models;
 
-using Pezza.Common.Models.Base;
+using Common.Models.Base;
 
 public class SearchBase : EntityBase
 {

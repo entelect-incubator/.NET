@@ -1,13 +1,13 @@
-﻿namespace Pezza.Scheduler.Jobs
+﻿namespace Scheduler.Jobs
 {
     using System.Threading.Tasks;
     using MediatR;
-    using Pezza.Common.DTO;
-    using Pezza.Common.Models;
-    using Pezza.Core.Customer.Queries;
-    using Pezza.Core.Email;
-    using Pezza.Core.Notify.Commands;
-    using Pezza.Core.Notify.Queries;
+    using Common.DTO;
+    using Common.Models;
+    using Core.Customer.Queries;
+    using Core.Email;
+    using Core.Notify.Commands;
+    using Core.Notify.Queries;
 
     public class OrderCompleteJob : IOrderCompleteJob
     {

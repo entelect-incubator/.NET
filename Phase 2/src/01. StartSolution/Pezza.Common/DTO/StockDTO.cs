@@ -1,4 +1,4 @@
-﻿namespace Pezza.Common.DTO;
+﻿namespace Common.DTO;
 
 using System;
 

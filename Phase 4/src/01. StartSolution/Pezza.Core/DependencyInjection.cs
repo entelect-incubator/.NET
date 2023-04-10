@@ -1,12 +1,12 @@
-namespace Pezza.Core;
+namespace Core;
 
 using System.Reflection;
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using Pezza.Common.Behaviours;
-using Pezza.Common.Profiles;
-using Pezza.Core.Stock.Commands;
+using Common.Behaviours;
+using Common.Profiles;
+using Core.Stock.Commands;
 
 public static class DependencyInjection
 {

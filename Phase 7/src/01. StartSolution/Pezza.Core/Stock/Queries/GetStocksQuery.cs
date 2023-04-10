@@ -1,4 +1,4 @@
-﻿namespace Pezza.Core.Stock.Queries;
+﻿namespace Core.Stock.Queries;
 
 using System.Collections.Generic;
 using System.Linq;
@@ -8,18 +8,18 @@ using System.Threading.Tasks;
 using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Pezza.Common.DTO;
-using Pezza.Common.Extensions;
-using Pezza.Common.Filters;
-using Pezza.Common.Models;
-using Pezza.DataAccess;
+using Common.DTO;
+using Common.Extensions;
+using Common.Filters;
+using Common.Models;
+using DataAccess;
 
-public class GetStocksQuery : IRequest<ListResult<StockDTO>>
+public class GetStocksQuery : IRequest<ListResult<PizzaModel>>
 {
-    public StockDTO Data { get; set; }
+    public PizzaModel Data { get; set; }
 }
 
-public class GetStocksQueryHandler : IRequestHandler<GetStocksQuery, ListResult<StockDTO>>
+public class GetStocksQueryHandler : IRequestHandler<GetStocksQuery, ListResult<PizzaModel>>
 {
     private readonly DatabaseContext databaseContext;
 
@@ -28,7 +28,7 @@ public class GetStocksQueryHandler : IRequestHandler<GetStocksQuery, ListResult<
     public GetStocksQueryHandler(DatabaseContext databaseContext, IMapper mapper)
         => (this.databaseContext, this.mapper) = (databaseContext, mapper);
 
-    public async Task<ListResult<StockDTO>> Handle(GetStocksQuery request, CancellationToken cancellationToken)
+    public async Task<ListResult<PizzaModel>> Handle(GetStocksQuery request, CancellationToken cancellationToken)
     {
         var dto = request.Data;
         if (string.IsNullOrEmpty(dto.OrderBy))
@@ -48,8 +48,8 @@ public class GetStocksQueryHandler : IRequestHandler<GetStocksQuery, ListResult<
             .OrderBy(dto.OrderBy);
 
         var count = entities.Count();
-        var paged = this.mapper.Map<List<StockDTO>>(await entities.ApplyPaging(dto.PagingArgs).OrderBy(dto.OrderBy).ToListAsync(cancellationToken));
+        var paged = this.mapper.Map<List<PizzaModel>>(await entities.ApplyPaging(dto.PagingArgs).OrderBy(dto.OrderBy).ToListAsync(cancellationToken));
 
-        return ListResult<StockDTO>.Success(paged, count);
+        return ListResult<PizzaModel>.Success(paged, count);
     }
 }

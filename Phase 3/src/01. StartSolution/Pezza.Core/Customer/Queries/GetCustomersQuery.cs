@@ -1,4 +1,4 @@
-﻿namespace Pezza.Core.Customer.Queries;
+﻿namespace Core.Customer.Queries;
 
 using System.Collections.Generic;
 using System.Linq;
@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Pezza.Common.DTO;
-using Pezza.Common.Models;
-using Pezza.DataAccess;
+using Common.DTO;
+using Common.Models;
+using DataAccess;
 
 public class GetCustomersQuery : IRequest<ListResult<CustomerDTO>>
 {

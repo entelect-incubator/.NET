@@ -1,4 +1,4 @@
-namespace Pezza.Scheduler
+namespace Scheduler
 {
     using System;
     using System.Collections.Generic;

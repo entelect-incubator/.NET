@@ -1,14 +1,14 @@
-﻿namespace Pezza.Core.Stock.Commands;
+﻿namespace Core.Stock.Commands;
 
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Pezza.Common.DTO;
-using Pezza.Common.Models;
-using Pezza.Core.Helpers;
-using Pezza.DataAccess;
+using Common.DTO;
+using Common.Models;
+using Core.Helpers;
+using DataAccess;
 
 public class UpdateStockCommand : IRequest<Result<StockDTO>>
 {
@@ -42,6 +42,6 @@ public class UpdateStockCommandHandler : IRequestHandler<UpdateStockCommand, Res
 
         var outcome = this.databaseContext.Stocks.Update(findEntity);
 
-        return await CoreHelper<StockDTO>.Outcome(this.databaseContext, this.mapper, cancellationToken, findEntity, "Error updating stock");
+        return await CoreHelper<StockDTO>.Outcome(this.databaseContext, this.mapper, cancellationToken, findEntity, "Error updating pizza");
     }
 }

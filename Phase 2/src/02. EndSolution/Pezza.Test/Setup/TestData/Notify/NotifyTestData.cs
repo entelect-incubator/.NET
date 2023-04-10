@@ -1,8 +1,8 @@
-﻿namespace Pezza.Test.Setup.TestData.Notify;
+﻿namespace Test.Setup.TestData.Notify;
 
 using System;
 using Bogus;
-using Pezza.Common.DTO;
+using Common.DTO;
 
 public static class NotifyTestData
 {

@@ -1,8 +1,8 @@
-namespace Pezza.DataAccess;
+namespace DataAccess;
 
 using Microsoft.EntityFrameworkCore;
-using Pezza.Common.Entities;
-using Pezza.DataAccess.Map;
+using Common.Entities;
+using DataAccess.Map;
 
 public class DatabaseContext : DbContext
 {

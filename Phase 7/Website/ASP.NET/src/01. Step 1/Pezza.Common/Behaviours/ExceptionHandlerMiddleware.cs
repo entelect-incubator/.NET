@@ -1,4 +1,4 @@
-namespace Pezza.Common.Behaviours
+namespace Common.Behaviours
 {
     using System;
     using System.Linq;
@@ -7,7 +7,7 @@ namespace Pezza.Common.Behaviours
     using FluentValidation;
     using Microsoft.AspNetCore.Http;
     using Newtonsoft.Json;
-    using Pezza.Common.Models;
+    using Common.Models;
 
     public class ExceptionHandlerMiddleware
     {

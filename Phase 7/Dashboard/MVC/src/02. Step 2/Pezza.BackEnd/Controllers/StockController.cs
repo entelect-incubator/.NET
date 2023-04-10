@@ -1,20 +1,20 @@
-﻿namespace Pezza.Portal.Controllers;
+﻿namespace Portal.Controllers;
 
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using Pezza.Common.DTO;
-using Pezza.Portal.Helpers;
+using Common.DTO;
+using Portal.Helpers;
 
 public class StockController : BaseController
 {
-    private readonly ApiCallHelper<StockDTO> apiCallHelper;
+    private readonly ApiCallHelper<PizzaModel> apiCallHelper;
 
     public StockController(IHttpClientFactory clientFactory)
         : base(clientFactory)
     {
-        this.apiCallHelper = new ApiCallHelper<StockDTO>(this.clientFactory);
+        this.apiCallHelper = new ApiCallHelper<PizzaModel>(this.clientFactory);
         this.apiCallHelper.ControllerName = "Stock";
     }
 
@@ -29,7 +29,7 @@ public class StockController : BaseController
 
     public async Task<JsonResult> List(int limit, int page, string orderBy = "Name asc")
     {
-        var json = JsonConvert.SerializeObject(new StockDTO
+        var json = JsonConvert.SerializeObject(new PizzaModel
         {
             OrderBy = orderBy,
             PagingArgs = new Common.Models.PagingArgs
@@ -51,20 +51,20 @@ public class StockController : BaseController
 
     public ActionResult Create()
     {
-        return this.View(new StockDTO());
+        return this.View(new PizzaModel());
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<ActionResult> Create(StockDTO stock)
+    public async Task<ActionResult> Create(PizzaModel pizza)
     {
         if (!this.ModelState.IsValid)
         {
-            return this.View(stock);
+            return this.View(pizza);
         }
 
-        var result = await this.apiCallHelper.Create(stock);
-        return Validate(result, this.apiCallHelper, stock);
+        var result = await this.apiCallHelper.Create(pizza);
+        return Validate(result, this.apiCallHelper, pizza);
     }
 
     [Route("Stock/Edit/{id?}")]
@@ -77,16 +77,16 @@ public class StockController : BaseController
     [HttpPost]
     [Route("Stock/Edit/{id?}")]
     [ValidateAntiForgeryToken]
-    public async Task<ActionResult> Edit(int id, StockDTO stock)
+    public async Task<ActionResult> Edit(int id, PizzaModel pizza)
     {
         if (!this.ModelState.IsValid)
         {
-            return this.View(stock);
+            return this.View(pizza);
         }
 
-        stock.Id = id;
-        var result = await this.apiCallHelper.Edit(stock);
-        return Validate(result, this.apiCallHelper, stock);
+        pizza.Id = id;
+        var result = await this.apiCallHelper.Edit(pizza);
+        return Validate(result, this.apiCallHelper, pizza);
     }
 
     [HttpPost]

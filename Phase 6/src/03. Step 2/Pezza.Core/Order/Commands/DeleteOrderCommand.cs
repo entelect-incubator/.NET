@@ -1,12 +1,12 @@
-﻿namespace Pezza.Core.Order.Commands;
+﻿namespace Core.Order.Commands;
 
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Pezza.Common.Models;
-using Pezza.Core.Helpers;
-using Pezza.DataAccess;
+using Common.Models;
+using Core.Helpers;
+using DataAccess;
 
 public class DeleteOrderCommand : IRequest<Result>
 {

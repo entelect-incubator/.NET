@@ -1,4 +1,4 @@
-﻿namespace Pezza.Common.Models.Base;
+﻿namespace Common.Models.Base;
 
 using Microsoft.EntityFrameworkCore.Metadata;
 

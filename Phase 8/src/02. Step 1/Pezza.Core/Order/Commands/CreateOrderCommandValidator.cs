@@ -1,7 +1,7 @@
-﻿namespace Pezza.Core.Customer.Commands;
+﻿namespace Core.Customer.Commands;
 
 using FluentValidation;
-using Pezza.Core.Order.Commands;
+using Core.Order.Commands;
 
 public class CreateOrderCommandValidator : AbstractValidator<CreateOrderCommand>
 {

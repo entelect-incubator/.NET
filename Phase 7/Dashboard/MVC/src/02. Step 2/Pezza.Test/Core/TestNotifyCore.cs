@@ -1,13 +1,13 @@
-namespace Pezza.Test.Core;
+namespace Test.Core;
 
 using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
-using Pezza.Common.DTO;
-using Pezza.Core.Notify.Commands;
-using Pezza.Core.Notify.Queries;
-using Pezza.Test.Setup;
-using Pezza.Test.Setup.TestData.Notify;
+using Common.DTO;
+using Core.Notify.Commands;
+using Core.Notify.Queries;
+using Test.Setup;
+using Test.Setup.TestData.Notify;
 
 [TestFixture]
 

@@ -1,4 +1,4 @@
-namespace Pezza.BackEnd.Models;
+namespace BackEnd.Models;
 
 using System;
 

@@ -8,7 +8,7 @@ We are going to create a basic Email Service using [FluentEmail](https://github.
 
 ## **FluentEmail**
 
-Install FluentEmail.Core, HtmlAgilityPack and FluentEmail.SendGrid on Pezza.Core.
+Install FluentEmail.Core, HtmlAgilityPack and FluentEmail.SendGrid on Core.
 
 ![FluentEmail](Assets/2021-01-17-22-57-42.png)
 
@@ -18,16 +18,16 @@ You will need to set up a SendGrid account to execute the code in this phase.
 - [ ] [Read more about SendGrid API Keys](https://sendgrid.com/docs/ui/account-and-settings/api-keys/)
 - [ ] [Create API Key](https://app.sendgrid.com/settings/api_keys)
 
-Create a new folder called Email in Pezza.Core. Create a file inside the folder called EmailService.cs and add the following code.
+Create a new folder called Email in Core. Create a file inside the folder called EmailService.cs and add the following code.
 
 ```cs
-namespace Pezza.Core.Email;
+namespace Core.Email;
 
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
-using Pezza.Common.DTO;
-using Pezza.Common.Models;
+using Common.DTO;
+using Common.Models;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 
@@ -61,9 +61,9 @@ public class EmailService
 
 We will use an HTML template file. This template file can be read in code and the tags inside the template will be replaced with actual content before it gets sent to the customer.
 
-Create OrderCompleted.html inside Pezza.Core\Email\Templates.
+Create OrderCompleted.html inside Core\Email\Templates.
 
-Copy the HTML from **Phase 6\src\04. Step 3\Pezza.Core\Email\Templates\OrderCompleted.html** into your newly created OrderCompleted.html.
+Copy the HTML from **Phase 6\src\04. Step 3\Core\Email\Templates\OrderCompleted.html** into your newly created OrderCompleted.html.
 
 ![Email Service](Assets/2021-01-17-23-03-34.png)
 

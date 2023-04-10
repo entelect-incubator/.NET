@@ -1,8 +1,8 @@
-namespace Pezza.Common.Filters;
+namespace Common.Filters;
 
 using System;
 using System.Linq;
-using Pezza.Common.Entities;
+using Common.Entities;
 
 public static class OrderFilter
 {

@@ -1,4 +1,4 @@
-﻿namespace Pezza.Common
+﻿namespace Common
 {
     using System;
     using System.Collections.Generic;

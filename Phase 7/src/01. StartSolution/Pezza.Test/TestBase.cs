@@ -1,4 +1,4 @@
-﻿namespace Pezza.Test;
+﻿namespace Test;
 
 using Microsoft.EntityFrameworkCore;
 

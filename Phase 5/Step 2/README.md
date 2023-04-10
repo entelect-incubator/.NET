@@ -8,7 +8,7 @@
 
 To improve the response time we will be adding compression. There is a variety of other things you can do to improve performance, this is just one of them.
 
-Open up Startup.cs in Pezza.API.
+Open up Startup.cs in API.
 
 Add the following to the ConfigureServices method.
 

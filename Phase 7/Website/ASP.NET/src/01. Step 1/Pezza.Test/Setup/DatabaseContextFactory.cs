@@ -1,8 +1,8 @@
-namespace Pezza.Test
+namespace Test
 {
     using System;
     using Microsoft.EntityFrameworkCore;
-    using Pezza.DataAccess;
+    using DataAccess;
 
     public class DatabaseContextFactory
     {

@@ -1,7 +1,7 @@
-namespace Pezza.DataAccess.Map
+namespace DataAccess.Map
 {
     using Microsoft.EntityFrameworkCore;
-    using Pezza.Common.Entities;
+    using Common.Entities;
 
     public class RestaurantMap : IEntityTypeConfiguration<Restaurant>
     {

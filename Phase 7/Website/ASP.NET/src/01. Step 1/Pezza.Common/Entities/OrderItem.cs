@@ -1,6 +1,6 @@
-namespace Pezza.Common.Entities
+namespace Common.Entities
 {
-    using Pezza.Common.Models.Base;
+    using Common.Models.Base;
 
     public class OrderItem : EntityBase
     {

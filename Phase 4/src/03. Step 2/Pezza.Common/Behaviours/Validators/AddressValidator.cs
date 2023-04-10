@@ -1,7 +1,7 @@
-﻿namespace Pezza.Common.Behaviours.Validators;
+﻿namespace Common.Behaviours.Validators;
 
 using FluentValidation;
-using Pezza.Common.Models.Base;
+using Common.Models.Base;
 
 public class AddressValidator : AbstractValidator<AddressBase>
 {

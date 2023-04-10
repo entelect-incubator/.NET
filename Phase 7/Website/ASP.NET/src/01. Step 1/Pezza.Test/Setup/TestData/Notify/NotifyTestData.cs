@@ -1,9 +1,9 @@
-﻿namespace Pezza.Test
+﻿namespace Test
 {
     using System;
     using Bogus;
-    using Pezza.Common.DTO;
-    using Pezza.Common.Entities;
+    using Common.DTO;
+    using Common.Entities;
 
     public static class NotifyTestData
     {

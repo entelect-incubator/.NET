@@ -7,21 +7,21 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Content Include="obj\Debug\netcoreapp3.1\Pezza.Core.csproj.FileListAbsolute.txt" />
-        <Content Include="obj\Pezza.Core.csproj.nuget.dgspec.json" />
+        <Content Include="obj\Debug\netcoreapp3.1\Core.csproj.FileListAbsolute.txt" />
+        <Content Include="obj\Core.csproj.nuget.dgspec.json" />
         <Content Include="obj\project.assets.json" />
     </ItemGroup>
 
     <ItemGroup>
-        <None Include="obj\Debug\netcoreapp3.1\Pezza.Core.AssemblyInfoInputs.cache" />
-        <None Include="obj\Debug\netcoreapp3.1\Pezza.Core.assets.cache" />
-        <None Include="obj\Debug\netcoreapp3.1\Pezza.Core.csproj.CopyComplete" />
-        <None Include="obj\Debug\netcoreapp3.1\Pezza.Core.csproj.CoreCompileInputs.cache" />
-        <None Include="obj\Debug\netcoreapp3.1\Pezza.Core.csprojAssemblyReference.cache" />
-        <None Include="obj\Debug\netcoreapp3.1\Pezza.Core.dll" />
-        <None Include="obj\Debug\netcoreapp3.1\Pezza.Core.pdb" />
-        <None Include="obj\Pezza.Core.csproj.nuget.g.props" />
-        <None Include="obj\Pezza.Core.csproj.nuget.g.targets" />
+        <None Include="obj\Debug\netcoreapp3.1\Core.AssemblyInfoInputs.cache" />
+        <None Include="obj\Debug\netcoreapp3.1\Core.assets.cache" />
+        <None Include="obj\Debug\netcoreapp3.1\Core.csproj.CopyComplete" />
+        <None Include="obj\Debug\netcoreapp3.1\Core.csproj.CoreCompileInputs.cache" />
+        <None Include="obj\Debug\netcoreapp3.1\Core.csprojAssemblyReference.cache" />
+        <None Include="obj\Debug\netcoreapp3.1\Core.dll" />
+        <None Include="obj\Debug\netcoreapp3.1\Core.pdb" />
+        <None Include="obj\Core.csproj.nuget.g.props" />
+        <None Include="obj\Core.csproj.nuget.g.targets" />
         <None Include="obj\project.nuget.cache" />
     </ItemGroup>
 
@@ -35,8 +35,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Pezza.Common\Pezza.Common.csproj" />
-        <ProjectReference Include="..\Pezza.DataAccess\Pezza.DataAccess.csproj" />
+        <ProjectReference Include="..\Common\Common.csproj" />
+        <ProjectReference Include="..\DataAccess\DataAccess.csproj" />
     </ItemGroup>
 
 </Project>

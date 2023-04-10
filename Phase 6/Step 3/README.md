@@ -18,9 +18,9 @@ Read more on [Fire and Forget Pattern](https://ducmanhphan.github.io/2020-02-24-
 
 Adding the request on a type of queue system and forgetting about the result. You can also implement a webhook/event when the request is done. In this Step, we will only look at adding on the Notify table and using the Hangfire job to read any emails that haven't been sent.
 
-## **Pezza.Scheduler**
+## **Scheduler**
 
-Create a new ASP.NET 7 Web Application Pezza.Scheduler under 01. Apis
+Create a new ASP.NET 7 Web Application Scheduler under 01. Apis
 
 ![](Assets/2021-01-28-07-32-39.png)
 
@@ -36,7 +36,7 @@ Once the project is ready, I will open the NuGet package manager UI and add the 
 
 ## **Connection String**
 
-Add Connection String in appsetting.json Pezza.Scheduler
+Add Connection String in appsetting.json Scheduler
 
 ```json
 "ConnectionStrings": {
@@ -68,7 +68,7 @@ Next, I will call the extension method AddHangfireServer on the IServiceCollecti
 
 ## **Dashboard**
 
-Once the basic setup for the dependency injection container is done, now I will add the middleware needed to add the Hangfire Dashboard UI. For that, I will call the extension method UseHangfireDashboard on the IApplicationBuilder instance in the Configure method of the Pezza.Scheduler StartUp class.
+Once the basic setup for the dependency injection container is done, now I will add the middleware needed to add the Hangfire Dashboard UI. For that, I will call the extension method UseHangfireDashboard on the IApplicationBuilder instance in the Configure method of the Scheduler StartUp class.
 
 ```cs
 app.UseHangfireDashboard();
@@ -118,7 +118,7 @@ Modify Customer.cs by adding the following property
 public virtual ICollection<Notify> Notifies { get; set; }
 ```
 
-In Pezza.Common, modify Notify.cs and NotifyDTO.cs. Add a Customer property to Notify.cs
+In Common, modify Notify.cs and NotifyDTO.cs. Add a Customer property to Notify.cs
 
 ```cs
 public virtual Customer Customer { get; set; }
@@ -130,7 +130,7 @@ and a CustomerDTO property to NotifyDTO.cs
 public virtual CustomerDTO Customer { get; set; }
 ```
 
-In Pezza.DataAccess\Mapping modify NotifyMap.cs
+In DataAccess\Mapping modify NotifyMap.cs
 
 ```cs
 builder.HasOne(t => t.Customer)
@@ -160,10 +160,10 @@ Well, the main advantage of Hangfire comes in when we use it to create schedulin
 
 Let us say we need to create a job that is responsible for finding any emails in Notify table that hasn't been send and send them out.
 
-Create a new folder called Jobs inside Pezza.Scheduler and inside that IOrderCompleteJob.cs interface and OrderCompleteJob.cs.
+Create a new folder called Jobs inside Scheduler and inside that IOrderCompleteJob.cs interface and OrderCompleteJob.cs.
 
 ```cs
-namespace Pezza.Scheduler.Jobs;
+namespace Scheduler.Jobs;
 
 using System.Threading.Tasks;
 
@@ -174,16 +174,16 @@ public interface IOrderCompleteJob
 ```
 
 ```cs
-namespace Pezza.Scheduler.Jobs;
+namespace Scheduler.Jobs;
 
 using System.Threading.Tasks;
 using MediatR;
-using Pezza.Common.DTO;
-using Pezza.Common.Models;
-using Pezza.Core.Customer.Queries;
-using Pezza.Core.Email;
-using Pezza.Core.Notify.Commands;
-using Pezza.Core.Notify.Queries;
+using Common.DTO;
+using Common.Models;
+using Core.Customer.Queries;
+using Core.Email;
+using Core.Notify.Commands;
+using Core.Notify.Queries;
 
 public class OrderCompleteJob : IOrderCompleteJob
 {

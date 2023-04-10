@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Pezza.Common.DTO.StockDTO>
+﻿@model IEnumerable<Common.DTO.StockDTO>
 
 @{
     ViewBag.Title = "Stock";
@@ -27,20 +27,20 @@ ViewBag.ActiveMenu = "Stock";
             </tr>
         </thead>
         <tbody>
-            @foreach (var stock in Model)
+            @foreach (var pizza in Model)
         {
             <tr>
-                    <td>@stock.Id</td>
-                    <td align="right">@stock.Quantity</td>
-                    <td>@stock.Name</td>
-                    <td>@stock.ValueOfMeasure @stock.UnitOfMeasure</td>
-                    <td>@stock.ExpiryDate</td>
-                    <td>@stock.Comment</td>
+                    <td>@pizza.Id</td>
+                    <td align="right">@pizza.Quantity</td>
+                    <td>@pizza.Name</td>
+                    <td>@pizza.ValueOfMeasure @pizza.UnitOfMeasure</td>
+                    <td>@pizza.ExpiryDate</td>
+                    <td>@pizza.Comment</td>
                     <td align="right">
-                        <a rel="tooltip" class="btn btn-info btn-sm btn-round btn-icon edit" href="/Stock/Edit/@stock.Id">
+                        <a rel="tooltip" class="btn btn-info btn-sm btn-round btn-icon edit" href="/Stock/Edit/@pizza.Id">
                             <i class="fa fa-wrench" aria-hidden="true"></i>
                         </a>
-                        <button onclick="remove(@stock.Id, '@stock.Name')" type="button" rel="tooltip" class="btn btn-danger btn-sm btn-round btn-icon remove">
+                        <button onclick="remove(@pizza.Id, '@pizza.Name')" type="button" rel="tooltip" class="btn btn-danger btn-sm btn-round btn-icon remove">
                             <i class="fa fa-times" aria-hidden="true"></i>
                         </button>
                     </td>
@@ -83,12 +83,12 @@ else
                         });
                     }
                     else {
-                        $.alertWarning('Error removing stock');
+                        $.alertWarning('Error removing pizza');
                     }
                 },
                 error: function (error) {
                     console.log(error);
-                    $.alertWarning('Error removing stock');
+                    $.alertWarning('Error removing pizza');
                 }
             });
         }

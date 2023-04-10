@@ -1,4 +1,4 @@
-namespace Pezza.Scheduler;
+namespace Scheduler;
 
 using System;
 using Hangfire;
@@ -8,10 +8,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Pezza.Common.Behaviours;
-using Pezza.Core;
-using Pezza.DataAccess;
-using Pezza.Scheduler.Jobs;
+using Common.Behaviours;
+using Core;
+using DataAccess;
+using Scheduler.Jobs;
 
 public class Startup
 {

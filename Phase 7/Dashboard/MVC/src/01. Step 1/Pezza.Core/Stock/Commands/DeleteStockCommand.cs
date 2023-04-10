@@ -1,12 +1,12 @@
-﻿namespace Pezza.Core.Stock.Commands;
+﻿namespace Core.Stock.Commands;
 
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Pezza.Common.Models;
-using Pezza.Core.Helpers;
-using Pezza.DataAccess;
+using Common.Models;
+using Core.Helpers;
+using DataAccess;
 
 public class DeleteStockCommand : IRequest<Result>
 {
@@ -25,6 +25,6 @@ public class DeleteStockCommandHandler : IRequestHandler<DeleteStockCommand, Res
         var findEntity = await this.databaseContext.Stocks.FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
         this.databaseContext.Stocks.Remove(findEntity);
 
-        return await CoreHelper.Outcome(this.databaseContext, cancellationToken, "Error deleting stock");
+        return await CoreHelper.Outcome(this.databaseContext, cancellationToken, "Error deleting pizza");
     }
 }

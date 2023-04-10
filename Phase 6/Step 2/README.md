@@ -12,18 +12,18 @@ The following material is valuable in getting a better understanding of these pa
 - [Domain Event Pattern](https://microservices.io/patterns/data/domain-event.html)
 - [Immediate Domain Event Salvation with MediatR](https://ardalis.com/immediate-domain-event-salvation-with-mediatr/)
 
-In Pezza.Core create a new folder in Order called Events. Inside of Events create an Event called OrderCompletedEvent.cs. Here we will call the EmailService created in the previous step as well as insert a Notify record in the database.
+In Core create a new folder in Order called Events. Inside of Events create an Event called OrderCompletedEvent.cs. Here we will call the EmailService created in the previous step as well as insert a Notify record in the database.
 
 ```cs
-namespace Pezza.Core.Order.Events;
+namespace Core.Order.Events;
 
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using Pezza.Common.DTO;
-using Pezza.Core.Email;
-using Pezza.Core.Notify.Commands;
+using Common.DTO;
+using Core.Email;
+using Core.Notify.Commands;
 
 public class OrderCompletedEvent : INotification
 {
@@ -72,15 +72,15 @@ public class OrderCompletedEventHandler : INotificationHandler<OrderCompletedEve
 We want to trigger the event if the DTO Completed property that gets send is true.
 
 ```cs
-namespace Pezza.Core.Order.Commands;
+namespace Core.Order.Commands;
 
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using Pezza.Common.DTO;
-using Pezza.Common.Models;
-using Pezza.Core.Order.Events;
-using Pezza.DataAccess.Contracts;
+using Common.DTO;
+using Common.Models;
+using Core.Order.Events;
+using DataAccess.Contracts;
 
 public class UpdateOrderCommand : IRequest<Result<OrderDTO>>
 {

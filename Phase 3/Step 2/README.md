@@ -6,13 +6,13 @@
 
 ## **Search Models**
 
-Let's extend our data DTO's to cater for filtering and pagination. In Pezza.Common\Models create PagingArgs.cs
+Let's extend our data DTO's to cater for filtering and pagination. In Common\Models create PagingArgs.cs
 
 ![PagingArgs](Assets/2021-01-15-07-06-25.png)
 
 
 ```cs
-namespace Pezza.Common.Models;
+namespace Common.Models;
 
 public class PagingArgs
 {
@@ -45,13 +45,13 @@ public class PagingArgs
 }
 ```
 
-Add an extension method in Pezza.Common to do the Pagination. Create a new folder called Extensions in Pezza.Common and add Extensions.cs
+Add an extension method in Common to do the Pagination. Create a new folder called Extensions in Common and add Extensions.cs
 
 ```cs
-namespace Pezza.Common.Extensions;
+namespace Common.Extensions;
 
 using System.Linq;
-using Pezza.Common.Models;
+using Common.Models;
 
 public static class Extensions
 {
@@ -77,15 +77,15 @@ public string OrderBy { get; set; }
 public PagingArgs PagingArgs { get; set; }
 ```
 
-Extend the DTO's in Pezza.Common\DTO by inheriting from EntityBase. In the cases of RestaurantDTO and ProductDTO  that already inherit from ImageDataBase, let ImageDataBase derive from EnityBase.
+Extend the DTO's in Common\DTO by inheriting from EntityBase. In the cases of RestaurantDTO and ProductDTO  that already inherit from ImageDataBase, let ImageDataBase derive from EnityBase.
 
 ![](2021-01-15-07-08-27.png)
 
 ```cs
-namespace Pezza.Common.DTO;
+namespace Common.DTO;
 
-using Pezza.Common.Models;
-using Pezza.Common.Models.Base;
+using Common.Models;
+using Common.Models.Base;
 
 public class CustomerDTO : EntityBase
 {
@@ -118,9 +118,9 @@ public class CustomerDTO : EntityBase
 ImageDataBase
 
 ```cs
-namespace Pezza.Common.Entities;
+namespace Common.Entities;
 
-using Pezza.Common.DTO.Data;
+using Common.DTO.Data;
 
 public class ImageDataBase : EntityBase
 {
@@ -131,9 +131,9 @@ public class ImageDataBase : EntityBase
 Product DTO
 
 ```cs
-namespace Pezza.Common.DTO;
+namespace Common.DTO;
 
-using Pezza.Common.Entities;
+using Common.Entities;
 
 public class ProductDTO : ImageDataBase
 {
@@ -165,13 +165,13 @@ public class ProductDTO : ImageDataBase
 
 Filter classes are created for every entity. These filters will make use of fluent design for readability. In each filter, you create a rule for every property that you want to filter on. If that property has a value, it builds up a query before executing it to the database. See it as building up a SQL WHERE clause.
 
-Create a folder called Filters in Pezza.Common and add CustomerFilter.cs.
+Create a folder called Filters in Common and add CustomerFilter.cs.
 
 ```cs
-namespace Pezza.Common.Filters;
+namespace Common.Filters;
 
 using System.Linq;
-using Pezza.Common.Entities;
+using Common.Entities;
 
 public static class CustomerFilter
 {
@@ -267,7 +267,7 @@ public static class CustomerFilter
 }
 ```
 
-You can copy the other Filters from **Phase 3\src\03. Step2\Pezza.Common\Filters**
+You can copy the other Filters from **Phase 3\src\03. Step2\Common\Filters**
 
 ![Filters](Assets/2021-01-15-07-13-03.png)
 
@@ -281,7 +281,7 @@ The GetAllAsync method of IDataAccess gets enhanced in two ways. Firstly, a gene
 Task<ListResult<T>> GetAllAsync(T dto);
 ```
 
-The implementations of all Queries methods need to be modified to include filtering. Remember to install System.Linq.Dynamic.Core on the Pezza.Core Project.
+The implementations of all Queries methods need to be modified to include filtering. Remember to install System.Linq.Dynamic.Core on the Core Project.
 
 Modify the GetAllAsync method in GetCustomersQuery.cs as follows.
 
@@ -297,7 +297,7 @@ public class GetCustomersQuery : IRequest<ListResult<CustomerDTO>>
 Together
 
 ```cs
-namespace Pezza.Core.Customer.Queries;
+namespace Core.Customer.Queries;
 
 using System.Collections.Generic;
 using System.Linq;
@@ -307,10 +307,10 @@ using AutoMapper;
 using MediatR;
 using System.Linq.Dynamic.Core;
 using Microsoft.EntityFrameworkCore;
-using Pezza.Common.DTO;
-using Pezza.Common.Filters;
-using Pezza.Common.Models;
-using Pezza.DataAccess;
+using Common.DTO;
+using Common.Filters;
+using Common.Models;
+using DataAccess;
 
 public class GetCustomersQuery : IRequest<ListResult<CustomerDTO>>
 {
@@ -360,7 +360,7 @@ The only exception will be on the GetRestaurantsQuery implementation for Restaur
 Modify GetRestaurantsQuery.cs as follows.
 
 ```cs
-namespace Pezza.Core.Restaurant.Queries;
+namespace Core.Restaurant.Queries;
 
 using System.Collections.Generic;
 using System.Linq;
@@ -369,9 +369,9 @@ using System.Threading.Tasks;
 using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Pezza.Common.DTO;
-using Pezza.Common.Models;
-using Pezza.DataAccess;
+using Common.DTO;
+using Common.Models;
+using DataAccess;
 
 public class GetRestaurantsQuery : IRequest<ListResult<RestaurantDTO>>
 {
@@ -398,7 +398,7 @@ public class GetRestaurantsQueryHandler : IRequestHandler<GetRestaurantsQuery, L
 }
 ```
 
-Add filters to the other Core Queries implementations as well or copy it from **Phase 3\src\03. Step2\Pezza.Core**
+Add filters to the other Core Queries implementations as well or copy it from **Phase 3\src\03. Step2\Core**
 
 ### **Modifying Controllers**
 

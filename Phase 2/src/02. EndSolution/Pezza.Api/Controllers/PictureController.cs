@@ -1,8 +1,8 @@
-﻿namespace Pezza.Api.Controllers;
+﻿namespace Api.Controllers;
 
 using System.IO;
 using Microsoft.AspNetCore.Mvc;
-using Pezza.Common.Models;
+using Common.Models;
 
 public class PictureController : ApiController
 {

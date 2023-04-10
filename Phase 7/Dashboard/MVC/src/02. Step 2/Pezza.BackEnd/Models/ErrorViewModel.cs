@@ -1,4 +1,4 @@
-namespace Pezza.Portal.Models;
+namespace Portal.Models;
 
 using System;
 

@@ -1,13 +1,13 @@
-namespace Pezza.Test.Core;
+namespace Test.Core;
 
 using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
-using Pezza.Common.DTO;
-using Pezza.Core.Restaurant.Commands;
-using Pezza.Core.Restaurant.Queries;
-using Pezza.Test.Setup;
-using Pezza.Test.Setup.TestData.Restaurant;
+using Common.DTO;
+using Core.Restaurant.Commands;
+using Core.Restaurant.Queries;
+using Test.Setup;
+using Test.Setup.TestData.Restaurant;
 
 [TestFixture]
 

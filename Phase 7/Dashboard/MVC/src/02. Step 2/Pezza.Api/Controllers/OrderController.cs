@@ -1,14 +1,14 @@
-﻿namespace Pezza.Api.Controllers;
+﻿namespace Api.Controllers;
 
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Pezza.Api.Helpers;
-using Pezza.Common.DTO;
-using Pezza.Common.Entities;
-using Pezza.Common.Models;
-using Pezza.Core.Order.Commands;
-using Pezza.Core.Order.Queries;
+using Api.Helpers;
+using Common.DTO;
+using Common.Entities;
+using Common.Models;
+using Core.Order.Commands;
+using Core.Order.Queries;
 
 [ApiController]
 public class OrderController : ApiController

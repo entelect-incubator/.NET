@@ -71,7 +71,7 @@ Finally, JwtSecurityTokenHandler.WriteToken method is used to generate the JWT. 
 AuthController.cs
 
 ```cs
-namespace Pezza.Api.Controllers;
+namespace Api.Controllers;
 
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
@@ -79,7 +79,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using Pezza.Common.Models;
+using Common.Models;
 
 [ApiController]
 public class AuthController : ApiController
@@ -127,12 +127,12 @@ public class AuthController : ApiController
 }
 ```
 
-Add the following models into Pezza.Common\Models
+Add the following models into Common\Models
 
 AuthModel.cs
 
 ```cs
-namespace Pezza.Common.Models;
+namespace Common.Models;
 
 public class AuthModel
 {
@@ -143,7 +143,7 @@ public class AuthModel
 TokenModel.cs
 
 ```cs
-namespace Pezza.Common.Models;
+namespace Common.Models;
 
 public class TokenModel
 {
@@ -259,7 +259,7 @@ this.client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
 Full Code
 
 ```cs
-namespace Pezza.Portal.Helpers;
+namespace Portal.Helpers;
 
 using System.Collections.Generic;
 using System.Linq;
@@ -270,8 +270,8 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
-using Pezza.Common;
-using Pezza.Common.Models;
+using Common;
+using Common.Models;
 
 public class ApiCallHelper<T>
 {

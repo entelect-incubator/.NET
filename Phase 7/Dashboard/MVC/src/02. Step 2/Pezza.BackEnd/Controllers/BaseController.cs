@@ -1,13 +1,13 @@
-﻿namespace Pezza.Portal.Controllers;
+﻿namespace Portal.Controllers;
 
 using System;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using Microsoft.AspNetCore.Mvc;
-using Pezza.Common;
-using Pezza.Common.Models;
-using Pezza.Portal.Helpers;
+using Common;
+using Common.Models;
+using Portal.Helpers;
 
 public abstract class BaseController : Controller
 {

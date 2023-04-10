@@ -1,4 +1,4 @@
-﻿namespace Pezza.Core.Restaurant.Queries
+﻿namespace Core.Restaurant.Queries
 {
     using System;
     using System.Collections.Generic;
@@ -10,10 +10,10 @@
     using LazyCache;
     using MediatR;
     using Microsoft.EntityFrameworkCore;
-    using Pezza.Common.DTO;
-    using Pezza.Common.Extensions;
-    using Pezza.Common.Models;
-    using Pezza.DataAccess;
+    using Common.DTO;
+    using Common.Extensions;
+    using Common.Models;
+    using DataAccess;
 
     public class GetRestaurantsQuery : IRequest<ListResult<RestaurantDTO>>
     {

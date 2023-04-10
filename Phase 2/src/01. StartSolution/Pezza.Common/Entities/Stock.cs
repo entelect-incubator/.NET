@@ -1,4 +1,4 @@
-namespace Pezza.Common.Entities;
+namespace Common.Entities;
 
 using System;
 

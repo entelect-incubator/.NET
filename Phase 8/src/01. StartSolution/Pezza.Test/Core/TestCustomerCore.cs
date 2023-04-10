@@ -1,12 +1,12 @@
-namespace Pezza.Test.Core;
+namespace Test.Core;
 
 using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
-using Pezza.Common.DTO;
-using Pezza.Core.Customer.Commands;
-using Pezza.Core.Customer.Queries;
-using Pezza.Test.Setup.TestData.Customer;
+using Common.DTO;
+using Core.Customer.Commands;
+using Core.Customer.Queries;
+using Test.Setup.TestData.Customer;
 
 [TestFixture]
 public class TestCustomerCore : QueryTestBase

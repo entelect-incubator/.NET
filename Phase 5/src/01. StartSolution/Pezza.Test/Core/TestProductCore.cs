@@ -1,13 +1,13 @@
-namespace Pezza.Test.Core;
+namespace Test.Core;
 
 using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
-using Pezza.Common.DTO;
-using Pezza.Core.Product.Commands;
-using Pezza.Core.Product.Queries;
-using Pezza.Test.Setup;
-using Pezza.Test.Setup.TestData.Product;
+using Common.DTO;
+using Core.Product.Commands;
+using Core.Product.Queries;
+using Test.Setup;
+using Test.Setup.TestData.Product;
 
 [TestFixture]
 

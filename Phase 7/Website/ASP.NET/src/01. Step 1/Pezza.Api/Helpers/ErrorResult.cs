@@ -1,7 +1,7 @@
-﻿namespace Pezza.Api.Helpers
+﻿namespace Api.Helpers
 {
     using System.ComponentModel;
-    using Pezza.Common.Models;
+    using Common.Models;
 
     public class ErrorResult : Result
     {

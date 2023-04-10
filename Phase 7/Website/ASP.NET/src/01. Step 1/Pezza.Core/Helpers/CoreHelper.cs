@@ -1,12 +1,12 @@
-﻿namespace Pezza.Core.Helpers
+﻿namespace Core.Helpers
 {
     using System.Diagnostics;
     using System.Threading;
     using System.Threading.Tasks;
     using AutoMapper;
-    using Pezza.Common.Models;
-    using Pezza.Common.Models.Base;
-    using Pezza.DataAccess;
+    using Common.Models;
+    using Common.Models.Base;
+    using DataAccess;
 
     public static class CoreHelper<T>
     {

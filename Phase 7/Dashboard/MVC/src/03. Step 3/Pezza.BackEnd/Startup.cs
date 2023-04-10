@@ -1,10 +1,10 @@
-namespace Pezza.BackEnd;
+namespace BackEnd;
 
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.ResponseCompression;
-using Pezza.Common;
-using Pezza.Portal.Helpers;
+using Common;
+using Portal.Helpers;
 
 public class Startup
 {

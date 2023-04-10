@@ -1,8 +1,8 @@
-﻿namespace Pezza.Api.Helpers
+﻿namespace Api.Helpers
 {
     using Microsoft.AspNetCore.Mvc;
-    using Pezza.Api.Controllers;
-    using Pezza.Common.Models;
+    using Api.Controllers;
+    using Common.Models;
 
     public static class ResponseHelper
     {

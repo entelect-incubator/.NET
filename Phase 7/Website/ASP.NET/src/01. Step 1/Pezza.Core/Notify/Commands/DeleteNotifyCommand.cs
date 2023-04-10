@@ -1,12 +1,12 @@
-﻿namespace Pezza.Core.Notify.Commands
+﻿namespace Core.Notify.Commands
 {
     using System.Threading;
     using System.Threading.Tasks;
     using MediatR;
     using Microsoft.EntityFrameworkCore;
-    using Pezza.Common.Models;
-    using Pezza.Core.Helpers;
-    using Pezza.DataAccess;
+    using Common.Models;
+    using Core.Helpers;
+    using DataAccess;
 
     public class DeleteNotifyCommand : IRequest<Result>
     {

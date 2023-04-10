@@ -1,4 +1,4 @@
-﻿@model Pezza.Portal.Models.OrderModel
+﻿@model Portal.Models.OrderModel
 
 @{
     ViewBag.Title = "Add Customer";
@@ -71,7 +71,7 @@ ViewBag.ActiveMenu = "Customer";
         var orderItems = new Array();
 
         function createCustomer() {
-            var apiUrl = '@Pezza.Common.AppSettings.ApiUrl';
+            var apiUrl = '@Common.AppSettings.ApiUrl';
 
             var cust = new Object();
             cust.Name = $('#CustomerName').val();

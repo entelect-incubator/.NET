@@ -1,13 +1,13 @@
-﻿namespace Pezza.Core.Stock.Queries;
+﻿namespace Core.Stock.Queries;
 
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Pezza.Common.DTO;
-using Pezza.Common.Models;
-using Pezza.DataAccess;
+using Common.DTO;
+using Common.Models;
+using DataAccess;
 
 public class GetStockQuery : IRequest<Result<StockDTO>>
 {

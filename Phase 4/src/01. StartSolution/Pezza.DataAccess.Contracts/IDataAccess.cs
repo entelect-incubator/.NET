@@ -1,7 +1,7 @@
-namespace Pezza.DataAccess.Contracts
+namespace DataAccess.Contracts
 {
     using System.Threading.Tasks;
-    using Pezza.Common.Models;
+    using Common.Models;
 
     public interface IDataAccess<T>
     {

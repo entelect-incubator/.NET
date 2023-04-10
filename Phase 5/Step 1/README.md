@@ -14,7 +14,7 @@ Install Nuget Package LazyCache.AspNetCore on Core and API
 
 ### **Dependency Injection in DependencyInjection.cs**
 
-In Pezza.API Startup.cs ConfigureServices() add
+In API Startup.cs ConfigureServices() add
 
 ```cs
 services.AddLazyCache();
@@ -35,7 +35,7 @@ This will cache the request to memory if it doesn't exist. When you change anyth
 Modify GetRestaurantsQuery.cs to add caching
 
 ```cs
-namespace Pezza.Core.Restaurant.Queries;
+namespace Core.Restaurant.Queries;
 
 using System.Collections.Generic;
 using System.Linq;
@@ -46,10 +46,10 @@ using AutoMapper;
 using LazyCache;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Pezza.Common.DTO;
-using Pezza.Common.Extensions;
-using Pezza.Common.Models;
-using Pezza.DataAccess;
+using Common.DTO;
+using Common.Extensions;
+using Common.Models;
+using DataAccess;
 
 public class GetRestaurantsQuery : IRequest<ListResult<RestaurantDTO>>
 {
@@ -114,12 +114,12 @@ public class GetRestaurantsQueryHandler : IRequestHandler<GetRestaurantsQuery, L
 Add CachingService to QueryTestBase
 
 ```cs
-namespace Pezza.Test;
+namespace Test;
 
 using AutoMapper;
 using LazyCache;
-using Pezza.Common.Profiles;
-using Pezza.DataAccess;
+using Common.Profiles;
+using DataAccess;
 using static DatabaseContextFactory;
 
 public class QueryTestBase : IDisposable

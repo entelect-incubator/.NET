@@ -38,15 +38,15 @@ For example
 ```cs
 [HttpPost]
 [ValidateAntiForgeryToken]
-public async Task<ActionResult> Create(StockDTO stock)
+public async Task<ActionResult> Create(PizzaModel pizza)
 {
     if (!this.ModelState.IsValid)
     {
-        return this.View(stock);
+        return this.View(pizza);
     }
 
-    var result = await this.apiCallHelper.Create(stock);
-    return Validate<StockDTO>(result, this.apiCallHelper, stock);
+    var result = await this.apiCallHelper.Create(pizza);
+    return Validate<PizzaModel>(result, this.apiCallHelper, pizza);
 }
 ```
 

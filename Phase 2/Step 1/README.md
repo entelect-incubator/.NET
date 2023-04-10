@@ -30,7 +30,7 @@ Install MediatR.Extensions.Microsoft.DependencyInjection on the Core Project.
   - [ ] Open Command Line and change directory to the folder you created  - [ ] 
   - [ ] In CMD Run ```dotnet tool install --global EntityFrameworkCore.Generator```
   - [ ] In CMD Run ```efg generate -c "DB Connection String"```
-  - [ ] Fix the generated namespaces and code cleanup. Right click on Pezza.Common <br/> ![](./Assets/2021-08-16-06-39-43.png)
+  - [ ] Fix the generated namespaces and code cleanup. Right click on Common <br/> ![](./Assets/2021-08-16-06-39-43.png)
   - [ ] or can copy it from Phase2\Data
 
 ### **Create Base Address**
@@ -40,7 +40,7 @@ This is for any DTO or Entity that has an address.
 ![](Assets/2020-11-20-08-30-10.png)
 
 ```cs
-namespace Pezza.Common.Entities;
+namespace Common.Entities;
 
 public class AddressBase
 {
@@ -61,7 +61,7 @@ This is for any DTO or Entity that has an Image that needs to be created.
 ![](Assets/2020-11-20-09-09-20.png)
 
 ```cs
-namespace Pezza.Common.Entities;
+namespace Common.Entities;
 
 public class ImageDataBase
 {
@@ -110,14 +110,14 @@ To create consistency with the result we send back from the Core layer we will u
 
 ## **Common Models**
 
-Create common base models in Pezza.Common\Models\base
+Create common base models in Common\Models\base
 
 ![](Assets/2022-01-21-08-55-36.png)
 
 EntityBase.cs
 
 ```cs
-namespace Pezza.Common.Models.Base;
+namespace Common.Models.Base;
 
 public abstract class EntityBase : IEntityBase
 {
@@ -128,7 +128,7 @@ public abstract class EntityBase : IEntityBase
 IEntityBase.cs
 
 ```cs
-namespace Pezza.Common.Models.Base;
+namespace Common.Models.Base;
 
 public interface IEntityBase
 {
@@ -139,7 +139,7 @@ public interface IEntityBase
 ImageDataBase.cs
 
 ```cs
-namespace Pezza.Common.Models.Base;
+namespace Common.Models.Base;
 
 public class ImageDataBase : EntityBase
 {
@@ -150,7 +150,7 @@ public class ImageDataBase : EntityBase
 AddressBase.cs
 
 ```cs
-namespace Pezza.Common.Models.Base;
+namespace Common.Models.Base;
 
 public class AddressBase : EntityBase
 {
@@ -175,7 +175,7 @@ public int Id { get; set; }
 Customer.cs
 
 ```cs
-namespace Pezza.Common.Entities;
+namespace Common.Entities;
 
 using System.Collections.Generic;
 
@@ -207,12 +207,12 @@ public class Customer
 }
 ```
 
-Copy MimeTypes.cs from Phase 2\src\02. EndSolution\Pezza.Common\Models
+Copy MimeTypes.cs from Phase 2\src\02. EndSolution\Common\Models
 
 ![MimeTypes.cs](Assets/2021-01-14-08-05-17.png)
 
 ```cs
-namespace Pezza.Common.Models;
+namespace Common.Models;
 
 using System.Collections.Generic;
 using System.Linq;
@@ -359,9 +359,9 @@ public class ListOutcome<T>
 To something like this. You can also have a look at **Phase 2\src\02. EndSolution** on how it is suppose to look.
 
 ```cs
-namespace Pezza.Common.DTO;
+namespace Common.DTO;
 
-using Pezza.Common.Entities;
+using Common.Entities;
 
 public class ProductDTO : ImageDataBase
 {
@@ -389,20 +389,20 @@ public class ProductDTO : ImageDataBase
 
 ## **DTO's**
 
-Create DTO's that we will use in the calling projects for SOLID principal. Only send in data that is needed. Copy from Phase 2\src\02. EndSolution\Pezza.Common\DTO
+Create DTO's that we will use in the calling projects for SOLID principal. Only send in data that is needed. Copy from Phase 2\src\02. EndSolution\Common\DTO
 
 ![DTO's](Assets/2021-01-17-09-04-19.png)
 
 ## **Mapping**
 
-In Pezza.Common ammend changes to the MappingProfile.cs. 
+In Common ammend changes to the MappingProfile.cs. 
 
 ```cs
-namespace Pezza.Common.Profiles;
+namespace Common.Profiles;
 
 using AutoMapper;
-using Pezza.Common.DTO;
-using Pezza.Common.Entities;
+using Common.DTO;
+using Common.Entities;
 
 public class MappingProfile : Profile
 {
@@ -457,7 +457,7 @@ public class MappingProfile : Profile
 }
 ```
 
-Modify Pezza.Api Startup.cs Configure Method. To be able to view images you will need to enable StaticFiles.
+Modify Api Startup.cs Configure Method. To be able to view images you will need to enable StaticFiles.
 
 ```cs
 app.UseStaticFiles(new StaticFileOptions
@@ -472,14 +472,14 @@ Create a Core Helper to unify DbContext SaveChanges as well as result for all Co
 ![](Assets/2022-01-21-08-51-11.png)
 
 ```cs
-namespace Pezza.Core.Helpers;
+namespace Core.Helpers;
 
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
-using Pezza.Common.Models;
-using Pezza.DataAccess;
+using Common.Models;
+using DataAccess;
 
 public static class CoreHelper<T>
 {
@@ -513,22 +513,22 @@ public static class CoreHelper
 }
 ```
 
-Create the following Commands for each Entity in Pezza.Core inside the Entity Name Folder/Commands <br/> ![](./Assets/2021-08-16-06-51-20.png)
+Create the following Commands for each Entity in Core inside the Entity Name Folder/Commands <br/> ![](./Assets/2021-08-16-06-51-20.png)
 
 - Create Command
 
 ```cs
-namespace Pezza.Core.Customer.Commands;
+namespace Core.Customer.Commands;
 
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using MediatR;
-using Pezza.Common.DTO;
-using Pezza.Common.Entities;
-using Pezza.Common.Models;
-using Pezza.Core.Helpers;
-using Pezza.DataAccess;
+using Common.DTO;
+using Common.Entities;
+using Common.Models;
+using Core.Helpers;
+using DataAccess;
 
 public class CreateCustomerCommand : IRequest<Result<CustomerDTO>>
 {
@@ -557,15 +557,15 @@ public class CreateCustomerCommandHandler : IRequestHandler<CreateCustomerComman
 - Delete Command
 
 ```cs
-namespace Pezza.Core.Customer.Commands;
+namespace Core.Customer.Commands;
 
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Pezza.Common.Models;
-using Pezza.Core.Helpers;
-using Pezza.DataAccess;
+using Common.Models;
+using Core.Helpers;
+using DataAccess;
 
 public class DeleteCustomerCommand : IRequest<Result>
 {
@@ -592,17 +592,17 @@ public class DeleteCustomerCommandHandler : IRequestHandler<DeleteCustomerComman
 - Update Command
 
 ```cs
-namespace Pezza.Core.Customer.Commands;
+namespace Core.Customer.Commands;
 
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Pezza.Common.DTO;
-using Pezza.Common.Models;
-using Pezza.Core.Helpers;
-using Pezza.DataAccess;
+using Common.DTO;
+using Common.Models;
+using Core.Helpers;
+using DataAccess;
 
 public class UpdateCustomerCommand : IRequest<Result<CustomerDTO>>
 {
@@ -652,16 +652,16 @@ Create the following Queries
 -Get Single
 
 ```cs
-namespace Pezza.Core.Customer.Queries;
+namespace Core.Customer.Queries;
 
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Pezza.Common.DTO;
-using Pezza.Common.Models;
-using Pezza.DataAccess;
+using Common.DTO;
+using Common.Models;
+using DataAccess;
 
 public class GetCustomerQuery : IRequest<Result<CustomerDTO>>
 {
@@ -688,7 +688,7 @@ public class GetCustomerQueryHandler : IRequestHandler<GetCustomerQuery, Result<
 - Get All
 
 ```cs
-namespace Pezza.Core.Customer.Queries;
+namespace Core.Customer.Queries;
 
 using System.Collections.Generic;
 using System.Linq;
@@ -697,9 +697,9 @@ using System.Threading.Tasks;
 using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Pezza.Common.DTO;
-using Pezza.Common.Models;
-using Pezza.DataAccess;
+using Common.DTO;
+using Common.Models;
+using DataAccess;
 
 public class GetCustomersQuery : IRequest<ListResult<CustomerDTO>>
 {
@@ -737,7 +737,7 @@ For MediatR Dependency Injection we need to create 3 Behaviour Classes inside Co
 - PerformanceBehaviour.cs this will pick up any slow running queries
 
 ```cs
-namespace Pezza.Common.Behaviours
+namespace Common.Behaviours
 
 using System.Diagnostics;
 using System.Threading;
@@ -775,7 +775,7 @@ public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequ
 - UnhandledExceptionBehaviour.cs this will pick up any exceptions during the executio pipeline. 
 
 ```cs
-namespace Pezza.Common.Behaviours;
+namespace Common.Behaviours;
 
 using System.Threading;
 using System.Threading.Tasks;
@@ -809,7 +809,7 @@ public class UnhandledExceptionBehaviour<TRequest, TResponse> : IPipelineBehavio
 - ValidationBehavior.cs -Will be used in Phase 3 to pick up any validation that was added for Commands or Queries.
 
 ```cs
-namespace Pezza.Common.Behaviours;
+namespace Common.Behaviours;
 
 using System.Collections.Generic;
 using System.Linq;
@@ -844,21 +844,21 @@ public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TReques
 }
 ```
 
-DependencyInjection.cs in Pezza.Core
+DependencyInjection.cs in Core
 
 ```cs
-namespace Pezza.Core;
+namespace Core;
 
 using System.Reflection;
 using AutoMapper;
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using Pezza.Common.Behaviours;
-using Pezza.Common.DTO;
-using Pezza.Common.Profiles;
-using Pezza.DataAccess.Contracts;
-using Pezza.DataAccess.Data;
+using Common.Behaviours;
+using Common.DTO;
+using Common.Profiles;
+using DataAccess.Contracts;
+using DataAccess.Data;
 
 public static class DependencyInjection
 {

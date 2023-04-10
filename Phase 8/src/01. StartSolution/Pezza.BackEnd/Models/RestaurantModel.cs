@@ -1,7 +1,7 @@
-﻿namespace Pezza.Portal.Models;
+﻿namespace Portal.Models;
 
 using Microsoft.AspNetCore.Http;
-using Pezza.Common.DTO;
+using Common.DTO;
 
 public class RestaurantModel : RestaurantDTO
 {

@@ -1,7 +1,7 @@
-﻿namespace Pezza.Common.Extensions;
+﻿namespace Common.Extensions;
 
 using System.Linq;
-using Pezza.Common.Models;
+using Common.Models;
 
 public static class Extensions
 {

@@ -1,4 +1,4 @@
-namespace Pezza.Api;
+namespace Api;
 
 using System;
 using System.IO;
@@ -12,8 +12,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using Pezza.Core;
-using Pezza.DataAccess;
+using Core;
+using DataAccess;
 using Newtonsoft.Json.Serialization;
 
 public class Startup
