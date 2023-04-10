@@ -19,80 +19,187 @@ Supports request/response, commands, queries, notifications and events, synchron
 
 Install Mediatr on the Core Project and your Common Project
 
-![](Assets/2020-11-20-10-57-45.png)
-
-Install MediatR.Extensions.Microsoft.DependencyInjection on the Core Project.
+![](./Assets/2023-04-10-21-01-30.png)
 
 ## **Create the other database entities and update database context**
-
-- [ ] To speed up entity generation you can use a CLI tool or create it manually
-  - [ ] Create a new folder where entities and mapping be generated in
-  - [ ] Open Command Line and change directory to the folder you created  - [ ] 
-  - [ ] In CMD Run ```dotnet tool install --global EntityFrameworkCore.Generator```
-  - [ ] In CMD Run ```efg generate -c "DB Connection String"```
-  - [ ] Fix the generated namespaces and code cleanup. Right click on Common <br/> ![](./Assets/2021-08-16-06-39-43.png)
-  - [ ] or can copy it from Phase2\Data
-
-### **Create Base Address**
-
-This is for any DTO or Entity that has an address.
-
-![](Assets/2020-11-20-08-30-10.png)
-
-```cs
-namespace Common.Entities;
-
-public class AddressBase
-{
-    public string Address { get; set; }
-
-    public string City { get; set; }
-
-    public string Province { get; set; }
-
-    public string PostalCode { get; set; }
-}
-```
-
-### **Create Image Data Base**
-
-This is for any DTO or Entity that has an Image that needs to be created.
-
-![](Assets/2020-11-20-09-09-20.png)
-
-```cs
-namespace Common.Entities;
-
-public class ImageDataBase
-{
-    public string ImageData { get; set; }
-}
-```
 
 ### **Entities**
 
 Representing Database Tables Entities
 
-![](Assets/2020-09-16-08-24-37.png)
+![](./Assets/2023-04-10-21-05-59.png)
 
-### **DTO**
+```cs
+namespace Common.Entities;
 
-Create a Data Transfer Object with only the information the consumer of the data will need. This allows you to hide any sensitive data.
+public sealed class Customer
+{
+	public int Id { get; set; }
 
-Remeber some of the DTO's needs to inherit from AddressBase and ImageDataBase.
-- [ ] CustomerDTO
-- [ ] RestaurantDTO
-- [ ] ProductDTO
+	public string Name { get; set; }
 
-![](Assets/2020-09-16-08-24-51.png)
+	public string Address { get; set; }
+
+	public decimal Email { get; set; }
+
+	public decimal Cellphone { get; set; }
+
+	public DateTime DateCreated { get; set; }
+}
+```
+
+```cs
+namespace Common.Entities;
+
+public sealed class Pizza
+{
+	public int Id { get; set; }
+
+	public string Name { get; set; }
+
+	public string Description { get; set; }
+
+	public decimal Price { get; set; }
+
+	public DateTime DateCreated { get; set; }
+}
+```
+
+### **Models**
+
+Create Models for each Entity. For seperation of concern we will create seperate Models for each action. Can also be copied from **Phase 2\src\02. EndSolution\Common\Models**
+
+![](./Assets/2023-04-10-21-23-57.png)
+
+Add Customer to Mapper.cs
+
+```cs
+namespace Common.Mappers;
+
+using Common.Entities;
+using Common.Models;
+using Riok.Mapperly.Abstractions;
+
+[Mapper]
+public static partial class Mapper
+{
+	public static partial PizzaModel Map(this Pizza pizza);
+
+	public static IEnumerable<PizzaModel> Map(this List<Pizza> pizzas)
+		=> pizzas.Select(x => x.Map());
+
+	public static partial Pizza Map(this PizzaModel pizza);
+
+	public static IEnumerable<Pizza> Map(this List<PizzaModel> pizzas)
+		=> pizzas.Select(x => x.Map());
+
+	public static partial CustomerModel Map(this Customer pizza);
+
+	public static IEnumerable<CustomerModel> Map(this List<Customer> pizzas)
+		=> pizzas.Select(x => x.Map());
+
+	public static partial Customer Map(this CustomerModel pizza);
+
+	public static IEnumerable<Customer> Map(this List<CustomerModel> pizzas)
+		=> pizzas.Select(x => x.Map());
+}
+```
+
 ### **Unit Tests Test Data**
 
-![](Assets/2020-10-04-19-37-53.png)
+![](./Assets/2023-04-10-21-33-20.png)
 
 
 ### **Database EFCore Maps**
 
-![DBCOntext Map](Assets/2021-01-14-07-45-18.png)
+Add CustomerMap.cs to Mapping folder
+
+![](./Assets/2023-04-10-21-37-55.png)
+
+```cs
+namespace DataAccess.Mapping;
+
+using Microsoft.EntityFrameworkCore;
+using Common.Entities;
+
+public sealed class CustomerMap : IEntityTypeConfiguration<Customer>
+{
+	public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Customer> builder)
+	{
+		builder.ToTable("Customer", "dbo");
+
+		builder.HasKey(t => t.Id);
+
+		builder.Property(t => t.Id)
+			.IsRequired()
+			.HasColumnName("Id")
+			.HasColumnType("int")
+			.ValueGeneratedOnAdd();
+
+		builder.Property(t => t.Name)
+			.IsRequired()
+			.HasColumnName("Name")
+			.HasColumnType("varchar(100)")
+			.HasMaxLength(100);
+
+		builder.Property(t => t.Address)
+			.HasColumnName("Address")
+			.HasColumnType("varchar(500)")
+			.HasMaxLength(500);
+
+		builder.Property(t => t.Email)
+			.HasColumnName("Email")
+			.HasColumnType("varchar(500)")
+			.HasMaxLength(500);
+
+		builder.Property(t => t.Cellphone)
+			.HasColumnName("Cellphone")
+			.HasColumnType("varchar(50)")
+			.HasMaxLength(50);
+
+		builder.Property(t => t.DateCreated)
+			.IsRequired()
+			.HasColumnName("DateCreated")
+			.HasColumnType("datetime")
+			.HasDefaultValueSql("(getdate())");
+	}
+}
+```
+
+Update DatabaseContext.cs
+
+```cs
+namespace DataAccess;
+
+using Common.Entities;
+using DataAccess.Mapping;
+using Microsoft.EntityFrameworkCore;
+
+public class DatabaseContext : DbContext
+{
+	public DatabaseContext()
+	{
+	}
+
+	public DatabaseContext(DbContextOptions options) : base(options)
+	{
+	}
+
+	public virtual DbSet<Customer> Customers { get; set; }
+
+	public virtual DbSet<Pizza> Pizzas { get; set; }
+
+	protected override void OnModelCreating(ModelBuilder modelBuilder)
+	{
+		modelBuilder.ApplyConfiguration(new CustomerMap());
+		modelBuilder.ApplyConfiguration(new PizzaMap());
+	}
+
+	protected override void OnConfiguring
+	   (DbContextOptionsBuilder optionsBuilder) => optionsBuilder.UseInMemoryDatabase(databaseName: "PezzaDb");
+}
+
+```
 
 ### **Business Logic - Core**
 
@@ -106,414 +213,168 @@ To help us out achieving this we will be using a Nuget Package - Mediatr
 
 To create consistency with the result we send back from the Core layer we will utilize a Result.cs class. This helps to create unity between all Commands and Queries.
 
-![DataAccess Structure](Assets/2021-01-14-07-43-18.png)
-
 ## **Common Models**
 
-Create common base models in Common\Models\base
-
-![](Assets/2022-01-21-08-55-36.png)
-
-EntityBase.cs
-
-```cs
-namespace Common.Models.Base;
-
-public abstract class EntityBase : IEntityBase
-{
-    public virtual int Id { get; set; }
-}
-```
-
-IEntityBase.cs
-
-```cs
-namespace Common.Models.Base;
-
-public interface IEntityBase
-{
-    int Id { get; set; }
-}
-```
-
-ImageDataBase.cs
-
-```cs
-namespace Common.Models.Base;
-
-public class ImageDataBase : EntityBase
-{
-    public string ImageData { get; set; }
-}
-```
-
-AddressBase.cs
-
-```cs
-namespace Common.Models.Base;
-
-public class AddressBase : EntityBase
-{
-    public string Address { get; set; }
-
-    public string City { get; set; }
-
-    public string Province { get; set; }
-
-    public string PostalCode { get; set; }
-}
-```
-
-Modify all entities to either inherit from EntityBase or AddressBase where applicable. Can have a look at the End Solution to copy it over.
-
-Remove Id from all entities
-
-```cs
-public int Id { get; set; }
-```
-
-Customer.cs
-
-```cs
-namespace Common.Entities;
-
-using System.Collections.Generic;
-
-public class Customer
-{
-    public Customer() => this.Orders = new HashSet<Order>();
-
-    public int Id { get; set; }
-
-    public string Name { get; set; }
-
-    public string Address { get; set; }
-
-    public string City { get; set; }
-
-    public string Province { get; set; }
-
-    public string PostalCode { get; set; }
-
-    public string Phone { get; set; }
-
-    public string Email { get; set; }
-
-    public string ContactPerson { get; set; }
-
-    public DateTime DateCreated { get; set; }
-
-    public virtual ICollection<Order> Orders { get; set; }
-}
-```
-
-Copy MimeTypes.cs from Phase 2\src\02. EndSolution\Common\Models
-
-![MimeTypes.cs](Assets/2021-01-14-08-05-17.png)
+Instead of throwing or using exceptions, we will return a Result object indicating success or failure of an operation.
 
 ```cs
 namespace Common.Models;
 
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 public class Result
 {
-    public Result()
-    {
-    }
+	public Result()
+	{
+	}
 
-    internal Result(bool succeeded, string error)
-    {
-        this.Succeeded = succeeded;
+	internal Result(bool succeeded, string error)
+	{
+		this.Succeeded = succeeded;
 
-        this.Errors = new List<object>
-        {
-            error
-        };
-    }
+		this.Errors = new List<object>
+		{
+			error
+		};
+	}
 
-    internal Result(bool succeeded, List<object> errors)
-    {
-        this.Succeeded = succeeded;
-        this.Errors = errors;
-    }
+	internal Result(bool succeeded, List<object> errors)
+	{
+		this.Succeeded = succeeded;
+		this.Errors = errors;
+	}
 
-    internal Result(bool succeeded, List<string> errors)
-    {
-        this.Succeeded = succeeded;
-        this.Errors = errors.ToList<object>();
-    }
+	internal Result(bool succeeded, List<string> errors)
+	{
+		this.Succeeded = succeeded;
+		this.Errors = errors.ToList<object>();
+	}
 
-    public bool Succeeded { get; set; }
+	public bool Succeeded { get; set; }
 
-    public List<object> Errors { get; set; }
+	public List<object> Errors { get; set; }
 
-    public static Result Success() => new Result(true, new List<object> { });
+	public static Result Success() => new Result(true, new List<object> { });
 
-    public static Result Failure(List<object> errors) => new Result(false, errors);
+	public static Result Failure(List<object> errors) => new Result(false, errors);
 
-    public static Result Failure(List<string> errors) => new Result(false, errors);
+	public static Result Failure(List<string> errors) => new Result(false, errors);
 
-    public static Result Failure(string error) => new Result(false, error);
+	public static Result Failure(string error) => new Result(false, error);
 }
 
 public class Result<T>
 {
-    internal Result(bool succeeded, string error)
-    {
-        this.Succeeded = succeeded;
-        this.Errors = new List<object>
-        {
-            error
-        };
-    }
+	internal Result(bool succeeded, string error)
+	{
+		this.Succeeded = succeeded;
+		this.Errors = new List<object>
+		{
+			error
+		};
+	}
 
-    internal Result(bool succeeded, List<object> errors)
-    {
-        this.Succeeded = succeeded;
-        this.Errors = errors;
-    }
+	internal Result(bool succeeded, List<object> errors)
+	{
+		this.Succeeded = succeeded;
+		this.Errors = errors;
+	}
 
-    internal Result(bool succeeded, T data, List<object> errors)
-    {
-        this.Succeeded = succeeded;
-        this.Errors = errors;
-        this.Data = data;
-    }
+	internal Result(bool succeeded, T data, List<object> errors)
+	{
+		this.Succeeded = succeeded;
+		this.Errors = errors;
+		this.Data = data;
+	}
 
-    public bool Succeeded { get; set; }
+	public bool Succeeded { get; set; }
 
-    public T Data { get; set; }
+	public T Data { get; set; }
 
-    public List<object> Errors { get; set; }
+	public List<object> Errors { get; set; }
 
-    public static Result<T> Success(T data) => new Result<T>(true, data, new List<object> { });
+	public static Result<T> Success(T data) => new Result<T>(true, data, new List<object> { });
 
-    public static Result<T> Failure(string error) => new Result<T>(false, error);
+	public static Result<T> Failure(string error) => new Result<T>(false, error);
 
-    public static Result<T> Failure(List<object> errors) => new Result<T>(false, errors);
+	public static Result<T> Failure(List<object> errors) => new Result<T>(false, errors);
 }
 
 public class ListResult<T>
 {
-    internal ListResult(bool succeeded, string error)
-    {
-        this.Succeeded = succeeded;
-        this.Errors = new List<object>
-        {
-            error
-        };
-    }
+	internal ListResult(bool succeeded, string error)
+	{
+		this.Succeeded = succeeded;
+		this.Errors = new List<object>
+		{
+			error
+		};
+	}
 
-    internal ListResult(bool succeeded, List<object> errors)
-    {
-        this.Succeeded = succeeded;
-        this.Errors = errors;
-    }
+	internal ListResult(bool succeeded, List<object> errors)
+	{
+		this.Succeeded = succeeded;
+		this.Errors = errors;
+	}
 
-    internal ListResult(bool succeeded, List<T> data, int count, List<object> errors)
-    {
-        this.Succeeded = succeeded;
-        this.Errors = errors;
-        this.Data = data;
-        this.Count = count;
-    }
+	internal ListResult(bool succeeded, List<T> data, int count, List<object> errors)
+	{
+		this.Succeeded = succeeded;
+		this.Errors = errors;
+		this.Data = data;
+		this.Count = count;
+	}
 
-    internal ListResult(bool succeeded, IEnumerable<T> data, int count, List<object> errors)
-    {
-        this.Succeeded = succeeded;
-        this.Errors = errors;
-        this.Data = data.ToList();
-        this.Count = count;
-    }
+	internal ListResult(bool succeeded, IEnumerable<T> data, int count, List<object> errors)
+	{
+		this.Succeeded = succeeded;
+		this.Errors = errors;
+		this.Data = data.ToList();
+		this.Count = count;
+	}
 
-    public bool Succeeded { get; set; }
+	public bool Succeeded { get; set; }
 
-    public List<T> Data { get; set; }
+	public List<T> Data { get; set; }
 
-    public List<object> Errors { get; set; }
+	public List<object> Errors { get; set; }
 
-    public int Count { get; set; }
+	public int Count { get; set; }
 
-    public static ListResult<T> Success(List<T> data, int count) => new ListResult<T>(true, data, count, new List<object> { });
+	public static ListResult<T> Success(List<T> data, int count) => new ListResult<T>(true, data, count, new List<object> { });
 
-    public static ListResult<T> Success(IEnumerable<T> data, int count) => new ListResult<T>(true, data, count, new List<object> { });
+	public static ListResult<T> Success(IEnumerable<T> data, int count) => new ListResult<T>(true, data, count, new List<object> { });
 
-    public static ListResult<T> Failure(string error) => new ListResult<T>(false, error);
+	public static ListResult<T> Failure(string error) => new ListResult<T>(false, error);
 
-    public static ListResult<T> Failure(List<object> errors) => new ListResult<T>(false, errors);
+	public static ListResult<T> Failure(List<object> errors) => new ListResult<T>(false, errors);
 }
 
 public class ListOutcome<T>
 {
-    public List<T> Data { get; set; }
+	public List<T> Data { get; set; }
 
-    public int Count { get; set; }
+	public int Count { get; set; }
 
-    public List<string> Errors { get; set; }
+	public List<string> Errors { get; set; }
+}
+
+public class ErrorResult : Result
+{
+	public ErrorResult() => this.Succeeded = false;
+
+	[DefaultValue(false)]
+	public new bool Succeeded { get; set; }
 }
 ```
 
+Create the following Commands for Customer and Pizza in Core Project inside the Entity Name Folder/Commands <br/> ![](./Assets/2021-08-16-06-51-20.png)
 
-To something like this. You can also have a look at **Phase 2\src\02. EndSolution** on how it is suppose to look.
+We will move from PizzaCore concept now to seperate Command or Querie for each operation. It is important to start seeing the patterns here.
 
-```cs
-namespace Common.DTO;
-
-using Common.Entities;
-
-public class ProductDTO : ImageDataBase
-{
-    public int Id { get; set; }
-
-    public string Name { get; set; }
-
-    public string Description { get; set; }
-
-    public string PictureUrl { get; set; }
-
-    public decimal? Price { get; set; }
-
-    public bool? Special { get; set; }
-
-    public DateTime? OfferEndDate { get; set; }
-
-    public decimal? OfferPrice { get; set; }
-
-    public bool? IsActive { get; set; }
-
-    public DateTime DateCreated { get; set; }
-}
-```
-
-## **DTO's**
-
-Create DTO's that we will use in the calling projects for SOLID principal. Only send in data that is needed. Copy from Phase 2\src\02. EndSolution\Common\DTO
-
-![DTO's](Assets/2021-01-17-09-04-19.png)
-
-## **Mapping**
-
-In Common ammend changes to the MappingProfile.cs. 
-
-```cs
-namespace Common.Profiles;
-
-using AutoMapper;
-using Common.DTO;
-using Common.Entities;
-
-public class MappingProfile : Profile
-{
-    public MappingProfile()
-    {
-        this.CreateMap<Customer, CustomerDTO>()
-            .ForMember(x => x.Address, x => x.MapFrom((src) => new AddressBase() { 
-                Address = src.Address,
-                City = src.City,
-                Province = src.Province,
-                PostalCode = src.PostalCode
-            }))
-            .ReverseMap();
-        this.CreateMap<CustomerDTO, Customer>()
-            .ForMember(vm => vm.Address, m => m.MapFrom(u => u.Address.Address))
-            .ForMember(vm => vm.City, m => m.MapFrom(u => u.Address.City))
-            .ForMember(vm => vm.Province, m => m.MapFrom(u => u.Address.Province))
-            .ForMember(vm => vm.PostalCode, m => m.MapFrom(u => u.Address.PostalCode));
-
-        this.CreateMap<Notify, NotifyDTO>();
-        this.CreateMap<NotifyDTO, Notify>();
-
-        this.CreateMap<Order, OrderDTO>()
-            .ForMember(vm => vm.OrderItems, m => m.MapFrom(u => u.OrderItems));            
-        this.CreateMap<OrderDTO, Order>()
-            .ForMember(vm => vm.OrderItems, m => m.MapFrom(u => u.OrderItems));
-
-        this.CreateMap<OrderItem, OrderItemDTO>();
-        this.CreateMap<OrderItemDTO, OrderItem>();
-
-        this.CreateMap<Product, ProductDTO>();
-        this.CreateMap<ProductDTO, Product>();
-
-        this.CreateMap<Restaurant, RestaurantDTO>()
-            .ForMember(x => x.Address, x => x.MapFrom((src) => new AddressBase()
-            {
-                Address = src.Address,
-                City = src.City,
-                Province = src.Province,
-                PostalCode = src.PostalCode
-            }))
-            .ReverseMap();
-        this.CreateMap<RestaurantDTO, Restaurant>()
-            .ForMember(vm => vm.Address, m => m.MapFrom(u => u.Address.Address))
-            .ForMember(vm => vm.City, m => m.MapFrom(u => u.Address.City))
-            .ForMember(vm => vm.Province, m => m.MapFrom(u => u.Address.Province))
-            .ForMember(vm => vm.PostalCode, m => m.MapFrom(u => u.Address.PostalCode));
-
-        this.CreateMap<Stock, StockDTO>();
-        this.CreateMap<StockDTO, Stock>();
-    }
-}
-```
-
-Modify Api Startup.cs Configure Method. To be able to view images you will need to enable StaticFiles.
-
-```cs
-app.UseStaticFiles(new StaticFileOptions
-{
-    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"Media")),
-    RequestPath = new PathString("/Media"),
-});
-```
-
-Create a Core Helper to unify DbContext SaveChanges as well as result for all Commands and Queries.
-
-![](Assets/2022-01-21-08-51-11.png)
-
-```cs
-namespace Core.Helpers;
-
-using System.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
-using AutoMapper;
-using Common.Models;
-using DataAccess;
-
-public static class CoreHelper<T>
-{
-    public static async Task<Result<T>> Outcome(DatabaseContext databaseContext, IMapper mapper, CancellationToken cancellationToken, EntityBase entity, string errorMessage)
-    {
-        var stackTrace = new StackTrace();
-        var methodName = stackTrace?.GetFrame(1)?.GetMethod()?.Name;
-        methodName = methodName.Replace("Query", string.Empty);
-        methodName = methodName.Replace("Command", string.Empty);
-
-        var outcome = await databaseContext.SaveChangesAsync(cancellationToken);
-        return (outcome > 0) ? Result<T>.Success(mapper.Map<T>(entity)) : Result<T>.Failure(errorMessage);
-    }
-}
-
-public static class CoreHelper
-{
-    public static Result CoreResult(int outcome, string errorMessage)
-        => (outcome > 0) ? Result.Success() : Result.Failure(errorMessage);
-
-    public static async Task<Result> Outcome(DatabaseContext databaseContext, CancellationToken cancellationToken, string errorMessage)
-    {
-        var stackTrace = new StackTrace();
-        var methodName = stackTrace?.GetFrame(1)?.GetMethod()?.Name;
-        methodName = methodName.Replace("Query", string.Empty);
-        methodName = methodName.Replace("Command", string.Empty);
-
-        var outcome = await databaseContext.SaveChangesAsync(cancellationToken);
-        return (outcome > 0) ? Result.Success() : Result.Failure(errorMessage);
-    }
-}
-```
-
-Create the following Commands for each Entity in Core inside the Entity Name Folder/Commands <br/> ![](./Assets/2021-08-16-06-51-20.png)
+We will also be using the new Models relevant to each operation.
 
 - Create Command
 
@@ -522,35 +383,43 @@ namespace Core.Customer.Commands;
 
 using System.Threading;
 using System.Threading.Tasks;
-using AutoMapper;
-using MediatR;
-using Common.DTO;
-using Common.Entities;
+using Common.Mappers;
 using Common.Models;
-using Core.Helpers;
 using DataAccess;
+using MediatR;
 
-public class CreateCustomerCommand : IRequest<Result<CustomerDTO>>
+public class CreateCustomerCommand : IRequest<Result<CustomerModel>>
 {
-    public CustomerDTO Data { get; set; }
-}
+	public CreateCustomerModel? Data { get; set; }
 
-public class CreateCustomerCommandHandler : IRequestHandler<CreateCustomerCommand, Result<CustomerDTO>>
-{
-    private readonly DatabaseContext databaseContext;
+	public class CreateCustomerCommandHandler : IRequestHandler<CreateCustomerCommand, Result<CustomerModel>>
+	{
+		private readonly DatabaseContext databaseContext;
 
-    private readonly IMapper mapper;
+		public CreateCustomerCommandHandler(DatabaseContext databaseContext)
+			=> this.databaseContext = databaseContext;
 
-    public CreateCustomerCommandHandler(DatabaseContext databaseContext, IMapper mapper)
-        => (this.databaseContext, this.mapper) = (databaseContext, mapper);
+		public async Task<Result<CustomerModel>> Handle(CreateCustomerCommand request, CancellationToken cancellationToken)
+		{
+			if(request.Data == null)
+			{
+				return Result<CustomerModel>.Failure("Error creatiing a Customer");
+			}
 
-    public async Task<Result<CustomerDTO>> Handle(CreateCustomerCommand request, CancellationToken cancellationToken)
-    {
-        var entity = this.mapper.Map<Customer>(request.Data);
-        this.databaseContext.Customers.Add(entity);
+			var entity = new Common.Entities.Customer
+			{
+				Name= request.Data.Name,
+				Email= request.Data.Email,
+				Address = request.Data.Address,
+				Cellphone= request.Data.Cellphone,
+				DateCreated = DateTime.UtcNow
+			};
+			this.databaseContext.Customers.Add(entity);
+			var result = await this.databaseContext.SaveChangesAsync();
 
-        return await CoreHelper<CustomerDTO>.Outcome(this.databaseContext, this.mapper, cancellationToken, entity, "Error creating a customer");
-    }
+			return result > 0 ? Result<CustomerModel>.Success(entity.Map()) : Result<CustomerModel>.Failure("Error creatiing a Customer");
+		}
+	}
 }
 ```
 
@@ -564,28 +433,39 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Common.Models;
-using Core.Helpers;
 using DataAccess;
 
 public class DeleteCustomerCommand : IRequest<Result>
 {
-    public int Id { get; set; }
-}
+	public int? Id { get; set; }
 
-public class DeleteCustomerCommandHandler : IRequestHandler<DeleteCustomerCommand, Result>
-{
-    private readonly DatabaseContext databaseContext;
+	public class DeleteCustomerCommandHandler : IRequestHandler<DeleteCustomerCommand, Result>
+	{
+		private readonly DatabaseContext databaseContext;
 
-    public DeleteCustomerCommandHandler(DatabaseContext databaseContext)
-        => this.databaseContext = databaseContext;
+		public DeleteCustomerCommandHandler(DatabaseContext databaseContext)
+			=> this.databaseContext = databaseContext;
 
-    public async Task<Result> Handle(DeleteCustomerCommand request, CancellationToken cancellationToken)
-    {
-        var findEntity = await this.databaseContext.Customers.FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
-        this.databaseContext.Customers.Remove(findEntity);
+		public async Task<Result> Handle(DeleteCustomerCommand request, CancellationToken cancellationToken)
+		{
+			if (request.Id == null)
+			{
+				return Result.Failure("Error deleting a Customer");
+			}
 
-        return await CoreHelper.Outcome(this.databaseContext, cancellationToken, "Error deleting a customer");
-    }
+			var query = EF.CompileAsyncQuery((DatabaseContext db, int id) => db.Customers.FirstOrDefault(c => c.Id == id));
+			var findEntity = await query(this.databaseContext, request.Id.Value);
+			if (findEntity == null)
+			{
+				return Result.Failure("Customer not found");
+			}
+
+			this.databaseContext.Customers.Remove(findEntity);
+			var result = await this.databaseContext.SaveChangesAsync();
+
+			return result > 0 ? Result.Success() : Result.Failure("Error deleting a Customer");
+		}
+	}
 }
 ```
 
@@ -596,48 +476,51 @@ namespace Core.Customer.Commands;
 
 using System.Threading;
 using System.Threading.Tasks;
-using AutoMapper;
+using Common.Mappers;
+using Common.Models;
+using DataAccess;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Common.DTO;
-using Common.Models;
-using Core.Helpers;
-using DataAccess;
 
-public class UpdateCustomerCommand : IRequest<Result<CustomerDTO>>
+public class UpdateCustomerCommand : IRequest<Result<CustomerModel>>
 {
-    public CustomerDTO Data { get; set; }
-}
+	public int? Id { get; set; }
 
-public class UpdateCustomerCommandHandler : IRequestHandler<UpdateCustomerCommand, Result<CustomerDTO>>
-{
-    private readonly DatabaseContext databaseContext;
+	public UpdateCustomerModel? Data { get; set; }
 
-    private readonly IMapper mapper;
+	public class UpdateCustomerCommandHandler : IRequestHandler<UpdateCustomerCommand, Result<CustomerModel>>
+	{
+		private readonly DatabaseContext databaseContext;
 
-    public UpdateCustomerCommandHandler(DatabaseContext databaseContext, IMapper mapper)
-        => (this.databaseContext, this.mapper) = (databaseContext, mapper);
+		public UpdateCustomerCommandHandler(DatabaseContext databaseContext)
+			=> this.databaseContext = databaseContext;
 
-    public async Task<Result<CustomerDTO>> Handle(UpdateCustomerCommand request, CancellationToken cancellationToken)
-    {
-        var dto = request.Data;
-        var findEntity = await this.databaseContext.Customers.FirstOrDefaultAsync(x => x.Id == dto.Id, cancellationToken);
-        if (findEntity == null)
-        {
-            return null;
-        }
+		public async Task<Result<CustomerModel>> Handle(UpdateCustomerCommand request, CancellationToken cancellationToken)
+		{
+			if (request.Data == null || request.Id == null)
+			{
+				return Result<CustomerModel>.Failure("Error updating a Customer");
+			}
 
-        findEntity.Name = !string.IsNullOrEmpty(dto?.Name) ? dto?.Name : findEntity.Name;
-        findEntity.Address = !string.IsNullOrEmpty(dto?.Address?.Address) ? dto?.Address?.Address : findEntity.Address;
-        findEntity.City = !string.IsNullOrEmpty(dto?.Address?.City) ? dto?.Address?.City : findEntity.City;
-        findEntity.Province = !string.IsNullOrEmpty(dto?.Address?.Province) ? dto?.Address?.Province : findEntity.Province;
-        findEntity.PostalCode = !string.IsNullOrEmpty(dto?.Address?.PostalCode) ? dto?.Address?.PostalCode : findEntity.PostalCode;
-        findEntity.Phone = !string.IsNullOrEmpty(dto?.Phone) ? dto?.Phone : findEntity.Phone;
-        findEntity.ContactPerson = !string.IsNullOrEmpty(dto?.ContactPerson) ? dto?.ContactPerson : findEntity.ContactPerson;
-        var outcome = this.databaseContext.Customers.Update(findEntity);
+			var model = request.Data;
+			var query = EF.CompileAsyncQuery((DatabaseContext db, int id) => db.Customers.FirstOrDefault(c => c.Id == id));
+			var findEntity = await query(this.databaseContext, request.Id.Value);
+			if (findEntity == null)
+			{
+				return Result<CustomerModel>.Failure("Error finding a Customer");
+			}
 
-        return await CoreHelper<CustomerDTO>.Outcome(this.databaseContext, this.mapper, cancellationToken, findEntity, "Error updating customer");
-    }
+			findEntity.Name = !string.IsNullOrEmpty(model?.Name) ? model?.Name : findEntity.Name;
+			findEntity.Address = !string.IsNullOrEmpty(model?.Address) ? model?.Address : findEntity.Address;
+			findEntity.Cellphone = !string.IsNullOrEmpty(model?.Cellphone) ? model?.Cellphone : findEntity.Cellphone;
+			findEntity.Email = !string.IsNullOrEmpty(model?.Email) ? model?.Email : findEntity.Email;
+
+			var outcome = this.databaseContext.Customers.Update(findEntity);
+			var result = await this.databaseContext.SaveChangesAsync();
+
+			return result > 0 ? Result<CustomerModel>.Success(findEntity.Map()) : Result<CustomerModel>.Failure("Error updating a Customer");
+		}
+	}
 }
 ```
 
@@ -649,39 +532,40 @@ findEntity.Description = request.Data?.Description;
 
 Create the following Queries
 
+We will be using [Compiled Queries](https://learn.microsoft.com/en-us/dotnet/framework/data/adonet/ef/language-reference/compiled-queries-linq-to-entities) for performance benefit.
+
 -Get Single
 
 ```cs
 namespace Core.Customer.Queries;
 
+using System;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoMapper;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
-using Common.DTO;
+using Common.Entities;
+using Common.Mappers;
 using Common.Models;
 using DataAccess;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
 
-public class GetCustomerQuery : IRequest<Result<CustomerDTO>>
+public class GetCustomerQuery : IRequest<Result<CustomerModel>>
 {
-    public int Id { get; set; }
-}
+	public int Id { get; set; }
 
-public class GetCustomerQueryHandler : IRequestHandler<GetCustomerQuery, Result<CustomerDTO>>
-{
-    private readonly DatabaseContext databaseContext;
+	public class GetCustomerQueryHandler : IRequestHandler<GetCustomerQuery, Result<CustomerModel>>
+	{
+		private readonly DatabaseContext databaseContext;
 
-    private readonly IMapper mapper;
+		public GetCustomerQueryHandler(DatabaseContext databaseContext)
+			=> this.databaseContext = databaseContext;
 
-    public GetCustomerQueryHandler(DatabaseContext databaseContext, IMapper mapper)
-        => (this.databaseContext, this.mapper) = (databaseContext, mapper);
-
-    public async Task<Result<CustomerDTO>> Handle(GetCustomerQuery request, CancellationToken cancellationToken)
-    {
-        var result = this.mapper.Map<CustomerDTO>(await this.databaseContext.Customers.FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken));
-        return Result<CustomerDTO>.Success(result);
-    }
+		public async Task<Result<CustomerModel>> Handle(GetCustomerQuery request, CancellationToken cancellationToken)
+		{
+			var query = EF.CompileAsyncQuery((DatabaseContext db, int id) => db.Customers.FirstOrDefault(c => c.Id == id));
+			return Result<CustomerModel>.Success((await query(this.databaseContext, request.Id)).Map());
+		}
+	}
 }
 ```
 
@@ -690,45 +574,42 @@ public class GetCustomerQueryHandler : IRequestHandler<GetCustomerQuery, Result<
 ```cs
 namespace Core.Customer.Queries;
 
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoMapper;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
-using Common.DTO;
+using Common.Mappers;
 using Common.Models;
 using DataAccess;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
 
-public class GetCustomersQuery : IRequest<ListResult<CustomerDTO>>
+public class GetCustomersQuery : IRequest<ListResult<CustomerModel>>
 {
-}
+	public class GetCustomersQueryHandler : IRequestHandler<GetCustomersQuery, ListResult<CustomerModel>>
+	{
+		private readonly DatabaseContext databaseContext;
 
-public class GetCustomersQueryHandler : IRequestHandler<GetCustomersQuery, ListResult<CustomerDTO>>
-{
-    private readonly DatabaseContext databaseContext;
+		public GetCustomersQueryHandler(DatabaseContext databaseContext)
+			=> this.databaseContext = databaseContext;
 
-    private readonly IMapper mapper;
+		public async Task<ListResult<CustomerModel>> Handle(GetCustomersQuery request, CancellationToken cancellationToken)
+		{
+			var entities = this.databaseContext.Customers.Select(x => x).AsNoTracking();
 
-    public GetCustomersQueryHandler(DatabaseContext databaseContext, IMapper mapper)
-        => (this.databaseContext, this.mapper) = (databaseContext, mapper);
+			var count = entities.Count();
+			var paged = await entities.ToListAsync(cancellationToken);
 
-    public async Task<ListResult<CustomerDTO>> Handle(GetCustomersQuery request, CancellationToken cancellationToken)
-    {
-        var entities = this.databaseContext.Customers.Select(x => x).AsNoTracking();
-
-        var count = entities.Count();
-        var paged = this.mapper.Map<List<CustomerDTO>>(await entities.ToListAsync(cancellationToken));
-
-        return ListResult<CustomerDTO>.Success(paged, count);
-    }
+			return ListResult<CustomerModel>.Success(paged.Map(), count);
+		}
+	}
 }
 ```
 
+Add the Commands and Queries for Pizza Entity.
+
 Core Project should look this when you are done.
 
-![Core Project Structure](Assets/2020-10-04-23-57-57.png)
+![](./Assets/2023-04-10-22-38-35.png)
 
 Update DependencyInjection.cs - to include the new DataAccess and CQRS Classes
 
@@ -737,144 +618,97 @@ For MediatR Dependency Injection we need to create 3 Behaviour Classes inside Co
 - PerformanceBehaviour.cs this will pick up any slow running queries
 
 ```cs
-namespace Common.Behaviours
+namespace Common.Behaviour;
 
 using System.Diagnostics;
-using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
 public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
 {
-    private readonly Stopwatch timer;
+	private readonly Stopwatch timer;
+	private readonly ILogger logger;
 
-    public PerformanceBehaviour() => this.timer = new Stopwatch();
+	public PerformanceBehaviour(ILogger logger)
+		=> (this.timer, this.logger) = (new Stopwatch(), logger);
 
-    public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
-    {
-        this.timer.Start();
+	public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
+	{
+		this.timer.Restart();
 
-        var response = await next();
+		var response = await next();
 
-        this.timer.Stop();
+		this.timer.Stop();
 
-        var elapsedMilliseconds = this.timer.ElapsedMilliseconds;
+		var elapsedMilliseconds = this.timer.ElapsedMilliseconds;
 
-        if (elapsedMilliseconds > 500)
-        {
-            var requestName = typeof(TRequest).Name;
-            this.logger.LogInformation($"CleanArchitecture Long Running Request: {requestName} ({elapsedMilliseconds} milliseconds)", request);
-        }
+		if (elapsedMilliseconds > 500)
+		{
+			var requestName = typeof(TRequest).Name;
+			this.logger.LogInformation($"CleanArchitecture Long Running Request: {requestName} ({elapsedMilliseconds} milliseconds)", request);
+		}
 
-        return response;
-    }
+		return response;
+	}
 }
 ```
 
-- UnhandledExceptionBehaviour.cs this will pick up any exceptions during the executio pipeline. 
+- UnhandledExceptionBehaviour.cs this will pick up any exceptions during the executio pipeline.
 
 ```cs
-namespace Common.Behaviours;
+namespace Common.Behaviour;
 
-using System.Threading;
+using System;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
 public class UnhandledExceptionBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
 {
-    private readonly ILogger<TRequest> logger;
+	private readonly ILogger<TRequest> logger;
 
-    public UnhandledExceptionBehaviour(ILogger<TRequest> logger) => this.logger = logger;
+	public UnhandledExceptionBehaviour(ILogger<TRequest> logger) => this.logger = logger;
+	
 
-    public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
-    {
-        try
-        {
-            return await next();
-        }
-        catch (Exception ex)
-        {
-            var requestName = typeof(TRequest).Name;
+	public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
+	{
+		try
+		{
+			return await next();
+		}
+		catch (Exception ex)
+		{
+			var requestName = typeof(TRequest).Name;
 
-            this.logger.LogError(ex, "Pezza Request: Unhandled Exception for Request {Name} {@Request}", requestName, request);
+			this.logger.LogError(ex, "Pezza Request: Unhandled Exception for Request {Name} {@Request}", requestName, request);
 
-            throw;
-        }
-    }
+			throw;
+		}
+	}
 }
 ```
 
-- ValidationBehavior.cs -Will be used in Phase 3 to pick up any validation that was added for Commands or Queries.
-
-```cs
-namespace Common.Behaviours;
-
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using FluentValidation;
-using MediatR;
-
-public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
-    where TRequest : IRequest<TResponse>
-{
-    private readonly IEnumerable<IValidator<TRequest>> validators;
-
-    public ValidationBehavior(IEnumerable<IValidator<TRequest>> validators) => this.validators = validators;
-
-    public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
-    {
-        if (this.validators.Any())
-        {
-            var context = new ValidationContext<TRequest>(request);
-
-            var validationResults = await Task.WhenAll(this.validators.Select(v => v.ValidateAsync(context, cancellationToken)));
-            var failures = validationResults.SelectMany(r => r.Errors).Where(f => f != null);
-
-            if (!failures.Any())
-            {
-                throw new ValidationException(failures);
-            }
-        }
-        return await next();
-    }
-}
-```
 
 DependencyInjection.cs in Core
 
 ```cs
 namespace Core;
 
-using System.Reflection;
-using AutoMapper;
-using FluentValidation;
+using Common.Behaviour;
+using Core.Customer.Commands;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using Common.Behaviours;
-using Common.DTO;
-using Common.Profiles;
-using DataAccess.Contracts;
-using DataAccess.Data;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddApplication(this IServiceCollection services)
-    {
-        services.AddMediatR(Assembly.GetExecutingAssembly());
-        services.AddAutoMapper(Assembly.GetExecutingAssembly());
-        services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
-        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnhandledExceptionBehaviour<,>));
-        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));
-
-        services.AddAutoMapper(typeof(MappingProfile));
-
-        return services;
-    }
+	public static IServiceCollection AddApplication(this IServiceCollection services)
+	{
+		services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<CreateCustomerCommand>());
+		services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnhandledExceptionBehaviour<,>));
+		services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));
+		return services;
+	}
 }
 ```
 
