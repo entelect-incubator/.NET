@@ -4,36 +4,28 @@ using Bogus;
 using Common.Entities;
 using Common.Models;
 
-public static class PizzaTestData
+public static class CustomerTestData
 {
-	public static Faker faker = new();
+	public static Faker faker = new("en_ZA");
 
-	public static Pizza Pizza = new()
+	public static Customer Customer = new()
 	{
 		Id = 1,
-		Name = faker.PickRandom(pizzas),
-		Description = string.Empty,
-		Price = faker.Finance.Amount(),
+		Name = faker.Person.FullName,
+		Address = faker.Address.FullAddress(),
+		Cellphone = faker.Phone.PhoneNumber(),
+		Email = faker.Person.Email,
 		DateCreated = DateTime.Now,
 	};
 
-	public static PizzaModel PizzaModel = new()
+	public static CustomerModel CustomerModel = new()
 	{
 		Id = 1,
-		Name = faker.PickRandom(pizzas),
-		Description = string.Empty,
-		Price = faker.Finance.Amount(),
-		DateCreated = DateTime.Now
-
-	};
-
-	private static readonly List<string> pizzas = new()
-	{
-		"Veggie Pizza",
-		"Pepperoni Pizza",
-		"Meat Pizza",
-		"Margherita Pizza",
-		"BBQ Chicken Pizza",
-		"Hawaiian Pizza"
+		Name = faker.Person.FullName,
+		Address = faker.Address.FullAddress(),
+		Cellphone = faker.Phone.PhoneNumber(),
+		Email = faker.Person.Email,
+		DateCreated = DateTime.Now,
 	};
 }
+
