@@ -182,8 +182,7 @@ To run the test go to the top Menu bar -> Test -> Run All Tests. This will open 
 
 ![](Assets/2020-11-20-09-56-21.png)
 
-You should now have 64 Passed Unit Tests
-![](Assets/2020-11-20-09-57-00.png)
+You should now have all Unit Tests pass.
 
 ## **STEP 3 - Finishing up the API to use CQRS**
 

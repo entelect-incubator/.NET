@@ -53,13 +53,9 @@ public class CustomerController : ApiController
 	///     POST api/Customer
 	///     {
 	///       "name": "Person A",
-	///       "address": "1 Tree Street",
-	///       "city": "Pretoria",
-	///       "province": "Gautenf",
-	///       "PostalCode": "0181",
-	///       "phone": "0721230000",
+	///       "address": "1 Tree Street, Pretoria, Gauteng",
 	///       "email": "person.a@gmail.com"
-	///       "contactPerson": "Person B 0723210000"
+	///       "cellphone": "0721230000"
 	///     }.
 	/// </remarks>
 	/// <param name="customer">CustomerModel.</param>
@@ -87,14 +83,7 @@ public class CustomerController : ApiController
 	///     PUT api/Customer
 	///     {
 	///       "id": 1,
-	///       "name": "Person A",
-	///       "address": "1 Tree Street",
-	///       "city": "Pretoria",
-	///       "province": "Gautenf",
-	///       "PostalCode": "0181",
-	///       "phone": "0721230000",
 	///       "email": "person.a@gmail.com"
-	///       "contactPerson": "Person B 0723210000"
 	///     }.
 	/// </remarks>
 	/// <param name="customer">CustomerModel.</param>

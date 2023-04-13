@@ -379,7 +379,7 @@ We will also be using the new Models relevant to each operation.
 - Create Command
 
 ```cs
-namespace Core.Customer.Commands;
+namespace Core.Pizza.Commands;
 
 using System.Threading;
 using System.Threading.Tasks;
@@ -388,36 +388,35 @@ using Common.Models;
 using DataAccess;
 using MediatR;
 
-public class CreateCustomerCommand : IRequest<Result<CustomerModel>>
+public class CreatePizzaCommand : IRequest<Result<PizzaModel>>
 {
-	public CreateCustomerModel? Data { get; set; }
+	public CreatePizzaModel? Data { get; set; }
 
-	public class CreateCustomerCommandHandler : IRequestHandler<CreateCustomerCommand, Result<CustomerModel>>
+	public class CreatePizzaCommandHandler : IRequestHandler<CreatePizzaCommand, Result<PizzaModel>>
 	{
 		private readonly DatabaseContext databaseContext;
 
-		public CreateCustomerCommandHandler(DatabaseContext databaseContext)
+		public CreatePizzaCommandHandler(DatabaseContext databaseContext)
 			=> this.databaseContext = databaseContext;
 
-		public async Task<Result<CustomerModel>> Handle(CreateCustomerCommand request, CancellationToken cancellationToken)
+		public async Task<Result<PizzaModel>> Handle(CreatePizzaCommand request, CancellationToken cancellationToken)
 		{
 			if(request.Data == null)
 			{
-				return Result<CustomerModel>.Failure("Error creatiing a Customer");
+				return Result<PizzaModel>.Failure("Error creatiing a Pizza");
 			}
 
-			var entity = new Common.Entities.Customer
+			var entity = new Common.Entities.Pizza
 			{
 				Name= request.Data.Name,
-				Email= request.Data.Email,
-				Address = request.Data.Address,
-				Cellphone= request.Data.Cellphone,
+				Description= request.Data.Description,
+				Price = request.Data.Price,
 				DateCreated = DateTime.UtcNow
 			};
-			this.databaseContext.Customers.Add(entity);
+			this.databaseContext.Pizzas.Add(entity);
 			var result = await this.databaseContext.SaveChangesAsync();
 
-			return result > 0 ? Result<CustomerModel>.Success(entity.Map()) : Result<CustomerModel>.Failure("Error creatiing a Customer");
+			return result > 0 ? Result<PizzaModel>.Success(entity.Map()) : Result<PizzaModel>.Failure("Error creatiing a Pizza");
 		}
 	}
 }
@@ -426,7 +425,7 @@ public class CreateCustomerCommand : IRequest<Result<CustomerModel>>
 - Delete Command
 
 ```cs
-namespace Core.Customer.Commands;
+namespace Core.Pizza.Commands;
 
 using System.Threading;
 using System.Threading.Tasks;
@@ -435,35 +434,35 @@ using Microsoft.EntityFrameworkCore;
 using Common.Models;
 using DataAccess;
 
-public class DeleteCustomerCommand : IRequest<Result>
+public class DeletePizzaCommand : IRequest<Result>
 {
 	public int? Id { get; set; }
 
-	public class DeleteCustomerCommandHandler : IRequestHandler<DeleteCustomerCommand, Result>
+	public class DeletePizzaCommandHandler : IRequestHandler<DeletePizzaCommand, Result>
 	{
 		private readonly DatabaseContext databaseContext;
 
-		public DeleteCustomerCommandHandler(DatabaseContext databaseContext)
+		public DeletePizzaCommandHandler(DatabaseContext databaseContext)
 			=> this.databaseContext = databaseContext;
 
-		public async Task<Result> Handle(DeleteCustomerCommand request, CancellationToken cancellationToken)
+		public async Task<Result> Handle(DeletePizzaCommand request, CancellationToken cancellationToken)
 		{
 			if (request.Id == null)
 			{
-				return Result.Failure("Error deleting a Customer");
+				return Result.Failure("Error deleting a Pizza");
 			}
 
-			var query = EF.CompileAsyncQuery((DatabaseContext db, int id) => db.Customers.FirstOrDefault(c => c.Id == id));
+			var query = EF.CompileAsyncQuery((DatabaseContext db, int id) => db.Pizzas.FirstOrDefault(c => c.Id == id));
 			var findEntity = await query(this.databaseContext, request.Id.Value);
 			if (findEntity == null)
 			{
-				return Result.Failure("Customer not found");
+				return Result.Failure("Pizza not found");
 			}
 
-			this.databaseContext.Customers.Remove(findEntity);
+			this.databaseContext.Pizzas.Remove(findEntity);
 			var result = await this.databaseContext.SaveChangesAsync();
 
-			return result > 0 ? Result.Success() : Result.Failure("Error deleting a Customer");
+			return result > 0 ? Result.Success() : Result.Failure("Error deleting a Pizza");
 		}
 	}
 }
@@ -472,7 +471,7 @@ public class DeleteCustomerCommand : IRequest<Result>
 - Update Command
 
 ```cs
-namespace Core.Customer.Commands;
+namespace Core.Pizza.Commands;
 
 using System.Threading;
 using System.Threading.Tasks;
@@ -482,43 +481,42 @@ using DataAccess;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-public class UpdateCustomerCommand : IRequest<Result<CustomerModel>>
+public class UpdatePizzaCommand : IRequest<Result<PizzaModel>>
 {
 	public int? Id { get; set; }
 
-	public UpdateCustomerModel? Data { get; set; }
+	public UpdatePizzaModel? Data { get; set; }
 
-	public class UpdateCustomerCommandHandler : IRequestHandler<UpdateCustomerCommand, Result<CustomerModel>>
+	public class UpdatePizzaCommandHandler : IRequestHandler<UpdatePizzaCommand, Result<PizzaModel>>
 	{
 		private readonly DatabaseContext databaseContext;
 
-		public UpdateCustomerCommandHandler(DatabaseContext databaseContext)
+		public UpdatePizzaCommandHandler(DatabaseContext databaseContext)
 			=> this.databaseContext = databaseContext;
 
-		public async Task<Result<CustomerModel>> Handle(UpdateCustomerCommand request, CancellationToken cancellationToken)
+		public async Task<Result<PizzaModel>> Handle(UpdatePizzaCommand request, CancellationToken cancellationToken)
 		{
 			if (request.Data == null || request.Id == null)
 			{
-				return Result<CustomerModel>.Failure("Error updating a Customer");
+				return Result<PizzaModel>.Failure("Error updating a Pizza");
 			}
 
 			var model = request.Data;
-			var query = EF.CompileAsyncQuery((DatabaseContext db, int id) => db.Customers.FirstOrDefault(c => c.Id == id));
+			var query = EF.CompileAsyncQuery((DatabaseContext db, int id) => db.Pizzas.FirstOrDefault(c => c.Id == id));
 			var findEntity = await query(this.databaseContext, request.Id.Value);
 			if (findEntity == null)
 			{
-				return Result<CustomerModel>.Failure("Error finding a Customer");
+				return Result<PizzaModel>.Failure("Error finding a Pizza");
 			}
 
 			findEntity.Name = !string.IsNullOrEmpty(model?.Name) ? model?.Name : findEntity.Name;
-			findEntity.Address = !string.IsNullOrEmpty(model?.Address) ? model?.Address : findEntity.Address;
-			findEntity.Cellphone = !string.IsNullOrEmpty(model?.Cellphone) ? model?.Cellphone : findEntity.Cellphone;
-			findEntity.Email = !string.IsNullOrEmpty(model?.Email) ? model?.Email : findEntity.Email;
+			findEntity.Description = !string.IsNullOrEmpty(model?.Description) ? model?.Description : findEntity.Description;
+			findEntity.Price = model.Price.HasValue ? model.Price.Value : findEntity.Price;
 
-			var outcome = this.databaseContext.Customers.Update(findEntity);
+			var outcome = this.databaseContext.Pizzas.Update(findEntity);
 			var result = await this.databaseContext.SaveChangesAsync();
 
-			return result > 0 ? Result<CustomerModel>.Success(findEntity.Map()) : Result<CustomerModel>.Failure("Error updating a Customer");
+			return result > 0 ? Result<PizzaModel>.Success(findEntity.Map()) : Result<PizzaModel>.Failure("Error updating a Pizza");
 		}
 	}
 }
@@ -537,33 +535,31 @@ We will be using [Compiled Queries](https://learn.microsoft.com/en-us/dotnet/fra
 -Get Single
 
 ```cs
-namespace Core.Customer.Queries;
+namespace Core.Pizza.Queries;
 
-using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Common.Entities;
 using Common.Mappers;
 using Common.Models;
 using DataAccess;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-public class GetCustomerQuery : IRequest<Result<CustomerModel>>
+public class GetPizzaQuery : IRequest<Result<PizzaModel>>
 {
 	public int Id { get; set; }
 
-	public class GetCustomerQueryHandler : IRequestHandler<GetCustomerQuery, Result<CustomerModel>>
+	public class GetPizzaQueryHandler : IRequestHandler<GetPizzaQuery, Result<PizzaModel>>
 	{
 		private readonly DatabaseContext databaseContext;
 
-		public GetCustomerQueryHandler(DatabaseContext databaseContext)
+		public GetPizzaQueryHandler(DatabaseContext databaseContext)
 			=> this.databaseContext = databaseContext;
 
-		public async Task<Result<CustomerModel>> Handle(GetCustomerQuery request, CancellationToken cancellationToken)
+		public async Task<Result<PizzaModel>> Handle(GetPizzaQuery request, CancellationToken cancellationToken)
 		{
-			var query = EF.CompileAsyncQuery((DatabaseContext db, int id) => db.Customers.FirstOrDefault(c => c.Id == id));
-			return Result<CustomerModel>.Success((await query(this.databaseContext, request.Id)).Map());
+			var query = EF.CompileAsyncQuery((DatabaseContext db, int id) => db.Pizzas.FirstOrDefault(c => c.Id == id));
+			return Result<PizzaModel>.Success((await query(this.databaseContext, request.Id)).Map());
 		}
 	}
 }
@@ -572,7 +568,7 @@ public class GetCustomerQuery : IRequest<Result<CustomerModel>>
 - Get All
 
 ```cs
-namespace Core.Customer.Queries;
+namespace Core.Pizza.Queries;
 
 using System.Linq;
 using System.Threading;
@@ -583,29 +579,29 @@ using DataAccess;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-public class GetCustomersQuery : IRequest<ListResult<CustomerModel>>
+public class GetPizzasQuery : IRequest<ListResult<PizzaModel>>
 {
-	public class GetCustomersQueryHandler : IRequestHandler<GetCustomersQuery, ListResult<CustomerModel>>
+	public class GetPizzasQueryHandler : IRequestHandler<GetPizzasQuery, ListResult<PizzaModel>>
 	{
 		private readonly DatabaseContext databaseContext;
 
-		public GetCustomersQueryHandler(DatabaseContext databaseContext)
+		public GetPizzasQueryHandler(DatabaseContext databaseContext)
 			=> this.databaseContext = databaseContext;
 
-		public async Task<ListResult<CustomerModel>> Handle(GetCustomersQuery request, CancellationToken cancellationToken)
+		public async Task<ListResult<PizzaModel>> Handle(GetPizzasQuery request, CancellationToken cancellationToken)
 		{
-			var entities = this.databaseContext.Customers.Select(x => x).AsNoTracking();
+			var entities = this.databaseContext.Pizzas.Select(x => x).AsNoTracking();
 
 			var count = entities.Count();
 			var paged = await entities.ToListAsync(cancellationToken);
 
-			return ListResult<CustomerModel>.Success(paged.Map(), count);
+			return ListResult<PizzaModel>.Success(paged.Map(), count);
 		}
 	}
 }
 ```
 
-Add the Commands and Queries for Pizza Entity.
+Now, add the Commands and Queries for Customer Entity.
 
 Core Project should look this when you are done.
 
