@@ -1,6 +1,6 @@
 <img align="left" width="116" height="116" src="pezza-logo.png" />
 
-# &nbsp;**Pezza - Phase 3 - Handling Data** [![.NET 7 - Phase 3 - Start Solution](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase3-start.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase3-start.yml)
+# &nbsp;**Pezza - Phase 3 - Handling Data** [![.NET - Phase 3 - Start Solution](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase3-start.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase3-start.yml)
 
 <br/><br/>
 
@@ -23,6 +23,9 @@
 #### Entity Framework Core
 
 - [Migrations Overview](https://learn.microsoft.com/en-us/ef/core/managing-schemas/migrations/?tabs=dotnet-core-cli)
+- [Change Tracking Overview](https://learn.microsoft.com/en-us/ef/core/change-tracking/)
+- [Loading Related Data](https://learn.microsoft.com/en-us/ef/core/querying/related-data/)
+- [TPH, TPC, TPT](https://www.youtube.com/watch?v=HaL6DKW1mrg&ab_channel=dotnet)
 
 ## **Setup**
 
