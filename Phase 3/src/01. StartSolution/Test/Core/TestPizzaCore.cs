@@ -1,12 +1,8 @@
-﻿namespace Test.Core;
+namespace Test.Core;
 
-using System.Threading;
-using System.Threading.Tasks;
 using Common.Models;
 using global::Core.Pizza.Commands;
 using global::Core.Pizza.Queries;
-using NUnit.Framework;
-using Test.Setup;
 using Test.Setup.TestData.Pizza;
 using static global::Core.Pizza.Commands.CreatePizzaCommand;
 using static global::Core.Pizza.Commands.DeletePizzaCommand;
@@ -30,8 +26,7 @@ public class TestPizzaCore : QueryTestBase
 				Data = new CreatePizzaModel
 				{
 					Name = this.model.Name,
-					Description= this.model.Description,
-					Price = this.model.Price.Value
+					Price = 19
 				}
 			}, CancellationToken.None);
 
@@ -77,8 +72,8 @@ public class TestPizzaCore : QueryTestBase
 			{
 				Id = this.model.Id,
 				Data = new UpdatePizzaModel
-				{					
-					Price = 119
+				{
+					Price = 20
 				}
 			}, CancellationToken.None);
 

@@ -15,15 +15,11 @@ Add CustomerTestData.cs to test Project Test Data.
 ```cs
 namespace Test.Setup.TestData.Customer;
 
-using Bogus;
-using Common.Entities;
-using Common.Models;
-
 public static class CustomerTestData
 {
 	public static Faker faker = new("en_ZA");
 
-	public static Customer Customer = new()
+	public static Common.Entities.Customer Customer = new()
 	{
 		Id = 1,
 		Name = faker.Person.FullName,
@@ -49,8 +45,6 @@ public static class CustomerTestData
 
 Create a Folder in the Test Project called **Core**. Create a Test Core Class for every Entity.
 
-![Core Tests Structure](Assets/2020-11-20-09-49-52.png)
-
 We will test every method inside of the Core class - GetAsync, GetAllAsync, SaveAsync, UpdateAsync and DeleteAsync. The class will inherit from QueryTestBase created earlier.We will test every method inside of the Core class - GetAsync, GetAllAsync, SaveAsync, UpdateAsync and DeleteAsync. The class will inherit from QueryTestBase created earlier.
 
 Every test method will start with [Test], this indicates it as a Unit Test. Every Test class will have an attribute [TestFixture] at the top. We will use [SetUp] to intialize our handlers or data access layer and resue it in every test.
@@ -66,20 +60,13 @@ It will contain a new Handler with the In Memory DBContext.
 
  Next we will test the the result.
 
-![](./Asssets/2021-08-16-07-05-14.png)
-
 TestCustomerCore.cs in Core folder
 
 ```cs
 namespace Test.Core;
 
-using System.Threading;
-using System.Threading.Tasks;
-using Common.Models;
 using global::Core.Customer.Commands;
 using global::Core.Customer.Queries;
-using NUnit.Framework;
-using Test.Setup;
 using Test.Setup.TestData.Customer;
 using static global::Core.Customer.Commands.CreateCustomerCommand;
 using static global::Core.Customer.Commands.DeleteCustomerCommand;
@@ -174,7 +161,7 @@ public class TestCustomerCore : QueryTestBase
 }
 ```
 
-Create the Core Unit Test classes now, when you are done it should look like this.
+Create the PizzaCore Unit Test classes now, when you are done it should look like this.
 
 ![](./Assets/2023-04-10-23-00-23.png)
 

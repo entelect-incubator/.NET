@@ -1,5 +1,7 @@
 ﻿namespace Api.Controllers;
 
+using MediatR;
+
 [ApiController]
 [Route("[controller]")]
 [Produces("application/json")]

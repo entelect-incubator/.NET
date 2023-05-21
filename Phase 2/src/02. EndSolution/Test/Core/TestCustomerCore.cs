@@ -1,12 +1,7 @@
 ﻿namespace Test.Core;
 
-using System.Threading;
-using System.Threading.Tasks;
-using Common.Models;
 using global::Core.Customer.Commands;
 using global::Core.Customer.Queries;
-using NUnit.Framework;
-using Test.Setup;
 using Test.Setup.TestData.Customer;
 using static global::Core.Customer.Commands.CreateCustomerCommand;
 using static global::Core.Customer.Commands.DeleteCustomerCommand;

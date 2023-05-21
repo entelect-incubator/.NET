@@ -2,7 +2,6 @@ namespace Core;
 
 using Common.Behaviour;
 using Core.Customer.Commands;
-using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
 public static class DependencyInjection
@@ -12,6 +11,7 @@ public static class DependencyInjection
 		services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<CreateCustomerCommand>());
 		services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnhandledExceptionBehaviour<,>));
 		services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));
+
 		return services;
 	}
 }

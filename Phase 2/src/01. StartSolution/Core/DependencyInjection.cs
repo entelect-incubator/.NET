@@ -1,7 +1,6 @@
 namespace Core;
 
 using Microsoft.Extensions.DependencyInjection;
-using Core.Contracts;
 
 public static class DependencyInjection
 {

@@ -10,7 +10,7 @@ If at any point you are struggling you can reference Phase 2\src\02. EndSolution
 
 ## **Install Mediatr**
 
-To help us with CQRS we will be using the Mediatr Nuget package. 
+To help us with CQRS we will be using the Mediatr Nuget package.
 
 What is Mediatr?
 In-process messaging with no dependencies.
@@ -36,13 +36,13 @@ public sealed class Customer
 {
 	public int Id { get; set; }
 
-	public string Name { get; set; }
+	public required string Name { get; set; }
 
-	public string Address { get; set; }
+	public string? Address { get; set; }
 
-	public decimal Email { get; set; }
+	public string? Email { get; set; }
 
-	public decimal Cellphone { get; set; }
+	public string? Cellphone { get; set; }
 
 	public DateTime DateCreated { get; set; }
 }
@@ -51,17 +51,17 @@ public sealed class Customer
 ```cs
 namespace Common.Entities;
 
-public sealed class Pizza
+public class Pizza
 {
 	public int Id { get; set; }
 
-	public string Name { get; set; }
+	public required string Name { get; set; }
 
-	public string Description { get; set; }
+	public string? Description { get; set; }
 
 	public decimal Price { get; set; }
 
-	public DateTime DateCreated { get; set; }
+	public DateTime? DateCreated { get; set; }
 }
 ```
 
@@ -71,33 +71,99 @@ Create Models for each Entity. For seperation of concern we will create seperate
 
 ![](./Assets/2023-04-10-21-23-57.png)
 
-Add Customer to Mapper.cs
+Change Mapper.cs to PizzaMapper.cs
 
 ```cs
 namespace Common.Mappers;
 
-[Mapper]
-public static partial class Mapper
+public static class PizzaMapper
 {
-	public static partial PizzaModel Map(this Pizza pizza);
+	public static PizzaModel Map(this Pizza entity)
+		=> new()
+		{
+			Id = entity.Id,
+			Name = entity.Name,
+			Description = entity.Description,
+			Price = entity.Price,
+			DateCreated = entity.DateCreated
+		};
 
-	public static IEnumerable<PizzaModel> Map(this List<Pizza> pizzas)
-		=> pizzas.Select(x => x.Map());
+	public static Pizza Map(this PizzaModel model)
+	{
+		var entity = new Pizza
+		{
+			Id = model.Id,
+			Name = model.Name,
+			Description = model.Description,
+			DateCreated = model.DateCreated
+		};
 
-	public static partial Pizza Map(this PizzaModel pizza);
+		if (model.Price.HasValue)
+		{
+			entity.Price = model.Price.Value;
+		}
 
-	public static IEnumerable<Pizza> Map(this List<PizzaModel> pizzas)
-		=> pizzas.Select(x => x.Map());
+		return entity;
+	}
 
-	public static partial CustomerModel Map(this Customer pizza);
+	public static IEnumerable<PizzaModel> Map(this List<Pizza> entities)
+		=> entities.Select(x => x.Map());
 
-	public static IEnumerable<CustomerModel> Map(this List<Customer> pizzas)
-		=> pizzas.Select(x => x.Map());
+	public static IEnumerable<Pizza> Map(this List<PizzaModel> models)
+		=> models.Select(x => x.Map());
+}
+```
 
-	public static partial Customer Map(this CustomerModel pizza);
+Add Customer to CustomerMapper.cs
 
-	public static IEnumerable<Customer> Map(this List<CustomerModel> pizzas)
-		=> pizzas.Select(x => x.Map());
+```cs
+namespace Common.Mappers;
+
+public static class CustomerMapper
+{
+	public static CustomerModel Map(this Customer entity)
+		=> new()
+		{
+			Id = entity.Id,
+			Name = entity.Name,
+			Address = entity.Address,
+			Cellphone = entity.Cellphone,
+			Email = entity.Email,
+			DateCreated = entity.DateCreated
+		};
+
+	public static Customer Map(this CustomerModel model)
+	{
+		var entity = new Customer
+		{
+			Id = model.Id,
+			Name = model.Name,
+			DateCreated = model.DateCreated
+		};
+
+		if (!string.IsNullOrEmpty(model.Address))
+		{
+			entity.Address = model.Address;
+		}
+
+		if (!string.IsNullOrEmpty(model.Cellphone))
+		{
+			entity.Cellphone = model.Cellphone;
+		}
+
+		if (!string.IsNullOrEmpty(model.Email))
+		{
+			entity.Email = model.Email;
+		}
+
+		return entity;
+	}
+
+	public static IEnumerable<CustomerModel> Map(this List<Customer> entities)
+		=> entities.Select(x => x.Map());
+
+	public static IEnumerable<Customer> Map(this List<CustomerModel> models)
+		=> models.Select(x => x.Map());
 }
 ```
 
@@ -216,10 +282,6 @@ Instead of throwing or using exceptions, we will return a Result object indicati
 ```cs
 namespace Common.Models;
 
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-
 public class Result
 {
 	public Result()
@@ -252,13 +314,13 @@ public class Result
 
 	public List<object> Errors { get; set; }
 
-	public static Result Success() => new Result(true, new List<object> { });
+	public static Result Success() => new(true, new List<object> { });
 
-	public static Result Failure(List<object> errors) => new Result(false, errors);
+	public static Result Failure(List<object> errors) => new(false, errors);
 
-	public static Result Failure(List<string> errors) => new Result(false, errors);
+	public static Result Failure(List<string> errors) => new(false, errors);
 
-	public static Result Failure(string error) => new Result(false, error);
+	public static Result Failure(string error) => new(false, error);
 }
 
 public class Result<T>
@@ -291,11 +353,11 @@ public class Result<T>
 
 	public List<object> Errors { get; set; }
 
-	public static Result<T> Success(T data) => new Result<T>(true, data, new List<object> { });
+	public static Result<T> Success(T data) => new(true, data, new List<object> { });
 
-	public static Result<T> Failure(string error) => new Result<T>(false, error);
+	public static Result<T> Failure(string error) => new(false, error);
 
-	public static Result<T> Failure(List<object> errors) => new Result<T>(false, errors);
+	public static Result<T> Failure(List<object> errors) => new(false, errors);
 }
 
 public class ListResult<T>
@@ -339,22 +401,22 @@ public class ListResult<T>
 
 	public int Count { get; set; }
 
-	public static ListResult<T> Success(List<T> data, int count) => new ListResult<T>(true, data, count, new List<object> { });
+	public static ListResult<T> Success(List<T> data, int count) => new(true, data, count, new List<object> { });
 
-	public static ListResult<T> Success(IEnumerable<T> data, int count) => new ListResult<T>(true, data, count, new List<object> { });
+	public static ListResult<T> Success(IEnumerable<T> data, int count) => new(true, data, count, new List<object> { });
 
-	public static ListResult<T> Failure(string error) => new ListResult<T>(false, error);
+	public static ListResult<T> Failure(string error) => new(false, error);
 
-	public static ListResult<T> Failure(List<object> errors) => new ListResult<T>(false, errors);
+	public static ListResult<T> Failure(List<object> errors) => new(false, errors);
 }
 
 public class ListOutcome<T>
 {
-	public List<T> Data { get; set; }
+	public List<T>? Data { get; set; }
 
 	public int Count { get; set; }
 
-	public List<string> Errors { get; set; }
+	public List<string>? Errors { get; set; }
 }
 
 public class ErrorResult : Result
@@ -364,6 +426,14 @@ public class ErrorResult : Result
 	[DefaultValue(false)]
 	public new bool Succeeded { get; set; }
 }
+```
+
+Update GlobalUsings.cs
+
+```cs
+global using System.ComponentModel;
+global using Common.Entities;
+global using Common.Models;
 ```
 
 Create the following Commands for Customer and Pizza in Core Project inside the Entity Name Folder/Commands <br/> ![](./Assets/2021-08-16-06-51-20.png)
@@ -377,29 +447,17 @@ We will also be using the new Models relevant to each operation.
 ```cs
 namespace Core.Pizza.Commands;
 
-using System.Threading;
-using System.Threading.Tasks;
-using Common.Mappers;
-using Common.Models;
-using DataAccess;
-using MediatR;
-
 public class CreatePizzaCommand : IRequest<Result<PizzaModel>>
 {
 	public CreatePizzaModel? Data { get; set; }
 
-	public class CreatePizzaCommandHandler : IRequestHandler<CreatePizzaCommand, Result<PizzaModel>>
+	public class CreatePizzaCommandHandler(DatabaseContext databaseContext) : IRequestHandler<CreatePizzaCommand, Result<PizzaModel>>
 	{
-		private readonly DatabaseContext databaseContext;
-
-		public CreatePizzaCommandHandler(DatabaseContext databaseContext)
-			=> this.databaseContext = databaseContext;
-
 		public async Task<Result<PizzaModel>> Handle(CreatePizzaCommand request, CancellationToken cancellationToken)
 		{
 			if(request.Data == null)
 			{
-				return Result<PizzaModel>.Failure("Error creatiing a Pizza");
+				return Result<PizzaModel>.Failure("Error");
 			}
 
 			var entity = new Common.Entities.Pizza
@@ -409,10 +467,10 @@ public class CreatePizzaCommand : IRequest<Result<PizzaModel>>
 				Price = request.Data.Price,
 				DateCreated = DateTime.UtcNow
 			};
-			this.databaseContext.Pizzas.Add(entity);
-			var result = await this.databaseContext.SaveChangesAsync();
+			databaseContext.Pizzas.Add(entity);
+			var result = await databaseContext.SaveChangesAsync(cancellationToken);
 
-			return result > 0 ? Result<PizzaModel>.Success(entity.Map()) : Result<PizzaModel>.Failure("Error creatiing a Pizza");
+			return result > 0 ? Result<PizzaModel>.Success(entity.Map()) : Result<PizzaModel>.Failure("Error");
 		}
 	}
 }
@@ -423,42 +481,30 @@ public class CreatePizzaCommand : IRequest<Result<PizzaModel>>
 ```cs
 namespace Core.Pizza.Commands;
 
-using System.Threading;
-using System.Threading.Tasks;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
-using Common.Models;
-using DataAccess;
-
 public class DeletePizzaCommand : IRequest<Result>
 {
 	public int? Id { get; set; }
 
-	public class DeletePizzaCommandHandler : IRequestHandler<DeletePizzaCommand, Result>
+	public class DeletePizzaCommandHandler(DatabaseContext databaseContext) : IRequestHandler<DeletePizzaCommand, Result>
 	{
-		private readonly DatabaseContext databaseContext;
-
-		public DeletePizzaCommandHandler(DatabaseContext databaseContext)
-			=> this.databaseContext = databaseContext;
-
 		public async Task<Result> Handle(DeletePizzaCommand request, CancellationToken cancellationToken)
 		{
 			if (request.Id == null)
 			{
-				return Result.Failure("Error deleting a Pizza");
+				return Result.Failure("Error");
 			}
 
 			var query = EF.CompileAsyncQuery((DatabaseContext db, int id) => db.Pizzas.FirstOrDefault(c => c.Id == id));
-			var findEntity = await query(this.databaseContext, request.Id.Value);
+			var findEntity = await query(databaseContext, request.Id.Value);
 			if (findEntity == null)
 			{
-				return Result.Failure("Pizza not found");
+				return Result.Failure("Not found");
 			}
 
-			this.databaseContext.Pizzas.Remove(findEntity);
-			var result = await this.databaseContext.SaveChangesAsync();
+			databaseContext.Pizzas.Remove(findEntity);
+			var result = await databaseContext.SaveChangesAsync(cancellationToken);
 
-			return result > 0 ? Result.Success() : Result.Failure("Error deleting a Pizza");
+			return result > 0 ? Result.Success() : Result.Failure("Error");
 		}
 	}
 }
@@ -469,50 +515,37 @@ public class DeletePizzaCommand : IRequest<Result>
 ```cs
 namespace Core.Pizza.Commands;
 
-using System.Threading;
-using System.Threading.Tasks;
-using Common.Mappers;
-using Common.Models;
-using DataAccess;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
-
 public class UpdatePizzaCommand : IRequest<Result<PizzaModel>>
 {
 	public int? Id { get; set; }
 
 	public UpdatePizzaModel? Data { get; set; }
 
-	public class UpdatePizzaCommandHandler : IRequestHandler<UpdatePizzaCommand, Result<PizzaModel>>
+	public class UpdatePizzaCommandHandler(DatabaseContext databaseContext) : IRequestHandler<UpdatePizzaCommand, Result<PizzaModel>>
 	{
-		private readonly DatabaseContext databaseContext;
-
-		public UpdatePizzaCommandHandler(DatabaseContext databaseContext)
-			=> this.databaseContext = databaseContext;
-
 		public async Task<Result<PizzaModel>> Handle(UpdatePizzaCommand request, CancellationToken cancellationToken)
 		{
 			if (request.Data == null || request.Id == null)
 			{
-				return Result<PizzaModel>.Failure("Error updating a Pizza");
+				return Result<PizzaModel>.Failure("Error");
 			}
 
 			var model = request.Data;
 			var query = EF.CompileAsyncQuery((DatabaseContext db, int id) => db.Pizzas.FirstOrDefault(c => c.Id == id));
-			var findEntity = await query(this.databaseContext, request.Id.Value);
+			var findEntity = await query(databaseContext, request.Id.Value);
 			if (findEntity == null)
 			{
-				return Result<PizzaModel>.Failure("Error finding a Pizza");
+				return Result<PizzaModel>.Failure("Not found");
 			}
 
 			findEntity.Name = !string.IsNullOrEmpty(model?.Name) ? model?.Name : findEntity.Name;
 			findEntity.Description = !string.IsNullOrEmpty(model?.Description) ? model?.Description : findEntity.Description;
 			findEntity.Price = model.Price.HasValue ? model.Price.Value : findEntity.Price;
 
-			var outcome = this.databaseContext.Pizzas.Update(findEntity);
-			var result = await this.databaseContext.SaveChangesAsync();
+			var outcome = databaseContext.Pizzas.Update(findEntity);
+			var result = await databaseContext.SaveChangesAsync(cancellationToken);
 
-			return result > 0 ? Result<PizzaModel>.Success(findEntity.Map()) : Result<PizzaModel>.Failure("Error updating a Pizza");
+			return result > 0 ? Result<PizzaModel>.Success(findEntity.Map()) : Result<PizzaModel>.Failure("Error");
 		}
 	}
 }
@@ -533,29 +566,22 @@ We will be using [Compiled Queries](https://learn.microsoft.com/en-us/dotnet/fra
 ```cs
 namespace Core.Pizza.Queries;
 
-using System.Threading;
-using System.Threading.Tasks;
-using Common.Mappers;
-using Common.Models;
-using DataAccess;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
-
 public class GetPizzaQuery : IRequest<Result<PizzaModel>>
 {
 	public int Id { get; set; }
 
-	public class GetPizzaQueryHandler : IRequestHandler<GetPizzaQuery, Result<PizzaModel>>
+	public class GetPizzaQueryHandler(DatabaseContext databaseContext) : IRequestHandler<GetPizzaQuery, Result<PizzaModel>>
 	{
-		private readonly DatabaseContext databaseContext;
-
-		public GetPizzaQueryHandler(DatabaseContext databaseContext)
-			=> this.databaseContext = databaseContext;
-
 		public async Task<Result<PizzaModel>> Handle(GetPizzaQuery request, CancellationToken cancellationToken)
 		{
 			var query = EF.CompileAsyncQuery((DatabaseContext db, int id) => db.Pizzas.FirstOrDefault(c => c.Id == id));
-			return Result<PizzaModel>.Success((await query(this.databaseContext, request.Id)).Map());
+			var entity = await query(databaseContext, request.Id);
+			if (entity == null)
+			{
+				return Result<PizzaModel>.Failure("Not Found");
+			}
+
+			return Result<PizzaModel>.Success(entity.Map());
 		}
 	}
 }
@@ -566,27 +592,13 @@ public class GetPizzaQuery : IRequest<Result<PizzaModel>>
 ```cs
 namespace Core.Pizza.Queries;
 
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Common.Mappers;
-using Common.Models;
-using DataAccess;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
-
 public class GetPizzasQuery : IRequest<ListResult<PizzaModel>>
 {
-	public class GetPizzasQueryHandler : IRequestHandler<GetPizzasQuery, ListResult<PizzaModel>>
+	public class GetPizzasQueryHandler(DatabaseContext databaseContext) : IRequestHandler<GetPizzasQuery, ListResult<PizzaModel>>
 	{
-		private readonly DatabaseContext databaseContext;
-
-		public GetPizzasQueryHandler(DatabaseContext databaseContext)
-			=> this.databaseContext = databaseContext;
-
 		public async Task<ListResult<PizzaModel>> Handle(GetPizzasQuery request, CancellationToken cancellationToken)
 		{
-			var entities = this.databaseContext.Pizzas.Select(x => x).AsNoTracking();
+			var entities = databaseContext.Pizzas.Select(x => x).AsNoTracking();
 
 			var count = entities.Count();
 			var paged = await entities.ToListAsync(cancellationToken);
@@ -605,25 +617,16 @@ Core Project should look this when you are done.
 
 Update DependencyInjection.cs - to include the new DataAccess and CQRS Classes
 
-For MediatR Dependency Injection we need to create 3 Behaviour Classes inside Common
+For MediatR Dependency Injection we need to create 3 Behaviour Classes inside Common. We will add logging later.
 
 - PerformanceBehaviour.cs this will pick up any slow running queries
 
 ```cs
 namespace Common.Behaviour;
 
-using System.Diagnostics;
-using System.Threading.Tasks;
-using MediatR;
-using Microsoft.Extensions.Logging;
-
 public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
 {
-	private readonly Stopwatch timer;
-	private readonly ILogger logger;
-
-	public PerformanceBehaviour(ILogger logger)
-		=> (this.timer, this.logger) = (new Stopwatch(), logger);
+	private readonly Stopwatch timer = new Stopwatch();
 
 	public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
 	{
@@ -638,7 +641,7 @@ public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequ
 		if (elapsedMilliseconds > 500)
 		{
 			var requestName = typeof(TRequest).Name;
-			this.logger.LogInformation($"CleanArchitecture Long Running Request: {requestName} ({elapsedMilliseconds} milliseconds)", request);
+			//this.logger.LogInformation($"CleanArchitecture Long Running Request: {requestName} ({elapsedMilliseconds} milliseconds)", request);
 		}
 
 		return response;
@@ -651,18 +654,8 @@ public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequ
 ```cs
 namespace Common.Behaviour;
 
-using System;
-using System.Threading.Tasks;
-using MediatR;
-using Microsoft.Extensions.Logging;
-
 public class UnhandledExceptionBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
 {
-	private readonly ILogger<TRequest> logger;
-
-	public UnhandledExceptionBehaviour(ILogger<TRequest> logger) => this.logger = logger;
-	
-
 	public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
 	{
 		try
@@ -673,7 +666,7 @@ public class UnhandledExceptionBehaviour<TRequest, TResponse> : IPipelineBehavio
 		{
 			var requestName = typeof(TRequest).Name;
 
-			this.logger.LogError(ex, "Pezza Request: Unhandled Exception for Request {Name} {@Request}", requestName, request);
+			//this.logger.LogError(ex, "Pezza Request: Unhandled Exception for Request {Name} {@Request}", requestName, request);
 
 			throw;
 		}
@@ -704,7 +697,7 @@ public static class DependencyInjection
 }
 ```
 
-### **Remove Core.Contracts Project**
+### **Remove Core.Contracts Project and any refrence to PizzaCore.cs or IPizzaCore.cs**
 
 
 ## **STEP 2 - Unit Tests**

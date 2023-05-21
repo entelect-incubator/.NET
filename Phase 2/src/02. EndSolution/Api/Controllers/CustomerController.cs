@@ -1,13 +1,8 @@
 ﻿namespace Api.Controllers;
 
-using System.Threading.Tasks;
-using Api.Helpers;
-using Common.Models;
 using Core.Customer.Commands;
 using Core.Customer.Queries;
-using Microsoft.AspNetCore.Mvc;
 
-[ApiController]
 public class CustomerController : ApiController
 {
 	/// <summary>
@@ -58,18 +53,18 @@ public class CustomerController : ApiController
 	///       "cellphone": "0721230000"
 	///     }.
 	/// </remarks>
-	/// <param name="customer">CustomerModel.</param>
+	/// <param name="model">CustomerModel.</param>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	/// <response code="200">Customer created</response>
 	/// <response code="400">Error creating a customer</response>
 	[HttpPost]
 	[ProducesResponseType(typeof(Result<CustomerModel>), 200)]
 	[ProducesResponseType(typeof(ErrorResult), 400)]
-	public async Task<ActionResult<CustomerModel>> Create(CreateCustomerModel customer)
+	public async Task<ActionResult<CustomerModel>> Create(CreateCustomerModel model)
 	{
 		var result = await this.Mediator.Send(new CreateCustomerCommand
 		{
-			Data = customer
+			Data = model
 		});
 
 		return ResponseHelper.ResponseOutcome(result, this);
@@ -86,7 +81,7 @@ public class CustomerController : ApiController
 	///       "email": "person.a@gmail.com"
 	///     }.
 	/// </remarks>
-	/// <param name="customer">CustomerModel.</param>
+	/// <param name="model">CustomerModel.</param>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	/// <response code="200">Customer updated</response>
 	/// <response code="400">Error updating a customer</response>
@@ -95,11 +90,11 @@ public class CustomerController : ApiController
 	[ProducesResponseType(typeof(Result<CustomerModel>), 200)]
 	[ProducesResponseType(typeof(ErrorResult), 400)]
 	[ProducesResponseType(typeof(Result), 404)]
-	public async Task<ActionResult> Update(UpdateCustomerModel customer)
+	public async Task<ActionResult> Update(UpdateCustomerModel model)
 	{
 		var result = await this.Mediator.Send(new UpdateCustomerCommand
 		{
-			Data = customer
+			Data = model
 		});
 
 		return ResponseHelper.ResponseOutcome(result, this);

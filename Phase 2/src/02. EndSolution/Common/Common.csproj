@@ -1,21 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net7.0</TargetFramework>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
+		<LangVersion>preview</LangVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="FluentValidation" Version="11.5.2" />
-		<PackageReference Include="MediatR" Version="12.0.1" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.4" />
-		<PackageReference Include="Riok.Mapperly" Version="2.7.0" />
+		<Folder Include="Entities\" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<Using Include="System" />
-		<Using Include="Common.Entities" />
-		<Using Include="Common.Models" />
-		<Using Include="Riok.Mapperly.Abstractions" />
+	  <PackageReference Include="MediatR" Version="12.0.1" />
+	  <PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
 	</ItemGroup>
 </Project>

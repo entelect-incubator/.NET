@@ -1,41 +1,48 @@
 ﻿namespace Core;
 
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Common.Mappers;
-using Common.Models;
-using Core.Contracts;
-using DataAccess;
-using Microsoft.EntityFrameworkCore;
-
-public class PizzaCore : IPizzaCore
+public class PizzaCore(DatabaseContext databaseContext) : IPizzaCore
 {
-	private readonly DatabaseContext databaseContext;
-
-	public PizzaCore(DatabaseContext databaseContext)
-		=> (this.databaseContext) = (databaseContext);
-
-	public async Task<PizzaModel> GetAsync(int id)
-		=> (await this.databaseContext.Pizzas.FirstOrDefaultAsync(x => x.Id == id)).Map();
-
-	public async Task<IEnumerable<PizzaModel>> GetAllAsync()
-		=> (await this.databaseContext.Pizzas.Select(x => x).AsNoTracking().ToListAsync()).Map();
-
-	public async Task<PizzaModel> SaveAsync(PizzaModel pizza)
+	public async Task<PizzaModel?> GetAsync(int id)
 	{
+		var entity = await databaseContext.Pizzas.FirstOrDefaultAsync(x => x.Id == id);
+		if(entity == null)
+		{
+			return null;
+		}
+
+		return entity.Map();
+	}
+
+	public async Task<IEnumerable<PizzaModel>?> GetAllAsync()
+	{
+		var entities = await databaseContext.Pizzas.Select(x => x).AsNoTracking().ToListAsync();
+		if (entities.Count == 0)
+		{
+			return null;
+		}
+
+		return entities.Map();
+	}
+
+		public async Task<PizzaModel?> SaveAsync(PizzaModel pizza)
+	{
+		if(pizza == null)
+		{
+			return null;
+		}
+
 		var entity = pizza.Map();
 		entity.DateCreated = DateTime.UtcNow;
-		this.databaseContext.Pizzas.Add(entity);
-		await this.databaseContext.SaveChangesAsync();
+		databaseContext.Pizzas.Add(entity);
+		await databaseContext.SaveChangesAsync();
 		pizza.Id = entity.Id;
 
 		return entity.Map();
 	}
 
-	public async Task<PizzaModel> UpdateAsync(PizzaModel Pizza)
+	public async Task<PizzaModel?> UpdateAsync(PizzaModel Pizza)
 	{
-		var findEntity = await this.databaseContext.Pizzas.FirstOrDefaultAsync(x => x.Id == Pizza.Id);
+		var findEntity = await databaseContext.Pizzas.FirstOrDefaultAsync(x => x.Id == Pizza.Id);
 		if (findEntity == null)
 		{
 			return null;
@@ -44,22 +51,17 @@ public class PizzaCore : IPizzaCore
 		findEntity.Name = !string.IsNullOrEmpty(Pizza.Name) ? Pizza.Name : findEntity.Name;
 		findEntity.Description = !string.IsNullOrEmpty(Pizza.Description) ? Pizza.Description : findEntity.Description;
 		findEntity.Price = Pizza.Price ?? findEntity.Price;
-		this.databaseContext.Pizzas.Update(findEntity);
-		await this.databaseContext.SaveChangesAsync();
+		databaseContext.Pizzas.Update(findEntity);
+		await databaseContext.SaveChangesAsync();
 
 		return findEntity.Map();
 	}
 
 	public async Task<bool> DeleteAsync(int id)
 	{
-		var findEntity = await this.databaseContext.Pizzas.FirstOrDefaultAsync(x => x.Id == id);
-		if (findEntity == null)
-		{
-			return false;
-		}
-
-		this.databaseContext.Pizzas.Remove(findEntity);
-		var result = await this.databaseContext.SaveChangesAsync();
+		var result = await databaseContext.Pizzas
+			.Where(e => e.Id == id)
+			.ExecuteDeleteAsync();
 
 		return result == 1;
 	}

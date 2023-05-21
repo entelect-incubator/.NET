@@ -1,8 +1,5 @@
 ﻿namespace Test;
 
-using Microsoft.EntityFrameworkCore;
-using DataAccess;
-
 public class DatabaseContextTest
 {
 	protected DatabaseContextTest(DbContextOptions<DbContext> contextOptions)

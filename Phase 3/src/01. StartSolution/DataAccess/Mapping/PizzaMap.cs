@@ -1,8 +1,5 @@
 namespace DataAccess.Mapping;
 
-using Microsoft.EntityFrameworkCore;
-using Common.Entities;
-
 public sealed class PizzaMap : IEntityTypeConfiguration<Pizza>
 {
 	public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Pizza> builder)
@@ -26,7 +23,7 @@ public sealed class PizzaMap : IEntityTypeConfiguration<Pizza>
 		builder.Property(t => t.Description)
 			.HasColumnName("Description")
 			.HasColumnType("varchar(500)")
-			.HasMaxLength(500);
+			.HasMaxLength(20);
 
 		builder.Property(t => t.Price)
 			.HasColumnName("Price")

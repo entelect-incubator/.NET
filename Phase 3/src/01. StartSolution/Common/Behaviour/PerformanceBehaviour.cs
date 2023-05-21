@@ -1,17 +1,8 @@
 ﻿namespace Common.Behaviour;
 
-using System.Diagnostics;
-using System.Threading.Tasks;
-using MediatR;
-using Microsoft.Extensions.Logging;
-
 public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
 {
-	private readonly Stopwatch timer;
-	private readonly ILogger logger;
-
-	public PerformanceBehaviour(ILogger logger)
-		=> (this.timer, this.logger) = (new Stopwatch(), logger);
+	private readonly Stopwatch timer = new Stopwatch();
 
 	public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
 	{
@@ -26,7 +17,7 @@ public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequ
 		if (elapsedMilliseconds > 500)
 		{
 			var requestName = typeof(TRequest).Name;
-			this.logger.LogInformation($"CleanArchitecture Long Running Request: {requestName} ({elapsedMilliseconds} milliseconds)", request);
+			//this.logger.LogInformation($"CleanArchitecture Long Running Request: {requestName} ({elapsedMilliseconds} milliseconds)", request);
 		}
 
 		return response;

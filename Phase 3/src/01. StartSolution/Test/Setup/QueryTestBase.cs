@@ -1,6 +1,5 @@
 namespace Test.Setup;
 
-using DataAccess;
 using static DatabaseContextFactory;
 
 public class QueryTestBase : IDisposable

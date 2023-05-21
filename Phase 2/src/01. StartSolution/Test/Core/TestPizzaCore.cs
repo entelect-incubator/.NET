@@ -1,12 +1,5 @@
 namespace Test.Core;
 
-using System.Linq;
-using System.Threading.Tasks;
-using Bogus;
-using NUnit.Framework;
-using Test.Setup;
-using Common.Models;
-using global::Core;
 using Test.Setup.TestData.Pizza;
 
 [TestFixture]
