@@ -16,6 +16,18 @@ Install FluentValidation on the Core Project.
 
 For every Command create a CommandNamevalidator.cs, because you only want to validate the data that gets send into the Command.
 
+Add to GlobalUsings.cs in Core Project
+
+```cs
+global using Common.Mappers;
+global using Common.Models;
+global using Core.Pizza.Commands;
+global using DataAccess;
+global using FluentValidation;
+global using MediatR;
+global using Microsoft.EntityFrameworkCore;
+```
+
 Let's start with creating Validators for Pizza Commands.
 
 Add a new class in the folder Pizza/Commands 
@@ -25,22 +37,19 @@ CreatePizzaCommandValidator.cs
 ```cs
 namespace Core.Customer.Commands;
 
-using Core.Pizza.Commands;
-using FluentValidation;
-
 public class CreatePizzaCommandValidator : AbstractValidator<CreatePizzaCommand>
 {
-    public CreatePizzaCommandValidator()
-    {
-        this.RuleFor(r => r.Data.Name)
-            .MaximumLength(100)
-            .NotEmpty();
+	public CreatePizzaCommandValidator()
+	{
+		this.RuleFor(r => r.Data.Name)
+			.MaximumLength(100)
+			.NotEmpty();
 
-        this.RuleFor(r => r.Data.Description)
-            .MaximumLength(500)
-            .NotEmpty();
+		this.RuleFor(r => r.Data.Description)
+			.MaximumLength(500)
+			.NotEmpty();
 
-        this.RuleFor(r => r.Data.Price)
+		this.RuleFor(r => r.Data.Price)
 			.PrecisionScale(4, 2, false)
 			.NotEmpty();
 	}
@@ -52,16 +61,13 @@ DeletePizzaCommandValidator.cs
 ```cs
 namespace Core.Customer.Commands;
 
-using Core.Pizza.Commands;
-using FluentValidation;
-
 public class DeletePizzaCommandValidator : AbstractValidator<DeletePizzaCommand>
 {
-    public DeletePizzaCommandValidator()
-    {
-        this.RuleFor(r => r.Id)
-            .NotEmpty();
-    }
+	public DeletePizzaCommandValidator()
+	{
+		this.RuleFor(r => r.Id)
+			.NotEmpty();
+	}
 }
 ```
 
@@ -69,9 +75,6 @@ UpdatePizzaCommandValidator.cs
 
 ```cs
 namespace Core.Customer.Commands;
-
-using Core.Pizza.Commands;
-using FluentValidation;
 
 public class UpdatePizzaCommandValidator : AbstractValidator<UpdatePizzaCommand>
 {
@@ -106,41 +109,56 @@ In Phase 2 you would have noticed ValidationBehavior.cs in Common. This intercep
 
 ![](Assets/2021-04-15-21-25-46.png)
 
+Update GlobalUsings.cs in Common Project
+
+```cs
+global using System.Collections.Generic;
+global using System.ComponentModel;
+global using System.ComponentModel.DataAnnotations;
+global using System.Diagnostics;
+global using System.Linq;
+global using System.Threading;
+global using System.Threading.Tasks;
+global using Common.Entities;
+global using Common.Models;
+global using FluentValidation;
+global using MediatR;
+```
+
 ```cs
 namespace Common.Behaviours;
 
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using FluentValidation;
-using MediatR;
+using ValidationException = FluentValidation.ValidationException;
 
 public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
-    where TRequest : IRequest<TResponse>
+	where TRequest : IRequest<TResponse>
 {
-    private readonly IEnumerable<IValidator<TRequest>> validators;
+	private readonly IEnumerable<IValidator<TRequest>> validators;
 
-    public ValidationBehavior(IEnumerable<IValidator<TRequest>> validators) => this.validators = validators;
+	public ValidationBehavior(IEnumerable<IValidator<TRequest>> validators)
+		=> this.validators = validators;
 
-    public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
-    {
-        if (this.validators.Any())
-        {
-            var context = new ValidationContext<TRequest>(request);
+	public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
+	{
+		if (this.validators.Any())
+		{
+			var context = new ValidationContext<TRequest>(request);
 
-            var validationResults = await Task.WhenAll(this.validators.Select(v => v.ValidateAsync(context, cancellationToken)));
-            var failures = validationResults.SelectMany(r => r.Errors).Where(f => f != null);
+			var validationResults = await Task.WhenAll(this.validators.Select(v => v.ValidateAsync(context, cancellationToken)));
+			var failures = validationResults.SelectMany(r => r.Errors).Where(f => f != null);
 
-            if (failures.Any())
-            {
-                throw new ValidationException(failures);
-            }
-        }
-        return await next();
-    }
+			if (failures.Any())
+			{
+				throw new ValidationException(failures);
+			}
+		}
+		return await next();
+	}
 }
 ```
+
+make sure FluentValidation.DependencyInjection Nuget Package is installed.
+
 
 DependencyInjection.cs
 
@@ -150,9 +168,6 @@ namespace Core;
 using System.Reflection;
 using Common.Behaviour;
 using Core.Customer.Commands;
-using Core.Pizza.Commands;
-using FluentValidation;
-using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
 public static class DependencyInjection
@@ -168,6 +183,8 @@ public static class DependencyInjection
 
 		services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnhandledExceptionBehaviour<,>));
 		services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));
+
+
 		return services;
 	}
 }
@@ -175,87 +192,89 @@ public static class DependencyInjection
 
 ## Exception Handler Middleware
 
-In Common create a new class inside Behaviours called ExceptionHandlerMiddleware.cs.
+Update Global Error handler UnhandledExceptionBehaviour.cs inside Common Project to ExceptionHandlerMiddleware.cs
 
-![ExceptionHandlerMiddleware](Assets/2021-04-15-21-23-31.png)
+Make sure Microsoft.AspNetCore.Http Nuget Package is installed.
 
 ```cs
-namespace Common.Behaviours;
+namespace Common.Behaviour;
 
-using System.Linq;
 using System.Net;
-using System.Threading.Tasks;
-using FluentValidation;
+using System.Text.Json;
 using Microsoft.AspNetCore.Http;
-using Newtonsoft.Json;
-using Common.Models;
 
 public class ExceptionHandlerMiddleware
 {
-    private readonly RequestDelegate next;
+	private readonly RequestDelegate next;
 
-    public ExceptionHandlerMiddleware(RequestDelegate next) => this.next = next;
+	public ExceptionHandlerMiddleware(RequestDelegate next) => this.next = next;
 
-    public async Task Invoke(HttpContext context /* other dependencies */)
-    {
-        try
-        {
-            await this.next(context);
-        }
-        catch (Exception ex)
-        {
-            await HandleExceptionAsync(context, ex);
-        }
-    }
+	public async Task Invoke(HttpContext context /* other dependencies */)
+	{
+		try
+		{
+			await this.next(context);
+		}
+		catch (Exception ex)
+		{
+			await HandleExceptionAsync(context, ex);
+		}
+	}
 
-    private static Task HandleExceptionAsync(HttpContext context, Exception exception)
-    {
-        // Log issues and handle exception response
-        if (exception.GetType() == typeof(ValidationException))
-        {
-            var errors = ((ValidationException)exception).Errors;
-            if (errors.Any())
-            {
-                var failures = errors.Select(x =>
-                {
-                    return new
-                    {
-                        Property = x.PropertyName.Replace("Data.", ""),
-                        Error = x.ErrorMessage.Replace("Data ", "")
-                    };
-                });
-                var result = Result.Failure(failures.ToList<object>());
-                var code = HttpStatusCode.BadRequest;
-                var resultJson = JsonConvert.SerializeObject(result);
+	private static Task HandleExceptionAsync(HttpContext context, Exception exception)
+	{
+		// Log issues and handle exception response
+		if (exception.GetType() == typeof(FluentValidation.ValidationException))
+		{
+			var errors = ((FluentValidation.ValidationException)exception).Errors;
+			if (errors.Any())
+			{
+				var failures = errors.Select(x =>
+				{
+					return new
+					{
+						Property = x.PropertyName.Replace("Data.", ""),
+						Error = x.ErrorMessage.Replace("Data ", "")
+					};
+				});
+				var result = Result.Failure(failures.ToList<object>());
+				var code = HttpStatusCode.BadRequest;
+				var resultJson = JsonSerializer.Serialize(result);
 
-                context.Response.ContentType = "application/json";
-                context.Response.StatusCode = (int)code;
+				context.Response.ContentType = "application/json";
+				context.Response.StatusCode = (int)code;
 
-                return context.Response.WriteAsync(resultJson);
-            }
-            else
-            {
-                var code = HttpStatusCode.BadRequest;
-                var result = Result.Failure(exception?.Message);
-                var resultJson = JsonConvert.SerializeObject(result);
+				return context.Response.WriteAsync(resultJson);
+			}
+			else
+			{
+				var code = HttpStatusCode.BadRequest;
+				var result = Result.Failure(exception?.Message);
+				var resultJson = JsonSerializer.Serialize(result);
 
-                context.Response.ContentType = "application/json";
-                context.Response.StatusCode = (int)code;
+				context.Response.ContentType = "application/json";
+				context.Response.StatusCode = (int)code;
 
-                return context.Response.WriteAsync(resultJson);
-            }
-        }
-        else
-        {
-            var code = HttpStatusCode.InternalServerError;
-            var result = JsonConvert.SerializeObject(new { isSuccess = false, error = exception.Message });
-            context.Response.ContentType = "application/json";
-            context.Response.StatusCode = (int)code;
+				return context.Response.WriteAsync(resultJson);
+			}
+		}
+		else
+		{
+			var code = HttpStatusCode.InternalServerError;
+			var result = JsonSerializer.Serialize(new { isSuccess = false, error = exception.Message });
+			context.Response.ContentType = "application/json";
+			context.Response.StatusCode = (int)code;
 
-            return context.Response.WriteAsync(result);
-        }
-    }
+			return context.Response.WriteAsync(result);
+		}
+	}
 }
+```
+
+Remove the following line from DependencyInjection.cs on Core Project
+
+```cs
+services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnhandledExceptionBehaviour<,>));
 ```
 
 In Startup.cs in Configure() call the middleware

@@ -1,41 +1,29 @@
 ﻿namespace Core.Pizza.Commands;
 
-using System.Threading;
-using System.Threading.Tasks;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
-using Common.Models;
-using DataAccess;
-
 public class DeletePizzaCommand : IRequest<Result>
 {
 	public int? Id { get; set; }
 
-	public class DeletePizzaCommandHandler : IRequestHandler<DeletePizzaCommand, Result>
+	public class DeletePizzaCommandHandler(DatabaseContext databaseContext) : IRequestHandler<DeletePizzaCommand, Result>
 	{
-		private readonly DatabaseContext databaseContext;
-
-		public DeletePizzaCommandHandler(DatabaseContext databaseContext)
-			=> this.databaseContext = databaseContext;
-
 		public async Task<Result> Handle(DeletePizzaCommand request, CancellationToken cancellationToken)
 		{
 			if (request.Id == null)
 			{
-				return Result.Failure("Error deleting a Pizza");
+				return Result.Failure("Error");
 			}
 
 			var query = EF.CompileAsyncQuery((DatabaseContext db, int id) => db.Pizzas.FirstOrDefault(c => c.Id == id));
-			var findEntity = await query(this.databaseContext, request.Id.Value);
+			var findEntity = await query(databaseContext, request.Id.Value);
 			if (findEntity == null)
 			{
-				return Result.Failure("Pizza not found");
+				return Result.Failure("Not found");
 			}
 
-			this.databaseContext.Pizzas.Remove(findEntity);
-			var result = await this.databaseContext.SaveChangesAsync();
+			databaseContext.Pizzas.Remove(findEntity);
+			var result = await databaseContext.SaveChangesAsync(cancellationToken);
 
-			return result > 0 ? Result.Success() : Result.Failure("Error deleting a Pizza");
+			return result > 0 ? Result.Success() : Result.Failure("Error");
 		}
 	}
 }

@@ -3,9 +3,6 @@ namespace Core;
 using System.Reflection;
 using Common.Behaviour;
 using Core.Customer.Commands;
-using Core.Pizza.Commands;
-using FluentValidation;
-using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
 public static class DependencyInjection
@@ -19,8 +16,8 @@ public static class DependencyInjection
 
 		services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
-		services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnhandledExceptionBehaviour<,>));
 		services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));
+
 		return services;
 	}
 }

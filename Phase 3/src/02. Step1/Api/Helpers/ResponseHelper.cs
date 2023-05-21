@@ -1,16 +1,12 @@
 ﻿namespace Api.Helpers;
 
-using Microsoft.AspNetCore.Mvc;
-using Api.Controllers;
-using Common.Models;
-
 public static class ResponseHelper
 {
     public static ActionResult ResponseOutcome<T>(Result<T> result, ApiController controller)
     {
         if (result.Data == null)
         {
-            return controller.NotFound(Result.Failure($"{typeof(T).Name.Replace("DTO", string.Empty)} not found"));
+            return controller.NotFound(Result.Failure($"{typeof(T).Name.Replace("Model", string.Empty)} not found"));
         }
 
         if (!result.Succeeded)

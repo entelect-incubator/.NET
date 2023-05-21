@@ -1,8 +1,5 @@
 namespace Test.Setup;
 
-using Microsoft.EntityFrameworkCore;
-using DataAccess;
-
 public class DatabaseContextFactory
 {
 	protected DatabaseContextFactory()

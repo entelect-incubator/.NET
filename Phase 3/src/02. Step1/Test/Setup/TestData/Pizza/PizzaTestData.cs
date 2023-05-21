@@ -1,26 +1,14 @@
 ﻿namespace Test.Setup.TestData.Pizza;
 
-using Bogus;
-using Common.Entities;
-using Common.Models;
-
 public static class PizzaTestData
 {
 	public static Faker faker = new();
 
-	public static Pizza Pizza = new()
+	public static PizzaModel Pizza = new()
 	{
 		Id = 1,
-		Name = faker.PickRandom(new List<string>()
-		{
-			"Veggie Pizza",
-			"Pepperoni Pizza",
-			"Meat Pizza",
-			"Margherita Pizza",
-			"BBQ Chicken Pizza",
-			"Hawaiian Pizza"
-		}),
-		Description = " ",
+		Name = faker.PickRandom(pizzas),
+		Description = string.Empty,
 		Price = faker.Finance.Amount(),
 		DateCreated = DateTime.Now,
 	};
@@ -28,17 +16,20 @@ public static class PizzaTestData
 	public static PizzaModel PizzaModel = new()
 	{
 		Id = 1,
-		Name = faker.PickRandom(new List<string>()
-		{
-			"Veggie Pizza",
-			"Pepperoni Pizza",
-			"Meat Pizza",
-			"Margherita Pizza",
-			"BBQ Chicken Pizza",
-			"Hawaiian Pizza"
-		}),
-		Description = " ",
+		Name = faker.PickRandom(pizzas),
+		Description = string.Empty,
 		Price = faker.Finance.Amount(),
-		DateCreated = DateTime.Now	
+		DateCreated = DateTime.Now
+		
+	};
+
+	private static readonly List<string> pizzas = new() 
+	{ 
+		"Veggie Pizza",
+		"Pepperoni Pizza",
+		"Meat Pizza",
+		"Margherita Pizza",
+		"BBQ Chicken Pizza",
+		"Hawaiian Pizza"
 	};
 }

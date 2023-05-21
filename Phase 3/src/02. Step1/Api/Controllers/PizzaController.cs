@@ -1,29 +1,21 @@
 ﻿namespace Api.Controllers;
 
-using System.Threading.Tasks;
-using Api.Helpers;
-using Common.Entities;
-using Common.Models;
 using Core.Pizza.Commands;
 using Core.Pizza.Queries;
-using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
-public class PizzaController : ApiController
+[Route("[controller]")]
+public class PizzaController() : ApiController
 {
 	/// <summary>
 	/// Get Pizza by Id.
 	/// </summary>
-	/// <param name="id">int.</param>
-	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-	/// <response code="200">Get a pizza</response>
-	/// <response code="400">Error getting a pizza</response>
-	/// <response code="404">Pizza not found</response>
+	/// <param name="id">Pizza Id</param>
+	/// <returns>ActionResult</returns>
 	[HttpGet("{id}")]
-	[ProducesResponseType(typeof(Result<PizzaModel>), 200)]
-	[ProducesResponseType(typeof(ErrorResult), 400)]
-	[ProducesResponseType(typeof(ErrorResult), 404)]
-	public async Task<ActionResult> GetPizza(int id)
+	[ProducesResponseType(200)]
+	[ProducesResponseType(404)]
+	public async Task<ActionResult> Get(int id)
 	{
 		var result = await this.Mediator.Send(new GetPizzaQuery { Id = id });
 		return ResponseHelper.ResponseOutcome(result, this);
@@ -32,14 +24,9 @@ public class PizzaController : ApiController
 	/// <summary>
 	/// Get all Pizzas.
 	/// </summary>
-	/// <returns>A <see cref="Task"/> repres
-	/// enting the asynchronous operation.</returns>
-	/// <response code="200">Pizza Search</response>
-	/// <response code="400">Error searching for pizzas</response>
-	[HttpPost]
-	[ProducesResponseType(typeof(ListResult<PizzaModel>), 200)]
-	[ProducesResponseType(typeof(ErrorResult), 400)]
-	[Route("Search")]
+	/// <returns>ActionResult</returns>
+	[HttpPost("Search")]
+	[ProducesResponseType(200)]
 	public async Task<ActionResult> Search()
 	{
 		var result = await this.Mediator.Send(new GetPizzasQuery());
@@ -59,18 +46,16 @@ public class PizzaController : ApiController
 	///       "price": "99"
 	///     }
 	/// </remarks>
-	/// <param name="pizza">PizzaModel.</param>
-	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-	/// <response code="200">Pizza created</response>
-	/// <response code="400">Error creating a pizza</response>
+	/// <param name="model">Pizza Model</param>
+	/// <returns>ActionResult</returns>
 	[HttpPost]
-	[ProducesResponseType(typeof(Result<PizzaModel>), 200)]
-	[ProducesResponseType(typeof(ErrorResult), 400)]
-	public async Task<ActionResult<PizzaModel>> Create(CreatePizzaModel pizza)
+	[ProducesResponseType(200)]
+	[ProducesResponseType(400)]
+	public async Task<ActionResult<Pizza>> Create([FromBody] CreatePizzaModel model)
 	{
 		var result = await this.Mediator.Send(new CreatePizzaCommand
 		{
-			Data = pizza
+			Data = model
 		});
 
 		return ResponseHelper.ResponseOutcome(result, this);
@@ -88,20 +73,16 @@ public class PizzaController : ApiController
 	///       "price": "119"
 	///     }
 	/// </remarks>
-	/// <param name="pizza">PizzaModel.</param>
-	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-	/// <response code="200">Pizza updated</response>
-	/// <response code="400">Error updating a pizza</response>
-	/// <response code="404">Pizza not found</response>
+	/// <param name="model">Pizza Model</param>
+	/// <returns>ActionResult</returns>
 	[HttpPut]
-	[ProducesResponseType(typeof(Result<PizzaModel>), 200)]
-	[ProducesResponseType(typeof(ErrorResult), 400)]
-	[ProducesResponseType(typeof(Result), 404)]
-	public async Task<ActionResult> Update(UpdatePizzaModel pizza)
+	[ProducesResponseType(200)]
+	[ProducesResponseType(400)]
+	public async Task<ActionResult> Update([FromBody] UpdatePizzaModel model)
 	{
 		var result = await this.Mediator.Send(new UpdatePizzaCommand
 		{
-			Data = pizza
+			Data = model
 		});
 
 		return ResponseHelper.ResponseOutcome(result, this);
@@ -110,13 +91,11 @@ public class PizzaController : ApiController
 	/// <summary>
 	/// Delete Pizza by Id.
 	/// </summary>
-	/// <param name="id">int.</param>
-	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-	/// <response code="200">Pizza deleted</response>
-	/// <response code="400">Error deleting a pizza</response>
+	/// <param name="id">Pizza Id</param>
+	/// <returns>ActionResult</returns>
 	[HttpDelete("{id}")]
-	[ProducesResponseType(typeof(Result), 200)]
-	[ProducesResponseType(typeof(ErrorResult), 400)]
+	[ProducesResponseType(200)]
+	[ProducesResponseType(400)]
 	public async Task<ActionResult> Delete(int id)
 	{
 		var result = await this.Mediator.Send(new DeletePizzaCommand { Id = id });
