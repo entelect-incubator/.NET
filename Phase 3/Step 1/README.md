@@ -12,116 +12,52 @@ Install FluentValidation on the Core Project.
 
 ![FluentValidation Nuget](Assets/2021-01-14-08-44-04.png)
 
-## **Install Newtonsoft.Json**
-
-Newtonsoft.Json is a popular high-performance JSON framework typically used to serialize and deserialize .Net objects. Install it on the Api project.
-
-![Newtonsoft.Json](Assets/2021-01-17-15-36-25.png)
-
 ### **Add Validators to your Commands**
 
 For every Command create a CommandNamevalidator.cs, because you only want to validate the data that gets send into the Command.
 
-Create AddressValidator.cs in Common/Validators
+Let's start with creating Validators for Pizza Commands.
 
-```cs
-namespace Common.Validators;
+Add a new class in the folder Pizza/Commands 
 
-using FluentValidation;
-using Common.Entities;
-
-public class AddressValidator : AbstractValidator<AddressBase>
-{
-    public AddressValidator()
-    {
-        this.RuleFor(x => x.Address)
-        .NotEmpty()
-        .MaximumLength(500);
-
-        this.RuleFor(x => x.City)
-        .NotEmpty()
-        .MaximumLength(100);
-
-        this.RuleFor(x => x.Province)
-        .NotEmpty()
-        .MaximumLength(100);
-
-        this.RuleFor(x => x.PostalCode)
-        .NotEmpty()
-        .Must(x => int.TryParse(x, out var val) && val > 0)
-        .MaximumLength(8);
-    }
-}
-
-public class AddressUpdateValidator : AbstractValidator<AddressBase>
-{
-    public AddressUpdateValidator()
-    {
-        this.RuleFor(x => x.Address)
-        .MaximumLength(500);
-
-        this.RuleFor(x => x.City)
-        .MaximumLength(100);
-
-        this.RuleFor(x => x.Province)
-        .MaximumLength(100);
-
-        this.RuleFor(x => x.PostalCode)
-        .Must(x => int.TryParse(x, out var val) && val > 0)
-        .MaximumLength(8);
-    }
-}
-```
-
-Let's start with creating Validators for Customer Commands.
-
-Add a new class in the folder Customer/Commands CreateCustomerCommandValidator.cs
+CreatePizzaCommandValidator.cs
 
 ```cs
 namespace Core.Customer.Commands;
 
+using Core.Pizza.Commands;
 using FluentValidation;
-using Common.Validators;
 
-public class CreateCustomerCommandValidator : AbstractValidator<CreateCustomerCommand>
+public class CreatePizzaCommandValidator : AbstractValidator<CreatePizzaCommand>
 {
-    public CreateCustomerCommandValidator()
+    public CreatePizzaCommandValidator()
     {
         this.RuleFor(r => r.Data.Name)
             .MaximumLength(100)
             .NotEmpty();
 
-        this.RuleFor(r => r.Data.Phone)
-            .MaximumLength(20)
-            .Matches(@"^\d$")
+        this.RuleFor(r => r.Data.Description)
+            .MaximumLength(500)
             .NotEmpty();
 
-        this.RuleFor(r => r.Data.Email)
-            .MaximumLength(200)
-            .EmailAddress()
-            .NotEmpty();
-
-        this.RuleFor(r => r.Data.ContactPerson)
-            .MaximumLength(200)
-            .NotEmpty();
-
-        this.RuleFor(r => r.Data.Address)
-            .NotNull()
-            .SetValidator(new AddressValidator());
-    }
+        this.RuleFor(r => r.Data.Price)
+			.PrecisionScale(4, 2, false)
+			.NotEmpty();
+	}
 }
 ```
 
-DeleteCustomerCommandValidator.cs
+DeletePizzaCommandValidator.cs
 
 ```cs
 namespace Core.Customer.Commands;
 
+using Core.Pizza.Commands;
 using FluentValidation;
 
-public class DeleteCustomerCommandValidator : AbstractValidator<DeleteCustomerCommand>
+public class DeletePizzaCommandValidator : AbstractValidator<DeletePizzaCommand>
 {
-    public DeleteCustomerCommandValidator()
+    public DeletePizzaCommandValidator()
     {
         this.RuleFor(r => r.Id)
             .NotEmpty();
@@ -129,46 +65,40 @@ public class DeleteCustomerCommandValidator : AbstractValidator<DeleteCustomerCo
 }
 ```
 
-UpdateCustomerCommandValidator.cs
+UpdatePizzaCommandValidator.cs
 
 ```cs
 namespace Core.Customer.Commands;
 
+using Core.Pizza.Commands;
 using FluentValidation;
-using Common.Validators;
 
-public class UpdateCustomerCommandValidator : AbstractValidator<UpdateCustomerCommand>
+public class UpdatePizzaCommandValidator : AbstractValidator<UpdatePizzaCommand>
 {
-    public UpdateCustomerCommandValidator()
+    public UpdatePizzaCommandValidator()
     {
         this.RuleFor(r => r.Data)
             .NotNull();
 
-        this.RuleFor(r => r.Data.Id)
+        this.RuleFor(r => r.Id)
             .NotEmpty();
 
         this.RuleFor(r => r.Data.Name)
             .MaximumLength(100);
 
-        this.RuleFor(r => r.Data.Phone)
-            .MaximumLength(20)
-            .Matches(@"^\d$");
+        this.RuleFor(r => r.Data.Description)
+            .MaximumLength(500);
 
-        this.RuleFor(r => r.Data.Email)
-            .MaximumLength(200)
-            .EmailAddress();
+		this.RuleFor(r => r.Data.Price)
+			.PrecisionScale(4, 2, false);
 
-        this.RuleFor(r => r.Data.ContactPerson)
-            .MaximumLength(200);
-
-        this.RuleFor(r => r.Data.Address)
-            .SetValidator(new AddressUpdateValidator())
-            .When(x => x.Data.Address != null);
-    }
+	}
 }
 ```
 
-All other Validators can be copied from Phase3\Data\Validators
+Now add validations for Customer Commands.
+
+![](./Assets/2023-04-13-06-36-53.png)
 
 ### Validation Pipeline
 
@@ -218,35 +148,28 @@ DependencyInjection.cs
 namespace Core;
 
 using System.Reflection;
-using AutoMapper;
+using Common.Behaviour;
+using Core.Customer.Commands;
+using Core.Pizza.Commands;
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using Common.Behaviours;
-using Common.DTO;
-using Common.Profiles;
-using Core.Stock.Commands;
-using DataAccess.Contracts;
-using DataAccess.Data;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddApplication(this IServiceCollection services)
-    {
-        services.AddMediatR((typeof(CreateStockCommand).GetTypeInfo().Assembly));
-        services.AddAutoMapper(Assembly.GetExecutingAssembly());
+	public static IServiceCollection AddApplication(this IServiceCollection services)
+	{
+		services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<CreateCustomerCommand>());
 
-        AssemblyScanner.FindValidatorsInAssembly(typeof(CreateStockCommand).Assembly)
-            .ForEach(item => services.AddScoped(item.InterfaceType, item.ValidatorType));
+		AssemblyScanner.FindValidatorsInAssembly(typeof(CreatePizzaCommand).Assembly)
+		   .ForEach(item => services.AddScoped(item.InterfaceType, item.ValidatorType));
 
-        services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly()); 
-        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
-        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));
+		services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
-        services.AddAutoMapper(typeof(MappingProfile));
-
-        return services;
-    }
+		services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnhandledExceptionBehaviour<,>));
+		services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));
+		return services;
+	}
 }
 ```
 

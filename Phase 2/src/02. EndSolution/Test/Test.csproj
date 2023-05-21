@@ -27,4 +27,17 @@
 	  <ProjectReference Include="..\Core\Core.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<Using Include="System" />
+		<Using Include="System.Linq" />
+		<Using Include="System.Threading.Tasks" />
+		<Using Include="Bogus" />
+		<Using Include="Core" />
+		<Using Include="Common.Entities" />
+		<Using Include="Common.Models" />
+		<Using Include="DataAccess" />
+		<Using Include="Microsoft.EntityFrameworkCore" />
+		<Using Include="NUnit.Framework" />
+		<Using Include="Test.Setup" />
+	</ItemGroup>
 </Project>

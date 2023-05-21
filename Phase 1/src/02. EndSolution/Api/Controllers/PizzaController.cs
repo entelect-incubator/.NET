@@ -1,19 +1,9 @@
 ﻿namespace Api.Controllers;
 
-using System.Threading.Tasks;
-using Common.Entities;
-using Common.Models;
-using Core.Contracts;
-using Microsoft.AspNetCore.Mvc;
-
 [ApiController]
 [Route("[controller]")]
-public class PizzaController : ControllerBase
+public class PizzaController(IPizzaCore pizzaCore) : ControllerBase
 {
-	private readonly IPizzaCore PizzaCore;
-
-	public PizzaController(IPizzaCore PizzaCore) => this.PizzaCore = PizzaCore;
-
 	/// <summary>
 	/// Get Pizza by Id.
 	/// </summary>
@@ -24,7 +14,7 @@ public class PizzaController : ControllerBase
 	[ProducesResponseType(404)]
 	public async Task<ActionResult> Get(int id)
 	{
-		var search = await this.PizzaCore.GetAsync(id);
+		var search = await pizzaCore.GetAsync(id);
 
 		return (search == null) ? this.NotFound() : this.Ok(search);
 	}
@@ -36,7 +26,7 @@ public class PizzaController : ControllerBase
 	[HttpPost("Search")]
 	[ProducesResponseType(200)]
 	public async Task<ActionResult> Search()
-		=> this.Ok(await this.PizzaCore.GetAllAsync());
+		=> this.Ok(await pizzaCore.GetAllAsync());
 
 	/// <summary>
 	/// Create Pizza.
@@ -58,7 +48,7 @@ public class PizzaController : ControllerBase
 	[ProducesResponseType(400)]
 	public async Task<ActionResult<Pizza>> Create([FromBody] PizzaModel model)
 	{
-		var result = await this.PizzaCore.SaveAsync(model);
+		var result = await pizzaCore.SaveAsync(model);
 
 		return (result == null) ? this.BadRequest() : this.Ok(result);
 	}
@@ -82,7 +72,7 @@ public class PizzaController : ControllerBase
 	[ProducesResponseType(400)]
 	public async Task<ActionResult> Update([FromBody] PizzaModel model)
 	{
-		var result = await this.PizzaCore.UpdateAsync(model);
+		var result = await pizzaCore.UpdateAsync(model);
 
 		return (result == null) ? this.BadRequest() : this.Ok(result);
 	}
@@ -97,7 +87,7 @@ public class PizzaController : ControllerBase
 	[ProducesResponseType(400)]
 	public async Task<ActionResult> Delete(int id)
 	{
-		var result = await this.PizzaCore.DeleteAsync(id);
+		var result = await pizzaCore.DeleteAsync(id);
 
 		return (!result) ? this.BadRequest() : this.Ok(result);
 	}

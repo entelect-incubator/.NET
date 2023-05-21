@@ -1,8 +1,6 @@
 ﻿namespace Api.Helpers;
 
-using Microsoft.AspNetCore.Mvc;
 using Api.Controllers;
-using Common.Models;
 
 public static class ResponseHelper
 {

@@ -1,12 +1,7 @@
 ﻿namespace Api.Controllers;
 
-using System.Threading.Tasks;
-using Api.Helpers;
-using Common.Entities;
-using Common.Models;
 using Core.Pizza.Commands;
 using Core.Pizza.Queries;
-using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
 public class PizzaController : ApiController

@@ -29,6 +29,15 @@ For this Incubator we will be using The latest version of .NET [Scan through the
 
 We will also, build a solution based on the Single Responsibility Principle. To help us achieve this we will be making use of the CQRS pattern alongside a Clean Code Architecture. If you have never heard about these terms, don't worry we will be discussing them in detail.
 
+## Implicit Usings
+
+[Implicit Usings](https://devblogs.microsoft.com/dotnet/welcome-to-csharp-10/)
+
+## Entity Framework Core
+
+- [What it is](https://learn.microsoft.com/en-us/ef/core/)
+- [What's new in EF Core 7](https://learn.microsoft.com/en-us/ef/core/what-is-new/ef-core-7.0/whatsnew)
+
 # Intro
 
 - [ ] [Setup](https://github.com/entelect-incubator/.NET/blob/master/Setup.md)

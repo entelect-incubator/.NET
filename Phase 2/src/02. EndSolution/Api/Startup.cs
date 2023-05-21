@@ -1,16 +1,8 @@
 namespace Api;
 
-using System.IO;
 using System.Reflection;
 using System.Text.Json.Serialization;
-using Core;
-using DataAccess;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Serialization;
 
@@ -64,13 +56,7 @@ public class Startup
 		app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Pezza API V1"));
 
 		app.UseHttpsRedirection();
-
-
 		app.UseRouting();
-
-		app.UseEndpoints(endpoints => endpoints.MapControllers());
-
-		app.UseAuthorization();
 
 		app.Run();
 	}

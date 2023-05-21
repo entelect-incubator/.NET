@@ -37,24 +37,37 @@ Create a new Class Library **Common** <br/> ![](Assets/2020-09-11-10-01-34.png) 
 
 Create a folder *Entities* where all database models will go into <br/> ![](./Assets/2023-03-30-09-05-46.png)
 
+Add Implicit Usings to the csproj file by double clicking on the project.
+
+Make sure ImplicitUsings is enabled in the ProperyGroup
+
+```xml
+<ImplicitUsings>enable</ImplicitUsings>
+```
+
+Add GlobalUsings.cs
+
+```cs
+global using Common.Entities;
+global using Common.Models;
+```
+
 Create a Entity Pizza.cs in a folder **Entities** <br/>![](./Assets/2023-03-30-09-06-16.png)
 
 Pizza.cs
 
 ```cs
-namespace Common.Entities;
-
 public class Pizza
 {
-    public int Id { get; set; }
+	public required int Id { get; set; }
 
-    public string Name { get; set; }
+	public required string Name { get; set; }
 
-    public string Description { get; set; }
+	public string? Description { get; set; }
 
-    public decimal Price { get; set; }
+	public decimal Price { get; set; }
 
-    public DateTime DateCreated { get; set; }
+	public DateTime? DateCreated { get; set; }
 }
 ```
 
@@ -69,21 +82,21 @@ PizzaModel.cs
 ```cs
 namespace Common.Models;
 
-public class PizzaModel
+public sealed class PizzaModel
 {
-    public int Id { get; set; }
+	public required int Id { get; set; }
 
-    public string Name { get; set; }
+	public required string Name { get; set; }
 
-    public string Description { get; set; }
+	public string? Description { get; set; }
 
-    public decimal Price { get; set; }
+	public decimal? Price { get; set; }
 
-    public DateTime DateCreated { get; set; }
+	public DateTime? DateCreated { get; set; }
 }
 ```
 
-Create a folder **Mappers**. Create a **Mapper.cs** declaration as a partial class and apply the Riok.Mapperly.Abstractions.MapperAttribute attribute. Mapperly generates mapping method implementations for the defined mapping methods in the mapper.. [What is Mapperly?](https://mapperly.riok.app/docs/intro) <br/> 
+Create a folder **Mappers**. Create a **Mapper.cs** to Map from Model to Entity and other way around <br/> 
 
 ![](./Assets/2023-03-30-09-03-49.png)
 
@@ -92,20 +105,64 @@ Mapper.cs
 ```cs
 namespace Common.Mappers;
 
-using Common.Entities;
-using Common.Models;
-using Riok.Mapperly.Abstractions;
-
-[Mapper]
-public static partial class Mapper
+public static class Mapper
 {
-	public static partial PizzaModel Map(this Pizza pizza);
+	public static PizzaModel Map(this Pizza pizza)
+		=> new()
+		{
+			Id = pizza.Id,
+			Name = pizza.Name,
+			Description = pizza.Description,
+			Price = pizza.Price,
+			DateCreated = pizza.DateCreated
+		};
+
+	public static Pizza Map(this PizzaModel pizza)
+	{
+		var entity = new Pizza
+		{
+			Id = pizza.Id,
+			Name = pizza.Name,
+			Description = pizza.Description,
+			DateCreated = pizza.DateCreated
+		};
+
+		if (pizza.Price.HasValue)
+		{
+			entity.Price = pizza.Price.Value;
+		}
+
+		return entity;
+	}
+
+	public static IEnumerable<PizzaModel> Map(this List<Pizza> pizzas)
+		=> pizzas.Select(x => x.Map());
+
+	public static IEnumerable<Pizza> Map(this List<PizzaModel> pizzas)
+		=> pizzas.Select(x => x.Map());
 }
 ```
 
 ## **Create the Database Layer**
 
-Create a new Class Library DataAccess <br/> ![](![](Assets/2020-09-11-10-06-58.png).png)
+Create a new Class Library Dataccess  <br/>![](./Assets/2023-04-23-22-49-21.png)
+
+Add Implicit Usings to the csproj file by double clicking on the project.
+
+Make sure ImplicitUsings is enabled in the ProperyGroup
+
+
+```xml
+<ImplicitUsings>enable</ImplicitUsings>
+```
+
+Add GlobalUsings.cs
+
+```cs
+global using Common.Entities;
+global using DataAccess.Mapping;
+global using Microsoft.EntityFrameworkCore;
+```
 
 For accessing the Database we will be using [Entity Framework Core](https://github.com/dotnet/efcore).
 
@@ -123,9 +180,6 @@ PizzaMap.cs under Mapping folder
 
 ```cs
 namespace DataAccess.Mapping;
-
-using Microsoft.EntityFrameworkCore;
-using Common.Entities;
 
 public sealed class PizzaMap : IEntityTypeConfiguration<Pizza>
 {
@@ -170,10 +224,6 @@ public sealed class PizzaMap : IEntityTypeConfiguration<Pizza>
 ```cs
 namespace DataAccess;
 
-using Common.Entities;
-using DataAccess.Mapping;
-using Microsoft.EntityFrameworkCore;
-
 public class DatabaseContext : DbContext
 {
     public DatabaseContext()
@@ -204,9 +254,6 @@ PizzaMap.cs
 
 ```cs
 namespace DataAccess.Mapping;
-
-using Microsoft.EntityFrameworkCore;
-using Common.Entities;
 
 public sealed class PizzaMap : IEntityTypeConfiguration<Pizza>
 {
@@ -269,15 +316,32 @@ Create a new NUnit Test Project <br/> ![](Assets/2020-09-14-05-50-19.png)
   - [ ]  Microsoft.EntityFrameworkCore.InMemory
   - [ ]  Bogus
 
+Add Implicit Usings to the csproj file by double clicking on the project.
+
+Make sure ImplicitUsings is enabled in the ProperyGroup
+
+```xml
+<ImplicitUsings>enable</ImplicitUsings>
+```
+
+Add GlobalUsings.cs
+
+```cs
+global using Bogus;
+global using Common.Models;
+global using Core;
+global using DataAccess;
+global using Microsoft.EntityFrameworkCore;
+global using NUnit.Framework;
+global using Test.Setup;
+```
+
 On the root folder create the following 2 classes.
 
 DatabaseContextTest.cs
 
 ```cs
 namespace Test;
-
-using Microsoft.EntityFrameworkCore;
-using DataAccess;
 
 public class DatabaseContextTest
 {
@@ -306,8 +370,6 @@ TestBase.cs - Create a In Memory DBContext.
 ```cs
 namespace Test;
 
-using Microsoft.EntityFrameworkCore;
-
 public class TestBase : DatabaseContextTest
 {
     public TestBase()
@@ -335,7 +397,6 @@ QueryTestBase.cs
 ```cs
 namespace Test.Setup;
 
-using DataAccess;
 using static DatabaseContextFactory;
 
 public class QueryTestBase : IDisposable
@@ -352,9 +413,6 @@ DatabaseContextFactory.cs
 
 ```cs
 namespace Test.Setup;
-
-using Microsoft.EntityFrameworkCore;
-using DataAccess;
 
 public class DatabaseContextFactory
 {
@@ -386,17 +444,12 @@ public class DatabaseContextFactory
 }
 ```
 
-next we will create Test Data for each Entity. Inside the folder **TestData**, then create a folder **Pizza**. Create a **PizzaTestData.cs** class. This will create a fake Pizza Entity for testing. <br/> ![](./Assets/2023-03-21-22-41-17.png)
+Next we will create Test Data for each Entity. Inside the folder **TestData**, then create a folder **Pizza**. Create a **PizzaTestData.cs** class. This will create a fake Pizza Entity for testing. <br/> ![](./Assets/2023-03-21-22-41-17.png)
 
 PizzaTestData.cs
 
 ```cs
 namespace Test.Setup.TestData.Pizza;
-
-using System;
-using Bogus;
-using Common.Entities;
-using Common.Models;
 
 public static class PizzaTestData
 {
@@ -445,7 +498,6 @@ The Core Layer is where all of your business logic will live. Imagine this as th
 Create 2 new Class Libraries inside of *02 Core* - Core and Core.Contracts. We will start by using very basic Pizza Core.
 
 **Nuget Packages Required**
-  - [ ] Mapperly
   - [ ] MediatR
 
 ### **Building the Core Contracts Project**
@@ -453,26 +505,30 @@ Create 2 new Class Libraries inside of *02 Core* - Core and Core.Contracts. We w
 Create a new IPizzaCore Interface in *Core.Contracts* <br/> 
 ![](./Assets/2023-04-01-15-31-18.png)
 
+Add Implicit Usings to the csproj file by double clicking on the project.
+
+Make sure ImplicitUsings is enabled in the ProperyGroup
+
+```xml
+<ImplicitUsings>enable</ImplicitUsings>
+```
+
 IPizzaCore.cs
 
 ```cs
 namespace Core.Contracts;
 
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Common.DTO;
-
 public interface IPizzaCore
 {
-    Task<PizzaModel> GetAsync(int id);
+	Task<PizzaModel?> GetAsync(int id);
 
-    Task<IEnumerable<PizzaModel>> GetAllAsync();
+	Task<IEnumerable<PizzaModel>?> GetAllAsync();
 
-    Task<PizzaModel> UpdateAsync(PizzaModel pizza);
+	Task<PizzaModel?> UpdateAsync(PizzaModel pizza);
 
-    Task<PizzaModel> SaveAsync(PizzaModel pizza);
+	Task<PizzaModel?> SaveAsync(PizzaModel pizza);
 
-    Task<bool> DeleteAsync(int id);
+	Task<bool> DeleteAsync(int id);
 }
 ```
 
@@ -481,47 +537,72 @@ public interface IPizzaCore
 Create a new PizzaCore.cs inside of *Core* <br/> 
 ![](./Assets/2023-04-01-15-34-20.png)
 
+Add Implicit Usings to the csproj file by double clicking on the project.
+
+Make sure ImplicitUsings is enabled in the ProperyGroup
+
+```xml
+<ImplicitUsings>enable</ImplicitUsings>
+```
+
+Add GlobalUsings.cs
+
+```cs
+global using Common.Mappers;
+global using Common.Models;
+global using Core.Contracts;
+global using DataAccess;
+global using Microsoft.EntityFrameworkCore;
+```
+
 PizzaCore.cs
 
 ```cs
 namespace Core;
 
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Common.Mappers;
-using Common.Models;
-using Core.Contracts;
-using DataAccess;
-using Microsoft.EntityFrameworkCore;
-
-public class PizzaCore : IPizzaCore
+public class PizzaCore(DatabaseContext databaseContext) : IPizzaCore
 {
-	private readonly DatabaseContext databaseContext;
-
-	public PizzaCore(DatabaseContext databaseContext)
-		=> (this.databaseContext) = (databaseContext);
-
-	public async Task<PizzaModel> GetAsync(int id)
-		=> (await this.databaseContext.Pizzas.FirstOrDefaultAsync(x => x.Id == id)).Map();
-
-	public async Task<IEnumerable<PizzaModel>> GetAllAsync()
-		=> (await this.databaseContext.Pizzas.Select(x => x).AsNoTracking().ToListAsync()).Map();
-
-	public async Task<PizzaModel> SaveAsync(PizzaModel pizza)
+	public async Task<PizzaModel?> GetAsync(int id)
 	{
+		var entity = await databaseContext.Pizzas.FirstOrDefaultAsync(x => x.Id == id);
+		if(entity == null)
+		{
+			return null;
+		}
+
+		return entity.Map();
+	}
+
+	public async Task<IEnumerable<PizzaModel>?> GetAllAsync()
+	{
+		var entities = await databaseContext.Pizzas.Select(x => x).AsNoTracking().ToListAsync();
+		if (entities.Count == 0)
+		{
+			return null;
+		}
+
+		return entities.Map();
+	}
+
+		public async Task<PizzaModel?> SaveAsync(PizzaModel pizza)
+	{
+		if(pizza == null)
+		{
+			return null;
+		}
+
 		var entity = pizza.Map();
 		entity.DateCreated = DateTime.UtcNow;
-		this.databaseContext.Pizzas.Add(entity);
-		await this.databaseContext.SaveChangesAsync();
+		databaseContext.Pizzas.Add(entity);
+		await databaseContext.SaveChangesAsync();
 		pizza.Id = entity.Id;
 
 		return entity.Map();
 	}
 
-	public async Task<PizzaModel> UpdateAsync(PizzaModel Pizza)
+	public async Task<PizzaModel?> UpdateAsync(PizzaModel Pizza)
 	{
-		var findEntity = await this.databaseContext.Pizzas.FirstOrDefaultAsync(x => x.Id == Pizza.Id);
+		var findEntity = await databaseContext.Pizzas.FirstOrDefaultAsync(x => x.Id == Pizza.Id);
 		if (findEntity == null)
 		{
 			return null;
@@ -530,22 +611,17 @@ public class PizzaCore : IPizzaCore
 		findEntity.Name = !string.IsNullOrEmpty(Pizza.Name) ? Pizza.Name : findEntity.Name;
 		findEntity.Description = !string.IsNullOrEmpty(Pizza.Description) ? Pizza.Description : findEntity.Description;
 		findEntity.Price = Pizza.Price ?? findEntity.Price;
-		this.databaseContext.Pizzas.Update(findEntity);
-		await this.databaseContext.SaveChangesAsync();
+		databaseContext.Pizzas.Update(findEntity);
+		await databaseContext.SaveChangesAsync();
 
 		return findEntity.Map();
 	}
 
 	public async Task<bool> DeleteAsync(int id)
 	{
-		var findEntity = await this.databaseContext.Pizzas.FirstOrDefaultAsync(x => x.Id == id);
-		if (findEntity == null)
-		{
-			return false;
-		}
-
-		this.databaseContext.Pizzas.Remove(findEntity);
-		var result = await this.databaseContext.SaveChangesAsync();
+		var result = await databaseContext.Pizzas
+			.Where(e => e.Id == id)
+			.ExecuteDeleteAsync();
 
 		return result == 1;
 	}
@@ -563,7 +639,6 @@ To keep the Dependency Injection clean and relevant to **Core**, create a Depend
 namespace Core;
 
 using Microsoft.Extensions.DependencyInjection;
-using Core.Contracts;
 
 public static class DependencyInjection
 {
@@ -574,7 +649,6 @@ public static class DependencyInjection
 		return services;
 	}
 }
-
 ```
 
 ### **Create the Core Layer Unit Tests**
@@ -595,11 +669,6 @@ Inside PizzaTestData.cs add the follwoing
 
 ```cs
 namespace Test.Setup.TestData.Pizza;
-
-using System;
-using Bogus;
-using Common.Entities;
-using Common.Models;
 
 public static class PizzaTestData
 {
@@ -640,15 +709,6 @@ Core\TestPizzaCore.cs
 
 ```cs
 namespace Test.Core;
-
-using System.Linq;
-using System.Threading.Tasks;
-using Bogus;
-using NUnit.Framework;
-using Test.Setup;
-using Common.Models;
-using global::Core;
-using Test.Setup.TestData.Pizza;
 
 [TestFixture]
 public class TestPizzaCore : QueryTestBase
@@ -726,14 +786,30 @@ Create a new ASP.NET 7 Web Application inside **01 Apis*** <br/>![](./Assets/202
 
 ![](./Assets/2023-04-01-15-42-01.png)
 
+Make sure ImplicitUsings is enabled in the ProperyGroup
+
+```xml
+<ImplicitUsings>enable</ImplicitUsings>
+```
+
+Add GlobalUsings.cs
+
+```cs
+global using Common.Entities;
+global using Common.Models;
+global using Core;
+global using Core.Contracts;
+global using DataAccess;
+global using Microsoft.AspNetCore.Mvc;
+```
+
 **Nuget Packages Required**
 - [ ] Swashbuckle.AspNetCore [Read More](https://code-maze.com/swagger-ui-asp-net-core-web-api/)
-- [ ] Newtonsoft.Json
 - [ ] Microsoft.AspNetCore.Mvc.NewtonsoftJson
-- [ ] Microsoft.EntityFrameworkCore.InMemory
+- [ ] Swashbuckle.AspNetCore
 
 
-You will see there will only be a Program.cs. 
+You will see there will only be a Program.cs
 
 Create a new class named Startup.cs on the root folder
 
@@ -824,6 +900,70 @@ services.AddSwaggerGen(c =>
     });
 ```
 
+Startup.cs
+
+```cs
+namespace Api;
+
+using System.Reflection;
+using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.OpenApi.Models;
+using Newtonsoft.Json.Serialization;
+
+public class Startup
+{
+	public IConfiguration ConfigRoot
+	{
+		get;
+	}
+
+	public Startup(IConfiguration configuration) => this.ConfigRoot = configuration;
+
+	public void ConfigureServices(IServiceCollection services)
+	{
+		services.AddControllers(options => options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true)
+			.AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()))
+			.AddNewtonsoftJson(x => x.SerializerSettings.ContractResolver = new DefaultContractResolver())
+			.AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+
+		DependencyInjection.AddApplication(services);
+
+		services.AddSwaggerGen(c =>
+		{
+			c.SwaggerDoc("v1", new OpenApiInfo
+			{
+				Title = "Pezza API",
+				Version = "v1"
+			});
+
+			var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+			var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+			c.IncludeXmlComments(xmlPath);
+		});
+
+		services.AddDbContext<DatabaseContext>(options =>
+			options.UseInMemoryDatabase(Guid.NewGuid().ToString())
+		);
+	}
+
+	public void Configure(WebApplication app, IWebHostEnvironment env)
+	{
+		app.UseSwagger();
+		app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Pezza API V1"));
+		app.UseHttpsRedirection();
+		app.UseRouting();
+		app.UseEndpoints(endpoints => endpoints.MapControllers());
+		app.UseAuthorization();
+		app.Run();
+	}
+}
+```
+
 Change Debug setting to open Swagger by default <br/> ![](Assets/2020-09-15-06-14-01.png)
 
 ### **Create a API Controller**
@@ -835,20 +975,10 @@ PizzaController.cs
 ```cs
 namespace Api.Controllers;
 
-using System.Threading.Tasks;
-using Common.Entities;
-using Common.Models;
-using Core.Contracts;
-using Microsoft.AspNetCore.Mvc;
-
 [ApiController]
 [Route("[controller]")]
-public class PizzaController : ControllerBase
+public class PizzaController(IPizzaCore pizzaCore) : ControllerBase
 {
-	private readonly IPizzaCore PizzaCore;
-
-	public PizzaController(IPizzaCore PizzaCore) => this.PizzaCore = PizzaCore;
-
 	/// <summary>
 	/// Get Pizza by Id.
 	/// </summary>
@@ -859,7 +989,7 @@ public class PizzaController : ControllerBase
 	[ProducesResponseType(404)]
 	public async Task<ActionResult> Get(int id)
 	{
-		var search = await this.PizzaCore.GetAsync(id);
+		var search = await pizzaCore.GetAsync(id);
 
 		return (search == null) ? this.NotFound() : this.Ok(search);
 	}
@@ -871,7 +1001,7 @@ public class PizzaController : ControllerBase
 	[HttpPost("Search")]
 	[ProducesResponseType(200)]
 	public async Task<ActionResult> Search()
-		=> this.Ok(await this.PizzaCore.GetAllAsync());
+		=> this.Ok(await pizzaCore.GetAllAsync());
 
 	/// <summary>
 	/// Create Pizza.
@@ -893,7 +1023,7 @@ public class PizzaController : ControllerBase
 	[ProducesResponseType(400)]
 	public async Task<ActionResult<Pizza>> Create([FromBody] PizzaModel model)
 	{
-		var result = await this.PizzaCore.SaveAsync(model);
+		var result = await pizzaCore.SaveAsync(model);
 
 		return (result == null) ? this.BadRequest() : this.Ok(result);
 	}
@@ -917,7 +1047,7 @@ public class PizzaController : ControllerBase
 	[ProducesResponseType(400)]
 	public async Task<ActionResult> Update([FromBody] PizzaModel model)
 	{
-		var result = await this.PizzaCore.UpdateAsync(model);
+		var result = await pizzaCore.UpdateAsync(model);
 
 		return (result == null) ? this.BadRequest() : this.Ok(result);
 	}
@@ -932,7 +1062,7 @@ public class PizzaController : ControllerBase
 	[ProducesResponseType(400)]
 	public async Task<ActionResult> Delete(int id)
 	{
-		var result = await this.PizzaCore.DeleteAsync(id);
+		var result = await pizzaCore.DeleteAsync(id);
 
 		return (!result) ? this.BadRequest() : this.Ok(result);
 	}
@@ -948,4 +1078,4 @@ Press F5 and Test all the Pizza Methods.
 ## **Phase 2 - CQRS**
 
 Move to Phase 2
-[Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%202) 
+[Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%202)

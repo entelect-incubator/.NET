@@ -1,8 +1,5 @@
 namespace DataAccess.Mapping;
 
-using Microsoft.EntityFrameworkCore;
-using Common.Entities;
-
 public sealed class PizzaMap : IEntityTypeConfiguration<Pizza>
 {
 	public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Pizza> builder)

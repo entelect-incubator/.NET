@@ -1,14 +1,10 @@
 ﻿namespace Test.Setup.TestData.Pizza;
 
-using Bogus;
-using Common.Entities;
-using Common.Models;
-
 public static class PizzaTestData
 {
 	public static Faker faker = new();
 
-	public static Pizza Pizza = new()
+	public static PizzaModel Pizza = new()
 	{
 		Id = 1,
 		Name = faker.PickRandom(pizzas),

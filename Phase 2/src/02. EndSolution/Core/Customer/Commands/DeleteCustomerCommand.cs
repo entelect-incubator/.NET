@@ -25,17 +25,12 @@ public class DeleteCustomerCommand : IRequest<Result>
 				return Result.Failure("Error deleting a Customer");
 			}
 
-			var query = EF.CompileAsyncQuery((DatabaseContext db, int id) => db.Customers.FirstOrDefault(c => c.Id == id));
-			var findEntity = await query(this.databaseContext, request.Id.Value);
-			if (findEntity == null)
-			{
-				return Result.Failure("Customer not found");
-			}
-
-			this.databaseContext.Customers.Remove(findEntity);
-			var result = await this.databaseContext.SaveChangesAsync();
+			var result = await this.databaseContext.Customers
+				.Where(u => u.Id == request.Id)
+				.ExecuteDeleteAsync();
 
 			return result > 0 ? Result.Success() : Result.Failure("Error deleting a Customer");
+
 		}
 	}
 }

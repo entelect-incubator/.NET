@@ -109,8 +109,6 @@ We will be extending the foundation from Phase 1 to all Entities CRUD operations
 
 Overview
 
-- [ ] [Working with Data in C#](https://web.microsoftstream.com/channel/fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
-
 [Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%202)
 
 [![.NET 7 - Phase 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase2-finalsolution.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase2-finalsolution.yml)

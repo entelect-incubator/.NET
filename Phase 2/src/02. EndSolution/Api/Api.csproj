@@ -26,4 +26,20 @@
 		<ProjectReference Include="..\DataAccess\DataAccess.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<Using Include="System" />
+		<Using Include="System.Collections.Generic" />
+		<Using Include="System.IO" />
+		<Using Include="System.Linq" />
+		<Using Include="System.Threading.Tasks" />
+		<Using Include="Api.Helpers" />
+		<Using Include="Common.Entities" />
+		<Using Include="Common.Models" />
+		<Using Include="Core" />
+		<Using Include="Core.Contracts" />
+		<Using Include="DataAccess" />
+		<Using Include="MediatR" />
+		<Using Include="Microsoft.AspNetCore.Mvc" />
+		<Using Include="Microsoft.EntityFrameworkCore" />
+	</ItemGroup>
 </Project>

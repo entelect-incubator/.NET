@@ -76,10 +76,6 @@ Add Customer to Mapper.cs
 ```cs
 namespace Common.Mappers;
 
-using Common.Entities;
-using Common.Models;
-using Riok.Mapperly.Abstractions;
-
 [Mapper]
 public static partial class Mapper
 {

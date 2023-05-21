@@ -12,4 +12,10 @@
 		<PackageReference Include="Riok.Mapperly" Version="2.7.0" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<Using Include="System" />
+		<Using Include="Common.Entities" />
+		<Using Include="Common.Models" />
+		<Using Include="Riok.Mapperly.Abstractions" />
+	</ItemGroup>
 </Project>

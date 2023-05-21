@@ -22,4 +22,10 @@
 		<ProjectReference Include="..\Common\Common.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<Using Include="System" />
+		<Using Include="Common.Entities" />
+		<Using Include="DataAccess.Mapping" />
+		<Using Include="Microsoft.EntityFrameworkCore" />
+	</ItemGroup>
 </Project>
