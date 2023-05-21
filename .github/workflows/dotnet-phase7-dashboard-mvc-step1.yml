@@ -1,4 +1,4 @@
-name: .NET 7 - Phase 7 - Dashboard - MVC - Step 1
+name: .NET - Phase 7 - Dashboard - MVC - Step 1
 
 on:
   push:
@@ -13,7 +13,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Setup .NET 7
+    - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 7.0.x

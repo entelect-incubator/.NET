@@ -16,7 +16,7 @@ A basic Portal for Pezza to manage all their pizza, products, orders, customers 
 
 - [ ] Create a new Solution Folder - 00 UI
 - [ ] Create a new Web Application Project
-![ASP.NET 7 Web Application](Assets/2020-12-10-21-28-37.png)
+![ASP.NET Web Application](Assets/2020-12-10-21-28-37.png)
 ![Configure your new project - Portal](Assets/2020-12-11-05-36-48.png)
 ![Model-View-Controller](Assets/2020-12-10-21-31-09.png)
 - [ ] Copy the Pezza Branding Guide & Design System files found in [Download]() 

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<RuleSet Name="Microsoft Managed Recommended Rules" Description="These rules focus on the most critical problems in your code, including potential security holes, application crashes, and other important logic and design errors. It is recommended to include this rule set in any custom rule set you create for your projects." ToolsVersion="16.0">
+<RuleSet Name="Microsoft Managed Recommended Rules" Description="These rules focus on the most critical problems in your code, including potential security holes, application crashes, and other important logic and design errors. It is recommended to include this rule set in any custom rule set you create for your projects." ToolsVersion="17.0">
   <Localization ResourceAssembly="Microsoft.VisualStudio.CodeAnalysis.RuleSets.Strings.dll" ResourceBaseName="Microsoft.VisualStudio.CodeAnalysis.RuleSets.Strings.Localized">
     <Name Resource="MinimumRecommendedRules_Name" />
     <Description Resource="MinimumRecommendedRules_Description" />
@@ -7,7 +7,7 @@
   <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
     <Rule Id="SA0001" Action="None" />
     <Rule Id="SA0002" Action="Error" />
-    <Rule Id="SA1000" Action="Error" />
+    <Rule Id="SA1000" Action="None" />
     <Rule Id="SA1001" Action="Error" />
     <Rule Id="SA1002" Action="Error" />
     <Rule Id="SA1003" Action="Error" />
@@ -16,7 +16,7 @@
     <Rule Id="SA1006" Action="Error" />
     <Rule Id="SA1007" Action="Error" />
     <Rule Id="SA1008" Action="Error" />
-    <Rule Id="SA1009" Action="Error" />
+    <Rule Id="SA1009" Action="None" />
     <Rule Id="SA1010" Action="Error" />
     <Rule Id="SA1011" Action="Error" />
     <Rule Id="SA1012" Action="Error" />
@@ -34,7 +34,7 @@
     <Rule Id="SA1024" Action="Error" />
     <Rule Id="SA1025" Action="Error" />
     <Rule Id="SA1026" Action="Error" />
-    <Rule Id="SA1027" Action="Error" />
+    <Rule Id="SA1027" Action="None" />
     <Rule Id="SA1028" Action="Error" />
     <Rule Id="SA1100" Action="Error" />
     <Rule Id="SA1101" Action="None" />
@@ -73,13 +73,13 @@
     <Rule Id="SA1136" Action="Error" />
     <Rule Id="SA1137" Action="Error" />
     <Rule Id="SA1139" Action="Error" />
-    <Rule Id="SA1200" Action="Error" />
+    <Rule Id="SA1200" Action="None" />
     <Rule Id="SA1201" Action="Error" />
     <Rule Id="SA1202" Action="Error" />
     <Rule Id="SA1203" Action="Error" />
-    <Rule Id="SA1204" Action="Error" />
+    <Rule Id="SA1204" Action="None" />
     <Rule Id="SA1205" Action="Error" />
-    <Rule Id="SA1206" Action="Error" />
+    <Rule Id="SA1206" Action="None" />
     <Rule Id="SA1207" Action="Error" />
     <Rule Id="SA1208" Action="Error" />
     <Rule Id="SA1209" Action="Error" />

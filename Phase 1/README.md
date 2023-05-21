@@ -780,7 +780,7 @@ For every test we will create a new pizza Core that will create a test session i
 
 ### **Setup**
 
-Create a new ASP.NET 7 Web Application inside **01 Apis*** <br/>![](./Assets/2023-04-01-15-39-50.png)
+Create a new ASP.NET Web Application inside **01 Apis*** <br/>![](./Assets/2023-04-01-15-39-50.png)
 
 *Make sure not to use minimal APIs
 

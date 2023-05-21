@@ -6,7 +6,7 @@
 
 ## **Anti Forgery Token**
 
-[Prevent Cross-Site Request Forgery (XSRF/CSRF) attacks in ASP.NET 7](https://docs.microsoft.com/en-us/aspnet/core/security/anti-request-forgery?view=aspnetcore-5.0)
+[Prevent Cross-Site Request Forgery (XSRF/CSRF) attacks in ASP.NET](https://docs.microsoft.com/en-us/aspnet/core/security/anti-request-forgery?view=aspnetcore-5.0)
 
 ## **Adding Anti Forgery Token to our Portal**
 

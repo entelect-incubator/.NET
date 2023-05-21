@@ -6,7 +6,7 @@
 
 ## **Schedule Background Jobs**
 
-[Hangfire](https://www.hangfire.io/) provides an easy way to perform background processing in .NET and .NET 7 applications. No Windows Service or separate process is required.
+[Hangfire](https://www.hangfire.io/) provides an easy way to perform background processing in .NET and .NET applications. No Windows Service or separate process is required.
 
 The benefit of using Hangfire is that it comes with a Dashboard. [Hangfire Dashboard](https://docs.hangfire.io/en/latest/configuration/using-dashboard.html) is a place where you could find all the information about your background jobs. It is written as an OWIN middleware, so you can plug it into your ASP.NET, ASP.NET MVC, Nancy, ServiceStack application as well as use the OWIN Self-Host feature to host Dashboard inside console applications or in Windows Services.
 
@@ -20,7 +20,7 @@ Adding the request on a type of queue system and forgetting about the result. Yo
 
 ## **Scheduler**
 
-Create a new ASP.NET 7 Web Application Scheduler under 01. Apis
+Create a new ASP.NET Web Application Scheduler under 01. Apis
 
 ![](Assets/2021-01-28-07-32-39.png)
 
@@ -31,7 +31,7 @@ Create a new ASP.NET 7 Web Application Scheduler under 01. Apis
 Once the project is ready, I will open the NuGet package manager UI and add the necessary NuGet packages. The three main Nuget packages needed for hangfire are:
 
 - [ ] Hangfire.Core – The core package that supports the core logic of Hangfire
-- [ ] Hangfire.AspNetCore – Support for ASP.NET 7 Middleware and Middleware for the dashboard user interface
+- [ ] Hangfire.AspNetCore – Support for ASP.NET Middleware and Middleware for the dashboard user interface
 - [ ] Hangfire.SqlServer - SQL Server 2008+ (including Express), SQL Server LocalDB and SQL Azure storage support for Hangfire (background job system for ASP.NET applications).
 
 ## **Connection String**

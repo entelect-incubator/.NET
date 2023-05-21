@@ -1,6 +1,6 @@
 <img align="left" width="116" height="116" src="../pezza-logo.png" />
 
-# &nbsp;**Pezza - Phase 5 - Step 1** [![.NET 7 - Phase 5 - Step 1](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase5-step1.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase5-step1.yml)
+# &nbsp;**Pezza - Phase 5 - Step 1** [![.NET - Phase 5 - Step 1](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase5-step1.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase5-step1.yml)
 
 <br/><br/>
 
@@ -10,7 +10,7 @@
 
 Install Nuget Package LazyCache.AspNetCore on Core and API
 
-![](2021-01-15-12-44-19.png)
+![](./Assets/2021-01-15-12-44-19.png)
 
 ### **Dependency Injection in DependencyInjection.cs**
 
@@ -22,91 +22,168 @@ services.AddLazyCache();
 
 This will inject IAppCache throughout your application.
 
-Modify the Restaurant Data Access. Remove the filters, because we won't be using that.
+This will cache the request to memory if it doesn't exist. When you change anything on the database it will bust the cache.
 
-Add CacheBust property to RestaurantDTO
+Add Data.cs in Common Project to hold the Cache Key.
 
 ```cs
-public bool BustCache { get; set; } = false;
+namespace Common;
+
+public static class Data
+{
+	public static string CacheKey = "PezzaPizza";
+}
 ```
 
-This will cache the request to memory if it doesn't exist. When you change anything on the database it will bust the cache.
+Modify filter to allows filtering on cached data
+
+PizzaFilter.cs in Common Project
+
+```cs
+namespace Common.Filters;
+
+using Common.Models;
+
+public static class PizzaFilter
+{
+	public static IQueryable<Pizza> FilterByName(this IQueryable<Pizza> query, string name)
+	{
+		if (string.IsNullOrWhiteSpace(name))
+		{
+			return query;
+		}
+
+		return query.Where(x => x.Name.Contains(name));
+	}
+
+	public static IEnumerable<PizzaModel> FilterByName(this IEnumerable<PizzaModel> query, string name)
+	{
+		if (string.IsNullOrWhiteSpace(name))
+		{
+			return query;
+		}
+
+		return query.Where(x => x.Name.Contains(name));
+	}
+
+	public static IQueryable<Pizza> FilterByDescription(this IQueryable<Pizza> query, string description)
+	{
+		if (string.IsNullOrWhiteSpace(description))
+		{
+			return query;
+		}
+
+		return query.Where(x => x.Description.Contains(description));
+	}
+
+	public static IEnumerable<PizzaModel> FilterByDescription(this IEnumerable<PizzaModel> query, string description)
+	{
+		if (string.IsNullOrWhiteSpace(description))
+		{
+			return query;
+		}
+
+		return query.Where(x => x.Description.Contains(description));
+	}
+
+	public static IQueryable<Pizza> FilterByDateCreated(this IQueryable<Pizza> query, DateTime? dateCreated)
+	{
+		if (!dateCreated.HasValue)
+		{
+			return query;
+		}
+
+		return query.Where(x => x.DateCreated == dateCreated.Value);
+	}
+
+	public static IEnumerable<PizzaModel> FilterByDateCreated(this IEnumerable<PizzaModel> query, DateTime? dateCreated)
+	{
+		if (!dateCreated.HasValue)
+		{
+			return query;
+		}
+
+		return query.Where(x => x.DateCreated == dateCreated.Value);
+	}
+}
+```
 
 Modify GetRestaurantsQuery.cs to add caching
 
 ```cs
-namespace Core.Restaurant.Queries;
+namespace Core.Pizza.Queries;
 
-using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Dynamic.Core;
-using System.Threading;
-using System.Threading.Tasks;
-using AutoMapper;
 using LazyCache;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
-using Common.DTO;
-using Common.Extensions;
-using Common.Models;
-using DataAccess;
 
-public class GetRestaurantsQuery : IRequest<ListResult<RestaurantDTO>>
+public class GetPizzasQuery : IRequest<ListResult<PizzaModel>>
 {
-    public RestaurantDTO Data { get; set; }
+	public SearchPizzaModel Data { get; set; }
+
+	public class GetPizzasQueryHandler(DatabaseContext databaseContext, IAppCache cache) : IRequestHandler<GetPizzasQuery, ListResult<PizzaModel>>
+	{
+		private readonly TimeSpan cacheExpiry = new(12, 0, 0);
+
+		public async Task<ListResult<PizzaModel>> Handle(GetPizzasQuery request, CancellationToken cancellationToken)
+		{
+			var entity = request.Data;
+
+			Task<IEnumerable<PizzaModel>> DataDelegate() => this.GetData();
+			var cachedData = await cache.GetOrAddAsync(Common.Data.CacheKey, DataDelegate, this.cacheExpiry);
+
+			if(cachedData != null)
+			{
+				var data = cachedData?
+					.FilterByName(entity.Name)
+					.FilterByDescription(entity.Description)
+					.OrderBy(x => x.DateCreated)
+					.ToList();
+
+				return ListResult<PizzaModel>.Success(data, cachedData.Count());
+			}
+
+			if (string.IsNullOrEmpty(entity.OrderBy))
+			{
+				entity.OrderBy = "DateCreated desc";
+			}
+
+			var entities = databaseContext.Pizzas
+				.Select(x => x)
+				.AsNoTracking()
+				.FilterByName(entity.Name)
+				.FilterByDescription(entity.Description)
+				.OrderBy(entity.OrderBy);
+
+			var count = entities.Count();
+			var paged = await entities.ApplyPaging(entity.PagingArgs).ToListAsync(cancellationToken);
+
+			return ListResult<PizzaModel>.Success(paged.Map(), count);
+		}
+
+		private async Task<IEnumerable<PizzaModel>> GetData()
+		{
+			var entities = await databaseContext.Pizzas.Select(x => x)
+				.AsNoTracking()
+				.ToListAsync();
+
+			return entities.Map();
+		}
+	}
 }
+```
 
-public class GetRestaurantsQueryHandler : IRequestHandler<GetRestaurantsQuery, ListResult<RestaurantDTO>>
-{
-    private readonly IAppCache cache;
+Remember to bust the cache when ever a CRUD operation happens. Add the following to the Pizza Commands.
 
-    private readonly string cacheKey = "RestaurantList";
+In the Primary Constructor
 
-    private readonly TimeSpan cacheExpiry = new (12, 0, 0);
+```cs
+public class UpdatePizzaCommandHandler(DatabaseContext databaseContext, IAppCache cache) : IRequestHandler<UpdatePizzaCommand, Result<PizzaModel>>
+```
 
-    private readonly DatabaseContext databaseContext;
+After the Command has finished
 
-    private readonly IMapper mapper;
-
-    public GetRestaurantsQueryHandler(DatabaseContext databaseContext, IMapper mapper, IAppCache cache)
-        => (this.databaseContext, this.mapper, this.cache) = (databaseContext, mapper, cache);
-
-    public async Task<ListResult<RestaurantDTO>> Handle(GetRestaurantsQuery request, CancellationToken cancellationToken)
-    {
-        var dto = request.Data;
-
-        if (dto.BustCache)
-        {
-            this.ClearCache();
-        }
-
-        Task<List<RestaurantDTO>> DataDelegate()
-        {
-            return this.GetRestaurantData();
-        }
-
-        var data = await this.cache.GetOrAddAsync(this.cacheKey, DataDelegate, this.cacheExpiry);
-
-        var orderBy = string.IsNullOrEmpty(dto.OrderBy) ? "DateCreated desc" : dto.OrderBy;
-        var orderedData = data.AsQueryable().ApplyPaging(dto.PagingArgs).OrderBy(orderBy);
-
-        var count = data.Count;
-        var paged = this.mapper.Map<List<RestaurantDTO>>(orderedData);
-
-        return ListResult<RestaurantDTO>.Success(paged, count);
-    }
-
-    private async Task<List<RestaurantDTO>> GetRestaurantData()
-    {
-        var entities = await this.databaseContext.Restaurants.Select(x => x)
-            .AsNoTracking()
-            .ToListAsync();
-
-        return this.mapper.Map<List<RestaurantDTO>>(entities);
-    }
-
-    private void ClearCache() => this.cache.Remove(this.cacheKey);
-}
+```cs
+cache.Remove(Common.Data.CacheKey);
 ```
 
 ## **Unit Test**
@@ -114,35 +191,26 @@ public class GetRestaurantsQueryHandler : IRequestHandler<GetRestaurantsQuery, L
 Add CachingService to QueryTestBase
 
 ```cs
-namespace Test;
+namespace Test.Setup;
 
-using AutoMapper;
 using LazyCache;
-using Common.Profiles;
-using DataAccess;
 using static DatabaseContextFactory;
 
 public class QueryTestBase : IDisposable
 {
-    public CachingService CachingService = new();
+	public CachingService CachingService = new();
 
-    public static DatabaseContext Context => Create();
+	public DatabaseContext Context => Create();
 
-    public static IMapper Mapper()
-    {
-        var mappingConfig = new MapperConfiguration(mc => mc.AddProfile(new MappingProfile()));
-        return mappingConfig.CreateMapper();
-    }
-
-    public void Dispose() => Destroy(Context);
+	public void Dispose() => Destroy(this.Context);
 }
 ```
 
 Add CachingService to all RestaurantDataAccess constructors
 
 ```cs
-var handler = new RestaurantDataAccess(this.Context, Mapper(), this.CachingService);
+var sutGetAll = new GetPizzasQueryHandler(this.Context, this.CachingService);
 ```
 
 Move to Phase 5 Step 2
-[Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%205/Step%202) 
+[Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%205/Step%202)
