@@ -1,4 +1,12 @@
-﻿[*.cs]
+root = true
 
-# Default severity for analyzer diagnostics with category 'StyleCop.CSharp.DocumentationRules'
-dotnet_analyzer_diagnostic.category-StyleCop.CSharp.DocumentationRules.severity = none
+# All files
+[*]
+indent_style = tab
+
+# Xml files
+[*.xml]
+indent_size = 4
+
+[*.cs]
+csharp_style_namespace_declarations=file_scoped:suggestion

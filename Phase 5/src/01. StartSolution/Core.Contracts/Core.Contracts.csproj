@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<LangVersion>preview</LangVersion>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Common\Common.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Using Include="System" />
+		<Using Include="System.Collections.Generic" />
+		<Using Include="System.Threading.Tasks" />
+		<Using Include="Common.Models" />
+	</ItemGroup>
+</Project>

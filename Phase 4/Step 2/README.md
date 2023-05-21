@@ -45,7 +45,7 @@ Modify ExceptionHandlerMiddleware.cs by logging an exception in the final else o
 else
 {
     var code = HttpStatusCode.InternalServerError;
-    var result = JsonConvert.SerializeObject(new { isSuccess = false, error = exception.Message });
+    var result = JsonSerializer.Serialize(new { isSuccess = false, error = exception.Message });
     context.Response.ContentType = "application/json";
     context.Response.StatusCode = (int)code;
     Logging.LogException(exception);
@@ -57,42 +57,30 @@ else
 Update PerformanceBehaviour.cs by removing the old logging and using the new static Logging class instead.
 
 ```cs
-namespace Common.Behaviours;
-
-using System.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
-using MediatR;
-using Microsoft.Extensions.Logging;
+namespace Common.Behaviour;
 
 public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
-    where TRequest : IRequest<TResponse>
 {
-    private readonly Stopwatch timer;
+	private readonly Stopwatch timer = new Stopwatch();
 
-    public PerformanceBehaviour(ILogger<TRequest> logger)
-    {
-        this.timer = new Stopwatch();
-    }
+	public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
+	{
+		this.timer.Restart();
 
-    public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
-    {
-        this.timer.Start();
+		var response = await next();
 
-        var response = await next();
+		this.timer.Stop();
 
-        this.timer.Stop();
+		var elapsedMilliseconds = this.timer.ElapsedMilliseconds;
 
-        var elapsedMilliseconds = this.timer.ElapsedMilliseconds;
+		if (elapsedMilliseconds > 500)
+		{
+			var requestName = typeof(TRequest).Name;
+			Logging.LogInfo($"CleanArchitecture Long Running Request: {requestName} ({elapsedMilliseconds} milliseconds)", request);
+		}
 
-        if (elapsedMilliseconds > 500)
-        {
-            var requestName = typeof(TRequest).Name;
-            Logging.LogInfo($"CleanArchitecture Long Running Request: {requestName} ({elapsedMilliseconds} milliseconds)", request);
-        }
-
-        return response;
-    }
+		return response;
+	}
 }
 ```
 
