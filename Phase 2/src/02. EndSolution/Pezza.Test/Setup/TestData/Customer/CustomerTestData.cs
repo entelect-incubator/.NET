@@ -14,6 +14,7 @@ public static class CustomerTestData
         ContactPerson = faker.Person.FullName,
         Email = faker.Person.Email,
         Phone = faker.Person.Phone,
+        Name = faker.Person.FirstName,
         Address = new AddressBase
         {
             Address = faker.Address.FullAddress(),
