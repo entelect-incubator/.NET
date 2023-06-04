@@ -8,54 +8,46 @@ We are going to create a basic Email Service using [FluentEmail](https://github.
 
 ## **FluentEmail**
 
-Install FluentEmail.Core, HtmlAgilityPack and FluentEmail.SendGrid on Core.
+Install FluentEmail.Core, HtmlAgilityPack and FluentEmail.Smtp on Core.
 
 ![FluentEmail](Assets/2021-01-17-22-57-42.png)
 
-You will need to set up a SendGrid account to execute the code in this phase.
-
-- [ ] [Create a SendGrid account](https://signup.sendgrid.com/)
-- [ ] [Read more about SendGrid API Keys](https://sendgrid.com/docs/ui/account-and-settings/api-keys/)
-- [ ] [Create API Key](https://app.sendgrid.com/settings/api_keys)
-
 Create a new folder called Email in Core. Create a file inside the folder called EmailService.cs and add the following code.
+
+You can just use your own GMail Smtp Credentials to test with.
 
 ```cs
 namespace Core.Email;
 
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using HtmlAgilityPack;
-using Common.DTO;
 using Common.Models;
-using SendGrid;
-using SendGrid.Helpers.Mail;
+using FluentEmail.Core;
+using HtmlAgilityPack;
 
 public class EmailService
 {
-    public string HtmlContent { get; set; }
+	public string HtmlContent { get; set; }
 
-    public CustomerDTO Customer { get; set; }
+	public CustomerModel Customer { get; set; }
 
-    public async Task<Result> SendEmail()
-    {
-        var doc = new HtmlDocument();
-        doc.LoadHtml(this.HtmlContent);
-        var plainText = doc.DocumentNode.SelectSingleNode("//body").InnerText;
-        plainText = Regex.Replace(plainText, @"\s+", " ").Trim();
+	public async Task<Result> SendEmail()
+	{
+		var doc = new HtmlDocument();
+		doc.LoadHtml(this.HtmlContent);
+		var plainText = doc.DocumentNode.SelectSingleNode("//body").InnerText;
+		plainText = Regex.Replace(plainText, @"\s+", " ").Trim();
 
-        var apiKey = "YOUR-API-KEY";
-        var client = new SendGridClient(apiKey);
-        var from = new EmailAddress("notify@pezza.com", "Pezza");
-        var subject = $"Collect your order it while it's hot";
-        var to = new EmailAddress(this.Customer?.Email, this.Customer?.Name);
-        var plainTextContent = plainText;
-        var htmlContent = this.HtmlContent;
-        var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
-        var response = await client.SendEmailAsync(msg);
+		var email = await Email
+			.From("notify@pezza.com", "Pezza")
+			.To(this.Customer?.Email, this.Customer?.Name)
+			.Subject("Collect your order it while it's hot")
+			.Body(this.HtmlContent)
+			.PlaintextAlternativeBody(plainText)
+			.SendAsync();
 
-        return response.StatusCode != System.Net.HttpStatusCode.OK ? Result.Failure("Email could not send") : Result.Success();
-    }
+		return email.Successful ? Result.Success() : Result.Failure("Email could not send");
+	}
 }
 ```
 
@@ -69,7 +61,7 @@ Copy the HTML from **Phase 6\src\04. Step 3\Core\Email\Templates\OrderCompleted.
 
 The HTML might look a bit strange to you. It is because it is made for email client support.
 
-Right-click on OrderCompleted.html and choose Copy always for Copy to Output.
+Right-click on OrderCompleted.html Properties and choose Copy always for Copy to Output.
 
 ![](Assets/2021-01-19-07-54-33.png)
 

@@ -1,6 +1,5 @@
 namespace Test.Core;
 
-using Common.Models;
 using global::Core.Pizza.Commands;
 using global::Core.Pizza.Queries;
 using Test.Setup.TestData.Pizza;
@@ -19,7 +18,7 @@ public class TestPizzaCore : QueryTestBase
 	public async Task Init()
 	{
 		this.model = PizzaTestData.PizzaModel;
-		var sutCreate = new CreatePizzaCommandHandler(this.Context);
+		var sutCreate = new CreatePizzaCommandHandler(this.Context, this.CachingService);
 		var resultCreate = await sutCreate.Handle(
 			new CreatePizzaCommand
 			{
@@ -66,7 +65,7 @@ public class TestPizzaCore : QueryTestBase
 	[Test]
 	public async Task UpdateAsync()
 	{
-		var sutUpdate = new UpdatePizzaCommandHandler(this.Context);
+		var sutUpdate = new UpdatePizzaCommandHandler(this.Context, this.CachingService);
 		var resultUpdate = await sutUpdate.Handle(
 			new UpdatePizzaCommand
 			{
@@ -83,7 +82,7 @@ public class TestPizzaCore : QueryTestBase
 	[Test]
 	public async Task DeleteAsync()
 	{
-		var sutDelete = new DeletePizzaCommandHandler(this.Context);
+		var sutDelete = new DeletePizzaCommandHandler(this.Context, this.CachingService);
 		var outcomeDelete = await sutDelete.Handle(
 			new DeletePizzaCommand
 			{

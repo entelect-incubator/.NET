@@ -9,7 +9,6 @@ public class GetPizzasQuery : IRequest<ListResult<PizzaModel>>
 
 	public class GetPizzasQueryHandler(DatabaseContext databaseContext, IAppCache cache) : IRequestHandler<GetPizzasQuery, ListResult<PizzaModel>>
 	{
-
 		private readonly TimeSpan cacheExpiry = new(12, 0, 0);
 
 		public async Task<ListResult<PizzaModel>> Handle(GetPizzasQuery request, CancellationToken cancellationToken)
