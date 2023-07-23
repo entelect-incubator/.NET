@@ -18,6 +18,6 @@ jobs:
       with:
         dotnet-version: 8.0.100-preview.6.23330.14
     - name: Install dependencies
-      run: dotnet restore "./Phase 1/src/02. EndSolution/sln"
+      run: dotnet restore "./Phase 1/src/02. EndSolution/Pezza.sln"
     - name: Build
-      run: dotnet build "./Phase 1/src/02. EndSolution/sln" --configuration Release --no-restore
+      run: dotnet build "./Phase 1/src/02. EndSolution/Pezza.sln" --configuration Release --no-restore

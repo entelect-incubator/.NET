@@ -541,7 +541,9 @@ RecurringJob.AddOrUpdate<IOrderCompleteJob>("SendNotificationAsync", x => x.Send
 
 In the above code, the CRON expression "* * * * *" is an expression to run the job every minute.
 
-![](.\Assets\2023-07-23-13-31-35.png)
+![](./Assets/2023-07-23-13-31-35.png)
+
+![](./Assets/2023-07-23-13-32-48.png)
 
 ## **Phase 7 - Create UI's**
 
