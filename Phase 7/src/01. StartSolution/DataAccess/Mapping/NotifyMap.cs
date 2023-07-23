@@ -1,13 +1,8 @@
 namespace DataAccess.Mapping;
 
-using System.Reflection.Emit;
-using System.Security.Claims;
-using Common.Entities;
-using Microsoft.EntityFrameworkCore;
-
 public sealed class NotifyMap : IEntityTypeConfiguration<Notify>
 {
-	public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Notify> builder)
+	public void Configure(EntityTypeBuilder<Notify> builder)
 	{
 		builder.ToTable("Notify", "dbo");
 

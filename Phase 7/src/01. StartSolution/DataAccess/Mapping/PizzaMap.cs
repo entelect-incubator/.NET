@@ -2,7 +2,7 @@ namespace DataAccess.Mapping;
 
 public sealed class PizzaMap : IEntityTypeConfiguration<Pizza>
 {
-	public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Pizza> builder)
+	public void Configure(EntityTypeBuilder<Pizza> builder)
 	{
 		builder.ToTable("Pizza", "dbo");
 

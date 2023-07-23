@@ -4,7 +4,7 @@
 
 <br/><br/>
 
-# **UI**
+# **Frontend**
 
 In Phase 7 we will build the Front End implementations for the API in a variety of ways and technologies. * Remember to always be technology agnostic. Choose the technology that suites the use case the best.
 
@@ -36,6 +36,6 @@ app.UseCors("CorsPolicy");
 
 ## **Steps**
 
-- [ ] [Step 1 - Dashboard (Pezza back office)](https://github.com/entelect-incubator/.NET/tree/master/Phase%207/Dashboard)
-- [ ] [Step 2 - Website (Customers to order Pizza's)](https://github.com/entelect-incubator/.NET/tree/master/Phase%207/Website) 
+- [ ] [Step 1 - Pezza Dashboard](https://github.com/entelect-incubator/.NET/tree/master/Phase%207/Dashboard)
+- [ ] [Step 2 - Pezza Pizza Ordering Website for Customers](https://github.com/entelect-incubator/.NET/tree/master/Phase%207/Website)
  

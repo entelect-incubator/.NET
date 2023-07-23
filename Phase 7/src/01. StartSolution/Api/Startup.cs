@@ -44,7 +44,7 @@ public class Startup
 		});
 		services.AddLazyCache();
 		services.AddDbContext<DatabaseContext>(options =>
-			options.UseInMemoryDatabase(Guid.NewGuid().ToString()));
+			options.UseInMemoryDatabase("PezzaDB"));
 
 		services.AddResponseCompression(options =>
 		{
@@ -52,6 +52,13 @@ public class Startup
 			options.Providers.Add<GzipCompressionProvider>();
 		});
 		services.AddResponseCompression();
+		using (var serviceProvider = services.BuildServiceProvider())
+		{
+			var dbContext = serviceProvider.GetRequiredService<DatabaseContext>();
+			dbContext.Database.EnsureCreated();
+			dbContext.SaveChanges();
+			dbContext.Dispose();
+		}
 	}
 
 	public void Configure(WebApplication app, IWebHostEnvironment env)

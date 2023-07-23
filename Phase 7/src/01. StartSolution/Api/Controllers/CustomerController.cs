@@ -1,7 +1,9 @@
 ﻿namespace Api.Controllers;
 
+using Common.Models.Order;
 using Core.Customer.Commands;
 using Core.Customer.Queries;
+using Core.Order.Queries;
 
 public class CustomerController : ApiController
 {
@@ -20,6 +22,24 @@ public class CustomerController : ApiController
 	public async Task<ActionResult> GetCustomer(int id)
 	{
 		var result = await this.Mediator.Send(new GetCustomerQuery { Id = id });
+		return ResponseHelper.ResponseOutcome(result, this);
+	}
+
+	/// <summary>
+	/// Get Customer Orders by Id.
+	/// </summary>
+	/// <param name="id">int.</param>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	/// <response code="200">Get customer orders</response>
+	/// <response code="400">Error getting customer orders</response>
+	/// <response code="404">Customer orders not found</response>
+	[HttpGet("{id}/Orders")]
+	[ProducesResponseType(typeof(ListResult<OrderModel>), 200)]
+	[ProducesResponseType(typeof(ErrorResult), 400)]
+	[ProducesResponseType(typeof(ErrorResult), 404)]
+	public async Task<ActionResult> GetOrders(int id)
+	{
+		var result = await this.Mediator.Send(new GetOrdersQuery { CustomerId = id });
 		return ResponseHelper.ResponseOutcome(result, this);
 	}
 
@@ -48,7 +68,7 @@ public class CustomerController : ApiController
 	/// </summary>
 	/// <remarks>
 	/// Sample request:
-	///     POST api/Customer
+	///     POST /Customer
 	///     {
 	///       "name": "Person A",
 	///       "address": "1 Tree Street, Pretoria, Gauteng",
@@ -78,7 +98,7 @@ public class CustomerController : ApiController
 	/// </summary>
 	/// <remarks>
 	/// Sample request:
-	///     PUT api/Customer
+	///     PUT /Customer
 	///     {
 	///       "id": 1,
 	///       "email": "person.a@gmail.com"

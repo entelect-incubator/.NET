@@ -10,7 +10,7 @@ Start with your finished solution from Phase 6 or in Phase 7 > 01. StartSolution
 
 ### **What are we building?**
 
-A basic Portal for Pezza to manage all their pizza, products, orders, customers and restaurant data.
+A basic Dashboard for Pezza to manage all their pizza, customers and orders.
 
 #### **Framework**
 

@@ -27,6 +27,8 @@ public class OrderEventHandler(DatabaseContext databaseContext) : INotificationH
 
 		html = html.Replace("%pizzas%", pizzasContent.ToString());
 
+		databaseContext.Orders.Add(notification.Data.Map());
+
 		databaseContext.Notifies.Add(new Notify
 		{
 			CustomerId = notification.Data.Customer.Id,

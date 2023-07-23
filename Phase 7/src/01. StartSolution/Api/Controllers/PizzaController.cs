@@ -42,7 +42,7 @@ public class PizzaController() : ApiController
 	/// <remarks>
 	/// Sample request:
 	///
-	///     POST api/Pizza
+	///     POST /Pizza
 	///     {
 	///       "name": "Hawaiian",
 	///       "description": "Hawaiian pizza is a pizza originating in Canada, and is traditionally topped with pineapple, tomato sauce, cheese, and either ham or bacon.",
@@ -70,7 +70,7 @@ public class PizzaController() : ApiController
 	/// <remarks>
 	/// Sample request:
 	///
-	///     PUT api/Pizza/1
+	///     PUT /Pizza/1
 	///     {
 	///       "price": "119"
 	///     }

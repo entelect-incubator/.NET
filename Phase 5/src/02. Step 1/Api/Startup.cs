@@ -43,7 +43,7 @@ public class Startup
 		});
 		services.AddLazyCache();
 		services.AddDbContext<DatabaseContext>(options =>
-			options.UseInMemoryDatabase(Guid.NewGuid().ToString()));
+			options.UseInMemoryDatabase("PezzaDB"));
 	}
 
 	public void Configure(WebApplication app, IWebHostEnvironment env)

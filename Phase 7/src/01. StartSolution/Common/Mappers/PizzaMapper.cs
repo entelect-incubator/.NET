@@ -30,9 +30,9 @@ public static class PizzaMapper
 		return entity;
 	}
 
-	public static IEnumerable<PizzaModel> Map(this List<Pizza> entities)
-		=> entities.Select(x => x.Map());
+	public static List<PizzaModel> Map(this List<Pizza> entities)
+		=> entities.Select(x => x.Map()).ToList();
 
-	public static IEnumerable<Pizza> Map(this List<PizzaModel> models)
-		=> models.Select(x => x.Map());
+	public static List<Pizza> Map(this List<PizzaModel> models)
+		=> models.Select(x => x.Map()).ToList();
 }
