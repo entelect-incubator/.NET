@@ -417,7 +417,7 @@ using (var serviceProvider = services.BuildServiceProvider())
 }
 ```
 
-## **Phase 7 - Create UI's**
+## **Phase 7 - Microservices**
 
 Move to Phase 7
 [Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%207)

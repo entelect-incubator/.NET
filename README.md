@@ -179,7 +179,16 @@ Increasing Performance
 
 [![.NET - Phase 6 - Step 3](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-step3.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-step3.yml)
 
-### Phase 7 - User Interface
+### Phase 7 - Microservices
+
+- [ ] [Overview](https://learn.microsoft.com/en-us/aspnet/core/tutorials/getting-started-with-nswag?view=aspnetcore-7.0&tabs=visual-studio)
+
+An API client is a set of tools and protocols that operate from an application on a computer. They help you to bypass some operations when developing a web application rather than reinventing the wheel every time. Using a client API is a great way to speed up the development process.
+
+- [ ] Intro
+- [ ] API Client
+
+### Phase 8 - User Interface
 
 Overview
 - [ ] [MVC Part 1](https://web.microsoftstream.com/video/61e64cfa-c3ba-45c3-9811-e5bc25968a2a?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
@@ -200,7 +209,7 @@ Pezza Admin Back-End
 
 [Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%207)
 
-### Phase 8 - Security
+### Phase 9 - Security
 
 Now that we have increased the performance lets and an increase of customers we need to secure our website.
 
@@ -215,16 +224,6 @@ Add Security
 
 [![.NET - Phase 8 - Step 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase8-step2.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase8-step2.yml)
   
-### Phase 9 - Microservices
-
-- [ ] [Overview](https://learn.microsoft.com/en-us/aspnet/core/tutorials/getting-started-with-nswag?view=aspnetcore-7.0&tabs=visual-studio)
-
-An API client is a set of tools and protocols that operate from an application on a computer. They help you to bypass some operations when developing a web application rather than reinventing the wheel every time. Using a client API is a great way to speed up the development process.
-
-- [ ] Intro
-- [ ] API Client
-
 ### Phase 10 - Recommended libraries
 
 - [ ] Nuget libraries
-

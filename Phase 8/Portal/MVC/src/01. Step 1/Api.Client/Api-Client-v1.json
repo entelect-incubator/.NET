@@ -1,0 +1,939 @@
+{
+  "x-generator": "NSwag v13.19.0.0 (NJsonSchema v10.9.0.0 (Newtonsoft.Json v13.0.0.0))",
+  "swagger": "2.0",
+  "info": {
+    "title": "Pezza Api",
+    "version": "V1"
+  },
+  "paths": {
+    "/Customer/{id}": {
+      "get": {
+        "tags": [
+          "Customer"
+        ],
+        "summary": "Get Customer by Id.",
+        "operationId": "Customer_GetCustomer",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "int.",
+            "format": "int32",
+            "x-nullable": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "x-nullable": false,
+            "description": "Get a customer",
+            "schema": {
+              "$ref": "#/definitions/ResultOfCustomerModel"
+            }
+          },
+          "400": {
+            "x-nullable": false,
+            "description": "Error getting a customer",
+            "schema": {
+              "$ref": "#/definitions/ErrorResult"
+            }
+          },
+          "404": {
+            "x-nullable": false,
+            "description": "Customer not found",
+            "schema": {
+              "$ref": "#/definitions/ErrorResult"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Customer"
+        ],
+        "summary": "Remove Customer by Id.",
+        "operationId": "Customer_Delete",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "int.",
+            "format": "int32",
+            "x-nullable": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "x-nullable": false,
+            "description": "Customer deleted",
+            "schema": {
+              "$ref": "#/definitions/Result"
+            }
+          },
+          "400": {
+            "x-nullable": false,
+            "description": "Error deleting a customer",
+            "schema": {
+              "$ref": "#/definitions/ErrorResult"
+            }
+          }
+        }
+      }
+    },
+    "/Customer/{id}/Orders": {
+      "get": {
+        "tags": [
+          "Customer"
+        ],
+        "summary": "Get Customer Orders by Id.",
+        "operationId": "Customer_GetOrders",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "int.",
+            "format": "int32",
+            "x-nullable": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "x-nullable": false,
+            "description": "Get customer orders",
+            "schema": {
+              "$ref": "#/definitions/ListResultOfOrderModel"
+            }
+          },
+          "400": {
+            "x-nullable": false,
+            "description": "Error getting customer orders",
+            "schema": {
+              "$ref": "#/definitions/ErrorResult"
+            }
+          },
+          "404": {
+            "x-nullable": false,
+            "description": "Customer orders not found",
+            "schema": {
+              "$ref": "#/definitions/ErrorResult"
+            }
+          }
+        }
+      }
+    },
+    "/Customer/Search": {
+      "post": {
+        "tags": [
+          "Customer"
+        ],
+        "summary": "Get all Customers.",
+        "operationId": "Customer_Search",
+        "consumes": [
+          "application/json-patch+json",
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SearchCustomerModel"
+            },
+            "x-nullable": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "x-nullable": false,
+            "description": "Customer Search",
+            "schema": {
+              "$ref": "#/definitions/ListResultOfCustomerModel"
+            }
+          },
+          "400": {
+            "x-nullable": false,
+            "description": "Error searching for customers",
+            "schema": {
+              "$ref": "#/definitions/ErrorResult"
+            }
+          }
+        }
+      }
+    },
+    "/Customer": {
+      "post": {
+        "tags": [
+          "Customer"
+        ],
+        "summary": "Create Customer.",
+        "description": "Sample request:\n    POST /Customer\n    {\n      \"name\": \"Person A\",\n      \"address\": \"1 Tree Street, Pretoria, Gauteng\",\n      \"email\": \"person.a@gmail.com\"\n      \"cellphone\": \"0721230000\"\n    }.",
+        "operationId": "Customer_Create",
+        "consumes": [
+          "application/json-patch+json",
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "model",
+            "in": "body",
+            "required": true,
+            "description": "CustomerModel.",
+            "schema": {
+              "$ref": "#/definitions/CreateCustomerModel"
+            },
+            "x-nullable": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "x-nullable": false,
+            "description": "Customer created",
+            "schema": {
+              "$ref": "#/definitions/ResultOfCustomerModel"
+            }
+          },
+          "400": {
+            "x-nullable": false,
+            "description": "Error creating a customer",
+            "schema": {
+              "$ref": "#/definitions/ErrorResult"
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Customer"
+        ],
+        "summary": "Update Customer.",
+        "description": "Sample request:\n    PUT /Customer\n    {\n      \"id\": 1,\n      \"email\": \"person.a@gmail.com\"\n    }.",
+        "operationId": "Customer_Update",
+        "consumes": [
+          "application/json-patch+json",
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "model",
+            "in": "body",
+            "required": true,
+            "description": "CustomerModel.",
+            "schema": {
+              "$ref": "#/definitions/UpdateCustomerModel"
+            },
+            "x-nullable": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "x-nullable": false,
+            "description": "Customer updated",
+            "schema": {
+              "$ref": "#/definitions/ResultOfCustomerModel"
+            }
+          },
+          "400": {
+            "x-nullable": false,
+            "description": "Error updating a customer",
+            "schema": {
+              "$ref": "#/definitions/ErrorResult"
+            }
+          },
+          "404": {
+            "x-nullable": false,
+            "description": "Customer not found",
+            "schema": {
+              "$ref": "#/definitions/Result"
+            }
+          }
+        }
+      }
+    },
+    "/Order": {
+      "post": {
+        "tags": [
+          "Order"
+        ],
+        "summary": "Order Pizza.",
+        "description": "Sample request:\n            \n    POST /Order\n    {\n      \"customerId\": 1,\n      \"pizzaIds\": [1, 2, 3, 4, 5]\n    }",
+        "operationId": "Order_Create",
+        "consumes": [
+          "application/json-patch+json",
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "model",
+            "in": "body",
+            "required": true,
+            "description": "Create Order Model",
+            "schema": {
+              "$ref": "#/definitions/OrderModel"
+            },
+            "x-nullable": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "x-nullable": false,
+            "description": "ActionResult",
+            "schema": {
+              "$ref": "#/definitions/OrderModel"
+            }
+          },
+          "400": {
+            "x-nullable": false,
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/ProblemDetails"
+            }
+          }
+        }
+      }
+    },
+    "/Pizza/{id}": {
+      "get": {
+        "tags": [
+          "Pizza"
+        ],
+        "summary": "Get Pizza by Id.",
+        "operationId": "Pizza_Get",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Pizza Id",
+            "format": "int32",
+            "x-nullable": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ActionResult"
+          },
+          "404": {
+            "x-nullable": false,
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/ProblemDetails"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Pizza"
+        ],
+        "summary": "Delete Pizza by Id.",
+        "operationId": "Pizza_Delete",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Pizza Id",
+            "format": "int32",
+            "x-nullable": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ActionResult"
+          },
+          "400": {
+            "x-nullable": false,
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/ProblemDetails"
+            }
+          }
+        }
+      }
+    },
+    "/Pizza/Search": {
+      "post": {
+        "tags": [
+          "Pizza"
+        ],
+        "summary": "Get all Pizzas.",
+        "operationId": "Pizza_Search",
+        "consumes": [
+          "application/json-patch+json",
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SearchPizzaModel"
+            },
+            "x-nullable": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ActionResult"
+          }
+        }
+      }
+    },
+    "/Pizza": {
+      "post": {
+        "tags": [
+          "Pizza"
+        ],
+        "summary": "Create Pizza.",
+        "description": "Sample request:\n            \n    POST /Pizza\n    {\n      \"name\": \"Hawaiian\",\n      \"description\": \"Hawaiian pizza is a pizza originating in Canada, and is traditionally topped with pineapple, tomato sauce, cheese, and either ham or bacon.\",\n      \"price\": \"99\"\n    }",
+        "operationId": "Pizza_Create",
+        "consumes": [
+          "application/json-patch+json",
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "model",
+            "in": "body",
+            "required": true,
+            "description": "Pizza Model",
+            "schema": {
+              "$ref": "#/definitions/CreatePizzaModel"
+            },
+            "x-nullable": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "x-nullable": false,
+            "description": "ActionResult",
+            "schema": {
+              "$ref": "#/definitions/Pizza"
+            }
+          },
+          "400": {
+            "x-nullable": false,
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/ProblemDetails"
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Pizza"
+        ],
+        "summary": "Update Pizza.",
+        "description": "Sample request:\n            \n    PUT /Pizza/1\n    {\n      \"price\": \"119\"\n    }",
+        "operationId": "Pizza_Update",
+        "consumes": [
+          "application/json-patch+json",
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "model",
+            "in": "body",
+            "required": true,
+            "description": "Pizza Model",
+            "schema": {
+              "$ref": "#/definitions/UpdatePizzaModel"
+            },
+            "x-nullable": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ActionResult"
+          },
+          "400": {
+            "x-nullable": false,
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/ProblemDetails"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ResultOfCustomerModel": {
+      "type": "object",
+      "required": [
+        "Succeeded",
+        "Data",
+        "Errors"
+      ],
+      "properties": {
+        "Succeeded": {
+          "type": "boolean"
+        },
+        "Data": {
+          "$ref": "#/definitions/CustomerModel"
+        },
+        "Errors": {
+          "type": "array",
+          "items": {}
+        }
+      }
+    },
+    "CustomerModel": {
+      "type": "object",
+      "required": [
+        "Id",
+        "Name",
+        "DateCreated"
+      ],
+      "properties": {
+        "Id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "Name": {
+          "type": "string"
+        },
+        "Address": {
+          "type": "string"
+        },
+        "Email": {
+          "type": "string"
+        },
+        "Cellphone": {
+          "type": "string"
+        },
+        "DateCreated": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "ErrorResult": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/Result"
+        },
+        {
+          "type": "object",
+          "required": [
+            "Succeeded"
+          ],
+          "properties": {
+            "Succeeded": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        }
+      ]
+    },
+    "Result": {
+      "type": "object",
+      "required": [
+        "Succeeded",
+        "Errors"
+      ],
+      "properties": {
+        "Succeeded": {
+          "type": "boolean"
+        },
+        "Errors": {
+          "type": "array",
+          "items": {}
+        }
+      }
+    },
+    "ListResultOfOrderModel": {
+      "type": "object",
+      "required": [
+        "Succeeded",
+        "Data",
+        "Errors",
+        "Count"
+      ],
+      "properties": {
+        "Succeeded": {
+          "type": "boolean"
+        },
+        "Data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/OrderModel"
+          }
+        },
+        "Errors": {
+          "type": "array",
+          "items": {}
+        },
+        "Count": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "OrderModel": {
+      "type": "object",
+      "required": [
+        "Id",
+        "CustomerId",
+        "Customer",
+        "PizzaIds",
+        "Pizzas",
+        "Completed"
+      ],
+      "properties": {
+        "Id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "CustomerId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "Customer": {
+          "$ref": "#/definitions/CustomerModel"
+        },
+        "PizzaIds": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "Pizzas": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PizzaModel"
+          }
+        },
+        "DateCreated": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "Completed": {
+          "type": "boolean"
+        }
+      }
+    },
+    "PizzaModel": {
+      "type": "object",
+      "required": [
+        "Id",
+        "Name"
+      ],
+      "properties": {
+        "Id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "Name": {
+          "type": "string"
+        },
+        "Description": {
+          "type": "string"
+        },
+        "Price": {
+          "type": "number",
+          "format": "decimal"
+        },
+        "DateCreated": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "ListResultOfCustomerModel": {
+      "type": "object",
+      "required": [
+        "Succeeded",
+        "Data",
+        "Errors",
+        "Count"
+      ],
+      "properties": {
+        "Succeeded": {
+          "type": "boolean"
+        },
+        "Data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CustomerModel"
+          }
+        },
+        "Errors": {
+          "type": "array",
+          "items": {}
+        },
+        "Count": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "SearchCustomerModel": {
+      "type": "object",
+      "required": [
+        "PagingArgs"
+      ],
+      "properties": {
+        "Name": {
+          "type": "string"
+        },
+        "Address": {
+          "type": "string"
+        },
+        "Email": {
+          "type": "string"
+        },
+        "Cellphone": {
+          "type": "string"
+        },
+        "DateCreated": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "OrderBy": {
+          "type": "string"
+        },
+        "PagingArgs": {
+          "$ref": "#/definitions/PagingArgs"
+        }
+      }
+    },
+    "PagingArgs": {
+      "type": "object",
+      "required": [
+        "Offset",
+        "Limit",
+        "UsePaging"
+      ],
+      "properties": {
+        "Offset": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "Limit": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "UsePaging": {
+          "type": "boolean"
+        }
+      }
+    },
+    "CreateCustomerModel": {
+      "type": "object",
+      "required": [
+        "Name",
+        "Address"
+      ],
+      "properties": {
+        "Name": {
+          "type": "string"
+        },
+        "Address": {
+          "type": "string"
+        },
+        "Email": {
+          "type": "string"
+        },
+        "Cellphone": {
+          "type": "string"
+        }
+      }
+    },
+    "UpdateCustomerModel": {
+      "type": "object",
+      "properties": {
+        "Name": {
+          "type": "string"
+        },
+        "Address": {
+          "type": "string"
+        },
+        "Email": {
+          "type": "string"
+        },
+        "Cellphone": {
+          "type": "string"
+        }
+      }
+    },
+    "ProblemDetails": {
+      "type": "object",
+      "additionalProperties": {},
+      "required": [
+        "Extensions"
+      ],
+      "properties": {
+        "Type": {
+          "type": "string"
+        },
+        "Title": {
+          "type": "string"
+        },
+        "Status": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "Detail": {
+          "type": "string"
+        },
+        "Instance": {
+          "type": "string"
+        },
+        "Extensions": {
+          "type": "object",
+          "additionalProperties": {}
+        }
+      }
+    },
+    "SearchPizzaModel": {
+      "type": "object",
+      "required": [
+        "PagingArgs"
+      ],
+      "properties": {
+        "Name": {
+          "type": "string"
+        },
+        "Description": {
+          "type": "string"
+        },
+        "Price": {
+          "type": "number",
+          "format": "decimal"
+        },
+        "DateCreated": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "OrderBy": {
+          "type": "string"
+        },
+        "PagingArgs": {
+          "$ref": "#/definitions/PagingArgs"
+        }
+      }
+    },
+    "Pizza": {
+      "type": "object",
+      "required": [
+        "Id",
+        "Name",
+        "Price"
+      ],
+      "properties": {
+        "Id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "Name": {
+          "type": "string"
+        },
+        "Description": {
+          "type": "string"
+        },
+        "Price": {
+          "type": "number",
+          "format": "decimal"
+        },
+        "DateCreated": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "CreatePizzaModel": {
+      "type": "object",
+      "required": [
+        "Name",
+        "Price"
+      ],
+      "properties": {
+        "Name": {
+          "type": "string"
+        },
+        "Description": {
+          "type": "string"
+        },
+        "Price": {
+          "type": "number",
+          "format": "decimal"
+        }
+      }
+    },
+    "UpdatePizzaModel": {
+      "type": "object",
+      "properties": {
+        "Name": {
+          "type": "string"
+        },
+        "Description": {
+          "type": "string"
+        },
+        "Price": {
+          "type": "number",
+          "format": "decimal"
+        }
+      }
+    }
+  }
+}
