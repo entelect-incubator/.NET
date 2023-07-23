@@ -31,4 +31,4 @@ Add the StyleCop Rule Set in every project file.
 Fix build errors
 
 Move to Step 2
-[Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%204/Step%202) 
+[Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%204/Step%202)

@@ -12,100 +12,90 @@ The following material is valuable in getting a better understanding of these pa
 - [Domain Event Pattern](https://microservices.io/patterns/data/domain-event.html)
 - [Immediate Domain Event Salvation with MediatR](https://ardalis.com/immediate-domain-event-salvation-with-mediatr/)
 
-In Core create a new folder in Order called Events. Inside of Events create an Event called OrderCompletedEvent.cs. Here we will call the EmailService created in the previous step as well as insert a Notify record in the database.
+Create a new folder Common Models folder called Order and inside create a new Order Model.
+
+OrderModel.cs
 
 ```cs
-namespace Core.Order.Events;
+namespace Common.Models.Order;
 
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
-using MediatR;
-using Common.DTO;
-using Core.Email;
-using Core.Notify.Commands;
-
-public class OrderCompletedEvent : INotification
+public class OrderModel
 {
-    public OrderDTO CompletedOrder { get; set; }
-}
+	public required CustomerModel Customer { get; set; }
 
-public class OrderCompletedEventHandler : INotificationHandler<OrderCompletedEvent>
-{
-    private readonly IMediator mediator;
-
-    public OrderCompletedEventHandler(IMediator mediator) => this.mediator = mediator;
-
-    public async Task Handle(OrderCompletedEvent notification, CancellationToken cancellationToken)
-    {
-        var path = AppDomain.CurrentDomain.BaseDirectory + "\\Email\\Templates\\OrderCompleted.html";
-        var html = File.ReadAllText(path);
-
-        html = html.Replace("<%% ORDER %%>", Convert.ToString(notification.CompletedOrder.Id));
-        var emailService = new EmailService
-        {
-            Customer = notification.CompletedOrder?.Customer,
-            HtmlContent = html
-        };
-
-        var send = await emailService.SendEmail();
-
-        var customer = notification.CompletedOrder?.Customer;
-        var notify = await this.mediator.Send(
-            new CreateNotifyCommand
-            {
-                Data = new NotifyDTO
-                {
-                    CustomerId = customer.Id,
-                    DateSent = DateTime.Now,
-                    Email = customer.Email,
-                    Sent = send.Succeeded,
-                    Retry = 0
-                }
-            }, cancellationToken);
-    }
+	public required List<PizzaModel> Pizzas { get; set; }
 }
 ```
 
-## **Update the UpdateOrderCommand**
+In Core create a new folder Order. Inside of Order create a folder called Commands and inside a Command called OrderCommand.cs. Inside Order create a folder called Events and inside create EmailEvent.cs. Here we will call the EmailService.cs created in the previous step.
 
-We want to trigger the event if the DTO Completed property that gets send is true.
+OrderCommand.cs
 
 ```cs
 namespace Core.Order.Commands;
 
-using System.Threading;
-using System.Threading.Tasks;
-using MediatR;
-using Common.DTO;
-using Common.Models;
+using Common.Models.Order;
 using Core.Order.Events;
-using DataAccess.Contracts;
 
-public class UpdateOrderCommand : IRequest<Result<OrderDTO>>
+public class OrderCommand : IRequest<Result>
 {
-    public OrderDTO Data { get; set; }
+	public required OrderModel Data { get; set; }
 }
 
-public class UpdateOrderCommandHandler : IRequestHandler<UpdateOrderCommand, Result<OrderDTO>>
+public class OrderCommandHandler(IMediator mediator) : IRequestHandler<OrderCommand, Result>
 {
-    private readonly IDataAccess<OrderDTO> dataAccess;
+	public async Task<Result> Handle(OrderCommand request, CancellationToken cancellationToken)
+	{
+		if(request.Data == null)
+		{
+			return Result.Failure("Error");
+		}
 
-    private readonly IMediator mediator;
+		await mediator.Publish(new OrderEvent { Data = request.Data }, cancellationToken);
 
-    public UpdateOrderCommandHandler(IDataAccess<OrderDTO> dataAccess, IMediator mediator)
-        => (this.dataAccess, this.mediator) = (dataAccess, mediator);
+		return Result.Success();
+	}
+}
+```
 
-    public async Task<Result<OrderDTO>> Handle(UpdateOrderCommand request, CancellationToken cancellationToken)
-    {
-        var outcome = await this.dataAccess.UpdateAsync(request.Data);
-        if (request.Data.Completed.HasValue)
-        {
-            await this.mediator.Publish(new OrderCompletedEvent { CompletedOrder = outcome }, cancellationToken);
-        }
+OrderEvent.cs
 
-        return (outcome != null) ? Result<OrderDTO>.Success(outcome) : Result<OrderDTO>.Failure("Error updating a Order");
-    }
+```cs
+namespace Core.Order.Events;
+
+using System.Text;
+using Common.Models.Order;
+using Core.Email;
+
+public class OrderEvent : INotification
+{
+	public OrderModel Data { get; set; }
+}
+
+public class OrderEventHandler(DatabaseContext databaseContext) : INotificationHandler<OrderEvent>
+{
+	async Task INotificationHandler<OrderEvent>.Handle(OrderEvent notification, CancellationToken cancellationToken)
+	{
+		var path = AppDomain.CurrentDomain.BaseDirectory + "\\Email\\Templates\\OrderCompleted.html";
+		var html = File.ReadAllText(path);
+
+		html = html.Replace("%name%", Convert.ToString(notification.Data.Customer.Name));
+
+		var pizzasContent = new StringBuilder();
+		foreach (var pizza in notification.Data.Pizzas)
+		{
+			pizzasContent.AppendLine($"<strong>{pizza.Name}</strong> - {pizza.Description}<br/>");
+		}
+
+		html = html.Replace("%pizzas%", pizzasContent.ToString());
+		var emailService = new EmailService
+		{
+			Customer = notification.Data.Customer,
+			HtmlContent = html
+		};
+
+		var send = await emailService.SendEmail();
+	}
 }
 ```
 

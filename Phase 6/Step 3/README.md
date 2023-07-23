@@ -6,6 +6,12 @@
 
 ## **Schedule Background Jobs**
 
+**Disclaimer**: This solution is effective for on-premises or virtual hosting environments. However, transitioning to a Cloud Native environment may introduce certain complexities. If you are utilizing AWS, it is recommended to employ AWS Step Functions, or if you are on Azure, Azure Logic Apps are a suitable choice. If these options are not feasible, consider exploring infrastructure options that support long-running applications such as AWS Fargate or Azure Containers.
+
+<br/>
+<hr/>
+<br/>
+
 [Hangfire](https://www.hangfire.io/) provides an easy way to perform background processing in .NET and .NET applications. No Windows Service or separate process is required.
 
 The benefit of using Hangfire is that it comes with a Dashboard. [Hangfire Dashboard](https://docs.hangfire.io/en/latest/configuration/using-dashboard.html) is a place where you could find all the information about your background jobs. It is written as an OWIN middleware, so you can plug it into your ASP.NET, ASP.NET MVC, Nancy, ServiceStack application as well as use the OWIN Self-Host feature to host Dashboard inside console applications or in Windows Services.
@@ -22,9 +28,9 @@ Adding the request on a type of queue system and forgetting about the result. Yo
 
 Create a new ASP.NET Web Application Scheduler under 01. Apis
 
-![](Assets/2021-01-28-07-32-39.png)
+![](./Assets/2023-07-23-08-49-01.png)
 
-![](Assets/2021-01-28-07-33-13.png)
+![](./Assets/2023-07-23-08-50-06.png)
 
 ## **Nuget Packages**
 
@@ -32,37 +38,53 @@ Once the project is ready, I will open the NuGet package manager UI and add the 
 
 - [ ] Hangfire.Core – The core package that supports the core logic of Hangfire
 - [ ] Hangfire.AspNetCore – Support for ASP.NET Middleware and Middleware for the dashboard user interface
-- [ ] Hangfire.SqlServer - SQL Server 2008+ (including Express), SQL Server LocalDB and SQL Azure storage support for Hangfire (background job system for ASP.NET applications).
+- [ ] Hangfire.InMemory - In-memory job storage for Hangfire with transactional implementation.
+- [ ] Microsoft.Extensions.DependencyInjection
+- [ ] Microsoft.AspNetCore.Mvc.NewtonsoftJson
+- [ ] LazyCache.AspNetCore
 
-## **Connection String**
+Remove WeatherForecast.cs and WeatherForecastController.cs
 
-Add Connection String in appsetting.json Scheduler
-
-```json
-"ConnectionStrings": {
-    "PezzaDatabase": "Server=.;Database=PezzaDb;Trusted_Connection=True;"
-},
-```
+Copy Program.cs, GlobalUsings.cs and Startup.cs from Api project
 
 ## **Configuring Hangfire**
 
 Once all the NuGet packages are installed, it is time to configure the server. To do that, I will open the Startup.cs file and update the ConfigureServices method of the Startup class.
 
+GlobalUsings.cs
+
+```cs
+global using DataAccess;
+```
+
+Program.cs
+
+```cs
+var builder = WebApplication.CreateBuilder(args);
+var startup = new Api.Startup(builder.Configuration);
+startup.ConfigureServices(builder.Services); // calling ConfigureServices method
+var app = builder.Build();
+startup.Configure(app, builder.Environment); // calling Configure method
+```
+
 ```cs
 services.AddHangfire(config =>
-    config.SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
-        .UseSimpleAssemblyNameTypeSerializer()
-        .UseDefaultTypeSerializer()
-        .UseSqlServerStorage(this.Configuration.GetConnectionString("PezzaDatabase")));
+			config
+				.UseSimpleAssemblyNameTypeSerializer()
+				.UseDefaultTypeSerializer()
+				.UseInMemoryStorage());
+		services.AddHangfireServer();
 ```
+
+In the Project properties remember to turn XML Documentation on
+
+![](./Assets/2023-07-23-09-12-15.png)
 
 In the above code, the AddHangfire method takes an Action delegate, which passes IGlobalConfiguration of the Hangfire ecosystem to configure the Hangfire.
 
-And here first I will call the SetDataCompatibilityLevel method on the IGlobalConfiguration instance passed to set the compatibility to Version_170.
-
 Next, I will call the UseSimpleAssemblyNameTypeSerializer and UseDefaultTypeSerializer one after the other, to set serialization configuration.
 
-Finally, I will call UseSqlServerStorage and pass it the connection string to the Pezza database to set up the storage provider.
+Finally, I will call UseInMemoryStorage and will use InMemory for this Incubator.
 
 Next, I will call the extension method AddHangfireServer on the IServiceCollection instance to add the Hangfire server to the dependency injection container. Which we will use later to configure and run jobs.
 
@@ -74,82 +96,362 @@ Once the basic setup for the dependency injection container is done, now I will 
 app.UseHangfireDashboard();
 ```
 
-Finally, just to test a basic Hangfire job, I will use the Enqueue method of the IBackgroundJobClient instance to enqueue a simple Console.WriteLine statement.
+Add Common Project to Scheduler Project
 
-To achieve this I will update the Configure method to accept a new parameter IBackgroundJobClient. This will be passed by the dependency injection container since we added the Hangfire server earlier by calling the AddHangfireServer method.
+Final Startup.cs
+
+Startup.cs
 
 ```cs
-backgroundJobClient.Enqueue(() => Console.WriteLine("Run Hangfire job while it's hot!"));
+namespace Api;
+
+using System.Reflection;
+using System.Text.Json.Serialization;
+using Common.Behaviour;
+using Core;
+using Hangfire;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using Scheduler.Jobs;
+
+public class Startup
+{
+	public Startup(IConfiguration configuration) => this.ConfigRoot = configuration;
+
+	public IConfiguration ConfigRoot
+	{
+		get;
+	}
+
+	public void ConfigureServices(IServiceCollection services)
+	{
+		services.AddHangfire(config =>
+			config
+				.UseSimpleAssemblyNameTypeSerializer()
+				.UseDefaultTypeSerializer()
+				.UseInMemoryStorage());
+		services.AddHangfireServer();
+
+		services.AddControllers(options => options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true)
+			.AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()))
+			.AddNewtonsoftJson(x => x.SerializerSettings.ContractResolver = new DefaultContractResolver())
+			.AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
+
+		DependencyInjection.AddApplication(services);
+		services.AddSwaggerGen(c =>
+		{
+			c.SwaggerDoc("v1", new OpenApiInfo
+			{
+				Title = "Pezza API",
+				Version = "v1"
+			});
+
+			var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+			var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+			c.IncludeXmlComments(xmlPath);
+		});
+
+		services.AddLazyCache();
+		services.AddDbContext<DatabaseContext>(options =>
+			options.UseInMemoryDatabase(Guid.NewGuid().ToString()));
+
+		services.AddResponseCompression(options =>
+		{
+			options.Providers.Add<BrotliCompressionProvider>();
+			options.Providers.Add<GzipCompressionProvider>();
+		});
+		services.AddResponseCompression();
+
+		services.AddScoped<IOrderCompleteJob, OrderCompleteJob>();
+	}
+
+	public void Configure(WebApplication app, IWebHostEnvironment env)
+	{
+		app.UseSwagger();
+		app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Pezza Scheduler API V1"));
+		app.UseHttpsRedirection();
+		app.UseMiddleware(typeof(ExceptionHandlerMiddleware));
+		app.UseRouting();
+		app.UseEndpoints(endpoints => endpoints.MapControllers());
+		app.UseAuthorization();
+		app.UseResponseCompression();
+		app.UseHangfireDashboard();
+
+		var jobOptions = new RecurringJobOptions()
+		{
+			TimeZone = TimeZoneInfo.Local
+		};
+		RecurringJob.AddOrUpdate<IOrderCompleteJob>("SendNotificationAsync", x => x.SendNotificationAsync(), "0 * * ? * *");
+
+		app.Run();
+	}	
+}
 ```
 
 ## **Running the Scheduler**
+
+Set Scheduler as Startup Project
 
 Now, the above job will just print Run Hangfire job while it's hot! to the console output.
 
 I will run the application to see the output as well as the Hangfire dashboard UI. To access the dashboard UI, we will navigate to the resource /hangfire.
 
-![](Assets/2021-01-28-07-46-20.png)
+![](./Assets/2023-07-23-09-13-16.png)
 
-Remove the backgroundJobClient.Enqueue.
+## **Create a very basic notifications Queue**
 
-## **Refactor**
-
-Before we can create the recurring job we need to change the Order Complete Event to add to the Notify table as a queue item instead of sending the email out.
-
-Hold on to this piece of code for later
+Add new Notify Entity in Common\Entities
 
 ```cs
-var emailService = new EmailService
+namespace Common.Entities;
+
+public class Notify
 {
-    Customer = notification.CompletedOrder?.Customer,
-    HtmlContent = html
-};
+	public int Id { get; set; }
 
-var send = await emailService.SendEmail();
+	public required int CustomerId { get; set; }
+
+	public required string CustomerEmail { get; set; }
+
+	public required string EmailContent { get; set; }
+
+	public required bool Sent { get; set; }
+
+	public DateTime? DateSent { get; set; }
+
+	public virtual Customer Customer { get; set; }
+}
 ```
 
-When calling unsent notifications we want to pull in the customer detail as well. To do this we will need to add a foreign Key to Customers on the Notify Table.
-
-![](Assets/2021-01-28-08-38-32.png)
-
-Modify Customer.cs by adding the following property
+Add Notifies to Customer.cs Entity
 
 ```cs
-public virtual ICollection<Notify> Notifies { get; set; }
+namespace Common.Entities;
+
+public sealed class Customer
+{
+	public Customer() => this.Notifies = new HashSet<Notify>();
+
+	public int Id { get; set; }
+
+	public required string Name { get; set; }
+
+	public string? Address { get; set; }
+
+	public string? Email { get; set; }
+
+	public string? Cellphone { get; set; }
+
+	public DateTime DateCreated { get; set; }
+
+	public ICollection<Notify> Notifies { get; }
+}
 ```
 
-In Common, modify Notify.cs and NotifyDTO.cs. Add a Customer property to Notify.cs
+
+Add new Database Mapping in DataAccess\Mapping
 
 ```cs
-public virtual Customer Customer { get; set; }
+namespace DataAccess.Mapping;
+
+using System.Reflection.Emit;
+using System.Security.Claims;
+using Common.Entities;
+using Microsoft.EntityFrameworkCore;
+
+public sealed class NotifyMap : IEntityTypeConfiguration<Notify>
+{
+	public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Notify> builder)
+	{
+		builder.ToTable("Notify", "dbo");
+
+		builder.HasKey(t => t.Id);
+
+		builder.Property(t => t.Id)
+			.IsRequired()
+			.HasColumnName("Id")
+			.HasColumnType("int")
+			.ValueGeneratedOnAdd();
+
+		builder.Property(t => t.CustomerId)
+			.IsRequired()
+			.HasColumnName("CustomerId")
+			.HasColumnType("int");
+
+		builder.Property(t => t.CustomerEmail)
+			.IsRequired()
+			.HasColumnName("CustomerEmail")
+			.HasColumnType("varchar(500)")
+			.HasMaxLength(500);
+
+		builder.Property(t => t.EmailContent)
+			.HasColumnName("EmailContent")
+			.HasColumnType("varchar(max)");
+
+		builder.Property(t => t.Sent)
+			.HasColumnName("Sent")
+			.HasColumnType("bool");
+
+		builder.Property(t => t.DateSent)
+			.IsRequired()
+			.HasColumnName("DateSent")
+			.HasColumnType("datetime");
+
+		builder.HasOne(y => y.Customer)
+			.WithMany(x => x.Notifies)
+			.HasForeignKey(x => x.CustomerId);
+	}
+}
 ```
 
-and a CustomerDTO property to NotifyDTO.cs
+Modify DatabaseContext to have the new Notify Entity and Mapping
 
 ```cs
-public virtual CustomerDTO Customer { get; set; }
+namespace DataAccess;
+
+public class DatabaseContext : DbContext
+{
+	public DatabaseContext()
+	{
+	}
+
+	public DatabaseContext(DbContextOptions options) : base(options)
+	{
+	}
+
+	public virtual DbSet<Customer> Customers { get; set; }
+
+	public virtual DbSet<Pizza> Pizzas { get; set; }
+
+	public virtual DbSet<Notify> Notifies { get; set; }
+
+	protected override void OnModelCreating(ModelBuilder modelBuilder)
+	{
+		modelBuilder.ApplyConfiguration(new CustomerMap());
+		modelBuilder.ApplyConfiguration(new PizzaMap());
+		modelBuilder.ApplyConfiguration(new NotifyMap());
+	}
+
+	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => optionsBuilder.UseInMemoryDatabase(databaseName: "PezzaDb");
+}
 ```
 
-In DataAccess\Mapping modify NotifyMap.cs
+Modify OrderEvent to add Order to Notify table instead of the fire and forget.
 
 ```cs
-builder.HasOne(t => t.Customer)
-    .WithMany(t => t.Notifies)
-    .HasForeignKey(d => d.CustomerId)
-    .HasConstraintName("FK_Notify_Customer");
+namespace Core.Order.Events;
+
+using System.Text;
+using Common.Entities;
+using Common.Models.Order;
+using DataAccess;
+
+public class OrderEvent : INotification
+{
+	public OrderModel Data { get; set; }
+}
+
+public class OrderEventHandler(DatabaseContext databaseContext) : INotificationHandler<OrderEvent>
+{
+	async Task INotificationHandler<OrderEvent>.Handle(OrderEvent notification, CancellationToken cancellationToken)
+	{
+		var path = AppDomain.CurrentDomain.BaseDirectory + "\\Email\\Templates\\OrderCompleted.html";
+		var html = File.ReadAllText(path);
+
+		html = html.Replace("%name%", Convert.ToString(notification.Data.Customer.Name));
+
+		var pizzasContent = new StringBuilder();
+		foreach (var pizza in notification.Data.Pizzas)
+		{
+			pizzasContent.AppendLine($"<strong>{pizza.Name}</strong> - {pizza.Description}<br/>");
+		}
+
+		html = html.Replace("%pizzas%", pizzasContent.ToString());
+
+		databaseContext.Notifies.Add(new Notify
+		{
+			CustomerId = notification.Data.Customer.Id,
+			CustomerEmail = notification.Data?.Customer?.Email,
+			DateSent = null,
+			EmailContent = html,
+			Sent = false
+		});
+		await databaseContext.SaveChangesAsync(cancellationToken);
+	}
+}
 ```
 
-NotifyDataAccess.cs
+Add new GetNotifiesQuery in Core Project
+
+![](./Assets/2023-07-23-09-32-18.png)
 
 ```cs
-var entities = this.databaseContext.Notify.Include(x => x.Customer).Select(x => x)
+namespace Core.Pizza.Queries;
+
+using Common.Entities;
+
+public class GetNotifiesQuery : IRequest<ListResult<Notify>>
+{
+}
+
+public class GetNotifiesQueryHandler(DatabaseContext databaseContext) : IRequestHandler<GetNotifiesQuery, ListResult<Notify>>
+{
+	public async Task<ListResult<Notify>> Handle(GetNotifiesQuery request, CancellationToken cancellationToken)
+	{
+		var entities = databaseContext.Notifies
+			.Select(x => x)
+			.Include(x => x.Customer)
+			.Where(x => x.Sent == false)
+			.AsNoTracking();
+
+		var count = entities.Count();
+		var data = await entities.ToListAsync(cancellationToken);
+
+		return ListResult<Notify>.Success(data, count);
+	}
+}
 ```
 
-Startup.cs
+Add UpdateNotifyCommand to Modify Sent if Email was sent
+
+![](./Assets/2023-07-23-09-50-43.png)
 
 ```cs
-services.AddDbContext<DatabaseContext>(options => 
-    options.UseSqlServer(this.Configuration.GetConnectionString("PezzaDatabase")));
+namespace Core.Notify.Commands;
+
+public class UpdateNotifyCommand : IRequest<Result>
+{
+	public int Id { get; set; }
+
+	public bool Sent { get; set; }
+}
+
+public class UpdateNotifyCommandHandler(DatabaseContext databaseContext) : IRequestHandler<UpdateNotifyCommand, Result>
+{
+	public async Task<Result> Handle(UpdateNotifyCommand request, CancellationToken cancellationToken)
+	{
+		var query = EF.CompileAsyncQuery((DatabaseContext db, int id) => db.Notifies.FirstOrDefault(c => c.Id == id));
+		var findEntity = await query(databaseContext, request.Id);
+		if (findEntity == null)
+		{
+			return Result.Failure("Not found");
+		}
+
+		findEntity.Sent = request.Sent;
+
+		var outcome = databaseContext.Notifies.Update(findEntity);
+		var result = await databaseContext.SaveChangesAsync(cancellationToken);
+
+		return result > 0 ? Result.Success() : Result.Failure("Error");
+	}
+}
 ```
 
 ## **Create a recurring job**
@@ -166,73 +468,50 @@ Create a new folder called Jobs inside Scheduler and inside that IOrderCompleteJ
 namespace Scheduler.Jobs;
 
 using System.Threading.Tasks;
+using Common;
+using Common.Mappers;
+using Core.Email;
+using Core.Notify.Commands;
+using Core.Pizza.Queries;
+using MediatR;
 
 public interface IOrderCompleteJob
 {
-    Task SendNotificationAsync();
+	Task SendNotificationAsync();
 }
-```
 
-```cs
-namespace Scheduler.Jobs;
-
-using System.Threading.Tasks;
-using MediatR;
-using Common.DTO;
-using Common.Models;
-using Core.Customer.Queries;
-using Core.Email;
-using Core.Notify.Commands;
-using Core.Notify.Queries;
-
-public class OrderCompleteJob : IOrderCompleteJob
+public sealed class OrderCompleteJob(IMediator mediator) : IOrderCompleteJob
 {
-    private readonly IMediator mediator;
+	public async Task SendNotificationAsync()
+	{
+		var notifiesResult = await mediator.Send(new GetNotifiesQuery());
 
-    public OrderCompleteJob(IMediator mediator) => this.mediator = mediator;
-
-    public async Task SendNotificationAsync()
-    {
-        var notifiesResult = await this.mediator.Send(new GetNotifiesQuery
-        {
-            Data = new NotifyDTO
-            {
-                Sent = false,
-                PagingArgs = PagingArgs.Default
-            }
-        });
-
-        if (notifiesResult.Succeeded)
-        {
-            foreach (var notification in notifiesResult.Data)
-            {
-                if (notification.CustomerId.HasValue)
-                {
-                    var customerResult = await this.mediator.Send(new GetCustomerQuery
-                    {
-                        Id = notification.CustomerId.Value
-                    });
-
-                    if (customerResult.Succeeded)
-                    {
-                        var emailService = new EmailService
-                        {
-                            Customer = customerResult.Data,
-                            HtmlContent = notification.Email
-                        };
-
-                        var emailResult = await emailService.SendEmail();
-
-                        if (emailResult.Succeeded)
-                        {
-                            notification.Sent = true;
-                            var updateNotifyResult = await this.mediator.Send(new UpdateNotifyCommand { Data = notification });
-                        }
-                    }
-                }
-            }
-        }
-    }
+		if (notifiesResult.Succeeded)
+		{
+			foreach (var notification in notifiesResult.Data)
+			{
+				var emailService = new EmailService
+				{
+					Customer = notification.Customer.Map(),
+					HtmlContent = notification.EmailContent
+				};
+				var emailResult = await emailService.SendEmail();
+				if (emailResult.Succeeded)
+				{
+					notification.Sent = true;
+					var updateNotifyResult = await mediator.Send(new UpdateNotifyCommand
+					{
+						Id = notification.Id,
+						Sent = true
+					});
+					if (!updateNotifyResult.Succeeded)
+					{
+						Logging.LogException(new Exception(string.Join("", updateNotifyResult.Errors)));
+					}
+				}
+			}
+		}
+	}
 }
 ```
 
@@ -242,29 +521,27 @@ Once the OrderCompleteJob class is created, it is time to configure the Startup 
 
 Firstly, I will add the OrderCompleteJob to the dependency injection container in the ConfigureServices method.
 
+At the end of ConfigureServices in Startup.cs
+
 ```cs
-services.AddSingleton<IOrderCompleteJob, OrderCompleteJob>();
+services.AddScoped<IOrderCompleteJob, OrderCompleteJob>();
 ```
 
 Secondly, I will update the Configure method to take two new parameters. The first one is the IRecurringJobManager necessary for creating a recurring job. And the second one is the IServiceProvider to get the IOrderCompleteJob instance from the dependency injection container.
 
-Thirdly, I will call the AddOrUpdate on the IRecurringJobManager instance to set up a recurring job.
+Thirdly, I will call the AddOrUpdate on the RecurringJobManager instance to set up a recurring job at the end of Configure method in Startup.cs.
 
 ```cs
-public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IRecurringJobManager recurringJobManager, IServiceProvider serviceProvider)
-```
-
-```cs
-recurringJobManager.AddOrUpdate(
-    "Run every minute",
-    () => serviceProvider.GetService<IOrderCompleteJob>().SendNotificationAsync(),
-    "* * * * *"
-    );
+var jobOptions = new RecurringJobOptions()
+{
+	TimeZone = TimeZoneInfo.Local
+};
+RecurringJob.AddOrUpdate<IOrderCompleteJob>("SendNotificationAsync", x => x.SendNotificationAsync(), "0 * * ? * *");
 ```
 
 In the above code, the CRON expression "* * * * *" is an expression to run the job every minute.
 
-![](Assets/2021-01-28-09-00-40.png)
+![](.\Assets\2023-07-23-13-31-35.png)
 
 ## **Phase 7 - Create UI's**
 

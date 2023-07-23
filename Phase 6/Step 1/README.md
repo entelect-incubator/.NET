@@ -70,4 +70,4 @@ In the next step we will look at how to call the email service with the use of M
 ## **STEP 2 - Event**
 
 Move to Step 2
-[Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%206/Step%202) 
+[Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%206/Step%202)
