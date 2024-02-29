@@ -176,49 +176,6 @@ We need to create a DatabaseContext.cs inside of DataAccess. A [DbContext](https
 
 ![](./Assets/2023-03-30-21-10-51.png)
 
-PizzaMap.cs under Mapping folder
-
-```cs
-namespace DataAccess.Mapping;
-
-public sealed class PizzaMap : IEntityTypeConfiguration<Pizza>
-{
-	public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Pizza> builder)
-	{
-		builder.ToTable("Pizza", "dbo");
-
-		builder.HasKey(t => t.Id);
-
-		builder.Property(t => t.Id)
-			.IsRequired()
-			.HasColumnName("Id")
-			.HasColumnType("int")
-			.ValueGeneratedOnAdd();
-
-		builder.Property(t => t.Name)
-			.IsRequired()
-			.HasColumnName("Name")
-			.HasColumnType("varchar(100)")
-			.HasMaxLength(100);
-
-		builder.Property(t => t.Description)
-			.HasColumnName("Description")
-			.HasColumnType("varchar(500)")
-			.HasMaxLength(500);
-
-		builder.Property(t => t.Price)
-			.HasColumnName("Price")
-			.HasColumnType("decimal(17, 2)");
-
-		builder.Property(t => t.DateCreated)
-			.IsRequired()
-			.HasColumnName("DateCreated")
-			.HasColumnType("datetime")
-			.HasDefaultValueSql("(getdate())");
-	}
-}
-```
-
  DatabaseContext.cs
 
 ```cs
