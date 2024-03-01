@@ -588,7 +588,7 @@ public static class PizzaTestData
 {
 	public static Faker faker = new Faker();
 
-	public static Pizza Pizza = new Pizza()
+	public static PizzaModel Pizza = new Pizza()
 	{
 		Id = 1,
 		Name = faker.PickRandom(pizzas),
