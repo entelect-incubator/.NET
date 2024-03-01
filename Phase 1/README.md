@@ -765,7 +765,7 @@ public class Startup {
 }
 ```
 
-Inside of Startup.cs add DependencyInjection.cs inside of ConfigureService.
+Inside of Startup.cs add DependencyInjection.cs inside of ConfigureServices.
 
 ```cs
 DependencyInjection.AddApplication(services);
