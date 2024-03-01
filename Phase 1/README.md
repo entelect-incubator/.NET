@@ -401,49 +401,6 @@ public class DatabaseContextFactory
 }
 ```
 
-Next we will create Test Data for each Entity. Inside the folder **TestData**, then create a folder **Pizza**. Create a **PizzaTestData.cs** class. This will create a fake Pizza Entity for testing. <br/> ![](./Assets/2023-03-21-22-41-17.png)
-
-PizzaTestData.cs
-
-```cs
-namespace Test.Setup.TestData.Pizza;
-
-public static class PizzaTestData
-{
-	public static Faker faker = new();
-
-	public static Pizza Pizza = new()
-	{
-		Id = 1,
-		Name = faker.PickRandom(pizzas),
-		Description = string.Empty,
-		Price = faker.Finance.Amount(),
-		DateCreated = DateTime.Now,
-	};
-
-	public static PizzaModel PizzaModel = new()
-	{
-		Id = 1,
-		Name = faker.PickRandom(pizzas),
-		Description = string.Empty,
-		Price = faker.Finance.Amount(),
-		DateCreated = DateTime.Now
-		
-	};
-
-	private static readonly List<string> pizzas = new() 
-	{ 
-		"Veggie Pizza",
-		"Pepperoni Pizza",
-		"Meat Pizza",
-		"Margherita Pizza",
-		"BBQ Chicken Pizza",
-		"Hawaiian Pizza"
-	};
-}
-
-```
-
 ## **Create the Core Layer**
 
 ### **Intro**
