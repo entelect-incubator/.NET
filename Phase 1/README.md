@@ -176,49 +176,6 @@ We need to create a DatabaseContext.cs inside of DataAccess. A [DbContext](https
 
 ![](./Assets/2023-03-30-21-10-51.png)
 
-PizzaMap.cs under Mapping folder
-
-```cs
-namespace DataAccess.Mapping;
-
-public sealed class PizzaMap : IEntityTypeConfiguration<Pizza>
-{
-	public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Pizza> builder)
-	{
-		builder.ToTable("Pizza", "dbo");
-
-		builder.HasKey(t => t.Id);
-
-		builder.Property(t => t.Id)
-			.IsRequired()
-			.HasColumnName("Id")
-			.HasColumnType("int")
-			.ValueGeneratedOnAdd();
-
-		builder.Property(t => t.Name)
-			.IsRequired()
-			.HasColumnName("Name")
-			.HasColumnType("varchar(100)")
-			.HasMaxLength(100);
-
-		builder.Property(t => t.Description)
-			.HasColumnName("Description")
-			.HasColumnType("varchar(500)")
-			.HasMaxLength(500);
-
-		builder.Property(t => t.Price)
-			.HasColumnName("Price")
-			.HasColumnType("decimal(17, 2)");
-
-		builder.Property(t => t.DateCreated)
-			.IsRequired()
-			.HasColumnName("DateCreated")
-			.HasColumnType("datetime")
-			.HasDefaultValueSql("(getdate())");
-	}
-}
-```
-
  DatabaseContext.cs
 
 ```cs
@@ -444,49 +401,6 @@ public class DatabaseContextFactory
 }
 ```
 
-Next we will create Test Data for each Entity. Inside the folder **TestData**, then create a folder **Pizza**. Create a **PizzaTestData.cs** class. This will create a fake Pizza Entity for testing. <br/> ![](./Assets/2023-03-21-22-41-17.png)
-
-PizzaTestData.cs
-
-```cs
-namespace Test.Setup.TestData.Pizza;
-
-public static class PizzaTestData
-{
-	public static Faker faker = new();
-
-	public static Pizza Pizza = new()
-	{
-		Id = 1,
-		Name = faker.PickRandom(pizzas),
-		Description = string.Empty,
-		Price = faker.Finance.Amount(),
-		DateCreated = DateTime.Now,
-	};
-
-	public static PizzaModel PizzaModel = new()
-	{
-		Id = 1,
-		Name = faker.PickRandom(pizzas),
-		Description = string.Empty,
-		Price = faker.Finance.Amount(),
-		DateCreated = DateTime.Now
-		
-	};
-
-	private static readonly List<string> pizzas = new() 
-	{ 
-		"Veggie Pizza",
-		"Pepperoni Pizza",
-		"Meat Pizza",
-		"Margherita Pizza",
-		"BBQ Chicken Pizza",
-		"Hawaiian Pizza"
-	};
-}
-
-```
-
 ## **Create the Core Layer**
 
 ### **Intro**
@@ -674,7 +588,7 @@ public static class PizzaTestData
 {
 	public static Faker faker = new Faker();
 
-	public static Pizza Pizza = new Pizza()
+	public static PizzaModel Pizza = new Pizza()
 	{
 		Id = 1,
 		Name = faker.PickRandom(pizzas),
@@ -851,7 +765,7 @@ public class Startup {
 }
 ```
 
-Inside of Startup.cs add DependencyInjection.cs inside of ConfigureService.
+Inside of Startup.cs add DependencyInjection.cs inside of ConfigureServices.
 
 ```cs
 DependencyInjection.AddApplication(services);
