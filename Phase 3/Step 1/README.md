@@ -1,6 +1,6 @@
-<img align="left" width="116" height="116" src="../pezza-logo.png" />
+<img align="left" width="116" height="116" src="../logo.png" />
 
-# &nbsp;**Pezza - Phase 3 - Step 1** [![.NET - Phase 3 - Step 1](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phas3-step1.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phas3-step1.yml)
+# &nbsp;**E List - Phase 3 - Step 1** [![.NET - Phase 3 - Step 1](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phas3-step1.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phas3-step1.yml)
 
 <br/><br/>
 
@@ -30,7 +30,7 @@ global using Microsoft.EntityFrameworkCore;
 
 Let's start with creating Validators for Pizza Commands.
 
-Add a new class in the folder Pizza/Commands 
+Add a new class in the folder Pizza/Commands
 
 CreatePizzaCommandValidator.cs
 
@@ -158,7 +158,6 @@ public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TReques
 ```
 
 make sure FluentValidation.DependencyInjection Nuget Package is installed.
-
 
 DependencyInjection.cs
 
@@ -289,5 +288,4 @@ When the validation rules get violated a Bad Request will be returned.
 
 ## **STEP 2 - Filtering & Searching**
 
-Move to Step 2
-[Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%203/Step%202)
+Move to Step 2 [Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%203/Step%202)

@@ -1,6 +1,6 @@
-<img align="left" width="116" height="116" src="../pezza-logo.png" />
+<img align="left" width="116" height="116" src="../logo.png" />
 
-# &nbsp;**Pezza - Phase 3 - Step 2** [![.NET - Phase 3 - Step 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase3-step2.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase3-step2.yml)
+# &nbsp;**E List - Phase 3 - Step 2** [![.NET - Phase 3 - Step 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase3-step2.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase3-step2.yml)
 
 <br/><br/>
 
@@ -205,7 +205,7 @@ For example, modify CustomerController.cs as follows.
 	/// <returns>A <see cref="Task"/> repres
 	/// enting the asynchronous operation.</returns>
 	/// <response code="200">Customer Search</response>
-	/// <response code="400">Error searching for customers</response>
+	/// <response code="400">Error searching for clients</response>
 	[HttpPost]
 	[ProducesResponseType(typeof(ListResult<CustomerModel>), 200)]
 	[ProducesResponseType(typeof(ErrorResult), 400)]

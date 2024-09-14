@@ -20,7 +20,7 @@ public class EmailService
 		plainText = Regex.Replace(plainText, @"\s+", " ").Trim();
 
 		var email = await Email
-			.From("notify@pezza.com", "Pezza")
+			.From("notify@pezza.com", "EList")
 			.To(this.Customer?.Email, this.Customer?.Name)
 			.Subject("Collect your order it while it's hot")
 			.Body(this.HtmlContent)

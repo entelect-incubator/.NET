@@ -41,7 +41,7 @@ public class CustomerController : ApiController
     /// <returns>A <see cref="Task"/> repres
     /// enting the asynchronous operation.</returns>
     /// <response code="200">Customer Search.</response>
-    /// <response code="400">Error searching for customers.</response>
+    /// <response code="400">Error searching for clients.</response>
     [HttpPost]
     [ProducesResponseType(typeof(ListResult<CustomerDTO>), 200)]
     [ProducesResponseType(typeof(ErrorResult), 400)]

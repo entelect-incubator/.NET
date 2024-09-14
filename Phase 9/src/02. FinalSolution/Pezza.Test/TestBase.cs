@@ -7,7 +7,7 @@ public class TestBase : DatabaseContextTest
     public TestBase()
     : base(
         new DbContextOptionsBuilder<DbContext>()
-            .UseInMemoryDatabase("PezzaDb")
+            .UseInMemoryDatabase("EListDb")
             .Options)
     {
     }

@@ -23,5 +23,5 @@ public class DatabaseContext : DbContext
 		modelBuilder.ApplyConfiguration(new NotifyMap());
 	}
 
-	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => optionsBuilder.UseInMemoryDatabase(databaseName: "PezzaDb");
+	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => optionsBuilder.UseInMemoryDatabase(databaseName: "EListDb");
 }

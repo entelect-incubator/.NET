@@ -1,26 +1,24 @@
-<img align="left" width="116" height="116" src="./Assets/pezza-logo.png" />
+<img align="left" width="116" height="116" src="./Assets/logo.png" />
 
-# &nbsp;**Pezza - Phase 1** [![.NET](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase1-finalsolution.yml/badge.svg?branch=master)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase1-finalsolution.yml)
+# &nbsp;**E List - Phase 1** [![.NET](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase1-finalsolution.yml/badge.svg?branch=master)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase1-finalsolution.yml)
 
 <br/><br/>
 
-We will be looking at creating a solution for Pezza's customers only. We will start with what a typical solution might look like and refactor it into a clean architecture that can be used throughout the rest of the incubator. We will only be focussing on the Pezza Stock for this Phase. This is to show the scaffold of a new solution and projects according to [.NET Clean Architecture](https://github.com/entelect-incubator/.NET-CleanArchitecture).
+In this phase, we will develop a solution for E List's tasks. We will begin by examining a typical solution structure and then refactor it into a layered architecture that can be applied throughout the rest of the incubator. This phase will focus exclusively on E List tasks to demonstrate the foundational setup of a new solution and projects in line with the [.NET Layered Architecture](https://github.com/entelect-incubator/.NET-Template/tree/master/1.%20LayeredArchitecture).
 
 ## **What you will be building in Phase 1**
 
-![Phase 1 End Solution](./Assets/2021-08-26-19-31-55.png)
+![](./Assets/2024-09-14-09-40-39.png)
 
 ## **Setup**
 
 For the database we will be using InMemory Database that can be modified at a later stage to MSSQL, MySQL or Postgres.
 
-Create a new Pezza Solution - CMD Run dotnet new sln
+Create a new EList Solution - CMD Run dotnet new sln or use Visual Studio
 
-![Database Context Interface Setup](./Assets/phase-1-new-solution.PNG)
+Create Folder Structure in your new Solution as below.
 
-Create Clean Architecture Folder Structure in your new Solution as below.
-
-![](./Assets/2021-08-26-19-39-43.png)
+![](./Assets/2024-09-14-09-41-52.png)
 
 ## **Create the Common Layer**
 
@@ -28,14 +26,17 @@ This will contain all entities, enums, exceptions, interfaces and types.
 
 **Nuget Packages Required**
 
-- [ ] [Mapperly](https://github.com/riok/mapperly)
+-   [ ] [Mapperly](https://github.com/riok/mapperly)
 
-Create a new Class Library **Common** <br/> ![](Assets/2020-09-11-10-01-34.png) <br/> 
-![](./Assets/2023-03-30-08-55-11.png)
+Create a new Class Library **Common** <br/> ![](./Assets/2024-09-14-09-43-33.png)
 
-![](./Assets/2023-03-30-08-53-07.png)
+![](./Assets/2024-09-14-09-42-46.png)
 
-Create a folder *Entities* where all database models will go into <br/> ![](./Assets/2023-03-30-09-05-46.png)
+Create a folder _Entities_ where all database models will go into <br/> ![](./Assets/2024-09-14-09-44-02.png)
+
+Install Mapperly
+
+![](./Assets/2024-09-14-09-51-19.png)
 
 Add Implicit Usings to the csproj file by double clicking on the project.
 
@@ -50,111 +51,98 @@ Add GlobalUsings.cs
 ```cs
 global using Common.Entities;
 global using Common.Models;
+global using Riok.Mapperly.Abstractions;
 ```
 
-Create a Entity Pizza.cs in a folder **Entities** <br/>![](./Assets/2023-03-30-09-06-16.png)
+Create a Entity Todo.cs in a folder **Entities**
 
-Pizza.cs
+Todo.cs
 
 ```cs
-public class Pizza
+public sealed class Todo
 {
-	public required int Id { get; set; }
+	public int Id { get; set; }
 
-	public required string Name { get; set; }
+	public required string Task { get; set; }
 
-	public string? Description { get; set; }
-
-	public decimal Price { get; set; }
+	public bool IsCompleted { get; set; }
 
 	public DateTime? DateCreated { get; set; }
+
+	public Guid SessionId { get; set; }
 }
 ```
 
-Create a folder *Models* where all models will go into <br/>  
-![](./Assets/2023-03-30-08-58-05.png)
+Create a folder _Models_ where all models will go into <br/>  
+![](./Assets/2024-09-14-09-47-56.png)
 
-Create a model PizzaModel.cs in a folder **Models** <br/>
-![](./Assets/2023-03-30-08-58-51.png)
+Create a model TodoModel.cs in a folder **Models** <br/> ![](./Assets/2024-09-14-09-49-01.png)
 
-PizzaModel.cs
+TodoModel.cs
 
 ```cs
 namespace Common.Models;
 
 public sealed class PizzaModel
 {
-	public required int Id { get; set; }
+	public int Id { get; set; }
 
-	public required string Name { get; set; }
+	public required string Task { get; set; }
 
-	public string? Description { get; set; }
-
-	public decimal? Price { get; set; }
+	public bool IsCompleted { get; set; }
 
 	public DateTime? DateCreated { get; set; }
+
+	public Guid SessionId { get; set; }
 }
 ```
 
-Create a folder **Mappers**. Create a **Mapper.cs** to Map from Model to Entity and other way around <br/> 
+Create a folder **Mappers**. Create a **Mapper.cs** to Map from Model to Entity and other way around <br/>
 
-![](./Assets/2023-03-30-09-03-49.png)
+![](./Assets/2024-09-14-09-51-43.png)
 
 Mapper.cs
 
 ```cs
-namespace Common.Mappers;
-
-public static class Mapper
+[Mapper]
+public static partial class TodoMapper
 {
-	public static PizzaModel Map(this Pizza pizza)
-		=> new()
-		{
-			Id = pizza.Id,
-			Name = pizza.Name,
-			Description = pizza.Description,
-			Price = pizza.Price,
-			DateCreated = pizza.DateCreated
-		};
+	public static partial Todo Map(this TodoModel model);
 
-	public static Pizza Map(this PizzaModel pizza)
-	{
-		var entity = new Pizza
-		{
-			Id = pizza.Id,
-			Name = pizza.Name,
-			Description = pizza.Description,
-			DateCreated = pizza.DateCreated
-		};
+	public static partial TodoModel Map(this Todo entity);
 
-		if (pizza.Price.HasValue)
-		{
-			entity.Price = pizza.Price.Value;
-		}
-
-		return entity;
-	}
-
-	public static IEnumerable<PizzaModel> Map(this List<Pizza> pizzas)
+	public static IEnumerable<TodoModel> Map(this List<Todo> pizzas)
 		=> pizzas.Select(x => x.Map());
 
-	public static IEnumerable<Pizza> Map(this List<PizzaModel> pizzas)
+	public static IEnumerable<Todo> Map(this List<TodoModel> pizzas)
 		=> pizzas.Select(x => x.Map());
 }
 ```
 
 ## **Create the Database Layer**
 
-Create a new Class Library Dataccess  <br/>![](./Assets/2023-04-23-22-49-21.png)
+Create a new Class Library Dataccess <br/> ![](./Assets/2024-09-14-09-55-46.png)
+
+For accessing the Database we will be using [Entity Framework Core](https://github.com/dotnet/efcore).
+
+**Nuget Packages Required**
+
+-   [ ] Microsoft.EntityFrameworkCore.Relational
+-   [ ] Microsoft.EntityFrameworkCore.InMemory
 
 Add Implicit Usings to the csproj file by double clicking on the project.
 
 Make sure ImplicitUsings is enabled in the ProperyGroup
 
-
 ```xml
 <ImplicitUsings>enable</ImplicitUsings>
 ```
+
+Add Project Refrence to include other defined Projects
+
+![](./Assets/2024-09-14-09-56-29.png)
+
+![](./Assets/2024-09-14-09-56-48.png)
 
 Add GlobalUsings.cs
 
@@ -162,138 +150,78 @@ Add GlobalUsings.cs
 global using Common.Entities;
 global using DataAccess.Mapping;
 global using Microsoft.EntityFrameworkCore;
+global using Microsoft.EntityFrameworkCore.Metadata.Builders;
 ```
-
-For accessing the Database we will be using [Entity Framework Core](https://github.com/dotnet/efcore).
-
-**Nuget Packages Required**
-- [ ]  Microsoft.EntityFrameworkCore.Relational
-- [ ]  Microsoft.EntityFrameworkCore.InMemory
 
 DbSet will act as a Repository to the Database. You will see we have added SaveChangesAsync into the interface, this is to expose DbContext Entity Framework Core mffethods in your interface.
 
 We need to create a DatabaseContext.cs inside of DataAccess. A [DbContext](https://docs.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.dbcontext?view=efcore-5.0) instance represents a session with the database and can be used to query and save instances of your entities. DbContext is a combination of the Unit Of Work and Repository patterns.
 
-![](./Assets/2023-03-30-21-10-51.png)
+![](./Assets/2024-09-14-10-04-43.png)
 
-PizzaMap.cs under Mapping folder
+TodoMap.cs under Mapping folder
 
 ```cs
 namespace DataAccess.Mapping;
 
-public sealed class PizzaMap : IEntityTypeConfiguration<Pizza>
+public sealed class TodoMap : IEntityTypeConfiguration<Todo>
 {
-	public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Pizza> builder)
+	public void Configure(EntityTypeBuilder<Todo> builder)
 	{
-		builder.ToTable("Pizza", "dbo");
+		builder.ToTable("Todos", "dbo");
 
 		builder.HasKey(t => t.Id);
 
 		builder.Property(t => t.Id)
 			.IsRequired()
-			.HasColumnName("Id")
 			.HasColumnType("int")
 			.ValueGeneratedOnAdd();
 
-		builder.Property(t => t.Name)
+		builder.Property(t => t.Task)
 			.IsRequired()
-			.HasColumnName("Name")
-			.HasColumnType("varchar(100)")
-			.HasMaxLength(100);
+			.HasColumnType("varchar(250)")
+			.HasMaxLength(250);
 
-		builder.Property(t => t.Description)
-			.HasColumnName("Description")
-			.HasColumnType("varchar(500)")
-			.HasMaxLength(500);
-
-		builder.Property(t => t.Price)
-			.HasColumnName("Price")
-			.HasColumnType("decimal(17, 2)");
+		builder.Property(t => t.IsCompleted)
+			.IsRequired()
+			.HasDefaultValue(false);
 
 		builder.Property(t => t.DateCreated)
 			.IsRequired()
-			.HasColumnName("DateCreated")
 			.HasColumnType("datetime")
 			.HasDefaultValueSql("(getdate())");
+
+		builder.Property(t => t.SessionId)
+			.IsRequired()
+			.HasColumnType("uniqueidentifier");
 	}
 }
 ```
 
- DatabaseContext.cs
+![](./Assets/2024-09-14-10-05-33.png)
+
+DatabaseContext.cs
 
 ```cs
 namespace DataAccess;
 
 public class DatabaseContext : DbContext
 {
-    public DatabaseContext()
-    {
-    }
-
-    public DatabaseContext(DbContextOptions options) : base(options)
-    {
-    }
-
-    public virtual DbSet<Pizza> Pizzas { get; set; }
-
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        modelBuilder.ApplyConfiguration(new PizzaMap());
-    }
-
-	protected override void OnConfiguring
-	   (DbContextOptionsBuilder optionsBuilder) => optionsBuilder.UseInMemoryDatabase(databaseName: "PezzaDb");
-}
-```
-
-To be able to map the Database Table to the Entity we use Mappings from EF Core. We also prefer using Mappings for Single Responsibility instead of using Attributes inside of an Entity. This allows the code to stay clean. Create a new folder inside DataAccess *Mapping* with a class PizzaMap.cs
-
-![](./Assets/2023-03-30-21-12-40.png)
-
-PizzaMap.cs
-
-```cs
-namespace DataAccess.Mapping;
-
-public sealed class PizzaMap : IEntityTypeConfiguration<Pizza>
-{
-	public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Pizza> builder)
+	public DatabaseContext()
 	{
-		builder.ToTable("Pizza", "dbo");
-
-		builder.HasKey(t => t.Id);
-
-		builder.Property(t => t.Id)
-			.IsRequired()
-			.HasColumnName("Id")
-			.HasColumnType("int")
-			.ValueGeneratedOnAdd();
-
-		builder.Property(t => t.Name)
-			.IsRequired()
-			.HasColumnName("Name")
-			.HasColumnType("varchar(100)")
-			.HasMaxLength(100);
-
-		builder.Property(t => t.Description)
-			.HasColumnName("Description")
-			.HasColumnType("varchar(500)")
-			.HasMaxLength(20);
-
-		builder.Property(t => t.PictureUrl)
-			.HasColumnName("PictureUrl")
-			.HasColumnType("varchar(1000)");
-
-		builder.Property(t => t.Price)
-			.HasColumnName("Price")
-			.HasColumnType("decimal(17, 2)");
-
-		builder.Property(t => t.DateCreated)
-			.IsRequired()
-			.HasColumnName("DateCreated")
-			.HasColumnType("datetime")
-			.HasDefaultValueSql("(getdate())");
 	}
+
+	public DatabaseContext(DbContextOptions options) : base(options)
+	{
+	}
+
+	public virtual DbSet<Todo> Todos { get; set; }
+
+	protected override void OnModelCreating(ModelBuilder modelBuilder)
+		=> modelBuilder.ApplyConfiguration(new TodoMap());
+
+	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+		=> optionsBuilder.UseInMemoryDatabase(databaseName: "EListDb");
 }
 ```
 
@@ -308,13 +236,19 @@ There are a variety of ways we can setup Unit Tests, this is one way to do it.
 ### **Overview**
 
 [Unit test basics](https://docs.microsoft.com/en-us/visualstudio/test/unit-test-basics?view=vs-2019)
+
 ### **Setup**
 
-Create a new NUnit Test Project <br/> ![](Assets/2020-09-14-05-50-19.png)
+Create a new NUnit Test Project <br/> ![](./Assets/2024-09-14-10-07-25.png)
 
 **Nuget Packages Required**
-  - [ ]  Microsoft.EntityFrameworkCore.InMemory
-  - [ ]  Bogus
+
+-   [ ] Microsoft.EntityFrameworkCore.InMemory
+-   [ ] Bogus
+
+Dependencies
+
+![](./Assets/2024-09-14-10-08-16.png)
 
 Add Implicit Usings to the csproj file by double clicking on the project.
 
@@ -328,6 +262,7 @@ Add GlobalUsings.cs
 
 ```cs
 global using Bogus;
+global using Common.Entities;
 global using Common.Models;
 global using Core;
 global using DataAccess;
@@ -375,7 +310,7 @@ public class TestBase : DatabaseContextTest
     public TestBase()
     : base(
         new DbContextOptionsBuilder<DbContext>()
-            .UseInMemoryDatabase("PezzaDb")
+            .UseInMemoryDatabase("EListDb")
             .Options)
     {
     }
@@ -384,13 +319,13 @@ public class TestBase : DatabaseContextTest
 
 Create the following folders
 
-![](./Assets/2023-03-30-21-42-40.png)
+![](./Assets/2024-09-14-10-09-03.png)
 
 The **Setup folder**, create QueryTestBase.cs class this will be inherited by different Entity Data Access Test classes to expose Create() function.
 
 What you will be creating in the Setup Folder
 
-![](./Assets/2023-03-30-21-14-12.png)
+![](./Assets./Assets/2023-03-30-21-14-12.png)
 
 QueryTestBase.cs
 
@@ -422,7 +357,7 @@ public class DatabaseContextFactory
 
     public static DatabaseContext DBContext()
     {
-        var options = new DbContextOptionsBuilder<DbContext>().UseInMemoryDatabase(Guid.NewGuid().ToString()).Options;
+        var options = new DbContextOptionsBuilder<DbContext>().UseInMemoryDatabase("EListDb").Options;
         return new DatabaseContext(options);
     }
 
@@ -444,47 +379,33 @@ public class DatabaseContextFactory
 }
 ```
 
-Next we will create Test Data for each Entity. Inside the folder **TestData**, then create a folder **Pizza**. Create a **PizzaTestData.cs** class. This will create a fake Pizza Entity for testing. <br/> ![](./Assets/2023-03-21-22-41-17.png)
-
-PizzaTestData.cs
+Next we will create Test Data for each Entity. Inside the folder **TestData**, then create a folder **Todos**. Create a **TodoTestData.cs** class. This will create a fake Todo items for testing. <br/> ![](./Assets/2024-09-14-10-11-20.png) PizzaTestData.cs
 
 ```cs
 namespace Test.Setup.TestData.Pizza;
 
-public static class PizzaTestData
+public static class TodoTestData
 {
 	public static Faker faker = new();
 
-	public static Pizza Pizza = new()
+	public static Todo Todo = new()
 	{
 		Id = 1,
-		Name = faker.PickRandom(pizzas),
-		Description = string.Empty,
-		Price = faker.Finance.Amount(),
-		DateCreated = DateTime.Now,
+		Task = faker.Random.Word(),
+		IsCompleted = faker.Random.Bool(),
+		DateCreated = DateTime.UtcNow,
+		SessionId = Guid.NewGuid(),
 	};
 
-	public static PizzaModel PizzaModel = new()
+	public static TodoModel TodoModel = new()
 	{
 		Id = 1,
-		Name = faker.PickRandom(pizzas),
-		Description = string.Empty,
-		Price = faker.Finance.Amount(),
-		DateCreated = DateTime.Now
-		
-	};
-
-	private static readonly List<string> pizzas = new() 
-	{ 
-		"Veggie Pizza",
-		"Pepperoni Pizza",
-		"Meat Pizza",
-		"Margherita Pizza",
-		"BBQ Chicken Pizza",
-		"Hawaiian Pizza"
+		Task = faker.Random.Word(),
+		IsCompleted = faker.Random.Bool(),
+		DateCreated = DateTime.UtcNow,
+		SessionId = Guid.NewGuid(),
 	};
 }
-
 ```
 
 ## **Create the Core Layer**
@@ -495,15 +416,17 @@ The Core Layer is where all of your business logic will live. Imagine this as th
 
 ### **Setup**
 
-Create 2 new Class Libraries inside of *02 Core* - Core and Core.Contracts. We will start by using very basic Pizza Core.
+Create 2 new Class Libraries inside of _02 Core_ - Core and Core.Contracts. We will start by using very basic Pizza Core.
 
 **Nuget Packages Required**
-  - [ ] MediatR
+
+-   [ ] MediatR
 
 ### **Building the Core Contracts Project**
 
-Create a new IPizzaCore Interface in *Core.Contracts* <br/> 
-![](./Assets/2023-04-01-15-31-18.png)
+Create a new ITodoCore Interface in Core.Contracts
+
+![](./Assets/2024-09-14-10-16-08.png)
 
 Add Implicit Usings to the csproj file by double clicking on the project.
 
@@ -513,29 +436,30 @@ Make sure ImplicitUsings is enabled in the ProperyGroup
 <ImplicitUsings>enable</ImplicitUsings>
 ```
 
-IPizzaCore.cs
+ITodoCore.cs
 
 ```cs
 namespace Core.Contracts;
 
-public interface IPizzaCore
+public interface ITodoCore
 {
-	Task<PizzaModel?> GetAsync(int id);
+	Task<IEnumerable<TodoModel>?> GetAllAsync(Guid sessionId, CancellationToken cancellationToken = default);
 
-	Task<IEnumerable<PizzaModel>?> GetAllAsync();
+Task<TodoModel?> AddAsync(TodoModel model, CancellationToken cancellationToken = default);
 
-	Task<PizzaModel?> UpdateAsync(PizzaModel pizza);
+Task<bool> CompleteAsync(int id, CancellationToken cancellationToken = default);
 
-	Task<PizzaModel?> SaveAsync(PizzaModel pizza);
+Task<TodoModel?> UpdateAsync(TodoModel mode, CancellationToken cancellationToken = default);
 
-	Task<bool> DeleteAsync(int id);
+Task<bool> DeleteAsync(int id, CancellationToken cancellationToken = default);
 }
 ```
 
 ### **Building the Core Project**
 
-Create a new PizzaCore.cs inside of *Core* <br/> 
-![](./Assets/2023-04-01-15-34-20.png)
+Create a new TodoCore.cs inside of Core
+
+![](./Assets/2024-09-14-10-21-55.png)
 
 Add Implicit Usings to the csproj file by double clicking on the project.
 
@@ -555,73 +479,77 @@ global using DataAccess;
 global using Microsoft.EntityFrameworkCore;
 ```
 
-PizzaCore.cs
+TodoCore.cs
 
 ```cs
 namespace Core;
 
-public class PizzaCore(DatabaseContext databaseContext) : IPizzaCore
+using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
+
+public class TodoCore(DatabaseContext databaseContext) : ITodoCore
 {
-	public async Task<PizzaModel?> GetAsync(int id)
+	public async Task<IEnumerable<TodoModel>?> GetAllAsync(Guid sessionId, CancellationToken cancellationToken = default)
+		=> (await databaseContext.Todos.Where(x => x.SessionId == sessionId).Select(x => x).AsNoTracking().ToListAsync(cancellationToken)).Map();
+
+	public async Task<TodoModel?> AddAsync(TodoModel pizza, CancellationToken cancellationToken = default)
 	{
-		var entity = await databaseContext.Pizzas.FirstOrDefaultAsync(x => x.Id == id);
-		if(entity == null)
-		{
-			return null;
-		}
-
-		return entity.Map();
-	}
-
-	public async Task<IEnumerable<PizzaModel>?> GetAllAsync()
-	{
-		var entities = await databaseContext.Pizzas.Select(x => x).AsNoTracking().ToListAsync();
-		if (entities.Count == 0)
-		{
-			return null;
-		}
-
-		return entities.Map();
-	}
-
-		public async Task<PizzaModel?> SaveAsync(PizzaModel pizza)
-	{
-		if(pizza == null)
+		if (pizza is null)
 		{
 			return null;
 		}
 
 		var entity = pizza.Map();
 		entity.DateCreated = DateTime.UtcNow;
-		databaseContext.Pizzas.Add(entity);
-		await databaseContext.SaveChangesAsync();
-		pizza.Id = entity.Id;
-
-		return entity.Map();
-	}
-
-	public async Task<PizzaModel?> UpdateAsync(PizzaModel Pizza)
-	{
-		var findEntity = await databaseContext.Pizzas.FirstOrDefaultAsync(x => x.Id == Pizza.Id);
-		if (findEntity == null)
+		databaseContext.Todos.Add(entity);
+		var changeCount = await databaseContext.SaveChangesAsync(cancellationToken);
+		if (changeCount is 0)
 		{
 			return null;
 		}
 
-		findEntity.Name = !string.IsNullOrEmpty(Pizza.Name) ? Pizza.Name : findEntity.Name;
-		findEntity.Description = !string.IsNullOrEmpty(Pizza.Description) ? Pizza.Description : findEntity.Description;
-		findEntity.Price = Pizza.Price ?? findEntity.Price;
-		databaseContext.Pizzas.Update(findEntity);
-		await databaseContext.SaveChangesAsync();
+		pizza.Id = entity.Id;
+		return entity.Map();
+	}
+
+	public async Task<bool> CompleteAsync(int id, CancellationToken cancellationToken = default)
+	{
+		var findEntity = await databaseContext.Todos.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+		if (findEntity is null)
+		{
+			return false;
+		}
+
+		findEntity.IsCompleted = true;
+		databaseContext.Todos.Update(findEntity);
+		var changeCount = await databaseContext.SaveChangesAsync(cancellationToken);
+		return changeCount is 0 ? false : true;
+	}
+
+	public async Task<TodoModel?> UpdateAsync(TodoModel model, CancellationToken cancellationToken = default)
+	{
+		var findEntity = await databaseContext.Todos.FirstOrDefaultAsync(x => x.Id == model.Id, cancellationToken);
+		if (findEntity is null)
+		{
+			return null;
+		}
+
+		findEntity.Task = !string.IsNullOrEmpty(model.Task) ? model.Task : findEntity.Task;
+		findEntity.IsCompleted = model.IsCompleted != findEntity.IsCompleted ? model.IsCompleted : findEntity.IsCompleted;
+		await databaseContext.SaveChangesAsync(cancellationToken);
 
 		return findEntity.Map();
 	}
 
-	public async Task<bool> DeleteAsync(int id)
+	public async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken = default)
 	{
-		var result = await databaseContext.Pizzas
-			.Where(e => e.Id == id)
-			.ExecuteDeleteAsync();
+		var todo = await databaseContext.Todos.FindAsync(id, cancellationToken);
+		var result = 0;
+		if (todo is not null)
+		{
+			databaseContext.Todos.Remove(todo);
+			result = await databaseContext.SaveChangesAsync(cancellationToken);
+		}
 
 		return result == 1;
 	}
@@ -632,8 +560,7 @@ public class PizzaCore(DatabaseContext databaseContext) : IPizzaCore
 
 The interesting part here is, when you call SaveChangesAsync it will return the number of changed records in the database. If you save a new record it will return the result of 1.
 
-
-To keep the Dependency Injection clean and relevant to **Core**, create a DependencyInjection.cs class that can be called from any Startup.cs class. <br/> ![](./Assets/2023-04-01-15-35-31.png)
+To keep the Dependency Injection clean and relevant to **Core**, create a DependencyInjection.cs class that can be called from any Startup.cs class.
 
 ```cs
 namespace Core;
@@ -644,7 +571,7 @@ public static class DependencyInjection
 {
 	public static IServiceCollection AddApplication(this IServiceCollection services)
 	{
-		services.AddTransient(typeof(IPizzaCore), typeof(PizzaCore));
+		services.AddTransient(typeof(ITodoCore), typeof(TodoCore));
 
 		return services;
 	}
@@ -658,110 +585,75 @@ Next, we will create unit tests for our Core Layer.
 For accessing the Database we will be using [Entity Framework Core](https://github.com/dotnet/efcore).
 
 **Nuget Packages Required**
-- [ ]  Microsoft.EntityFrameworkCore.Relational
-- [ ]  Sytem.Linq.Dynamic.Core
 
-Inside the folder **Core** create a class **TestPizzaCore.cs**. Also, add new PizzaModel to PizzaTestData.cs <br/>
+-   [ ] Microsoft.EntityFrameworkCore.Relational
+-   [ ] Sytem.Linq.Dynamic.Core
 
-![](./Assets/2023-04-01-15-37-03.png)
+Inside the folder **Core** create a class **TestTodoCore.cs**. <br/>
 
-Inside PizzaTestData.cs add the follwoing
+![](./Assets/2024-09-14-10-34-45.png)
 
-```cs
-namespace Test.Setup.TestData.Pizza;
-
-public static class PizzaTestData
-{
-	public static Faker faker = new Faker();
-
-	public static Pizza Pizza = new Pizza()
-	{
-		Id = 1,
-		Name = faker.PickRandom(pizzas),
-		Description = string.Empty,
-		Price = faker.Finance.Amount(),
-		DateCreated = DateTime.Now,
-	};
-
-	public static PizzaModel PizzaModel = new PizzaModel()
-	{
-		Id = 1,
-		Name = faker.PickRandom(pizzas),
-		Description = string.Empty,
-		Price = faker.Finance.Amount(),
-		DateCreated = DateTime.Now
-		
-	};
-
-	private static readonly List<string> pizzas = new() 
-	{ 
-		"Veggie Pizza",
-		"Pepperoni Pizza",
-		"Meat Pizza",
-		"Margherita Pizza",
-		"BBQ Chicken Pizza",
-		"Hawaiian Pizza"
-	};
-}
-```
-
-Core\TestPizzaCore.cs
+Core\TestTodoCore.cs
 
 ```cs
 namespace Test.Core;
 
+using Test.Setup.TestData.Pizza;
+
 [TestFixture]
-public class TestPizzaCore : QueryTestBase
+public class TestTodoCore : QueryTestBase
 {
-	private PizzaCore handler;
+	private TodoCore handler;
 
-	private PizzaModel Pizza;
+	private TodoModel model;
 
-	[SetUp]
+	[OneTimeSetUp]
 	public async Task Init()
 	{
-		this.handler = new PizzaCore(this.Context);
-		this.Pizza = PizzaTestData.PizzaModel;
-		this.Pizza = await this.handler.SaveAsync(this.Pizza);
-	}
-
-	[Test]
-	public async Task GetAsync()
-	{
-		var response = await this.handler.GetAsync(this.Pizza.Id);
-		Assert.IsTrue(response != null);
+		this.handler = new TodoCore(this.Context);
+		this.model = await this.handler.AddAsync(TodoTestData.TodoModel);
 	}
 
 	[Test]
 	public async Task GetAllAsync()
 	{
-		var response = await this.handler.GetAllAsync();
-		Assert.IsTrue(response.Count() == 1);
+		var response = await this.handler.GetAllAsync(this.model.SessionId);
+		Assert.That(response.Count(), Is.EqualTo(1));
 	}
 
 	[Test]
 	public void SaveAsync()
 	{
-		var outcome = this.Pizza.Id != 0;
-		Assert.IsTrue(outcome);
+		var outcome = this.model.Id != 0;
+		Assert.That(outcome, Is.True);
+	}
+
+	[Test]
+	public async Task CompleteAsync()
+	{
+		var response = await this.handler.CompleteAsync(this.model.Id);
+
+		Assert.That(response, Is.True);
 	}
 
 	[Test]
 	public async Task UpdateAsync()
 	{
-		var originalPizza = this.Pizza;
-		this.Pizza.Name = new Faker().Commerce.Product();
-		var response = await this.handler.UpdateAsync(this.Pizza);
-		var outcome = response.Name.Equals(originalPizza.Name);
+		var originalPizza = this.model;
+		this.model.Task = new Faker().Random.Word();
+		var response = await this.handler.UpdateAsync(this.model);
+		var outcome = response.Task.Equals(originalPizza.Task);
 
-		Assert.IsTrue(outcome);
+		Assert.That(outcome, Is.True);
 	}
 
 	[Test]
 	public async Task DeleteAsync()
 	{
-		var response = await this.handler.DeleteAsync(this.Pizza.Id);
-		Assert.IsTrue(response);
+		var response = await this.handler.DeleteAsync(this.model.Id);
+		Assert.That(response, Is.True);
+
+		this.model = await this.handler.AddAsync(TodoTestData.TodoModel);
 	}
 }
 ```
@@ -770,21 +662,19 @@ public class TestPizzaCore : QueryTestBase
 
 For every test we will create a new pizza Core that will create a test session in memory to the database. We will then mock new pizza using the pizza test data. THen we will persist the new pizza to the in-memory database.
 
-- GetAsync (Tests the get pizza by id) - We retrieve the newly created pizza from the in-memory database using the pizza id. If the data that gets return is found, your unit test is successful.
-- GetAllAsync (Tests list of pizza) - We retrieve a list of all the pizza from the in-memory database. If the count of data returned is equalled to 1, your unit test is successful.
-- SaveAsync (Tests creating new pizza) - We verify the result of records changed from the save changes should equal to 1, meaning your unit test is successful.
-- UpdateAsync (Tests updating existing pizza) - We generate a new name for the pizza item to be updated. We verify the updated pizza's name with the updated pizza if they are the same; your unit test is successful.
-- DeleteAsync (Tests removing pizza) - We verify the result of deleting the pizza from the in-memory database. Depending on the result being returned will determine the outcome of the unit test.
-
 ## **Create the Apis Layer**
 
 ### **Setup**
 
-Create a new ASP.NET Web Application inside **01 Apis*** <br/>![](./Assets/2023-04-01-15-39-50.png)
+Create a new ASP.NET Web Application inside **01 Apis\*** <br/>![](./Assets./Assets/2023-04-01-15-39-50.png)
 
-*Make sure not to use minimal APIs
+Make sure not to use minimal APIs
 
-![](./Assets/2023-04-01-15-42-01.png)
+![](./Assets/2024-09-14-10-40-34.png)
+
+Add the corerct project refrences
+
+![](./Assets/2024-09-14-10-41-22.png)
 
 Make sure ImplicitUsings is enabled in the ProperyGroup
 
@@ -804,10 +694,10 @@ global using Microsoft.AspNetCore.Mvc;
 ```
 
 **Nuget Packages Required**
-- [ ] Swashbuckle.AspNetCore [Read More](https://code-maze.com/swagger-ui-asp-net-core-web-api/)
-- [ ] Microsoft.AspNetCore.Mvc.NewtonsoftJson
-- [ ] Swashbuckle.AspNetCore
 
+-   [ ] Swashbuckle.AspNetCore [Read More](https://code-maze.com/swagger-ui-asp-net-core-web-api/)
+-   [ ] Microsoft.AspNetCore.Mvc.NewtonsoftJson
+-   [ ] Swashbuckle.AspNetCore
 
 You will see there will only be a Program.cs
 
@@ -831,7 +721,7 @@ public class Startup {
         // Register the Swagger generator, defining 1 or more Swagger documents
         services.AddSwaggerGen(c =>
         {
-            c.SwaggerDoc("v1", new OpenApiInfo { Title = "Pezza API", Version = "v1" });
+            c.SwaggerDoc("v1", new OpenApiInfo { Title = "EList API", Version = "v1" });
         });
         services.AddControllers(options => options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true)
                 .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()))
@@ -844,7 +734,7 @@ public class Startup {
         // specifying the Swagger JSON endpoint.
         app.UseSwaggerUI(c =>
         {
-            c.SwaggerEndpoint("/swagger/v1/swagger.json", "Pezza API V1");
+            c.SwaggerEndpoint("/swagger/v1/swagger.json", "EList API V1");
         });
         app.Run();
     }
@@ -869,7 +759,7 @@ startup.Configure(app, builder.Environment); // calling Configure method
 
 Add Core Project to API Project
 
-![](Assets/2020-09-15-05-29-10.png)
+![](./AssetsAssets/2020-09-15-05-29-10.png)
 
 Add Dependency injection for Database Context in Startup.cs ConfigureServices
 
@@ -880,7 +770,7 @@ services.AddDbContext<DatabaseContext>(options =>
 );
 ```
 
-Let us enable XML Documentation on the *Api* project. Right-click on the API goes to Properties. <br/> ![](Assets/2020-09-15-05-59-50.png)
+Let us enable XML Documentation on the _Api_ project. Right-click on the API goes to Properties. <br/> ![](./AssetsAssets/2020-09-15-05-59-50.png)
 
 In the ConfigureServices() method, configure Swagger to use the XML file that’s generated in the above step.
 
@@ -889,9 +779,9 @@ services.AddSwaggerGen(c =>
     {
         c.SwaggerDoc("v1", new OpenApiInfo
         {
-            Title = "Pezza API",
+            Title = "EList API",
             Version = "v1",
-            Description = "An API to perform Pezza operations"
+            Description = "An API to perform EList operations"
         });
 // Set the comments path for the Swagger JSON and UI.
         var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
@@ -915,14 +805,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Serialization;
 
-public class Startup
+public class Startup(IConfiguration configuration)
 {
 	public IConfiguration ConfigRoot
 	{
 		get;
-	}
-
-	public Startup(IConfiguration configuration) => this.ConfigRoot = configuration;
+	} = configuration;
 
 	public void ConfigureServices(IServiceCollection services)
 	{
@@ -937,7 +825,7 @@ public class Startup
 		{
 			c.SwaggerDoc("v1", new OpenApiInfo
 			{
-				Title = "Pezza API",
+				Title = "EList API",
 				Version = "v1"
 			});
 
@@ -954,7 +842,7 @@ public class Startup
 	public void Configure(WebApplication app, IWebHostEnvironment env)
 	{
 		app.UseSwagger();
-		app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Pezza API V1"));
+		app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "EList API V1"));
 		app.UseHttpsRedirection();
 		app.UseRouting();
 		app.UseEndpoints(endpoints => endpoints.MapControllers());
@@ -964,118 +852,141 @@ public class Startup
 }
 ```
 
-Change Debug setting to open Swagger by default <br/> ![](Assets/2020-09-15-06-14-01.png)
+Change Debug setting to open Swagger by default <br/> ![](./AssetsAssets/2020-09-15-06-14-01.png)
 
 ### **Create a API Controller**
 
-Create a new **PizzaController.cs**. We will create a restfull endpoint for **Pizza Core** layer. <br/> ![](./Assets/2023-04-10-20-15-02.png)
+Create a new **TodosController.cs**. We will create a restfull endpoint for **Todo Core** layer.
 
-PizzaController.cs
+![](./Assets/2024-09-14-10-43-53.png)
+
+TodosController.cs
 
 ```cs
 namespace Api.Controllers;
 
+using Microsoft.AspNetCore.Mvc;
+
 [ApiController]
 [Route("[controller]")]
-public class PizzaController(IPizzaCore pizzaCore) : ControllerBase
+public class TodosController(ITodoCore core) : ControllerBase
 {
 	/// <summary>
-	/// Get Pizza by Id.
-	/// </summary>
-	/// <param name="id">Pizza Id</param>
-	/// <returns>ActionResult</returns>
-	[HttpGet("{id}")]
-	[ProducesResponseType(200)]
-	[ProducesResponseType(404)]
-	public async Task<ActionResult> Get(int id)
-	{
-		var search = await pizzaCore.GetAsync(id);
-
-		return (search == null) ? this.NotFound() : this.Ok(search);
-	}
-
-	/// <summary>
-	/// Get all Pizzas.
+	/// Get all Todos.
 	/// </summary>
 	/// <returns>ActionResult</returns>
 	[HttpPost("Search")]
 	[ProducesResponseType(200)]
-	public async Task<ActionResult> Search()
-		=> this.Ok(await pizzaCore.GetAllAsync());
+	public async Task<ActionResult> Search(Guid sessionId, CancellationToken cancellationToken = default)
+		=> this.Ok(await core.GetAllAsync(sessionId, cancellationToken));
 
 	/// <summary>
-	/// Create Pizza.
+	/// Create a task.
 	/// </summary>
 	/// <remarks>
 	/// Sample request:
 	///
-	///     POST api/Pizza
+	///     POST api/Todo
 	///     {
-	///       "name": "Hawaiian",
-	///       "description": "Hawaiian pizza is a pizza originating in Canada, and is traditionally topped with pineapple, tomato sauce, cheese, and either ham or bacon.",
-	///       "price": "99"
+	///       "task": "New task",
 	///     }
 	/// </remarks>
-	/// <param name="model">Pizza Model</param>
+	/// <param name="model">Todo Model</param>
+	/// <param name="cancellationToken">Cancellation Token</param>
 	/// <returns>ActionResult</returns>
 	[HttpPost]
 	[ProducesResponseType(200)]
 	[ProducesResponseType(400)]
-	public async Task<ActionResult<Pizza>> Create([FromBody] PizzaModel model)
+	public async Task<ActionResult<Todo>> Add([FromBody] TodoModel model, CancellationToken cancellationToken = default)
 	{
-		var result = await pizzaCore.SaveAsync(model);
+		var result = await core.AddAsync(model, cancellationToken);
 
-		return (result == null) ? this.BadRequest() : this.Ok(result);
+		return (result is null) ? this.BadRequest() : this.Ok(result);
 	}
 
-
 	/// <summary>
-	/// Update Pizza.
+	/// Complete a task.
 	/// </summary>
 	/// <remarks>
 	/// Sample request:
 	///
-	///     PUT api/Pizza/1
+	///     PUT api/Todo/Complete
 	///     {
-	///       "price": "119"
+	///       "id": "1"
 	///     }
 	/// </remarks>
-	/// <param name="model">Pizza Model</param>
+	/// <param name="id">Task id</param>
+	/// <param name="cancellationToken">Cancellation Token</param>
+	/// <returns>ActionResult</returns>
+	[HttpPost("Complete")]
+	[ProducesResponseType(200)]
+	[ProducesResponseType(400)]
+	public async Task<ActionResult> Complete([FromBody] int id, CancellationToken cancellationToken = default)
+	{
+		var result = await core.CompleteAsync(id, cancellationToken);
+
+		return (result is false) ? this.BadRequest() : this.Ok(result);
+	}
+
+
+	/// <summary>
+	/// Update Todo.
+	/// </summary>
+	/// <remarks>
+	/// Sample request:
+	///
+	///     PUT api/Todo/1
+	///     {
+	///       "Task": "New task"
+	///     }
+	/// </remarks>
+	/// <param name="model">Todo Model</param>
+	/// <param name="cancellationToken">Cancellation Token</param>
 	/// <returns>ActionResult</returns>
 	[HttpPut]
 	[ProducesResponseType(200)]
 	[ProducesResponseType(400)]
-	public async Task<ActionResult> Update([FromBody] PizzaModel model)
+	public async Task<ActionResult> Update([FromBody] TodoModel model, CancellationToken cancellationToken = default)
 	{
-		var result = await pizzaCore.UpdateAsync(model);
+		var result = await core.UpdateAsync(model, cancellationToken);
 
-		return (result == null) ? this.BadRequest() : this.Ok(result);
+		return (result is null) ? this.BadRequest() : this.Ok(result);
 	}
 
 	/// <summary>
-	/// Delete Pizza by Id.
+	/// Delete a task by Id.
 	/// </summary>
-	/// <param name="id">Pizza Id</param>
+	/// <param name="id">Task Id</param>
+	/// <param name="cancellationToken">Cancellation Token</param>
 	/// <returns>ActionResult</returns>
 	[HttpDelete("{id}")]
 	[ProducesResponseType(200)]
 	[ProducesResponseType(400)]
-	public async Task<ActionResult> Delete(int id)
+	public async Task<ActionResult> Delete(int id, CancellationToken cancellationToken = default)
 	{
-		var result = await pizzaCore.DeleteAsync(id);
+		var result = await core.DeleteAsync(id, cancellationToken);
 
 		return (!result) ? this.BadRequest() : this.Ok(result);
 	}
 }
 ```
 
-## **Run your Pezza API**
+## **Run your EList API**
 
-Press F5 and Test all the Pizza Methods.
+Press F5 and Test all the Todo Methods.
 
-![](./Assets/2023-04-10-20-28-04.png)
+Make sure the Api is set as Startup Project. If you get a HTTPS Cert popup, just say Yes.
+
+![](./Assets/2024-09-14-10-53-38.png)
+
+Swagger running
+
+![](./Assets/2024-09-14-10-55-42.png)
+
+Test cases passing
+
+![](./Assets/2024-09-14-11-10-32.png)
 
 ## **Phase 2 - CQRS**
 
-Move to Phase 2
-[Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%202)
+Move to Phase 2 [Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%202)

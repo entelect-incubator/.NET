@@ -2,5 +2,5 @@
 
 public static class Data
 {
-	public static string CacheKey = "PezzaPizza";
+	public static string CacheKey = "EListPizza";
 }

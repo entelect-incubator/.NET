@@ -10,15 +10,11 @@ public class DatabaseContext : DbContext
 	{
 	}
 
-	public virtual DbSet<Customer> Customers { get; set; }
-	public virtual DbSet<Pizza> Pizzas { get; set; }
+	public virtual DbSet<Todo> Todos { get; set; }
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
-	{
-		modelBuilder.ApplyConfiguration(new CustomerMap());
-		modelBuilder.ApplyConfiguration(new PizzaMap());
-	}
+		=> modelBuilder.ApplyConfiguration(new TodoMap());
 
-	protected override void OnConfiguring
-	   (DbContextOptionsBuilder optionsBuilder) => optionsBuilder.UseInMemoryDatabase(databaseName: "PezzaDb");
+	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+		=> optionsBuilder.UseInMemoryDatabase(databaseName: "EListDb");
 }

@@ -577,7 +577,7 @@ namespace API.Client.Template
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<ErrorResult>("Error searching for customers", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<ErrorResult>("Error searching for clients", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {

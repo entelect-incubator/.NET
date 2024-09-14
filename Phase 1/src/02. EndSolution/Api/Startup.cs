@@ -10,14 +10,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Serialization;
 
-public class Startup
+public class Startup(IConfiguration configuration)
 {
 	public IConfiguration ConfigRoot
 	{
 		get;
-	}
-
-	public Startup(IConfiguration configuration) => this.ConfigRoot = configuration;
+	} = configuration;
 
 	public void ConfigureServices(IServiceCollection services)
 	{
@@ -32,7 +30,7 @@ public class Startup
 		{
 			c.SwaggerDoc("v1", new OpenApiInfo
 			{
-				Title = "Pezza API",
+				Title = "EList API",
 				Version = "v1"
 			});
 
@@ -49,7 +47,7 @@ public class Startup
 	public void Configure(WebApplication app, IWebHostEnvironment env)
 	{
 		app.UseSwagger();
-		app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Pezza API V1"));
+		app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "EList API V1"));
 		app.UseHttpsRedirection();
 		app.UseRouting();
 		app.UseEndpoints(endpoints => endpoints.MapControllers());

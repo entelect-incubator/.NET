@@ -1,6 +1,6 @@
-<img align="left" width="116" height="116" src="../pezza-logo.png" />
+<img align="left" width="116" height="116" src="../logo.png" />
 
-# &nbsp;**Pezza - Phase 5 - Step 1** [![.NET - Phase 5 - Step 1](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase5-step1.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase5-step1.yml)
+# &nbsp;**E List - Phase 5 - Step 1** [![.NET - Phase 5 - Step 1](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase5-step1.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase5-step1.yml)
 
 <br/><br/>
 
@@ -31,7 +31,7 @@ namespace Common;
 
 public static class Data
 {
-	public static string CacheKey = "PezzaPizza";
+	public static string CacheKey = "EListPizza";
 }
 ```
 
@@ -212,5 +212,4 @@ Add CachingService to all RestaurantDataAccess constructors
 var sutGetAll = new GetPizzasQueryHandler(this.Context, this.CachingService);
 ```
 
-Move to Phase 5 Step 2
-[Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%205/Step%202)
+Move to Phase 5 Step 2 [Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%205/Step%202)

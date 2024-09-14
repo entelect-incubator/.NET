@@ -1,6 +1,6 @@
-<img align="left" width="116" height="116" src="./Assets/pezza-logo.png" />
+<img align="left" width="116" height="116" src="./Assets/logo.png" />
 
-# &nbsp;**Pezza - Phase 2** [![.NET - Phase 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase2-finalsolution.yml/badge.svg?branch=master)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase2-finalsolution.yml)
+# &nbsp;**E List - Phase 2** [![.NET - Phase 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase2-finalsolution.yml/badge.svg?branch=master)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase2-finalsolution.yml)
 
 <br/><br/>
 
@@ -12,10 +12,10 @@ In this Incubator, we try to follow the **Single Responsibility Principle** as f
 
 ## **Setup**
 
-- [ ] Use the Start Solution from Phase 2 to get started - **Phase 2\src\01. StartSolution**
+-   [ ] Use the Start Solution from Phase 2 to get started - **Phase 2\src\01. StartSolution**
 
 ## **Steps**
 
-- [ ] [Step 1 - Scaffolding](https://github.com/entelect-incubator/.NET/tree/master/Phase%202/Step%201)
-- [ ] [Step 2 - Unit Tests](https://github.com/entelect-incubator/.NET/tree/master/Phase%202/Step%202)
-- [ ] [Step 3 - API](https://github.com/entelect-incubator/.NET/tree/master/Phase%202/Step%203)
+-   [ ] [Step 1 - Scaffolding](https://github.com/entelect-incubator/.NET/tree/master/Phase%202/Step%201)
+-   [ ] [Step 2 - Unit Tests](https://github.com/entelect-incubator/.NET/tree/master/Phase%202/Step%202)
+-   [ ] [Step 3 - API](https://github.com/entelect-incubator/.NET/tree/master/Phase%202/Step%203)

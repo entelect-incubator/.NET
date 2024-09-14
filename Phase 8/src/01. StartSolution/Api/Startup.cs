@@ -36,12 +36,12 @@ public class Startup
 			config.PostProcess = document =>
 			{
 				document.Info.Version = "V1";
-				document.Info.Title = "Pezza Api";
+				document.Info.Title = "EList Api";
 			};
 		});
 		services.AddLazyCache();
 		services.AddDbContext<DatabaseContext>(options =>
-			options.UseInMemoryDatabase("PezzaDB"));
+			options.UseInMemoryDatabase("EListDB"));
 
 		services.AddResponseCompression(options =>
 		{

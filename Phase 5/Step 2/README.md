@@ -1,6 +1,6 @@
-<img align="left" width="116" height="116" src="../pezza-logo.png" />
+<img align="left" width="116" height="116" src="../logo.png" />
 
-# &nbsp;**Pezza - Phase 5 - Step 2** [![.NET - Phase 5 - Step 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase5-step2.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase5-step2.yml)
+# &nbsp;**E List - Phase 5 - Step 2** [![.NET - Phase 5 - Step 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase5-step2.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase5-step2.yml)
 
 <br/><br/>
 
@@ -33,4 +33,4 @@ You can read more on response compression [here](https://docs.microsoft.com/en-u
 
 ## **Move to Phase 6**
 
-[Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%206) 
+[Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%206)

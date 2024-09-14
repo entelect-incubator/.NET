@@ -72,7 +72,7 @@ public class Startup
 
         // Add DbContext using SQL Server Provider
         services.AddDbContext<DatabaseContext>(options =>
-            options.UseSqlServer(this.Configuration.GetConnectionString("PezzaDatabase")));
+            options.UseSqlServer(this.Configuration.GetConnectionString("EListDatabase")));
 
         services.AddLazyCache();
 

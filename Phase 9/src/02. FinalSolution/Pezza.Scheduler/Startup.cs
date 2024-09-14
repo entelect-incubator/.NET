@@ -28,12 +28,12 @@ public class Startup
             config.SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
                 .UseSimpleAssemblyNameTypeSerializer()
                 .UseDefaultTypeSerializer()
-                .UseSqlServerStorage(this.Configuration.GetConnectionString("PezzaDatabase")));
+                .UseSqlServerStorage(this.Configuration.GetConnectionString("EListDatabase")));
 
         services.AddHangfireServer();
 
         services.AddDbContext<DatabaseContext>(options =>
-           options.UseSqlServer(this.Configuration.GetConnectionString("PezzaDatabase")));
+           options.UseSqlServer(this.Configuration.GetConnectionString("EListDatabase")));
 
         services.AddSingleton<IOrderCompleteJob, OrderCompleteJob>();
 

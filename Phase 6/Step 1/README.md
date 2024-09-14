@@ -1,6 +1,6 @@
-<img align="left" width="116" height="116" src="../pezza-logo.png" />
+<img align="left" width="116" height="116" src="../logo.png" />
 
-# &nbsp;**Pezza - Phase 6 - Step 1** [![.NET - Phase 6 - Step 1](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-step1.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-step1.yml)
+# &nbsp;**E List - Phase 6 - Step 1** [![.NET - Phase 6 - Step 1](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-step1.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-step1.yml)
 
 <br/><br/>
 
@@ -39,7 +39,7 @@ public class EmailService
 		plainText = Regex.Replace(plainText, @"\s+", " ").Trim();
 
 		var email = await Email
-			.From("notify@pezza.com", "Pezza")
+			.From("notify@pezza.com", "EList")
 			.To(this.Customer?.Email, this.Customer?.Name)
 			.Subject("Collect your order it while it's hot")
 			.Body(this.HtmlContent)
@@ -69,5 +69,4 @@ In the next step we will look at how to call the email service with the use of M
 
 ## **STEP 2 - Event**
 
-Move to Step 2
-[Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%206/Step%202)
+Move to Step 2 [Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%206/Step%202)

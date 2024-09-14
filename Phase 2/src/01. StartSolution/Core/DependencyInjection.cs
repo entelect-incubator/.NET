@@ -6,7 +6,7 @@ public static class DependencyInjection
 {
 	public static IServiceCollection AddApplication(this IServiceCollection services)
 	{
-		services.AddTransient(typeof(IPizzaCore), typeof(PizzaCore));
+		services.AddTransient(typeof(ITodoCore), typeof(TodoCore));
 
 		return services;
 	}

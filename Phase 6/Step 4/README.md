@@ -1,6 +1,6 @@
-<img align="left" width="116" height="116" src="../pezza-logo.png" />
+<img align="left" width="116" height="116" src="../logo.png" />
 
-# &nbsp;**Pezza - Phase 6 - Step 4** [![.NET - Phase 6 - Step 4](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-step4.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-step4.yml)
+# &nbsp;**E List - Phase 6 - Step 4** [![.NET - Phase 6 - Step 4](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-step4.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-step4.yml)
 
 <br/><br/>
 
@@ -231,7 +231,7 @@ public class DatabaseContext : DbContext
 		modelBuilder.ApplyConfiguration(new NotifyMap());
 	}
 
-	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => optionsBuilder.UseInMemoryDatabase(databaseName: "PezzaDb");
+	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => optionsBuilder.UseInMemoryDatabase(databaseName: "EListDb");
 }
 ```
 
@@ -419,5 +419,4 @@ using (var serviceProvider = services.BuildServiceProvider())
 
 ## **Phase 7 - Microservices**
 
-Move to Phase 7
-[Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%207)
+Move to Phase 7 [Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%207)

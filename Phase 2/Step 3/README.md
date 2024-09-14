@@ -1,60 +1,14 @@
-<img align="left" width="116" height="116" src="../Assets/pezza-logo.png" />
+<img align="left" width="116" height="116" src="../Assets/logo.png" />
 
-# &nbsp;**Pezza - Phase 2 - Step 3**
+# &nbsp;**E List - Phase 2 - Step 3**
 
 <br/><br/>
 
-Finishing up the API to use CQRS
+Finalizing the API Implementation with CQRS
+
+We are now completing the API by fully integrating the CQRS pattern. This involves refactoring the API endpoints to utilize separate command and query handlers, ensuring a clear separation of responsibilities and improved maintainability.
 
 ## **API**
-
-In order to return clean unified responses consumers of the API, ActionResult Helper class. Depending on the data retrieved from the Core layer it will cater for the HTTP response and prevent duplicating code in controllers.
-
-Create a Helpers folder in Api and ResponseHelper.cs inside it with the following code.
-
-```cs
-namespace Api.Helpers;
-
-public static class ResponseHelper
-{
-    public static ActionResult ResponseOutcome<T>(Result<T> result, ApiController controller)
-    {
-        if (result.Data == null)
-        {
-            return controller.NotFound(Result.Failure($"{typeof(T).Name.Replace("Model", string.Empty)} not found"));
-        }
-
-        if (!result.Succeeded)
-        {
-            return controller.BadRequest(result);
-        }
-
-        return controller.Ok(result);
-    }
-
-    public static ActionResult ResponseOutcome<T>(ListResult<T> result, ApiController controller)
-    {
-        if (!result.Succeeded)
-        {
-            return controller.BadRequest(result);
-        }
-
-        return controller.Ok(result);
-    }
-
-    public static ActionResult ResponseOutcome(Result result, ApiController controller)
-    {
-        if (!result.Succeeded)
-        {
-            return controller.BadRequest(result);
-        }
-
-        return controller.Ok(result);
-    }
-}
-```
-
-## **STEP 3 - Finishing the API Controller**
 
 ### **Base Api Controller** Will be used to inject Mediatr into all other Controllers
 
@@ -74,16 +28,44 @@ public abstract class ApiController : ControllerBase
 {
     private IMediator mediator;
 
-	protected IMediator Mediator => this.mediator ??= this.HttpContext.RequestServices.GetService<IMediator>();
+	protected IMediator Mediator => this.mediator ??= this.HttpContext.RequestServices.GetService<IMediator>()!;
 }
 ```
 
-Now let's modify the Customer Controller to use Mediatr.
+To provide clean, unified responses to the consumers of the API, we will introduce an ActionResult helper class. This helper will manage the HTTP responses based on the data retrieved from the Core layer, reducing code duplication across controllers.
+
+Create a Helpers folder in the Api project, and inside it, add a file named ResponseHelper.cs with the following code:
+
+```cs
+namespace Api.Helpers;
+
+using Api.Controllers;
+
+public static class ResponseHelper
+{
+	public static ActionResult ResponseOutcome(Result result, ApiController controller)
+		=> !result.Succeeded ? controller.BadRequest(result) : controller.Ok(result);
+
+	public static ActionResult ResponseOutcome<T>(Result<T> result, ApiController controller)
+	{
+		if (result.Data is null)
+		{
+			return controller.NotFound(Result.Failure($"{typeof(T).Name.Replace("Model", string.Empty)} not found"));
+		}
+
+		return !result.Succeeded ? controller.BadRequest(result) : controller.Ok(result);
+	}
+}
+```
+
+## **Finishing the Todo API Controller**
+
+Now let's modify the Todo Controller to use Mediatr.
 
 Inherit from the ApiController instead of ControllerBase
 
 ```cs
-public class StockController : ApiController
+public class TodoController : ApiController
 ```
 
 Modify all the functions to use Mediatr and the new DataDTO's
@@ -91,125 +73,104 @@ Modify all the functions to use Mediatr and the new DataDTO's
 ```cs
 namespace Api.Controllers;
 
-using Core.Pizza.Commands;
-using Core.Pizza.Queries;
+using Api.Helpers;
+using Common.Models.Todos;
+using Core.Todos.Commands;
+using Core.Todos.Queries;
+using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
 [Route("[controller]")]
-public class PizzaController() : ApiController
+public class TodosController : ApiController
 {
 	/// <summary>
-	/// Get Pizza by Id.
-	/// </summary>
-	/// <param name="id">Pizza Id</param>
-	/// <returns>ActionResult</returns>
-	[HttpGet("{id}")]
-	[ProducesResponseType(200)]
-	[ProducesResponseType(404)]
-	public async Task<ActionResult> Get(int id)
-	{
-		var result = await this.Mediator.Send(new GetPizzaQuery { Id = id });
-		return ResponseHelper.ResponseOutcome(result, this);
-	}
-
-	/// <summary>
-	/// Get all Pizzas.
+	/// Get all Todos.
 	/// </summary>
 	/// <returns>ActionResult</returns>
 	[HttpPost("Search")]
 	[ProducesResponseType(200)]
-	public async Task<ActionResult> Search()
-	{
-		var result = await this.Mediator.Send(new GetPizzasQuery());
-		return ResponseHelper.ResponseOutcome(result, this);
-	}
+	public async Task<ActionResult> Search(Guid sessionId, CancellationToken cancellationToken = default)
+		=> ResponseHelper.ResponseOutcome(await this.Mediator.Send(new GetTodosQuery() { SessionId = sessionId }, cancellationToken), this);
 
 	/// <summary>
-	/// Create Pizza.
+	/// Create a task.
 	/// </summary>
 	/// <remarks>
 	/// Sample request:
 	///
-	///     POST api/Pizza
+	///     POST api/Todo
 	///     {
-	///       "name": "Hawaiian",
-	///       "description": "Hawaiian pizza is a pizza originating in Canada, and is traditionally topped with pineapple, tomato sauce, cheese, and either ham or bacon.",
-	///       "price": "99"
+	///       "task": "New task",
 	///     }
 	/// </remarks>
-	/// <param name="model">Pizza Model</param>
+	/// <param name="model">Create Todo Model</param>
+	/// <param name="cancellationToken">Cancellation Token</param>
 	/// <returns>ActionResult</returns>
 	[HttpPost]
 	[ProducesResponseType(200)]
 	[ProducesResponseType(400)]
-	public async Task<ActionResult<Pizza>> Create([FromBody] CreatePizzaModel model)
-	{
-		var result = await this.Mediator.Send(new CreatePizzaCommand
-		{
-			Data = model
-		});
-
-		return ResponseHelper.ResponseOutcome(result, this);
-	}
-
+	public async Task<ActionResult<Todo>> Add([FromBody] CreateTodoModel model, CancellationToken cancellationToken = default)
+		=> ResponseHelper.ResponseOutcome(await this.Mediator.Send(new AddTodoCommand() { Data = model }, cancellationToken), this);
 
 	/// <summary>
-	/// Update Pizza.
+	/// Complete a task.
 	/// </summary>
 	/// <remarks>
 	/// Sample request:
 	///
-	///     PUT api/Pizza/1
+	///     PUT api/Todo/Complete
 	///     {
-	///       "price": "119"
+	///       "id": "1"
 	///     }
 	/// </remarks>
-	/// <param name="model">Pizza Model</param>
+	/// <param name="id">Task id</param>
+	/// <param name="cancellationToken">Cancellation Token</param>
 	/// <returns>ActionResult</returns>
-	[HttpPut]
+	[HttpPost("Complete")]
 	[ProducesResponseType(200)]
 	[ProducesResponseType(400)]
-	public async Task<ActionResult> Update([FromBody] UpdatePizzaModel model)
-	{
-		var result = await this.Mediator.Send(new UpdatePizzaCommand
-		{
-			Data = model
-		});
+	public async Task<ActionResult> Complete([FromBody] int id, CancellationToken cancellationToken = default)
+		=> ResponseHelper.ResponseOutcome(await this.Mediator.Send(new CompleteTodoCommand() { Id = id }, cancellationToken), this);
 
-		return ResponseHelper.ResponseOutcome(result, this);
-	}
 
 	/// <summary>
-	/// Delete Pizza by Id.
+	/// Update Todo.
 	/// </summary>
-	/// <param name="id">Pizza Id</param>
+	/// <remarks>
+	/// Sample request:
+	///
+	///     PUT api/Todo/1
+	///     {
+	///       "Task": "New task"
+	///     }
+	/// </remarks>
+	/// <param name="id">Todo id</param>
+	/// <param name="model">Update Todo Model</param>
+	/// <param name="cancellationToken">Cancellation Token</param>
+	/// <returns>ActionResult</returns>
+	[HttpPut("{id}")]
+	[ProducesResponseType(200)]
+	[ProducesResponseType(400)]
+	public async Task<ActionResult> Update(int id, [FromBody] UpdateTodoModel model, CancellationToken cancellationToken = default)
+		=> ResponseHelper.ResponseOutcome(await this.Mediator.Send(new UpdateTodoCommand() { Id = id, Data = model }, cancellationToken), this);
+
+	/// <summary>
+	/// Delete a task by Id.
+	/// </summary>
+	/// <param name="id">Task Id</param>
+	/// <param name="cancellationToken">Cancellation Token</param>
 	/// <returns>ActionResult</returns>
 	[HttpDelete("{id}")]
 	[ProducesResponseType(200)]
 	[ProducesResponseType(400)]
-	public async Task<ActionResult> Delete(int id)
-	{
-		var result = await this.Mediator.Send(new DeletePizzaCommand { Id = id });
-		return ResponseHelper.ResponseOutcome(result, this);
-	}
+	public async Task<ActionResult> Delete(int id, CancellationToken cancellationToken = default)
+		=> ResponseHelper.ResponseOutcome(await this.Mediator.Send(new DeleteTodoCommand() { Id = id }, cancellationToken), this);
 }
 ```
 
-Complete the Customer Controller
+Press F5 to run your API. You should see the following output or a similar result.
 
-![](./Assets/2023-04-13-05-44-28.png)
-
-Right-Click on you Api project -> Properties -> Debug.
-
-Change Launch Browser to Open "swagger"
-
-![](Assets/2020-11-25-00-39-15.png)
-
-Press F5 and Run your API. You should see something like this.
-
-![](./Assets/2023-04-13-05-45-44.png)
-
-### You are done with the Back-End that will be used to build most of the Front-End stack.
+![](./Assets/2024-09-14-15-01-40.png)
 
 ## **Move to Phase 3**
 

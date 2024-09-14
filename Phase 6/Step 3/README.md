@@ -1,6 +1,6 @@
-<img align="left" width="116" height="116" src="../pezza-logo.png" />
+<img align="left" width="116" height="116" src="../logo.png" />
 
-# &nbsp;**Pezza - Phase 6 - Step 3** [![.NET - Phase 6 - Step 3](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-step3.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-step3.yml)
+# &nbsp;**E List - Phase 6 - Step 3** [![.NET - Phase 6 - Step 3](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-step3.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-step3.yml)
 
 <br/><br/>
 
@@ -36,12 +36,12 @@ Create a new ASP.NET Web Application Scheduler under 01. Apis
 
 Once the project is ready, I will open the NuGet package manager UI and add the necessary NuGet packages. The three main Nuget packages needed for hangfire are:
 
-- [ ] Hangfire.Core – The core package that supports the core logic of Hangfire
-- [ ] Hangfire.AspNetCore – Support for ASP.NET Middleware and Middleware for the dashboard user interface
-- [ ] Hangfire.InMemory - In-memory job storage for Hangfire with transactional implementation.
-- [ ] Microsoft.Extensions.DependencyInjection
-- [ ] Microsoft.AspNetCore.Mvc.NewtonsoftJson
-- [ ] LazyCache.AspNetCore
+-   [ ] Hangfire.Core – The core package that supports the core logic of Hangfire
+-   [ ] Hangfire.AspNetCore – Support for ASP.NET Middleware and Middleware for the dashboard user interface
+-   [ ] Hangfire.InMemory - In-memory job storage for Hangfire with transactional implementation.
+-   [ ] Microsoft.Extensions.DependencyInjection
+-   [ ] Microsoft.AspNetCore.Mvc.NewtonsoftJson
+-   [ ] LazyCache.AspNetCore
 
 Remove WeatherForecast.cs and WeatherForecastController.cs
 
@@ -149,7 +149,7 @@ public class Startup
 		{
 			c.SwaggerDoc("v1", new OpenApiInfo
 			{
-				Title = "Pezza API",
+				Title = "EList API",
 				Version = "v1"
 			});
 
@@ -175,7 +175,7 @@ public class Startup
 	public void Configure(WebApplication app, IWebHostEnvironment env)
 	{
 		app.UseSwagger();
-		app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Pezza Scheduler API V1"));
+		app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "EList Scheduler API V1"));
 		app.UseHttpsRedirection();
 		app.UseMiddleware(typeof(ExceptionHandlerMiddleware));
 		app.UseRouting();
@@ -191,7 +191,7 @@ public class Startup
 		RecurringJob.AddOrUpdate<IOrderCompleteJob>("SendNotificationAsync", x => x.SendNotificationAsync(), "0 * * ? * *");
 
 		app.Run();
-	}	
+	}
 }
 ```
 
@@ -254,7 +254,6 @@ public sealed class Customer
 	public ICollection<Notify> Notifies { get; }
 }
 ```
-
 
 Add new Database Mapping in DataAccess\Mapping
 
@@ -339,7 +338,7 @@ public class DatabaseContext : DbContext
 		modelBuilder.ApplyConfiguration(new NotifyMap());
 	}
 
-	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => optionsBuilder.UseInMemoryDatabase(databaseName: "PezzaDb");
+	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => optionsBuilder.UseInMemoryDatabase(databaseName: "EListDb");
 }
 ```
 
@@ -539,7 +538,7 @@ var jobOptions = new RecurringJobOptions()
 RecurringJob.AddOrUpdate<IOrderCompleteJob>("SendNotificationAsync", x => x.SendNotificationAsync(), "0 * * ? * *");
 ```
 
-In the above code, the CRON expression "* * * * *" is an expression to run the job every minute.
+In the above code, the CRON expression "\* \* \* \* \*" is an expression to run the job every minute.
 
 ![](./Assets/2023-07-23-13-31-35.png)
 
@@ -547,5 +546,4 @@ In the above code, the CRON expression "* * * * *" is an expression to run the j
 
 ## **Step 4 - Orders**
 
-Move to Step 4
-[Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%206/Step%204)
+Move to Step 4 [Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%206/Step%204)

@@ -44,7 +44,7 @@ public class Startup
 		{
 			c.SwaggerDoc("v1", new OpenApiInfo
 			{
-				Title = "Pezza API",
+				Title = "EList API",
 				Version = "v1"
 			});
 
@@ -55,7 +55,7 @@ public class Startup
 
 		services.AddLazyCache();
 		services.AddDbContext<DatabaseContext>(options =>
-			options.UseInMemoryDatabase("PezzaDB"));
+			options.UseInMemoryDatabase("EListDB"));
 
 		services.AddResponseCompression(options =>
 		{
@@ -70,7 +70,7 @@ public class Startup
 	public void Configure(WebApplication app, IWebHostEnvironment env)
 	{
 		app.UseSwagger();
-		app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Pezza Scheduler API V1"));
+		app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "EList Scheduler API V1"));
 		app.UseHttpsRedirection();
 		app.UseMiddleware(typeof(ExceptionHandlerMiddleware));
 		app.UseRouting();

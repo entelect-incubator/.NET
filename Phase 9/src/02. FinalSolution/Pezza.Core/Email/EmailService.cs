@@ -23,7 +23,7 @@ public class EmailService
 
         var apiKey = "YOUR-API-KEY";
         var client = new SendGridClient(apiKey);
-        var from = new EmailAddress("notify@pezza.com", "Pezza");
+        var from = new EmailAddress("notify@pezza.com", "EList");
         var subject = $"Collect your order it while it's hot";
         var to = new EmailAddress(this.Customer?.Email, this.Customer?.Name);
         var plainTextContent = plainText;

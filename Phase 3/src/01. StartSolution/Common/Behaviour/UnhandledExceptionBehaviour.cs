@@ -12,7 +12,7 @@ public class UnhandledExceptionBehaviour<TRequest, TResponse> : IPipelineBehavio
 		{
 			var requestName = typeof(TRequest).Name;
 
-			//this.logger.LogError(ex, "Pezza Request: Unhandled Exception for Request {Name} {@Request}", requestName, request);
+			//this.logger.LogError(ex, "EList Request: Unhandled Exception for Request {Name} {@Request}", requestName, request);
 
 			throw;
 		}

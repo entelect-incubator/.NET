@@ -1,6 +1,6 @@
-<img align="left" width="116" height="116" src="../Assets/pezza-logo.png" />
+<img align="left" width="116" height="116" src="../Assets/logo.png" />
 
-# &nbsp;**Pezza - Phase 2 - Step 2**
+# &nbsp;**E List - Phase 2 - Step 2**
 
 <br/><br/>
 
@@ -8,170 +8,161 @@ Unit testing
 
 ## **Unit Tests**
 
-Add CustomerTestData.cs to test Project Test Data.
-
-![Customer Test Data](Assets/2020-11-20-09-39-27.png)
+Update the test data to align with the new models. Ensure that the test cases reflect the structure of the TodoModel, CreateTodoModel, and UpdateTodoModel to accurately test the functionality of the commands and queries with the new models.
 
 ```cs
-namespace Test.Setup.TestData.Customer;
+using Common.Models.Todos;
 
-public static class CustomerTestData
+namespace Test.Setup.TestData.Pizza;
+
+public static class TodoTestData
 {
-	public static Faker faker = new("en_ZA");
+	public static Faker faker = new();
 
-	public static Common.Entities.Customer Customer = new()
+	public static Todo Todo = new()
 	{
 		Id = 1,
-		Name = faker.Person.FullName,
-		Address = faker.Address.FullAddress(),
-		Cellphone = faker.Phone.PhoneNumber(),
-		Email = faker.Person.Email,
-		DateCreated = DateTime.Now,
+		Task = faker.Random.Word(),
+		IsCompleted = false,
+		DateCreated = DateTime.UtcNow,
+		SessionId = Guid.NewGuid(),
 	};
 
-	public static CustomerModel CustomerModel = new()
+	public static TodoModel TodoModel = new()
 	{
 		Id = 1,
-		Name = faker.Person.FullName,
-		Address = faker.Address.FullAddress(),
-		Cellphone = faker.Phone.PhoneNumber(),
-		Email = faker.Person.Email,
-		DateCreated = DateTime.Now,
+		Task = faker.Random.Word(),
+		IsCompleted = false,
+		DateCreated = DateTime.UtcNow,
+		SessionId = Guid.NewGuid(),
+	};
+
+	public static CreateTodoModel CreateTodoModel = new()
+	{
+		Task = faker.Random.Word(),
+		IsCompleted = false,
+		SessionId = Guid.NewGuid(),
+	};
+
+	public static UpdateTodoModel UpdateTodoModel = new()
+	{
+		Task = faker.Random.Word(),
 	};
 }
 ```
 
-### **Testing Core Layer**
+We will now enhance our Core unit tests to cover the new CQRS commands and queries.
 
-Create a Folder in the Test Project called **Core**. Create a Test Core Class for every Entity.
+For this, each test will utilize a handler with an in-memory DbContext. We will declare a new handler for each test and inject the DbContext into it. For example:
 
-We will test every method inside of the Core class - GetAsync, GetAllAsync, SaveAsync, UpdateAsync and DeleteAsync. The class will inherit from QueryTestBase created earlier.We will test every method inside of the Core class - GetAsync, GetAllAsync, SaveAsync, UpdateAsync and DeleteAsync. The class will inherit from QueryTestBase created earlier.
+```cs
+var sutCreate = new CreateTodoCommandHandler(this.Context);
+```
 
-Every test method will start with [Test], this indicates it as a Unit Test. Every Test class will have an attribute [TestFixture] at the top. We will use [SetUp] to intialize our handlers or data access layer and resue it in every test.
+We will then test the command or query handler using the test data created earlier. This approach ensures that each command and query is tested independently and consistently.
 
-It will contain a new Handler with the In Memory DBContext.
-
- We will declare a new Handler for every test and inject the DbContext into it. i.e. var sutCreate = new CreateCustomerCommandHandler(this.Context);
-
- Then we will test the Command or Query Handler with the Test Data created earlier i.e. var resultCreate = await sutCreate.Handle(new CreateCustomerCommand
-            {
-                Data = CustomerTestData.CustomerDataDTO
-            }, CancellationToken.None);
-
- Next we will test the the result.
-
-TestCustomerCore.cs in Core folder
+TestTodoCore.cs in Core folder
 
 ```cs
 namespace Test.Core;
 
-using global::Core.Customer.Commands;
-using global::Core.Customer.Queries;
-using Test.Setup.TestData.Customer;
-using static global::Core.Customer.Commands.CreateCustomerCommand;
-using static global::Core.Customer.Commands.DeleteCustomerCommand;
-using static global::Core.Customer.Commands.UpdateCustomerCommand;
-using static global::Core.Customer.Queries.GetCustomerQuery;
-using static global::Core.Customer.Queries.GetCustomersQuery;
+using Common.Models.Todos;
+using global::Core.Todos.Commands;
+using global::Core.Todos.Queries;
+using Test.Setup.TestData.Pizza;
 
 [TestFixture]
-public class TestCustomerCore : QueryTestBase
+public class TestTodoCore : QueryTestBase
 {
-	private CustomerModel model;
+	private TodoModel model;
 
-	[SetUp]
+	[OneTimeSetUp]
 	public async Task Init()
 	{
-		this.model = CustomerTestData.CustomerModel;
-		var sutCreate = new CreateCustomerCommandHandler(this.Context);
+		var sutCreate = new AddTodoCommandHandler(this.Context);
 		var resultCreate = await sutCreate.Handle(
-			new CreateCustomerCommand
+			new AddTodoCommand
 			{
-				Data = new CreateCustomerModel
-				{
-					Name = this.model.Name,
-					Email= this.model.Email,
-					Address = this.model.Address,
-					Cellphone= this.model.Cellphone
-				}
+				Data = TodoTestData.CreateTodoModel
 			}, CancellationToken.None);
 
 		if (!resultCreate.Succeeded)
 		{
-			Assert.IsTrue(false);
+			Assert.Fail();
 		}
 
 		this.model = resultCreate.Data;
 	}
 
-	[Test]
-	public async Task GetAsync()
+	[Test, Order(1)]
+	public void AddAsync()
 	{
-		var sutGet = new GetCustomerQueryHandler(this.Context);
-		var resultGet = await sutGet.Handle(
-			new GetCustomerQuery
-			{
-				Id = this.model.Id
-			}, CancellationToken.None);
-
-		Assert.IsTrue(resultGet?.Data != null);
+		var outcome = this.model.Id != 0;
+		Assert.That(outcome, Is.True);
 	}
 
-	[Test]
+	[Test, Order(2)]
 	public async Task GetAllAsync()
 	{
-		var sutGetAll = new GetCustomersQueryHandler(this.Context);
-		var resultGetAll = await sutGetAll.Handle(new GetCustomersQuery(), CancellationToken.None);
+		var sutGetAll = new GetTodosQueryHandler(this.Context);
+		var resultGetAll = await sutGetAll.Handle(new GetTodosQuery()
+		{
+			SessionId = this.model.SessionId,
+		}, CancellationToken.None);
 
-		Assert.IsTrue(resultGetAll?.Data.Count == 1);
+		Assert.That(resultGetAll.Succeeded, Is.True);
+		Assert.That(resultGetAll.Data.Count, Is.EqualTo(1));
 	}
 
-	[Test]
-	public void SaveAsync() => Assert.IsTrue(this.model != null);
-
-	[Test]
-	public async Task UpdateAsync()
+	[Test, Order(3)]
+	public async Task CompleteAsync()
 	{
-		var sutUpdate = new UpdateCustomerCommandHandler(this.Context);
+		var sutUpdate = new CompleteTodoCommandHandler(this.Context);
 		var resultUpdate = await sutUpdate.Handle(
-			new UpdateCustomerCommand
+			new CompleteTodoCommand
 			{
 				Id = this.model.Id,
-				Data = new UpdateCustomerModel
-				{					
-					Cellphone = "0721230000"
-				}
 			}, CancellationToken.None);
 
-		Assert.IsTrue(resultUpdate.Succeeded);
+		Assert.That(resultUpdate.Succeeded, Is.True);
+		Assert.That(resultUpdate.Data?.IsCompleted, Is.True);
 	}
 
-	[Test]
-	public async Task DeleteAsync()
+	[Test, Order(4)]
+	public async Task UpdateAsync()
 	{
-		var sutDelete = new DeleteCustomerCommandHandler(this.Context);
-		var outcomeDelete = await sutDelete.Handle(
-			new DeleteCustomerCommand
+		var sutUpdate = new UpdateTodoCommandHandler(this.Context);
+		var resultUpdate = await sutUpdate.Handle(
+			new UpdateTodoCommand
 			{
-				Id = this.model.Id
+				Id = this.model.Id,
+				Data = TodoTestData.UpdateTodoModel
 			}, CancellationToken.None);
 
-		Assert.IsTrue(outcomeDelete.Succeeded);
+		Assert.That(resultUpdate.Succeeded, Is.True);
+	}
+
+	[Test, Order(5)]
+	public async Task DeleteAsync()
+	{
+		var sutDelete = new DeleteTodoCommandHandler(this.Context);
+		var resultDelete = await sutDelete.Handle(
+			new DeleteTodoCommand
+			{
+				Id = this.model.Id,
+			}, CancellationToken.None);
+
+		Assert.That(resultDelete.Succeeded, Is.True);
 	}
 }
 ```
 
-Create the PizzaCore Unit Test classes now, when you are done it should look like this.
-
-![](./Assets/2023-04-10-23-00-23.png)
-
 To run the test go to the top Menu bar -> Test -> Run All Tests. This will open the Test Explorer.
 
-![](Assets/2020-11-20-09-56-21.png)
+![](./Assets/2024-09-14-14-43-06.png)
 
 You should now have all Unit Tests pass.
 
 ## **STEP 3 - Finishing up the API to use CQRS**
 
-Move to Step 3
-[Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%202/Step%203)
+Move to Step 3 [Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%202/Step%203)

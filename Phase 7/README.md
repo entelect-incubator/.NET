@@ -1,6 +1,6 @@
-<img align="left" width="116" height="116" src="pezza-logo.png" />
+<img align="left" width="116" height="116" src="logo.png" />
 
-# &nbsp;**Pezza - Phase 7** [![.NET - Phase 7 - Start Solution](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase7-startsolution.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase7-startsolution.yml)
+# &nbsp;**E List - Phase 7** [![.NET - Phase 7 - Start Solution](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase7-startsolution.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase7-startsolution.yml)
 
 <br/><br/>
 
@@ -18,9 +18,9 @@ Create a new Console Application Api.Client
 
 ### **Nuget Packages**
 
-- [ ] NSwag.MSBuild - Api.Client
-- [ ] Newtonsoft.Json - Api.Client
-- [ ] NSwag.AspNetCore - Api
+-   [ ] NSwag.MSBuild - Api.Client
+-   [ ] Newtonsoft.Json - Api.Client
+-   [ ] NSwag.AspNetCore - Api
 
 ### **Nswag file**
 
@@ -28,143 +28,143 @@ Add Api.nswag
 
 ```json
 {
-  "runtime": "Net70",
-  "defaultVariables": null,
-  "documentGenerator": {
-    "aspNetCoreToOpenApi": {
-      "project": "../Api/Api.csproj",
-      "msBuildProjectExtensionsPath": null,
-      "configuration": null,
-      "runtime": null,
-      "targetFramework": null,
-      "noBuild": false,
-      "verbose": true,
-      "workingDirectory": null,
-      "requireParametersWithoutDefault": false,
-      "apiGroupNames": null,
-      "defaultPropertyNameHandling": "Default",
-      "defaultReferenceTypeNullHandling": "Null",
-      "defaultDictionaryValueReferenceTypeNullHandling": "NotNull",
-      "defaultResponseReferenceTypeNullHandling": "NotNull",
-      "defaultEnumHandling": "Integer",
-      "flattenInheritanceHierarchy": false,
-      "generateKnownTypes": true,
-      "generateEnumMappingDescription": true,
-      "generateXmlObjects": false,
-      "generateAbstractProperties": false,
-      "generateAbstractSchemas": true,
-      "ignoreObsoleteProperties": false,
-      "allowReferencesWithProperties": false,
-      "excludedTypeNames": [],
-      "serviceHost": null,
-      "serviceBasePath": null,
-      "serviceSchemes": [],
-      "infoTitle": "My Title",
-      "infoDescription": null,
-      "infoVersion": "1.0.0",
-      "documentTemplate": null,
-      "documentProcessorTypes": [],
-      "operationProcessorTypes": [],
-      "typeNameGeneratorType": null,
-      "schemaNameGeneratorType": null,
-      "contractResolverType": null,
-      "serializerSettingsType": null,
-      "useDocumentProvider": true,
-      "documentName": "v1",
-      "aspNetCoreEnvironment": null,
-      "createWebHostBuilderMethod": null,
-      "startupType": null,
-      "allowNullableBodyParameters": true,
-      "output": "Api-Client.json",
-      "outputType": "Swagger2",
-      "assemblyPaths": [],
-      "assemblyConfig": null,
-      "referencePaths": [],
-      "useNuGetCache": true
-    }
-  },
-  "codeGenerators": {
-    "openApiToCSharpClient": {
-      "clientBaseClass": null,
-      "configurationClass": null,
-      "generateClientClasses": true,
-      "generateClientInterfaces": true,
-      "injectHttpClient": true,
-      "disposeHttpClient": true,
-      "protectedMethods": [],
-      "generateExceptionClasses": true,
-      "exceptionClass": "ApiException",
-      "wrapDtoExceptions": true,
-      "useHttpClientCreationMethod": false,
-      "httpClientType": "System.Net.Http.HttpClient",
-      "useHttpRequestMessageCreationMethod": false,
-      "useBaseUrl": true,
-      "generateBaseUrlProperty": true,
-      "generateSyncMethods": true,
-      "exposeJsonSerializerSettings": false,
-      "clientClassAccessModifier": "public",
-      "typeAccessModifier": "public",
-      "generateContractsOutput": false,
-      "contractsNamespace": null,
-      "contractsOutputFilePath": null,
-      "parameterDateTimeFormat": "s",
-      "parameterDateFormat": "yyyy-MM-dd",
-      "generateUpdateJsonSerializerSettingsMethod": true,
-      "serializeTypeInformation": false,
-      "queryNullValue": "",
-      "className": "{controller}Client",
-      "operationGenerationMode": "MultipleClientsFromOperationId",
-      "additionalNamespaceUsages": [],
-      "additionalContractNamespaceUsages": [],
-      "generateOptionalParameters": true,
-      "generateJsonMethods": false,
-      "enforceFlagEnums": false,
-      "parameterArrayType": "System.Collections.Generic.IEnumerable",
-      "parameterDictionaryType": "System.Collections.Generic.Dictionary",
-      "responseArrayType": "System.Collections.Generic.List",
-      "responseDictionaryType": "System.Collections.Generic.Dictionary",
-      "wrapResponses": false,
-      "wrapResponseMethods": [],
-      "generateResponseClasses": true,
-      "responseClass": "SwaggerResponse",
-      "namespace": "API.Client.Template",
-      "requiredPropertiesMustBeDefined": true,
-      "dateType": "System.DateTimeOffset",
-      "jsonConverters": null,
-      "anyType": "object",
-      "dateTimeType": "System.DateTimeOffset",
-      "timeType": "System.TimeSpan",
-      "timeSpanType": "System.TimeSpan",
-      "arrayType": "System.Collections.Generic.List",
-      "arrayInstanceType": "System.Collections.Generic.List",
-      "dictionaryType": "System.Collections.Generic.Dictionary",
-      "dictionaryInstanceType": "System.Collections.Generic.Dictionary",
-      "arrayBaseType": "System.Collections.Generic.List",
-      "dictionaryBaseType": "System.Collections.Generic.Dictionary",
-      "classStyle": "Poco",
-      "generateDefaultValues": true,
-      "generateDataAnnotations": true,
-      "excludedTypeNames": [],
-      "excludedParameterNames": [],
-      "handleReferences": false,
-      "generateImmutableArrayProperties": false,
-      "generateImmutableDictionaryProperties": false,
-      "jsonSerializerSettingsTransformationMethod": null,
-      "inlineNamedArrays": false,
-      "inlineNamedDictionaries": false,
-      "inlineNamedTuples": true,
-      "inlineNamedAny": false,
-      "generateDtoTypes": true,
-      "generateOptionalPropertiesAsNullable": true,
-      "templateDirectory": null,
-      "typeNameGeneratorType": null,
-      "propertyNameGeneratorType": null,
-      "enumNameGeneratorType": null,
-      "serviceHost": null,
-      "serviceSchemes": null,
-      "output": "Api-Client.cs"
-    }
-  }
+	"runtime": "Net70",
+	"defaultVariables": null,
+	"documentGenerator": {
+		"aspNetCoreToOpenApi": {
+			"project": "../Api/Api.csproj",
+			"msBuildProjectExtensionsPath": null,
+			"configuration": null,
+			"runtime": null,
+			"targetFramework": null,
+			"noBuild": false,
+			"verbose": true,
+			"workingDirectory": null,
+			"requireParametersWithoutDefault": false,
+			"apiGroupNames": null,
+			"defaultPropertyNameHandling": "Default",
+			"defaultReferenceTypeNullHandling": "Null",
+			"defaultDictionaryValueReferenceTypeNullHandling": "NotNull",
+			"defaultResponseReferenceTypeNullHandling": "NotNull",
+			"defaultEnumHandling": "Integer",
+			"flattenInheritanceHierarchy": false,
+			"generateKnownTypes": true,
+			"generateEnumMappingDescription": true,
+			"generateXmlObjects": false,
+			"generateAbstractProperties": false,
+			"generateAbstractSchemas": true,
+			"ignoreObsoleteProperties": false,
+			"allowReferencesWithProperties": false,
+			"excludedTypeNames": [],
+			"serviceHost": null,
+			"serviceBasePath": null,
+			"serviceSchemes": [],
+			"infoTitle": "My Title",
+			"infoDescription": null,
+			"infoVersion": "1.0.0",
+			"documentTemplate": null,
+			"documentProcessorTypes": [],
+			"operationProcessorTypes": [],
+			"typeNameGeneratorType": null,
+			"schemaNameGeneratorType": null,
+			"contractResolverType": null,
+			"serializerSettingsType": null,
+			"useDocumentProvider": true,
+			"documentName": "v1",
+			"aspNetCoreEnvironment": null,
+			"createWebHostBuilderMethod": null,
+			"startupType": null,
+			"allowNullableBodyParameters": true,
+			"output": "Api-Client.json",
+			"outputType": "Swagger2",
+			"assemblyPaths": [],
+			"assemblyConfig": null,
+			"referencePaths": [],
+			"useNuGetCache": true
+		}
+	},
+	"codeGenerators": {
+		"openApiToCSharpClient": {
+			"clientBaseClass": null,
+			"configurationClass": null,
+			"generateClientClasses": true,
+			"generateClientInterfaces": true,
+			"injectHttpClient": true,
+			"disposeHttpClient": true,
+			"protectedMethods": [],
+			"generateExceptionClasses": true,
+			"exceptionClass": "ApiException",
+			"wrapDtoExceptions": true,
+			"useHttpClientCreationMethod": false,
+			"httpClientType": "System.Net.Http.HttpClient",
+			"useHttpRequestMessageCreationMethod": false,
+			"useBaseUrl": true,
+			"generateBaseUrlProperty": true,
+			"generateSyncMethods": true,
+			"exposeJsonSerializerSettings": false,
+			"clientClassAccessModifier": "public",
+			"typeAccessModifier": "public",
+			"generateContractsOutput": false,
+			"contractsNamespace": null,
+			"contractsOutputFilePath": null,
+			"parameterDateTimeFormat": "s",
+			"parameterDateFormat": "yyyy-MM-dd",
+			"generateUpdateJsonSerializerSettingsMethod": true,
+			"serializeTypeInformation": false,
+			"queryNullValue": "",
+			"className": "{controller}Client",
+			"operationGenerationMode": "MultipleClientsFromOperationId",
+			"additionalNamespaceUsages": [],
+			"additionalContractNamespaceUsages": [],
+			"generateOptionalParameters": true,
+			"generateJsonMethods": false,
+			"enforceFlagEnums": false,
+			"parameterArrayType": "System.Collections.Generic.IEnumerable",
+			"parameterDictionaryType": "System.Collections.Generic.Dictionary",
+			"responseArrayType": "System.Collections.Generic.List",
+			"responseDictionaryType": "System.Collections.Generic.Dictionary",
+			"wrapResponses": false,
+			"wrapResponseMethods": [],
+			"generateResponseClasses": true,
+			"responseClass": "SwaggerResponse",
+			"namespace": "API.Client.Template",
+			"requiredPropertiesMustBeDefined": true,
+			"dateType": "System.DateTimeOffset",
+			"jsonConverters": null,
+			"anyType": "object",
+			"dateTimeType": "System.DateTimeOffset",
+			"timeType": "System.TimeSpan",
+			"timeSpanType": "System.TimeSpan",
+			"arrayType": "System.Collections.Generic.List",
+			"arrayInstanceType": "System.Collections.Generic.List",
+			"dictionaryType": "System.Collections.Generic.Dictionary",
+			"dictionaryInstanceType": "System.Collections.Generic.Dictionary",
+			"arrayBaseType": "System.Collections.Generic.List",
+			"dictionaryBaseType": "System.Collections.Generic.Dictionary",
+			"classStyle": "Poco",
+			"generateDefaultValues": true,
+			"generateDataAnnotations": true,
+			"excludedTypeNames": [],
+			"excludedParameterNames": [],
+			"handleReferences": false,
+			"generateImmutableArrayProperties": false,
+			"generateImmutableDictionaryProperties": false,
+			"jsonSerializerSettingsTransformationMethod": null,
+			"inlineNamedArrays": false,
+			"inlineNamedDictionaries": false,
+			"inlineNamedTuples": true,
+			"inlineNamedAny": false,
+			"generateDtoTypes": true,
+			"generateOptionalPropertiesAsNullable": true,
+			"templateDirectory": null,
+			"typeNameGeneratorType": null,
+			"propertyNameGeneratorType": null,
+			"enumNameGeneratorType": null,
+			"serviceHost": null,
+			"serviceSchemes": null,
+			"output": "Api-Client.cs"
+		}
+	}
 }
 ```
 
@@ -190,13 +190,13 @@ From
 
 ```cs
 app.UseSwagger();
-app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Pezza API V1"));
+app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "EList API V1"));
 
 services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo
     {
-        Title = "Pezza API",
+        Title = "EList API",
         Version = "v1"
     });
 
@@ -216,7 +216,7 @@ services.AddSwaggerDocument(config =>
     config.PostProcess = document =>
     {
         document.Info.Version = "V1";
-        document.Info.Title = "Pezza Api";
+        document.Info.Title = "EList Api";
     };
 });
 ```
@@ -227,5 +227,4 @@ Finished Client will look like this
 
 ## **Phase 8 - Create UI's**
 
-Move to Phase 7
-[Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%207)
+Move to Phase 7 [Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%207)
