@@ -26,8 +26,6 @@ using Core.Email;
 public class EmailEvent : INotification
 {
 	public string ToEmail { get; set; }
-
-	public Guid SessionId { get; set; }
 }
 
 public class EmailEventHandler(DatabaseContext databaseContext) : INotificationHandler<EmailEvent>
@@ -38,7 +36,7 @@ public class EmailEventHandler(DatabaseContext databaseContext) : INotificationH
 		var html = File.ReadAllText(path);
 
 		var tasks = await databaseContext.Todos
-			.Where(x => x.SessionId == notification.SessionId && x.IsCompleted == false && x.DateCreated >= DateTime.UtcNow)
+			.Where(x => x.IsCompleted == false && x.DateCreated >= DateTime.UtcNow)
 			.AsNoTracking()
 			.ToListAsync(cancellationToken);
 
@@ -70,8 +68,6 @@ using Core.Todos.Events;
 public class ExpiredTodoCommand : IRequest<Result>
 {
 	public required string ToEmail { get; set; }
-
-	public required Guid SessionId { get; set; }
 }
 
 public class ExpiredTodoCommandHandler(IMediator mediator) : IRequestHandler<ExpiredTodoCommand, Result>
@@ -97,8 +93,6 @@ public class ExpiredTodoCommandValidator : AbstractValidator<ExpiredTodoCommand>
 	public ExpiredTodoCommandValidator()
 	{
 		this.RuleFor(x => x.ToEmail).NotEmpty().WithMessage("Email is required.").EmailAddress();
-
-		this.RuleFor(x => x.SessionId).NotEmpty().WithMessage("Session Id must be a valid non-empty GUID.");
 	}
 }
 ```

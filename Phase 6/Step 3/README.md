@@ -1,4 +1,4 @@
-<img align="left" width="116" height="116" src="../logo.png" />
+<img align="left" width="116" height="116" src="../Assets/logo.png" />
 
 # &nbsp;**E List - Phase 6 - Step 3** [![.NET - Phase 6 - Step 3](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-step3.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-step3.yml)
 
@@ -30,7 +30,7 @@ Create a new ASP.NET Web Application Scheduler under 01. Apis
 
 ![](./Assets/2023-07-23-08-49-01.png)
 
-![](./Assets/2023-07-23-08-50-06.png)
+![](./Assets/2024-09-15-23-33-02.png)
 
 ## **Nuget Packages**
 
@@ -50,12 +50,6 @@ Copy Program.cs, GlobalUsings.cs and Startup.cs from Api project
 ## **Configuring Hangfire**
 
 Once all the NuGet packages are installed, it is time to configure the server. To do that, I will open the Startup.cs file and update the ConfigureServices method of the Startup class.
-
-GlobalUsings.cs
-
-```cs
-global using DataAccess;
-```
 
 Program.cs
 
@@ -107,8 +101,9 @@ namespace Api;
 
 using System.Reflection;
 using System.Text.Json.Serialization;
-using Common.Behaviour;
 using Core;
+using Core.Behaviours;
+using DataAccess;
 using Hangfire;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -160,7 +155,7 @@ public class Startup
 
 		services.AddLazyCache();
 		services.AddDbContext<DatabaseContext>(options =>
-			options.UseInMemoryDatabase(Guid.NewGuid().ToString()));
+			options.UseInMemoryDatabase("EListDB"));
 
 		services.AddResponseCompression(options =>
 		{
@@ -177,7 +172,7 @@ public class Startup
 		app.UseSwagger();
 		app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "EList Scheduler API V1"));
 		app.UseHttpsRedirection();
-		app.UseMiddleware(typeof(ExceptionHandlerMiddleware));
+		app.UseMiddleware(typeof(UnhandledExceptionBehaviour));
 		app.UseRouting();
 		app.UseEndpoints(endpoints => endpoints.MapControllers());
 		app.UseAuthorization();
@@ -188,7 +183,7 @@ public class Startup
 		{
 			TimeZone = TimeZoneInfo.Local
 		};
-		RecurringJob.AddOrUpdate<IOrderCompleteJob>("SendNotificationAsync", x => x.SendNotificationAsync(), "0 * * ? * *");
+		RecurringJob.AddOrUpdate<IOrderCompleteJob>("SendNotificationAsync", x => x.SendNotificationAsync(), "* * * * *");
 
 		app.Run();
 	}
@@ -205,254 +200,6 @@ I will run the application to see the output as well as the Hangfire dashboard U
 
 ![](./Assets/2023-07-23-09-13-16.png)
 
-## **Create a very basic notifications Queue**
-
-Add new Notify Entity in Common\Entities
-
-```cs
-namespace Common.Entities;
-
-public class Notify
-{
-	public int Id { get; set; }
-
-	public required int CustomerId { get; set; }
-
-	public required string CustomerEmail { get; set; }
-
-	public required string EmailContent { get; set; }
-
-	public required bool Sent { get; set; }
-
-	public DateTime? DateSent { get; set; }
-
-	public virtual Customer Customer { get; set; }
-}
-```
-
-Add Notifies to Customer.cs Entity
-
-```cs
-namespace Common.Entities;
-
-public sealed class Customer
-{
-	public Customer() => this.Notifies = new HashSet<Notify>();
-
-	public int Id { get; set; }
-
-	public required string Name { get; set; }
-
-	public string? Address { get; set; }
-
-	public string? Email { get; set; }
-
-	public string? Cellphone { get; set; }
-
-	public DateTime DateCreated { get; set; }
-
-	public ICollection<Notify> Notifies { get; }
-}
-```
-
-Add new Database Mapping in DataAccess\Mapping
-
-```cs
-namespace DataAccess.Mapping;
-
-using System.Reflection.Emit;
-using System.Security.Claims;
-using Common.Entities;
-using Microsoft.EntityFrameworkCore;
-
-public sealed class NotifyMap : IEntityTypeConfiguration<Notify>
-{
-	public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Notify> builder)
-	{
-		builder.ToTable("Notify", "dbo");
-
-		builder.HasKey(t => t.Id);
-
-		builder.Property(t => t.Id)
-			.IsRequired()
-			.HasColumnName("Id")
-			.HasColumnType("int")
-			.ValueGeneratedOnAdd();
-
-		builder.Property(t => t.CustomerId)
-			.IsRequired()
-			.HasColumnName("CustomerId")
-			.HasColumnType("int");
-
-		builder.Property(t => t.CustomerEmail)
-			.IsRequired()
-			.HasColumnName("CustomerEmail")
-			.HasColumnType("varchar(500)")
-			.HasMaxLength(500);
-
-		builder.Property(t => t.EmailContent)
-			.HasColumnName("EmailContent")
-			.HasColumnType("varchar(max)");
-
-		builder.Property(t => t.Sent)
-			.HasColumnName("Sent")
-			.HasColumnType("bool");
-
-		builder.Property(t => t.DateSent)
-			.IsRequired()
-			.HasColumnName("DateSent")
-			.HasColumnType("datetime");
-
-		builder.HasOne(y => y.Customer)
-			.WithMany(x => x.Notifies)
-			.HasForeignKey(x => x.CustomerId);
-	}
-}
-```
-
-Modify DatabaseContext to have the new Notify Entity and Mapping
-
-```cs
-namespace DataAccess;
-
-public class DatabaseContext : DbContext
-{
-	public DatabaseContext()
-	{
-	}
-
-	public DatabaseContext(DbContextOptions options) : base(options)
-	{
-	}
-
-	public virtual DbSet<Customer> Customers { get; set; }
-
-	public virtual DbSet<Pizza> Pizzas { get; set; }
-
-	public virtual DbSet<Notify> Notifies { get; set; }
-
-	protected override void OnModelCreating(ModelBuilder modelBuilder)
-	{
-		modelBuilder.ApplyConfiguration(new CustomerMap());
-		modelBuilder.ApplyConfiguration(new PizzaMap());
-		modelBuilder.ApplyConfiguration(new NotifyMap());
-	}
-
-	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => optionsBuilder.UseInMemoryDatabase(databaseName: "EListDb");
-}
-```
-
-Modify OrderEvent to add Order to Notify table instead of the fire and forget.
-
-```cs
-namespace Core.Order.Events;
-
-using System.Text;
-using Common.Entities;
-using Common.Models.Order;
-using DataAccess;
-
-public class OrderEvent : INotification
-{
-	public OrderModel Data { get; set; }
-}
-
-public class OrderEventHandler(DatabaseContext databaseContext) : INotificationHandler<OrderEvent>
-{
-	async Task INotificationHandler<OrderEvent>.Handle(OrderEvent notification, CancellationToken cancellationToken)
-	{
-		var path = AppDomain.CurrentDomain.BaseDirectory + "\\Email\\Templates\\OrderCompleted.html";
-		var html = File.ReadAllText(path);
-
-		html = html.Replace("%name%", Convert.ToString(notification.Data.Customer.Name));
-
-		var pizzasContent = new StringBuilder();
-		foreach (var pizza in notification.Data.Pizzas)
-		{
-			pizzasContent.AppendLine($"<strong>{pizza.Name}</strong> - {pizza.Description}<br/>");
-		}
-
-		html = html.Replace("%pizzas%", pizzasContent.ToString());
-
-		databaseContext.Notifies.Add(new Notify
-		{
-			CustomerId = notification.Data.Customer.Id,
-			CustomerEmail = notification.Data?.Customer?.Email,
-			DateSent = null,
-			EmailContent = html,
-			Sent = false
-		});
-		await databaseContext.SaveChangesAsync(cancellationToken);
-	}
-}
-```
-
-Add new GetNotifiesQuery in Core Project
-
-![](./Assets/2023-07-23-09-32-18.png)
-
-```cs
-namespace Core.Pizza.Queries;
-
-using Common.Entities;
-
-public class GetNotifiesQuery : IRequest<ListResult<Notify>>
-{
-}
-
-public class GetNotifiesQueryHandler(DatabaseContext databaseContext) : IRequestHandler<GetNotifiesQuery, ListResult<Notify>>
-{
-	public async Task<ListResult<Notify>> Handle(GetNotifiesQuery request, CancellationToken cancellationToken)
-	{
-		var entities = databaseContext.Notifies
-			.Select(x => x)
-			.Include(x => x.Customer)
-			.Where(x => x.Sent == false)
-			.AsNoTracking();
-
-		var count = entities.Count();
-		var data = await entities.ToListAsync(cancellationToken);
-
-		return ListResult<Notify>.Success(data, count);
-	}
-}
-```
-
-Add UpdateNotifyCommand to Modify Sent if Email was sent
-
-![](./Assets/2023-07-23-09-50-43.png)
-
-```cs
-namespace Core.Notify.Commands;
-
-public class UpdateNotifyCommand : IRequest<Result>
-{
-	public int Id { get; set; }
-
-	public bool Sent { get; set; }
-}
-
-public class UpdateNotifyCommandHandler(DatabaseContext databaseContext) : IRequestHandler<UpdateNotifyCommand, Result>
-{
-	public async Task<Result> Handle(UpdateNotifyCommand request, CancellationToken cancellationToken)
-	{
-		var query = EF.CompileAsyncQuery((DatabaseContext db, int id) => db.Notifies.FirstOrDefault(c => c.Id == id));
-		var findEntity = await query(databaseContext, request.Id);
-		if (findEntity == null)
-		{
-			return Result.Failure("Not found");
-		}
-
-		findEntity.Sent = request.Sent;
-
-		var outcome = databaseContext.Notifies.Update(findEntity);
-		var result = await databaseContext.SaveChangesAsync(cancellationToken);
-
-		return result > 0 ? Result.Success() : Result.Failure("Error");
-	}
-}
-```
-
 ## **Create a recurring job**
 
 Creating a background job as we did above is easy with Hangfire, but it is as easy using an instance of Task class as well. So why go with something like Hangfire and install all these packages into the project?
@@ -461,69 +208,37 @@ Well, the main advantage of Hangfire comes in when we use it to create schedulin
 
 Let us say we need to create a job that is responsible for finding any emails in Notify table that hasn't been send and send them out.
 
-Create a new folder called Jobs inside Scheduler and inside that IOrderCompleteJob.cs interface and OrderCompleteJob.cs.
+Create a new folder called Jobs inside Scheduler and inside that IEmailJob.cs interface and EmailJob.cs.
 
 ```cs
 namespace Scheduler.Jobs;
 
 using System.Threading.Tasks;
-using Common;
-using Common.Mappers;
-using Core.Email;
-using Core.Notify.Commands;
-using Core.Pizza.Queries;
+using Core.Todos.Commands;
 using MediatR;
 
-public interface IOrderCompleteJob
+public interface IEmailJob
 {
-	Task SendNotificationAsync();
+	Task SendAsync(CancellationToken cancellationToken = default);
 }
 
-public sealed class OrderCompleteJob(IMediator mediator) : IOrderCompleteJob
+public sealed class EmailJob(IMediator mediator) : IEmailJob
 {
-	public async Task SendNotificationAsync()
-	{
-		var notifiesResult = await mediator.Send(new GetNotifiesQuery());
-
-		if (notifiesResult.Succeeded)
-		{
-			foreach (var notification in notifiesResult.Data)
-			{
-				var emailService = new EmailService
-				{
-					Customer = notification.Customer.Map(),
-					HtmlContent = notification.EmailContent
-				};
-				var emailResult = await emailService.SendEmail();
-				if (emailResult.Succeeded)
-				{
-					notification.Sent = true;
-					var updateNotifyResult = await mediator.Send(new UpdateNotifyCommand
-					{
-						Id = notification.Id,
-						Sent = true
-					});
-					if (!updateNotifyResult.Succeeded)
-					{
-						Logging.LogException(new Exception(string.Join("", updateNotifyResult.Errors)));
-					}
-				}
-			}
-		}
-	}
+	public async Task SendAsync(CancellationToken cancellationToken = default)
+		=> await mediator.Send(new ExpiredTodoCommand() { ToEmail = "fakeemail@test.com" }, cancellationToken);
 }
 ```
 
 ## **Configure Startup class**
 
-Once the OrderCompleteJob class is created, it is time to configure the Startup class. In the Startup class, the objective is to configure a recurring job to call the SendNotificationAsync method every minute.
+Once the EmailJob class is created, it is time to configure the Startup class. In the Startup class, the objective is to configure a recurring job to call the SendNotificationAsync method every minute.
 
-Firstly, I will add the OrderCompleteJob to the dependency injection container in the ConfigureServices method.
+Firstly, I will add the EmailJob to the dependency injection container in the ConfigureServices method.
 
 At the end of ConfigureServices in Startup.cs
 
 ```cs
-services.AddScoped<IOrderCompleteJob, OrderCompleteJob>();
+services.AddScoped<IEmailJob, EmailJob>();
 ```
 
 Secondly, I will update the Configure method to take two new parameters. The first one is the IRecurringJobManager necessary for creating a recurring job. And the second one is the IServiceProvider to get the IOrderCompleteJob instance from the dependency injection container.
@@ -535,7 +250,7 @@ var jobOptions = new RecurringJobOptions()
 {
 	TimeZone = TimeZoneInfo.Local
 };
-RecurringJob.AddOrUpdate<IOrderCompleteJob>("SendNotificationAsync", x => x.SendNotificationAsync(), "0 * * ? * *");
+RecurringJob.AddOrUpdate<IEmailJob>("SendNotificationAsync", x => x.SendNotificationAsync(), "0 * * ? * *");
 ```
 
 In the above code, the CRON expression "\* \* \* \* \*" is an expression to run the job every minute.
