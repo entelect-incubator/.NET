@@ -250,7 +250,7 @@ var jobOptions = new RecurringJobOptions()
 {
 	TimeZone = TimeZoneInfo.Local
 };
-RecurringJob.AddOrUpdate<IEmailJob>("SendNotificationAsync", x => x.SendNotificationAsync(), "0 * * ? * *");
+RecurringJob.AddOrUpdate<IEmailJob>("SendAsync", x => x.SendAsync(), "0 * * ? * *");
 ```
 
 In the above code, the CRON expression "\* \* \* \* \*" is an expression to run the job every minute.
@@ -261,4 +261,4 @@ In the above code, the CRON expression "\* \* \* \* \*" is an expression to run 
 
 ## **Step 4 - Orders**
 
-Move to Step 4 [Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%206/Step%204)
+Move to Phase 7 Step 1 [Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%207/Step%201)

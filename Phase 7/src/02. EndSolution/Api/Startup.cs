@@ -2,7 +2,7 @@ namespace Api;
 
 using System.Reflection;
 using System.Text.Json.Serialization;
-using Common.Behaviour;
+using Core.Behaviours;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.ResponseCompression;
@@ -12,17 +12,21 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Serialization;
 
-public class Startup
+public class Startup(IConfiguration configuration)
 {
-	public Startup(IConfiguration configuration) => this.ConfigRoot = configuration;
-
 	public IConfiguration ConfigRoot
 	{
 		get;
-	}
+	} = configuration;
 
 	public void ConfigureServices(IServiceCollection services)
 	{
+		services.AddResponseCompression(options =>
+		{
+			options.Providers.Add<BrotliCompressionProvider>();
+			options.Providers.Add<GzipCompressionProvider>();
+		});
+		services.AddResponseCompression();
 		services.AddControllers(options => options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true)
 			.AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()))
 			.AddNewtonsoftJson(x => x.SerializerSettings.ContractResolver = new DefaultContractResolver())
@@ -30,44 +34,34 @@ public class Startup
 
 		DependencyInjection.AddApplication(services);
 
-		services.AddSwaggerDocument(config =>
+		services.AddSwaggerGen(c =>
 		{
-			config.GenerateEnumMappingDescription = true;
-			config.PostProcess = document =>
+			c.SwaggerDoc("v1", new OpenApiInfo
 			{
-				document.Info.Version = "V1";
-				document.Info.Title = "EList Api";
-			};
-		});
-		services.AddLazyCache();
-		services.AddDbContext<DatabaseContext>(options =>
-			options.UseInMemoryDatabase("EListDB"));
+				Title = "EList API",
+				Version = "v1"
+			});
 
-		services.AddResponseCompression(options =>
-		{
-			options.Providers.Add<BrotliCompressionProvider>();
-			options.Providers.Add<GzipCompressionProvider>();
+			var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+			var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+			c.IncludeXmlComments(xmlPath);
 		});
-		services.AddResponseCompression();
-		using (var serviceProvider = services.BuildServiceProvider())
-		{
-			var dbContext = serviceProvider.GetRequiredService<DatabaseContext>();
-			dbContext.Database.EnsureCreated();
-			dbContext.SaveChanges();
-			dbContext.Dispose();
-		}
+
+		services.AddDbContext<DatabaseContext>(options =>
+			options.UseInMemoryDatabase(Guid.NewGuid().ToString())
+		);
 	}
 
 	public void Configure(WebApplication app, IWebHostEnvironment env)
 	{
-		app.UseOpenApi();
-		app.UseSwaggerUi3(c => c.AdditionalSettings.Add("displayRequestDuration", true));
+		app.UseMiddleware<UnhandledExceptionBehaviour>();
+		app.UseResponseCompression();
+		app.UseSwagger();
+		app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "EList API V1"));
 		app.UseHttpsRedirection();
-		app.UseMiddleware(typeof(ExceptionHandlerMiddleware));
 		app.UseRouting();
 		app.UseEndpoints(endpoints => endpoints.MapControllers());
 		app.UseAuthorization();
-		app.UseResponseCompression();
 		app.Run();
 	}
 }
