@@ -7,7 +7,7 @@ using MediatR;
 [Produces("application/json")]
 public abstract class ApiController : ControllerBase
 {
-    private IMediator mediator;
+	private IMediator mediator;
 
-	protected IMediator Mediator => this.mediator ??= this.HttpContext.RequestServices.GetService<IMediator>();
+	protected IMediator Mediator => this.mediator ??= this.HttpContext.RequestServices.GetService<IMediator>()!;
 }

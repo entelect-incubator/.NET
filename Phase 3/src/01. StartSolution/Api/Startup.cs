@@ -10,14 +10,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Serialization;
 
-public class Startup
+public class Startup(IConfiguration configuration)
 {
 	public IConfiguration ConfigRoot
 	{
 		get;
-	}
-
-	public Startup(IConfiguration configuration) => this.ConfigRoot = configuration;
+	} = configuration;
 
 	public void ConfigureServices(IServiceCollection services)
 	{
