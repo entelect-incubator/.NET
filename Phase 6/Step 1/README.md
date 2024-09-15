@@ -1,4 +1,4 @@
-<img align="left" width="116" height="116" src="../logo.png" />
+<img align="left" width="116" height="116" src="../Assets/logo.png" />
 
 # &nbsp;**E List - Phase 6 - Step 1** [![.NET - Phase 6 - Step 1](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-step1.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-step1.yml)
 
@@ -20,8 +20,7 @@ You can just use your own GMail Smtp Credentials to test with.
 namespace Core.Email;
 
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using Common.Models;
+using Common.Models.Todos;
 using FluentEmail.Core;
 using HtmlAgilityPack;
 
@@ -29,7 +28,9 @@ public class EmailService
 {
 	public string HtmlContent { get; set; }
 
-	public CustomerModel Customer { get; set; }
+	public string ToEmail { get; set; }
+
+	public TodoModel Model { get; set; }
 
 	public async Task<Result> SendEmail()
 	{
@@ -39,9 +40,9 @@ public class EmailService
 		plainText = Regex.Replace(plainText, @"\s+", " ").Trim();
 
 		var email = await Email
-			.From("notify@pezza.com", "EList")
-			.To(this.Customer?.Email, this.Customer?.Name)
-			.Subject("Collect your order it while it's hot")
+			.From("todos@elist.com", "EList")
+			.To(this.ToEmail)
+			.Subject("Todo item(s) is about to expire")
 			.Body(this.HtmlContent)
 			.PlaintextAlternativeBody(plainText)
 			.SendAsync();
@@ -53,17 +54,15 @@ public class EmailService
 
 We will use an HTML template file. This template file can be read in code and the tags inside the template will be replaced with actual content before it gets sent to the customer.
 
-Create OrderCompleted.html inside Core\Email\Templates.
+Create TodoEmail.html inside Core\Email\Templates.
 
-Copy the HTML from **Phase 6\src\04. Step 3\Core\Email\Templates\OrderCompleted.html** into your newly created OrderCompleted.html.
+Copy the HTML from Assets called email.html.
 
-![Email Service](Assets/2021-01-17-23-03-34.png)
+![](./Assets/2024-09-15-23-11-30.png)
 
-The HTML might look a bit strange to you. It is because it is made for email client support.
+Right-click on TodoEmail.html Properties and choose Copy always for Copy to Output.
 
-Right-click on OrderCompleted.html Properties and choose Copy always for Copy to Output.
-
-![](Assets/2021-01-19-07-54-33.png)
+![](./Assets/2024-09-15-23-12-13.png)
 
 In the next step we will look at how to call the email service with the use of MediatR events.
 
