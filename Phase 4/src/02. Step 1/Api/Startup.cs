@@ -2,7 +2,6 @@ namespace Api;
 
 using System.Reflection;
 using System.Text.Json.Serialization;
-using Common.Behaviour;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -11,14 +10,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Serialization;
 
-public class Startup
+public class Startup(IConfiguration configuration)
 {
-	public Startup(IConfiguration configuration) => this.ConfigRoot = configuration;
-
 	public IConfiguration ConfigRoot
 	{
 		get;
-	}
+	} = configuration;
 
 	public void ConfigureServices(IServiceCollection services)
 	{
@@ -43,7 +40,8 @@ public class Startup
 		});
 
 		services.AddDbContext<DatabaseContext>(options =>
-			options.UseInMemoryDatabase("EListDB"));
+			options.UseInMemoryDatabase(Guid.NewGuid().ToString())
+		);
 	}
 
 	public void Configure(WebApplication app, IWebHostEnvironment env)
@@ -51,7 +49,6 @@ public class Startup
 		app.UseSwagger();
 		app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "EList API V1"));
 		app.UseHttpsRedirection();
-		app.UseMiddleware(typeof(ExceptionHandlerMiddleware));
 		app.UseRouting();
 		app.UseEndpoints(endpoints => endpoints.MapControllers());
 		app.UseAuthorization();
