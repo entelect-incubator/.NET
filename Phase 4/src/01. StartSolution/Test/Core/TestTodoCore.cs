@@ -41,7 +41,10 @@ public class TestTodoCore : QueryTestBase
 		var sutGetAll = new GetTodosQueryHandler(this.Context);
 		var resultGetAll = await sutGetAll.Handle(new GetTodosQuery()
 		{
-			SessionId = this.model.SessionId,
+			Data = new SearchTodoModel()
+			{
+				SessionId = this.model.SessionId
+			},
 		}, CancellationToken.None);
 
 		Assert.That(resultGetAll.Succeeded, Is.True);

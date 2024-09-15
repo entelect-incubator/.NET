@@ -1,4 +1,4 @@
-<img align="left" width="116" height="116" src="../logo.png" />
+<img align="left" width="116" height="116" src="../Assets/logo.png" />
 
 # &nbsp;**E List - Phase 4 - Step 2** [![.NET - Phase 4 - Step 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase4-step2.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase4-step2.yml)
 
@@ -6,7 +6,7 @@
 
 ## Error handling
 
-Install Nuget Package Serilog.AspNetCore and Serilog.Sinks.File on all but the Test project.
+Install Nuget Package Serilog and Serilog.Sinks.File on all but the Test project.
 
 ![](./Assets/2021-01-15-11-13-06.png)
 
@@ -38,29 +38,27 @@ public static class Logging
 }
 ```
 
-Modify ExceptionHandlerMiddleware.cs by logging an exception in the final else of the HandleExceptionAsync Method. All exceptions that we have not defined behaviour for gets handled here.
+Modify UnhandledExceptionBehaviour.cs in COre Project by logging an exception in the final else of the Handle Method. All exceptions that we have not defined behaviour for gets handled here.
 
 ```cs
-else
+catch (Exception ex)
 {
-    var code = HttpStatusCode.InternalServerError;
-    var result = JsonSerializer.Serialize(new { isSuccess = false, error = exception.Message });
-    context.Response.ContentType = "application/json";
-    context.Response.StatusCode = (int)code;
-    Logging.LogException(exception);
-
-    return context.Response.WriteAsync(result);
+	Logging.LogException(ex);
+	await HandleUnhandledExceptionAsync(httpContext, ex);
 }
 ```
 
 Update PerformanceBehaviour.cs by removing the old logging and using the new static Logging class instead.
 
 ```cs
-namespace Common.Behaviour;
+namespace Core.Behaviours;
+
+using System.Diagnostics;
+using Common;
 
 public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
 {
-	private readonly Stopwatch timer = new Stopwatch();
+	private readonly Stopwatch timer = new();
 
 	public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
 	{
@@ -75,7 +73,7 @@ public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequ
 		if (elapsedMilliseconds > 500)
 		{
 			var requestName = typeof(TRequest).Name;
-			Logging.LogInfo($"CleanArchitecture Long Running Request: {requestName} ({elapsedMilliseconds} milliseconds)", request);
+			Logging.LogInfo($"Long Running Request: {requestName} ({elapsedMilliseconds} milliseconds)", request);
 		}
 
 		return response;

@@ -2,6 +2,7 @@ namespace Api;
 
 using System.Reflection;
 using System.Text.Json.Serialization;
+using Core.Behaviours;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -46,6 +47,7 @@ public class Startup(IConfiguration configuration)
 
 	public void Configure(WebApplication app, IWebHostEnvironment env)
 	{
+		app.UseMiddleware<UnhandledExceptionBehaviour>();
 		app.UseSwagger();
 		app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "EList API V1"));
 		app.UseHttpsRedirection();
