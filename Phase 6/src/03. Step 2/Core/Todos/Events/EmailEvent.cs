@@ -29,16 +29,9 @@ public class EmailEventHandler(DatabaseContext databaseContext) : INotificationH
 		}
 
 		html = html.Replace("<%ITEMS%>", content.ToString());
-
-		foreach (var pizza in notification.Data.Pizzas)
-		{
-			pizzasContent.AppendLine($"<strong>{pizza.Name}</strong> - {pizza.Description}<br/>");
-		}
-
-		html = html.Replace("%pizzas%", pizzasContent.ToString());
 		var emailService = new EmailService
 		{
-			Customer = notification.Data.Customer,
+			ToEmail = notification.ToEmail,
 			HtmlContent = html
 		};
 
