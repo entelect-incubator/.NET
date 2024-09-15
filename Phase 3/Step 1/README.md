@@ -166,7 +166,13 @@ public static class DependencyInjection
 
 Update Global Error handler UnhandledExceptionBehaviour.cs inside Core Project
 
-Make sure Microsoft.AspNetCore.Http Nuget Package is installed.
+In the Core.csproj add the following to access the HttpContext
+
+```
+<ItemGroup>
+  <FrameworkReference Include="Microsoft.AspNetCore.App" />
+</ItemGroup>
+```
 
 ```cs
 namespace Core.Behaviours;

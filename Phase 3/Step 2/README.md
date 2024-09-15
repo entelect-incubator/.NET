@@ -6,48 +6,44 @@
 
 ## **Search Models**
 
-Let's extend our Models to cater for filtering and pagination. In Common\Models create PagingArgs.cs
+To extend your models for filtering and pagination, you can introduce a PagingArgs class in your Common\Models folder, which encapsulates the necessary properties for handling pagination logic. This class will store information such as the current page, page size, and potentially additional parameters for filtering.
+
+Let's walk through setting up this functionality:
 
 ```cs
 namespace Common.Models;
 
+namespace Common.Models;
+
 public class PagingArgs
 {
-    private int limit = 20;
+	private const int DefaultLimit = 20;
+	private const int DefaultOffset = 0;
 
-    public static PagingArgs NoPaging => new PagingArgs { UsePaging = false };
+	private int limit = DefaultLimit;
 
-    public static PagingArgs Default => new PagingArgs { UsePaging = true, Limit = 20, Offset = 0 };
+	public static readonly PagingArgs NoPaging = new() { UsePaging = false };
+	public static readonly PagingArgs Default = new() { UsePaging = true, Limit = DefaultLimit, Offset = DefaultOffset };
+	public static readonly PagingArgs FirstItem = new() { UsePaging = true, Limit = 1, Offset = DefaultOffset };
 
-    public static PagingArgs FirstItem => new PagingArgs { UsePaging = true, Limit = 1, Offset = 0 };
+	public int Offset { get; set; } = DefaultOffset;
 
-    public int Offset { get; set; }
+	public int Limit
+	{
+		get => this.limit;
+		set => this.limit = value > 0 ? value : DefaultLimit;
+	}
 
-    public int Limit
-    {
-        get => this.limit;
-
-        set
-        {
-            if (value == 0)
-            {
-                value = 20;
-            }
-
-            this.limit = value;
-        }
-    }
-
-    public bool UsePaging { get; set; }
+	public bool UsePaging { get; set; } = true;
 }
 ```
 
-Add an extension method in Common to do the Pagination. Create a new folder called Extensions in Common and add Extensions.cs
+Add an extension method in Common to do the Pagination. Create a new folder called Extensions in Common and add PagingExtensions.cs
 
 ```cs
 namespace Common.Extensions;
 
-public static class Extensions
+public static class PagingExtensions
 {
     public static IQueryable<T> ApplyPaging<T>(this IQueryable<T> query, PagingArgs pagingArgs)
     {
@@ -63,82 +59,86 @@ public static class Extensions
 }
 ```
 
-Add paging option to all the Search Models
+Create a new TodoSearchModel that will be used for the GetAll query, you should design the model to handle the filtering and searching logic. This could include parameters like SearchTerm, Status, Priority, and, if applicable, PagingArgs for pagination.
+
+Add paging option to the Search Model
 
 ```cs
-public string? OrderBy { get; set; }
+namespace Common.Models.Todos;
 
-public PagingArgs PagingArgs { get; set; } = PagingArgs.NoPaging;
+public sealed class SearchTodoModel
+{
+	public string? Task { get; set; }
+
+	public bool? IsCompleted { get; set; }
+
+	public DateTime? DateCreated { get; set; }
+
+	public int? Year { get; set; }
+
+	public int? Month { get; set; }
+
+	public int? Day { get; set; }
+
+	public Guid? SessionId { get; set; }
+
+	public string? OrderBy { get; set; }
+
+	public PagingArgs PagingArgs { get; set; } = PagingArgs.NoPaging;
+}
 ```
 
 ## **Add filtering**
 
-Filter classes are created for every entity. These filters will make use of fluent design for readability. In each filter, you create a rule for every property that you want to filter on. If that property has a value, it builds up a query before executing it to the database. See it as building up a SQL WHERE clause.
+To set up filter classes using Fluent Validation for readability and to build SQL-like WHERE clauses, follow these steps. This approach helps you create dynamic queries based on the presence of filter values.
 
-Create a folder called Filters in DataAccess and add CustomerFilter.cs.
+Add TodoFilter into the Todo Queries folder in the Core project.
 
 ```cs
-namespace Common.Filters;
+namespace Core.Todos.Queries;
 
-public static class CustomerFilter
+using Common.Entities;
+
+public static class TodoFilter
 {
-	public static IQueryable<Customer> FilterByName(this IQueryable<Customer> query, string name)
+	public static IQueryable<Todo> FilterByTask(this IQueryable<Todo> query, string? task)
+		=> string.IsNullOrWhiteSpace(task) ? query : query.Where(x => x.Task.Contains(task));
+
+	public static IQueryable<Todo> FilterByCompleted(this IQueryable<Todo> query, bool? isCompleted)
+		=> !isCompleted.HasValue ? query : query.Where(x => x.IsCompleted == isCompleted.Value);
+
+	public static IQueryable<Todo> FilterByDate(this IQueryable<Todo> query, DateTime? dateCreated = null, int? year = null, int? month = null, int? day = null)
 	{
-		if (string.IsNullOrWhiteSpace(name))
+		if (dateCreated.HasValue)
 		{
-			return query;
+			return query.Where(x => x.DateCreated.HasValue && x.DateCreated.Value.Date == dateCreated.Value.Date);
 		}
 
-		return query.Where(x => x.Name.Contains(name));
-	}
-
-	public static IQueryable<Customer> FilterByAddress(this IQueryable<Customer> query, string address)
-	{
-		if (string.IsNullOrWhiteSpace(address))
+		if (year.HasValue)
 		{
-			return query;
+			query = query.Where(x => x.DateCreated.HasValue && x.DateCreated.Value.Year == year.Value);
 		}
 
-		return query.Where(x => x.Address.Contains(address));
-	}
-
-	public static IQueryable<Customer> FilterByPhone(this IQueryable<Customer> query, string cellphone)
-	{
-		if (string.IsNullOrWhiteSpace(cellphone))
+		if (month.HasValue)
 		{
-			return query;
+			query = query.Where(x => x.DateCreated.HasValue && x.DateCreated.Value.Month == month.Value);
 		}
 
-		return query.Where(x => x.Cellphone.Contains(cellphone));
-	}
-
-	public static IQueryable<Customer> FilterByEmail(this IQueryable<Customer> query, string email)
-	{
-		if (string.IsNullOrWhiteSpace(email))
+		if (day.HasValue)
 		{
-			return query;
+			query = query.Where(x => x.DateCreated.HasValue && x.DateCreated.Value.Day == day.Value);
 		}
 
-		return query.Where(x => x.Email.Contains(email));
-	}
-
-	public static IQueryable<Customer> FilterByDateCreated(this IQueryable<Customer> query, DateTime? dateCreated)
-	{
-		if (!dateCreated.HasValue)
-		{
-			return query;
-		}
-
-		return query.Where(x => x.DateCreated == dateCreated.Value);
+		return query;
 	}
 }
 ```
 
-Add another filter for Pizza called PizzaFilter.cs
+![](./Assets/2024-09-15-21-25-21.png)
 
 ### **Modifying Core**
 
-Modify the get all query for Customer and Pizza in the Core Project.
+Modify the get all query for Todo in the Core Project.
 
 The implementations of all Queries methods need to be modified to include filtering. Remember to install System.Linq.Dynamic.Core Nuget Package on the Core Project.
 
@@ -147,84 +147,183 @@ Modify GlobalUsings.cs
 ```cs
 global using System.Linq.Dynamic.Core;
 global using Common.Extensions;
-global using Common.Filters;
 global using Common.Mappers;
 global using Common.Models;
-global using Core.Pizza.Commands;
 global using DataAccess;
-global using MediatR;
+global using FluentValidation;
 global using Microsoft.EntityFrameworkCore;
+global using MediatR;
 ```
 
 ```cs
-namespace Core.Customer.Queries;
+namespace Core.Todos.Queries;
 
-public class GetCustomersQuery : IRequest<ListResult<CustomerModel>>
+using Common.Models.Todos;
+
+public class GetTodosQuery : IRequest<Result<IEnumerable<TodoModel>>>
 {
-	public SearchCustomerModel Data { get; set; }
+	public required SearchTodoModel Data { get; set; }
+}
 
-	public class GetCustomersQueryHandler(DatabaseContext databaseContext) : IRequestHandler<GetCustomersQuery, ListResult<CustomerModel>>
+public class GetTodosQueryHandler(DatabaseContext databaseContext) : IRequestHandler<GetTodosQuery, Result<IEnumerable<TodoModel>>>
+{
+	public async Task<Result<IEnumerable<TodoModel>>> Handle(GetTodosQuery request, CancellationToken cancellationToken)
 	{
-		public async Task<ListResult<CustomerModel>> Handle(GetCustomersQuery request, CancellationToken cancellationToken)
+		var entity = request.Data!;
+		if (string.IsNullOrEmpty(entity.OrderBy))
 		{
-			var entity = request.Data;
-			if (string.IsNullOrEmpty(entity.OrderBy))
-			{
-				entity.OrderBy = "DateCreated desc";
-			}
-			var entities = databaseContext.Customers
-				.Select(x => x)
-				.AsNoTracking()
-				.FilterByName(entity.Name)
-				.FilterByAddress(entity.Address)
-				.FilterByPhone(entity.Cellphone)
-				.FilterByEmail(entity.Email)
-				.OrderBy(entity.OrderBy);
-
-			var count = entities.Count();
-			var paged = await entities.ApplyPaging(entity.PagingArgs).ToListAsync(cancellationToken);
-
-			return ListResult<CustomerModel>.Success(paged.Map(), count);
+			entity.OrderBy = "DateCreated desc";
 		}
+
+		var entities = databaseContext.Todos.Select(x => x)
+			.AsNoTracking()
+			.FilterByTask(entity.Task)
+			.FilterByCompleted(entity.IsCompleted)
+			.FilterByDate(entity.DateCreated, entity.Year, entity.Month, entity.Day)
+			.OrderBy(entity.OrderBy);
+
+		var count = entities.Count();
+		var paged = await entities.ApplyPaging(entity.PagingArgs).ToListAsync(cancellationToken);
+
+		return Result<IEnumerable<TodoModel>>.Success(paged.Map(), count);
 	}
 }
 ```
 
-Make sure GetPizzasQuery has also been modified.
+### **Modifying Todo Controller**
 
-### **Modifying Controllers**
+To improve Swagger documentation for your API, you can use the ProducesResponseType attribute to specify the type of response your API endpoints will return. This helps Swagger generate more accurate and helpful documentation for consumers of your API.
 
-Modify all the Search Action Methods in the controllers.
+Using ProducesResponseType in ASP.NET Core The ProducesResponseType attribute is used to indicate the type of response returned by an action method, along with the HTTP status code. You can use this attribute to provide more detailed information about the expected response types.
 
-For example, modify CustomerController.cs as follows.
+Here’s a step-by-step guide on how to apply ProducesResponseType and improve your Swagger documentation:
+
+Add ProducesResponseType Attributes: Use this attribute on your action methods to specify the response types and their corresponding HTTP status codes.
+
+Enhance Documentation: Optionally, provide more detailed descriptions for each response type to improve the clarity of your API documentation.
+
+Modify the Search Action Methods in the controllers to use the new Search Model.
+
+TodoController.cs
 
 ```cs
-/// <summary>
-	/// Get all Customers.
-	/// </summary>
-	/// <returns>A <see cref="Task"/> repres
-	/// enting the asynchronous operation.</returns>
-	/// <response code="200">Customer Search</response>
-	/// <response code="400">Error searching for clients</response>
-	[HttpPost]
-	[ProducesResponseType(typeof(ListResult<CustomerModel>), 200)]
-	[ProducesResponseType(typeof(ErrorResult), 400)]
-	[Route("Search")]
-	public async Task<ActionResult> Search(SearchCustomerModel data)
-	{
-		var result = await this.Mediator.Send(new GetCustomersQuery()
-		{
-			Data = data
-		});
-		return ResponseHelper.ResponseOutcome(result, this);
-	}
-```
+namespace Api.Controllers;
 
-Make sure to modify PizzaController as well
+using Api.Helpers;
+using Common.Models.Todos;
+using Core.Todos.Commands;
+using Core.Todos.Queries;
+using Microsoft.AspNetCore.Mvc;
+
+[ApiController]
+[Route("[controller]")]
+public class TodosController : ApiController
+{
+	/// <summary>
+	/// Get all Todos.
+	/// </summary>
+	/// <param name="model">Todo Search Model</param>
+	/// <param name="cancellationToken">Cancellation Token</param>
+	/// <returns>ActionResult</returns>
+	[HttpPost("Search")]
+	[ProducesResponseType(typeof(IEnumerable<TodoModel>), 200)]
+	[ProducesResponseType(typeof(ErrorResult), 400)]
+	public async Task<ActionResult<IEnumerable<TodoModel>>> Search(SearchTodoModel model, CancellationToken cancellationToken = default)
+		=> ResponseHelper.ResponseOutcome(await this.Mediator.Send(new GetTodosQuery() { Data = model }, cancellationToken), this);
+
+	/// <summary>
+	/// Create a task.
+	/// </summary>
+	/// <remarks>
+	/// Sample request:
+	///
+	///     POST api/Todo
+	///     {
+	///       "task": "New task",
+	///     }
+	/// </remarks>
+	/// <param name="model">Create Todo Model</param>
+	/// <param name="cancellationToken">Cancellation Token</param>
+	/// <returns>ActionResult</returns>
+	[HttpPost]
+	[ProducesResponseType(typeof(TodoModel), 200)]
+	[ProducesResponseType(typeof(ErrorResult), 400)]
+	public async Task<ActionResult<TodoModel>> Add([FromBody] CreateTodoModel model, CancellationToken cancellationToken = default)
+		=> ResponseHelper.ResponseOutcome(await this.Mediator.Send(new AddTodoCommand() { Data = model }, cancellationToken), this);
+
+	/// <summary>
+	/// Complete a task.
+	/// </summary>
+	/// <remarks>
+	/// Sample request:
+	///
+	///     PUT api/Todo/Complete
+	///     {
+	///       "id": "1"
+	///     }
+	/// </remarks>
+	/// <param name="id">Task id</param>
+	/// <param name="cancellationToken">Cancellation Token</param>
+	/// <returns>ActionResult</returns>
+	[HttpPost("Complete")]
+	[ProducesResponseType(typeof(TodoModel), 200)]
+	[ProducesResponseType(typeof(ErrorResult), 400)]
+	public async Task<ActionResult<TodoModel>> Complete([FromBody] int id, CancellationToken cancellationToken = default)
+		=> ResponseHelper.ResponseOutcome(await this.Mediator.Send(new CompleteTodoCommand() { Id = id }, cancellationToken), this);
+
+
+	/// <summary>
+	/// Update Todo.
+	/// </summary>
+	/// <remarks>
+	/// Sample request:
+	///
+	///     PUT api/Todo/1
+	///     {
+	///       "Task": "New task"
+	///     }
+	/// </remarks>
+	/// <param name="id">Todo id</param>
+	/// <param name="model">Update Todo Model</param>
+	/// <param name="cancellationToken">Cancellation Token</param>
+	/// <returns>ActionResult</returns>
+	[HttpPut("{id}")]
+	[ProducesResponseType(typeof(bool), 200)]
+	[ProducesResponseType(typeof(ErrorResult), 400)]
+	public async Task<ActionResult<bool>> Update(int id, [FromBody] UpdateTodoModel model, CancellationToken cancellationToken = default)
+		=> ResponseHelper.ResponseOutcome(await this.Mediator.Send(new UpdateTodoCommand() { Id = id, Data = model }, cancellationToken), this);
+
+	/// <summary>
+	/// Delete a task by Id.
+	/// </summary>
+	/// <param name="id">Task Id</param>
+	/// <param name="cancellationToken">Cancellation Token</param>
+	/// <returns>ActionResult</returns>
+	[HttpDelete("{id}")]
+	[ProducesResponseType(typeof(bool), 200)]
+	[ProducesResponseType(typeof(ErrorResult), 400)]
+	public async Task<ActionResult<bool>> Delete(int id, CancellationToken cancellationToken = default)
+		=> ResponseHelper.ResponseOutcome(await this.Mediator.Send(new DeleteTodoCommand() { Id = id }, cancellationToken), this);
+}
+```
 
 ### **Modify Unit Tests**
 
-Modify unit tests to incorporate our changes.
+To modify your unit tests to incorporate the recent changes, follow these steps:
+
+Update Test Setup: Ensure your test classes are aligned with the new changes in your models or business logic, including any updated constructors or methods.
+
+Test Response Types: For API testing, add tests to verify that the correct response types are returned, including success (200), not found (404), and bad request (400) scenarios, matching the ProducesResponseType attributes.
+
+Filter Logic: If you've added filtering (e.g., by DateCreated), include unit tests that validate filtering logic for year, month, and day.
+
+Mock Services: If any services or dependencies were updated, mock them accordingly in your tests to reflect new behaviors or methods.
+
+Boundary Tests: Incorporate edge cases in your tests, especially for date filtering or paginated results, to ensure your application handles invalid inputs correctly.
+
+Expand your existing tests by:
+
+Verifying changes to models and filters. Testing error handling and validation based on your updates. This ensures your unit tests remain effective as you implement new features or refactor your code.
 
 ## **Move to Phase 4**
 
