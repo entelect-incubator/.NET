@@ -1,4 +1,4 @@
-<img align="left" width="116" height="116" src="logo.png" />
+<img align="left" width="116" height="116" src="./Assets/logo.png" />
 
 # &nbsp;**E List - Phase 5** [![.NET - Phase 5 - Start Solution](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase5-startsolution.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase5-startsolution.yml)
 
