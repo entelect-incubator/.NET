@@ -2,8 +2,9 @@ namespace Api;
 
 using System.Reflection;
 using System.Text.Json.Serialization;
-using Common.Behaviour;
 using Core;
+using Core.Behaviours;
+using DataAccess;
 using Hangfire;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -64,7 +65,7 @@ public class Startup
 		});
 		services.AddResponseCompression();
 
-		services.AddScoped<IOrderCompleteJob, OrderCompleteJob>();
+		services.AddScoped<IEmailJob, EmailJob>();
 	}
 
 	public void Configure(WebApplication app, IWebHostEnvironment env)
@@ -72,7 +73,7 @@ public class Startup
 		app.UseSwagger();
 		app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "EList Scheduler API V1"));
 		app.UseHttpsRedirection();
-		app.UseMiddleware(typeof(ExceptionHandlerMiddleware));
+		app.UseMiddleware(typeof(UnhandledExceptionBehaviour));
 		app.UseRouting();
 		app.UseEndpoints(endpoints => endpoints.MapControllers());
 		app.UseAuthorization();
@@ -83,8 +84,8 @@ public class Startup
 		{
 			TimeZone = TimeZoneInfo.Local
 		};
-		RecurringJob.AddOrUpdate<IOrderCompleteJob>("SendNotificationAsync", x => x.SendNotificationAsync(), "* * * * *");
+		RecurringJob.AddOrUpdate<IEmailJob>("SendAsync", x => x.SendAsync(default), "* * * * *");
 
 		app.Run();
-	}	
+	}
 }

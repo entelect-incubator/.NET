@@ -7,7 +7,7 @@ public class CompleteTodoCommand : IRequest<Result<TodoModel>>
 	public required int? Id { get; set; }
 }
 
-public class CompleteTodoCommandHandler(DatabaseContext databaseContext) : IRequestHandler<CompleteTodoCommand, Result<TodoModel>>
+public class CompleteTodoCommandHandler(DatabaseContext databaseContext, IAppCache cache) : IRequestHandler<CompleteTodoCommand, Result<TodoModel>>
 {
 	private const string ERROR = "Error completing a task";
 
@@ -24,6 +24,7 @@ public class CompleteTodoCommandHandler(DatabaseContext databaseContext) : IRequ
 		findEntity.IsCompleted = true;
 		var result = await databaseContext.SaveChangesAsync(cancellationToken);
 
+		cache.Remove(Common.CacheData.CacheKey);
 		return result > 0 ? Result<TodoModel>.Success(findEntity.Map()) : Result<TodoModel>.Failure(ERROR);
 	}
 }

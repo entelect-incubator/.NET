@@ -181,7 +181,7 @@ public class DeleteTodoCommand : IRequest<Result>
 	public required int Id { get; set; }
 }
 
-public class DeleteTodoCommandHandler(DatabaseContext databaseContext) : IRequestHandler<DeleteTodoCommand, Result>
+public class DeleteTodoCommandHandler(DatabaseContext databaseContext, IAppCache cache) : IRequestHandler<DeleteTodoCommand, Result>
 {
 	private const string ERROR = "Error deleting a task";
 
@@ -193,6 +193,7 @@ public class DeleteTodoCommandHandler(DatabaseContext databaseContext) : IReques
 			databaseContext.Todos.Remove(todo);
 			var result = await databaseContext.SaveChangesAsync(cancellationToken);
 
+			cache.Remove(Common.CacheData.CacheKey);
 			return result > 0 ? Result.Success() : Result.Failure(ERROR);
 		}
 
@@ -251,7 +252,7 @@ public class CompleteTodoCommand : IRequest<Result<TodoModel>>
 	public required int? Id { get; set; }
 }
 
-public class CompleteTodoCommandHandler(DatabaseContext databaseContext) : IRequestHandler<CompleteTodoCommand, Result<TodoModel>>
+public class CompleteTodoCommandHandler(DatabaseContext databaseContext, IAppCache cache) : IRequestHandler<CompleteTodoCommand, Result<TodoModel>>
 {
 	private const string ERROR = "Error completing a task";
 
@@ -268,6 +269,7 @@ public class CompleteTodoCommandHandler(DatabaseContext databaseContext) : IRequ
 		findEntity.IsCompleted = true;
 		var result = await databaseContext.SaveChangesAsync(cancellationToken);
 
+		cache.Remove(Common.CacheData.CacheKey);
 		return result > 0 ? Result<TodoModel>.Success(findEntity.Map()) : Result<TodoModel>.Failure(ERROR);
 	}
 }

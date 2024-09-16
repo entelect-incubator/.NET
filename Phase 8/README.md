@@ -1,4 +1,4 @@
-<img align="left" width="116" height="116" src="logo.png" />
+<img align="left" width="116" height="116" src="./Assets/logo.png" />
 
 # &nbsp;**E List - Phase 8** [![.NET - Phase 8 - Start Solution](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase8-startsolution.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase8-startsolution.yml)
 
@@ -6,11 +6,12 @@
 
 # **Frontend**
 
-In Phase 8 we will build the Front End implementations for the API in a variety of ways and technologies. \* Remember to always be technology agnostic. Choose the technology that suites the use case the best.
+In Phase 8, we will implement the front-end of the TODO application using both MVC and Blazor frameworks.
 
 ## **Setup**
 
--   [ ] Use the Final Solution from Phase 6 to get started or use Phase8\01. StartSolution
+-   [ ] Use the Final Solution from Phase 7 to get started or use Phase8\01. StartSolution
+-   [ ] Use this template as a starter theme to streamline development, ensuring consistency and efficiency across multiple applications within the incubator's ecosystem. [E List Theme Template](https://github.com/entelect-incubator/Theme)
 -   [ ] To allow calls from your Web.API you need to add CORS in your starup.cs
 
 [About CORS](https://www.youtube.com/watch?v=UjozQOaGt1k)
@@ -66,8 +67,7 @@ By adopting the MVC pattern in C#, developers can achieve a modular, organized, 
 
 #### **Practical**
 
--   [ ] [Step 1 - EList Dashboard](https://github.com/entelect-incubator/.NET/tree/master/Phase%208/Dashboard)
--   [ ] [Step 2 - EList Pizza Ordering Website for Customers](https://github.com/entelect-incubator/.NET/tree/master/Phase%208/ClientWebsite)
+-   [ ] [E List Todo using MVC](https://github.com/entelect-incubator/.NET/tree/master/Phase%208/MVC)
 
 ## Why Choose Blazor
 
@@ -101,5 +101,5 @@ Ultimately, your choice to adopt Blazor should align with your project's needs, 
 
 #### **Practical**
 
--   [ ] [Step 1 - EList Dashboard](https://github.com/entelect-incubator/.NET/tree/master/Phase%208/Dashboard)
--   [ ] [Step 2 - EList Pizza Ordering Website for Customers](https://github.com/entelect-incubator/.NET/tree/master/Phase%208/ClientWebsite)
+-   [ ] [MVC](https://github.com/entelect-incubator/.NET/tree/master/Phase%208/MVC)
+-   [ ] [Blazor]() Coming Soon!

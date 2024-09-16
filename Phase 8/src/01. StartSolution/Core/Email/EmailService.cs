@@ -1,8 +1,7 @@
 ﻿namespace Core.Email;
 
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using Common.Models;
+using Common.Models.Todos;
 using FluentEmail.Core;
 using HtmlAgilityPack;
 
@@ -10,7 +9,9 @@ public class EmailService
 {
 	public string HtmlContent { get; set; }
 
-	public CustomerModel Customer { get; set; }
+	public string ToEmail { get; set; }
+
+	public TodoModel Model { get; set; }
 
 	public async Task<Result> SendEmail()
 	{
@@ -20,9 +21,9 @@ public class EmailService
 		plainText = Regex.Replace(plainText, @"\s+", " ").Trim();
 
 		var email = await Email
-			.From("notify@pezza.com", "EList")
-			.To(this.Customer?.Email, this.Customer?.Name)
-			.Subject("Collect your order it while it's hot")
+			.From("todos@elist.com", "EList")
+			.To(this.ToEmail)
+			.Subject("Todo item(s) is about to expire")
 			.Body(this.HtmlContent)
 			.PlaintextAlternativeBody(plainText)
 			.SendAsync();

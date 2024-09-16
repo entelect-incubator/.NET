@@ -17,9 +17,9 @@ public class TodosController : ApiController
 	/// <param name="cancellationToken">Cancellation Token</param>
 	/// <returns>ActionResult</returns>
 	[HttpPost("Search")]
-	[ProducesResponseType(typeof(IEnumerable<TodoModel>), 200)]
+	[ProducesResponseType(typeof(Result<IEnumerable<TodoModel>>, 200)]
 	[ProducesResponseType(typeof(ErrorResult), 400)]
-	public async Task<ActionResult<IEnumerable<TodoModel>>> Search(SearchTodoModel model, CancellationToken cancellationToken = default)
+	public async Task<ActionResult<Result<IEnumerable<TodoModel>>>> Search(SearchTodoModel model, CancellationToken cancellationToken = default)
 		=> ResponseHelper.ResponseOutcome(await this.Mediator.Send(new GetTodosQuery() { Data = model }, cancellationToken), this);
 
 	/// <summary>
@@ -37,9 +37,9 @@ public class TodosController : ApiController
 	/// <param name="cancellationToken">Cancellation Token</param>
 	/// <returns>ActionResult</returns>
 	[HttpPost]
-	[ProducesResponseType(typeof(TodoModel), 200)]
+	[ProducesResponseType(typeof(Result<TodoModel>), 200)]
 	[ProducesResponseType(typeof(ErrorResult), 400)]
-	public async Task<ActionResult<TodoModel>> Add([FromBody] CreateTodoModel model, CancellationToken cancellationToken = default)
+	public async Task<ActionResult<Result<TodoModel>>> Add([FromBody] CreateTodoModel model, CancellationToken cancellationToken = default)
 		=> ResponseHelper.ResponseOutcome(await this.Mediator.Send(new AddTodoCommand() { Data = model }, cancellationToken), this);
 
 	/// <summary>
@@ -57,9 +57,9 @@ public class TodosController : ApiController
 	/// <param name="cancellationToken">Cancellation Token</param>
 	/// <returns>ActionResult</returns>
 	[HttpPost("Complete")]
-	[ProducesResponseType(typeof(TodoModel), 200)]
+	[ProducesResponseType(typeof(Result<TodoModel>), 200)]
 	[ProducesResponseType(typeof(ErrorResult), 400)]
-	public async Task<ActionResult<TodoModel>> Complete([FromBody] int id, CancellationToken cancellationToken = default)
+	public async Task<ActionResult<Result<TodoModel>>> Complete([FromBody] int id, CancellationToken cancellationToken = default)
 		=> ResponseHelper.ResponseOutcome(await this.Mediator.Send(new CompleteTodoCommand() { Id = id }, cancellationToken), this);
 
 
@@ -79,9 +79,9 @@ public class TodosController : ApiController
 	/// <param name="cancellationToken">Cancellation Token</param>
 	/// <returns>ActionResult</returns>
 	[HttpPut("{id}")]
-	[ProducesResponseType(typeof(bool), 200)]
+	[ProducesResponseType(typeof(Result), 200)]
 	[ProducesResponseType(typeof(ErrorResult), 400)]
-	public async Task<ActionResult<bool>> Update(int id, [FromBody] UpdateTodoModel model, CancellationToken cancellationToken = default)
+	public async Task<ActionResult<Result>> Update(int id, [FromBody] UpdateTodoModel model, CancellationToken cancellationToken = default)
 		=> ResponseHelper.ResponseOutcome(await this.Mediator.Send(new UpdateTodoCommand() { Id = id, Data = model }, cancellationToken), this);
 
 	/// <summary>
@@ -91,8 +91,8 @@ public class TodosController : ApiController
 	/// <param name="cancellationToken">Cancellation Token</param>
 	/// <returns>ActionResult</returns>
 	[HttpDelete("{id}")]
-	[ProducesResponseType(typeof(bool), 200)]
+	[ProducesResponseType(typeof(Result), 200)]
 	[ProducesResponseType(typeof(ErrorResult), 400)]
-	public async Task<ActionResult<bool>> Delete(int id, CancellationToken cancellationToken = default)
+	public async Task<ActionResult<Result>> Delete(int id, CancellationToken cancellationToken = default)
 		=> ResponseHelper.ResponseOutcome(await this.Mediator.Send(new DeleteTodoCommand() { Id = id }, cancellationToken), this);
 }

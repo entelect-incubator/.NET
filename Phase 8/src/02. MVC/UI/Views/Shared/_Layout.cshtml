@@ -1,0 +1,72 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>@ViewData["Title"] - E List - Getting things done | Entelect</title>
+    <title></title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <div class="default">
+        <div id="header">
+            <h1 id="main-title"><img loading="lazy" src="~/img/site-icon.png" height="100px" />LIST</h1>
+            <h2 id="title">Getting things done</h2>
+        </div>
+        @RenderBody()
+        <!--div id="form">
+            <form>
+                <input class="todo-input" type="text" placeholder="Task" />
+                <button class="todo-btn" type="submit">Add</button>
+            </form>
+        </div>
+
+        <div-- id="myUnOrdList">
+            <ul class="todo-list">
+                <div class="todo">
+                    <input type="checkbox" />
+                    Finish Incubator
+                <li></li>
+                <button>delete</button>
+                <button>check</button>
+        </div>
+        </ul>
+    </div-->
+    </div>
+    <div class="diamond-group">
+        <div class="diamond"></div>
+        <div class="diamond"></div>
+        <div class="diamond"></div>
+        <div class="diamond"></div>
+    </div>
+
+    <!-- Second group of diamonds -->
+    <div class="diamond-group">
+        <div class="diamond"></div>
+        <div class="diamond"></div>
+        <div class="diamond"></div>
+        <div class="diamond"></div>
+    </div>
+
+    <!-- Third group of diamonds -->
+    <div class="diamond-group">
+        <div class="diamond"></div>
+        <div class="diamond"></div>
+        <div class="diamond"></div>
+        <div class="diamond"></div>
+    </div>
+
+    <!-- Fourth group of diamonds -->
+    <div class="diamond-group">
+        <div class="diamond"></div>
+        <div class="diamond"></div>
+        <div class="diamond"></div>
+        <div class="diamond"></div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
+

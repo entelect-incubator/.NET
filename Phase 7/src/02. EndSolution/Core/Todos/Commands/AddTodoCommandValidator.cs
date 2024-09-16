@@ -10,8 +10,7 @@ public class AddTodoCommandValidator : AbstractValidator<AddTodoCommand>
 			.MaximumLength(250).WithMessage("Task must be less then 250 characters long.");
 
 		this.RuleFor(x => x.Data.IsCompleted)
-			.NotNull().WithMessage("Task name is required.")
-			.NotEmpty().WithMessage("Task name is required.");
+			.NotNull().WithMessage("Task name is required.");
 
 		this.RuleFor(x => x.Data.SessionId)
 			.NotEmpty().WithMessage("Session Id must be a valid non-empty GUID.");
