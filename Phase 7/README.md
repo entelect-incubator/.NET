@@ -196,7 +196,7 @@ Finished Client will look like this
 
 ![](./Assets/2023-07-23-22-13-30.png)
 
-Using this with something like OpenAPI Generator CLI, you can build any Clients from Angular / React / Jave etc
+Using OpenAPI Generator CLI, you can generate client SDKs for various platforms, including Angular, React, Java, and more using the Api-Client.json. - [Open API Generator](https://github.com/OpenAPITools/openapi-generator)
 
 ## **Phase 8 - Create UI's**
 
