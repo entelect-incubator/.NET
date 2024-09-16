@@ -5,7 +5,7 @@ public class DeleteTodoCommand : IRequest<Result>
 	public required int Id { get; set; }
 }
 
-public class DeleteTodoCommandHandler(DatabaseContext databaseContext) : IRequestHandler<DeleteTodoCommand, Result>
+public class DeleteTodoCommandHandler(DatabaseContext databaseContext, IAppCache cache) : IRequestHandler<DeleteTodoCommand, Result>
 {
 	private const string ERROR = "Error deleting a task";
 
@@ -17,6 +17,7 @@ public class DeleteTodoCommandHandler(DatabaseContext databaseContext) : IReques
 			databaseContext.Todos.Remove(todo);
 			var result = await databaseContext.SaveChangesAsync(cancellationToken);
 
+			cache.Remove(Common.CacheData.CacheKey);
 			return result > 0 ? Result.Success() : Result.Failure(ERROR);
 		}
 
