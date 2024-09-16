@@ -32,10 +32,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/TodoModel"
-                  }
+                  "$ref": "#/components/schemas/ResultOfIEnumerableOfTodoModel"
                 }
               }
             }
@@ -80,7 +77,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/TodoModel"
+                  "$ref": "#/components/schemas/ResultOfTodoModel"
                 }
               }
             }
@@ -126,7 +123,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/TodoModel"
+                  "$ref": "#/components/schemas/ResultOfTodoModel"
                 }
               }
             }
@@ -184,7 +181,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "boolean"
+                  "$ref": "#/components/schemas/Result"
                 }
               }
             }
@@ -226,7 +223,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "boolean"
+                  "$ref": "#/components/schemas/Result"
                 }
               }
             }
@@ -247,6 +244,34 @@
   },
   "components": {
     "schemas": {
+      "ResultOfIEnumerableOfTodoModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "Succeeded": {
+            "type": "boolean"
+          },
+          "Data": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/TodoModel"
+            }
+          },
+          "Count": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "Errors": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
       "TodoModel": {
         "type": "object",
         "additionalProperties": false,
@@ -365,6 +390,35 @@
           },
           "UsePaging": {
             "type": "boolean"
+          }
+        }
+      },
+      "ResultOfTodoModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "Succeeded": {
+            "type": "boolean"
+          },
+          "Data": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/TodoModel"
+              }
+            ]
+          },
+          "Count": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "Errors": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string"
+            }
           }
         }
       },

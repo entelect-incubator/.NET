@@ -54,7 +54,7 @@ public class TestTodoCore : QueryTestBase
 	[Test, Order(3)]
 	public async Task CompleteAsync()
 	{
-		var sutUpdate = new CompleteTodoCommandHandler(this.Context);
+		var sutUpdate = new CompleteTodoCommandHandler(this.Context, this.CachingService);
 		var resultUpdate = await sutUpdate.Handle(
 			new CompleteTodoCommand
 			{
@@ -82,7 +82,7 @@ public class TestTodoCore : QueryTestBase
 	[Test, Order(5)]
 	public async Task DeleteAsync()
 	{
-		var sutDelete = new DeleteTodoCommandHandler(this.Context);
+		var sutDelete = new DeleteTodoCommandHandler(this.Context, this.CachingService);
 		var resultDelete = await sutDelete.Handle(
 			new DeleteTodoCommand
 			{
