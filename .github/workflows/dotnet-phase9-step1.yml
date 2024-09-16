@@ -13,10 +13,9 @@ jobs:
         steps:
             - uses: actions/checkout@v2
             - name: Setup .NET
-              uses: actions/setup-dotnet@v1
+              uses: actions/setup-dotnet@v4
               with:
-                  dotnet-version: 9.0.x
-                  dotnet-quality: "preview"
+                  dotnet-version: 9.0.100-rc.1
             - name: Install dependencies
               run: dotnet restore "./Phase 9/src/02. Step 1/EList.sln"
             - name: Build
