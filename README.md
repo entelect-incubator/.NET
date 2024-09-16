@@ -211,22 +211,13 @@ E List Website
 
 [Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%207)
 
-### Phase 9 - Security
+### Phase 9 - Security Coming Soon
 
 With improved performance and a growing customer base, it’s crucial to secure the website to protect sensitive data and ensure user privacy. In Phase 9, we will implement key security measures, such as data encryption, secure authentication, and protection against common vulnerabilities, ensuring the system is robust and safeguarded against potential threats.
 
 Overview
 
 -   [ ] [Security](https://web.microsoftstream.com/video/2a2b5226-34cb-49ac-b8fe-880cb9ac893c?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
-
-Add Security
-
--   [ ] API Oauth / JWT Token
--   [ ] MVC Antiforgy Tokens
-
-[Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%208)
-
-[![.NET - Phase 9 - Step 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase8-step2.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase8-step2.yml)
 
 ### Recommended libraries
 
