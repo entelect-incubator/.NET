@@ -194,6 +194,8 @@ In Phase 7, we will integrate an API client, a set of tools and protocols that h
 -   [ ] Intro
 -   [ ] API Client
 
+[Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%207)
+
 ### Phase 8 - User Interface
 
 In Phase 8, we will develop a simple website using the MVC (Model-View-Controller) pattern. This site will interact with the API built in the previous phases to manage TODO items. By leveraging MVC, we can separate concerns effectively, providing a clean structure for the application while allowing users to interact with their tasks seamlessly.
@@ -209,7 +211,7 @@ We will be building a basic E List website for clients. To help us do this you c
 
 E List Website
 
-[Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%207)
+[Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%208)
 
 ### Phase 9 - Security Coming Soon
 
