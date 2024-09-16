@@ -33,7 +33,7 @@ public class Startup(IConfiguration configuration)
 			.AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
 		DependencyInjection.AddApplication(services);
-
+		services.AddOpenApiDocument();
 		services.AddSwaggerGen(c =>
 		{
 			c.SwaggerDoc("v1", new OpenApiInfo
