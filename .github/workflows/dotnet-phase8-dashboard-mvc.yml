@@ -17,6 +17,6 @@ jobs:
               with:
                   dotnet-version: 9.0.100-preview.7.24407.12
             - name: Install dependencies
-              run: dotnet restore "./Phase 8/Portal/MVC/src/03. Step 3/EList.sln"
+              run: dotnet restore "./Phase 8/src/02. MVC/EList.sln"
             - name: Build
-              run: dotnet build "./Phase 8/Portal/MVC/src/03. Step 3/EList.sln" --configuration Release --no-restore
+              run: dotnet build "./Phase 8/src/02. MVC/EList.sln" --configuration Release --no-restore
