@@ -31,7 +31,7 @@ namespace API.Client.Template
         /// <param name="model">Todo Search Model</param>
         /// <returns>ActionResult</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Collections.Generic.List<TodoModel> Search(SearchTodoModel model);
+        ResultOfIEnumerableOfTodoModel Search(SearchTodoModel model);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -40,7 +40,7 @@ namespace API.Client.Template
         /// <param name="model">Todo Search Model</param>
         /// <returns>ActionResult</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.List<TodoModel>> SearchAsync(SearchTodoModel model, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ResultOfIEnumerableOfTodoModel> SearchAsync(SearchTodoModel model, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <summary>
         /// Create a task.
@@ -56,7 +56,7 @@ namespace API.Client.Template
         /// <param name="model">Create Todo Model</param>
         /// <returns>ActionResult</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        TodoModel Add(CreateTodoModel model);
+        ResultOfTodoModel Add(CreateTodoModel model);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -73,7 +73,7 @@ namespace API.Client.Template
         /// <param name="model">Create Todo Model</param>
         /// <returns>ActionResult</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<TodoModel> AddAsync(CreateTodoModel model, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ResultOfTodoModel> AddAsync(CreateTodoModel model, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <summary>
         /// Complete a task.
@@ -89,7 +89,7 @@ namespace API.Client.Template
         /// <param name="id">Task id</param>
         /// <returns>ActionResult</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        TodoModel Complete(int id);
+        ResultOfTodoModel Complete(int id);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -106,7 +106,7 @@ namespace API.Client.Template
         /// <param name="id">Task id</param>
         /// <returns>ActionResult</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<TodoModel> CompleteAsync(int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ResultOfTodoModel> CompleteAsync(int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <summary>
         /// Update Todo.
@@ -123,7 +123,7 @@ namespace API.Client.Template
         /// <param name="model">Update Todo Model</param>
         /// <returns>ActionResult</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        bool Update(int id, UpdateTodoModel model);
+        Result Update(int id, UpdateTodoModel model);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -141,7 +141,7 @@ namespace API.Client.Template
         /// <param name="model">Update Todo Model</param>
         /// <returns>ActionResult</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<bool> UpdateAsync(int id, UpdateTodoModel model, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<Result> UpdateAsync(int id, UpdateTodoModel model, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <summary>
         /// Delete a task by Id.
@@ -149,7 +149,7 @@ namespace API.Client.Template
         /// <param name="id">Task Id</param>
         /// <returns>ActionResult</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        bool Delete(int id);
+        Result Delete(int id);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -158,7 +158,7 @@ namespace API.Client.Template
         /// <param name="id">Task Id</param>
         /// <returns>ActionResult</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<bool> DeleteAsync(int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<Result> DeleteAsync(int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
     }
 
@@ -216,7 +216,7 @@ namespace API.Client.Template
         /// <param name="model">Todo Search Model</param>
         /// <returns>ActionResult</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Collections.Generic.List<TodoModel> Search(SearchTodoModel model)
+        public virtual ResultOfIEnumerableOfTodoModel Search(SearchTodoModel model)
         {
             return System.Threading.Tasks.Task.Run(async () => await SearchAsync(model, System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
         }
@@ -228,7 +228,7 @@ namespace API.Client.Template
         /// <param name="model">Todo Search Model</param>
         /// <returns>ActionResult</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.List<TodoModel>> SearchAsync(SearchTodoModel model, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ResultOfIEnumerableOfTodoModel> SearchAsync(SearchTodoModel model, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (model == null)
                 throw new System.ArgumentNullException("model");
@@ -276,7 +276,7 @@ namespace API.Client.Template
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.List<TodoModel>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfIEnumerableOfTodoModel>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -327,7 +327,7 @@ namespace API.Client.Template
         /// <param name="model">Create Todo Model</param>
         /// <returns>ActionResult</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual TodoModel Add(CreateTodoModel model)
+        public virtual ResultOfTodoModel Add(CreateTodoModel model)
         {
             return System.Threading.Tasks.Task.Run(async () => await AddAsync(model, System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
         }
@@ -347,7 +347,7 @@ namespace API.Client.Template
         /// <param name="model">Create Todo Model</param>
         /// <returns>ActionResult</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<TodoModel> AddAsync(CreateTodoModel model, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ResultOfTodoModel> AddAsync(CreateTodoModel model, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (model == null)
                 throw new System.ArgumentNullException("model");
@@ -395,7 +395,7 @@ namespace API.Client.Template
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<TodoModel>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfTodoModel>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -446,7 +446,7 @@ namespace API.Client.Template
         /// <param name="id">Task id</param>
         /// <returns>ActionResult</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual TodoModel Complete(int id)
+        public virtual ResultOfTodoModel Complete(int id)
         {
             return System.Threading.Tasks.Task.Run(async () => await CompleteAsync(id, System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
         }
@@ -466,7 +466,7 @@ namespace API.Client.Template
         /// <param name="id">Task id</param>
         /// <returns>ActionResult</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<TodoModel> CompleteAsync(int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ResultOfTodoModel> CompleteAsync(int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -514,7 +514,7 @@ namespace API.Client.Template
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<TodoModel>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfTodoModel>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -566,7 +566,7 @@ namespace API.Client.Template
         /// <param name="model">Update Todo Model</param>
         /// <returns>ActionResult</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual bool Update(int id, UpdateTodoModel model)
+        public virtual Result Update(int id, UpdateTodoModel model)
         {
             return System.Threading.Tasks.Task.Run(async () => await UpdateAsync(id, model, System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
         }
@@ -587,7 +587,7 @@ namespace API.Client.Template
         /// <param name="model">Update Todo Model</param>
         /// <returns>ActionResult</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<bool> UpdateAsync(int id, UpdateTodoModel model, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<Result> UpdateAsync(int id, UpdateTodoModel model, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -639,7 +639,7 @@ namespace API.Client.Template
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<bool>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Result>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -682,7 +682,7 @@ namespace API.Client.Template
         /// <param name="id">Task Id</param>
         /// <returns>ActionResult</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual bool Delete(int id)
+        public virtual Result Delete(int id)
         {
             return System.Threading.Tasks.Task.Run(async () => await DeleteAsync(id, System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
         }
@@ -694,7 +694,7 @@ namespace API.Client.Template
         /// <param name="id">Task Id</param>
         /// <returns>ActionResult</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<bool> DeleteAsync(int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<Result> DeleteAsync(int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -739,7 +739,7 @@ namespace API.Client.Template
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<bool>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Result>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -889,6 +889,23 @@ namespace API.Client.Template
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class ResultOfIEnumerableOfTodoModel
+    {
+        [Newtonsoft.Json.JsonProperty("Succeeded", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool? Succeeded { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("Data", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.List<TodoModel> Data { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("Count", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int? Count { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("Errors", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.List<string> Errors { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class TodoModel
     {
         [Newtonsoft.Json.JsonProperty("Id", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -970,6 +987,23 @@ namespace API.Client.Template
 
         [Newtonsoft.Json.JsonProperty("UsePaging", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public bool? UsePaging { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class ResultOfTodoModel
+    {
+        [Newtonsoft.Json.JsonProperty("Succeeded", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool? Succeeded { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("Data", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public TodoModel Data { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("Count", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int? Count { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("Errors", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.List<string> Errors { get; set; }
 
     }
 

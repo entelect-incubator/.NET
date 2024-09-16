@@ -17,7 +17,7 @@ public class TodosController : ApiController
 	/// <param name="cancellationToken">Cancellation Token</param>
 	/// <returns>ActionResult</returns>
 	[HttpPost("Search")]
-	[ProducesResponseType(typeof(Result<IEnumerable<TodoModel>>, 200)]
+	[ProducesResponseType(typeof(Result<IEnumerable<TodoModel>>), 200)]
 	[ProducesResponseType(typeof(ErrorResult), 400)]
 	public async Task<ActionResult<Result<IEnumerable<TodoModel>>>> Search(SearchTodoModel model, CancellationToken cancellationToken = default)
 		=> ResponseHelper.ResponseOutcome(await this.Mediator.Send(new GetTodosQuery() { Data = model }, cancellationToken), this);
