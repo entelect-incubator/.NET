@@ -203,7 +203,7 @@ Overview
 -   [ ] [MVC Part 1](https://web.microsoftstream.com/video/61e64cfa-c3ba-45c3-9811-e5bc25968a2a?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
 -   [ ] [MVC Part 2](https://web.microsoftstream.com/video/315b2034-0aa5-43ee-b030-562f4a597cfd?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
 
-We will be building a basic E List website for clients. To help us do this you can use [E List Sample Design System](https://github.com/entelect-incubator/DesignSystem).
+We will be building a basic E List website for clients. To help us do this you can use [E List Theme Template](https://github.com/entelect-incubator/Theme).
 
 [Documentation](https://web.microsoftstream.com/video/315b2034-0aa5-43ee-b030-562f4a597cfd?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
 
