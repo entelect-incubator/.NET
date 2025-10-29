@@ -8,6 +8,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <PackageReference Include="1" Version="1.0.0" />
 	  <PackageReference Include="FluentValidation" Version="11.5.2" />
 	  <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.5.2" />
 	</ItemGroup>

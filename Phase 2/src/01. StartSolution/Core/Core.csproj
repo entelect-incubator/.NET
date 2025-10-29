@@ -11,4 +11,8 @@
 		<ProjectReference Include="..\Core.Contracts\Core.Contracts.csproj" />
 		<ProjectReference Include="..\DataAccess\DataAccess.csproj" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="1" Version="1.0.0" />
+	</ItemGroup>
 </Project>
