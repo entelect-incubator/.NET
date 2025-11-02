@@ -34,8 +34,8 @@ public class ExceptionHandlerMiddleware
 				{
 					return new
 					{
-						Property = x.PropertyName.Replace("Data.", string.Empty),
-						Error = x.ErrorMessage.Replace("Data ", string.Empty)
+						Property = x.PropertyName.Replace("Data.", ""),
+						Error = x.ErrorMessage.Replace("Data ", "")
 					};
 				});
 				var result = Result.Failure(failures.ToList<object>());
@@ -49,13 +49,14 @@ public class ExceptionHandlerMiddleware
 			}
 			else
 			{
-				var code = HttpStatusCode.InternalServerError;
-				var result = JsonSerializer.Serialize(new { isSuccess = false, error = exception.Message });
+				var code = HttpStatusCode.BadRequest;
+				var result = Result.Failure(exception?.Message);
+				var resultJson = JsonSerializer.Serialize(result);
+
 				context.Response.ContentType = "application/json";
 				context.Response.StatusCode = (int)code;
-				Logging.LogException(exception);
 
-				return context.Response.WriteAsync(result);
+				return context.Response.WriteAsync(resultJson);
 			}
 		}
 		else

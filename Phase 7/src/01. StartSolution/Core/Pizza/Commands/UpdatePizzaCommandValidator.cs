@@ -1,6 +1,6 @@
-﻿namespace Core.Customer.Commands;
+namespace Core.Customer.Commands;
 
-public class UpdatePizzaCommandValidator : AbstractValidator<UpdatePizzaCommand>
+public sealed class UpdatePizzaCommandValidator : AbstractValidator<UpdatePizzaCommand>
 {
 	public UpdatePizzaCommandValidator()
 	{

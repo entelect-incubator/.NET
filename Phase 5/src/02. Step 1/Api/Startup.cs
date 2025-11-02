@@ -2,7 +2,6 @@ namespace Api;
 
 using System.Reflection;
 using System.Text.Json.Serialization;
-using Common.Behaviour;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -41,7 +40,7 @@ public class Startup
 			var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
 			c.IncludeXmlComments(xmlPath);
 		});
-		services.AddLazyCache();
+
 		services.AddDbContext<DatabaseContext>(options =>
 			options.UseInMemoryDatabase("PezzaDB"));
 	}
@@ -53,7 +52,7 @@ public class Startup
 		app.UseHttpsRedirection();
 		app.UseMiddleware(typeof(ExceptionHandlerMiddleware));
 		app.UseRouting();
-		app.UseEndpoints(endpoints => endpoints.MapControllers());
+		app.MapControllers();
 		app.UseAuthorization();
 		app.Run();
 	}

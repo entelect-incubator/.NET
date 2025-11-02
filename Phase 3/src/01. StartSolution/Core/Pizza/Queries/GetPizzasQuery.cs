@@ -1,18 +1,22 @@
-﻿namespace Core.Pizza.Queries;
+namespace Core.Pizza.Queries;
 
-public class GetPizzasQuery : IRequest<ListResult<PizzaModel>>
+using Common.Models.Results;
+
+public interface IGetPizzasQuery
 {
+	Task<Result<IEnumerable<PizzaModel>>> ExecuteAsync(CancellationToken cancellationToken = default);
+
 }
 
-public class GetPizzasQueryHandler(DatabaseContext databaseContext) : IRequestHandler<GetPizzasQuery, ListResult<PizzaModel>>
+public sealed class GetPizzasQuery(DatabaseContext databaseContext) : IGetPizzasQuery
 {
-	public async Task<ListResult<PizzaModel>> Handle(GetPizzasQuery request, CancellationToken cancellationToken)
+	public async Task<Result<IEnumerable<PizzaModel>>> ExecuteAsync(CancellationToken cancellationToken = default)
 	{
 		var entities = databaseContext.Pizzas.Select(x => x).AsNoTracking();
 
-		var count = entities.Count();
+		var count = await entities.CountAsync(cancellationToken);
 		var paged = await entities.ToListAsync(cancellationToken);
 
-		return ListResult<PizzaModel>.Success(paged.Map(), count);
+		return Result<IEnumerable<PizzaModel>>.Success(paged.Map(), count);
 	}
 }

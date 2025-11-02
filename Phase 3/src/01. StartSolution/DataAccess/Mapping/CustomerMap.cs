@@ -1,8 +1,5 @@
 namespace DataAccess.Mapping;
 
-using Microsoft.EntityFrameworkCore;
-using Common.Entities;
-
 public sealed class CustomerMap : IEntityTypeConfiguration<Customer>
 {
 	public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Customer> builder)

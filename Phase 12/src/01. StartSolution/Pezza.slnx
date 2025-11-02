@@ -1,0 +1,24 @@
+<Solution>
+  <Folder Name="/01 Apis/">
+    <Project Path="Pezza.Api/Pezza.Api.csproj" />
+    <Project Path="AspireHost/AspireHost.csproj" />
+  </Folder>
+  <Folder Name="/02 Migrations/">
+    <Project Path="DbUp.Migrations/DbUp.Migrations.csproj" />
+  </Folder>
+  <Folder Name="/03 Core/">
+    <Project Path="Pezza.Core/Pezza.Core.csproj" />
+  </Folder>
+  <Folder Name="/04 Database/">
+    <Project Path="Pezza.DataAccess/Pezza.DataAccess.csproj" />
+  </Folder>
+  <Folder Name="/05 Common/">
+    <Project Path="Pezza.Common/Pezza.Common.csproj" />
+  </Folder>
+  <Folder Name="/06 Tests/">
+    <Project Path="Pezza.Test/Pezza.Test.csproj" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+  </Folder>
+</Solution>

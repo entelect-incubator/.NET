@@ -1,21 +1,20 @@
-﻿namespace Core.Customer.Queries;
+namespace Core.Customer.Queries;
 
-public class GetCustomerQuery : IRequest<Result<CustomerModel>>
+using Common.Models.Results;
+using Core.Pizza;
+
+public interface IGetCustomerQuery
 {
-	public int Id { get; set; }
+	Task<Result<CustomerModel>> ExecuteAsync(int id, CancellationToken cancellationToken = default);
 }
 
-public class GetCustomerQueryHandler(DatabaseContext databaseContext) : IRequestHandler<GetCustomerQuery, Result<CustomerModel>>
+public sealed class GetCustomerQuery(DatabaseContext databaseContext) : IGetCustomerQuery
 {
-	public async Task<Result<CustomerModel>> Handle(GetCustomerQuery request, CancellationToken cancellationToken)
+	public async Task<Result<CustomerModel>> ExecuteAsync(int id, CancellationToken cancellationToken = default)
 	{
-		var query = EF.CompileAsyncQuery((DatabaseContext db, int id) => db.Customers.FirstOrDefault(c => c.Id == id));
-		var entity = await query(databaseContext, request.Id);
-		if(entity == null)
-		{
-			return Result<CustomerModel>.Failure("Not Found");
-		}
-
-		return Result<CustomerModel>.Success(entity.Map());
+		var findEntity = await CustomerQueries.FindQuery(databaseContext, id);
+		return findEntity is null
+			? Result<CustomerModel>.Failure("Not Found")
+			: Result<CustomerModel>.Success(findEntity.Map());
 	}
 }

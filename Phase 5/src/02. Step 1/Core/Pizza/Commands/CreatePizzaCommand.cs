@@ -1,17 +1,15 @@
-﻿namespace Core.Pizza.Commands;
+namespace Core.Pizza.Commands;
 
-using LazyCache;
-
-public class CreatePizzaCommand : IRequest<Result<PizzaModel>>
+public sealed class CreatePizzaCommand : ICommand<Result<PizzaModel>>
 {
 	public CreatePizzaModel? Data { get; set; }
 }
 
-public class CreatePizzaCommandHandler(DatabaseContext databaseContext, IAppCache cache) : IRequestHandler<CreatePizzaCommand, Result<PizzaModel>>
+public sealed class CreatePizzaCommandHandler(DatabaseContext databaseContext) : ICommandHandler<CreatePizzaCommand, Result<PizzaModel>>
 {
 	public async Task<Result<PizzaModel>> Handle(CreatePizzaCommand request, CancellationToken cancellationToken)
 	{
-		if(request.Data == null)
+		if(request.Data is null)
 		{
 			return Result<PizzaModel>.Failure("Error");
 		}
@@ -25,8 +23,6 @@ public class CreatePizzaCommandHandler(DatabaseContext databaseContext, IAppCach
 		};
 		databaseContext.Pizzas.Add(entity);
 		var result = await databaseContext.SaveChangesAsync(cancellationToken);
-
-		cache.Remove(Common.Data.CacheKey);
 
 		return result > 0 ? Result<PizzaModel>.Success(entity.Map()) : Result<PizzaModel>.Failure("Error");
 	}

@@ -1,22 +1,18 @@
-﻿namespace Core.Pizza.Commands;
+namespace Core.Pizza.Commands;
 
-public class DeletePizzaCommand : IRequest<Result>
+using Common.Models.Results;
+
+public interface IDeletePizzaCommand
 {
-	public int? Id { get; set; }
+	Task<Result> ExecuteAsync(int id, CancellationToken cancellationToken = default);
 }
 
-public class DeletePizzaCommandHandler(DatabaseContext databaseContext) : IRequestHandler<DeletePizzaCommand, Result>
+public sealed class DeletePizzaCommand(DatabaseContext databaseContext) : IDeletePizzaCommand
 {
-	public async Task<Result> Handle(DeletePizzaCommand request, CancellationToken cancellationToken)
+	public async Task<Result> ExecuteAsync(int id, CancellationToken cancellationToken = default)
 	{
-		if (request.Id == null)
-		{
-			return Result.Failure("Error");
-		}
-
-		var query = EF.CompileAsyncQuery((DatabaseContext db, int id) => db.Pizzas.FirstOrDefault(c => c.Id == id));
-		var findEntity = await query(databaseContext, request.Id.Value);
-		if (findEntity == null)
+		var findEntity = await PizzaQueries.FindQuery(databaseContext, id);
+		if (findEntity is null)
 		{
 			return Result.Failure("Not found");
 		}

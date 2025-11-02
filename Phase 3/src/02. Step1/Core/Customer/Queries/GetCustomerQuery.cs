@@ -1,21 +1,18 @@
-﻿namespace Core.Customer.Queries;
+namespace Core.Customer.Queries;
 
-public class GetCustomerQuery : IRequest<Result<CustomerModel>>
+public record GetCustomer(int Id) : IQuery<Result<CustomerModel>>
 {
-	public int Id { get; set; }
+	public Task<Result<CustomerModel>> ExecuteAsync(Dispatcher dispatcher, CancellationToken ct = default)
+		=> dispatcher.Query<GetCustomer, Result<CustomerModel>>(this, ct);
+};
 
-	public class GetCustomerQueryHandler(DatabaseContext databaseContext) : IRequestHandler<GetCustomerQuery, Result<CustomerModel>>
+public sealed class GetCustomerHandler(DatabaseContext databaseContext) : IQueryHandler<GetCustomer, Result<CustomerModel>>
+{
+	public async Task<Result<CustomerModel>> Handle(GetCustomer query, CancellationToken cancellationToken = default)
 	{
-		public async Task<Result<CustomerModel>> Handle(GetCustomerQuery request, CancellationToken cancellationToken)
-		{
-			var query = EF.CompileAsyncQuery((DatabaseContext db, int id) => db.Customers.FirstOrDefault(c => c.Id == id));
-			var entity = await query(databaseContext, request.Id);
-			if(entity == null)
-			{
-				return Result<CustomerModel>.Failure("Not Found");
-			}
-
-			return Result<CustomerModel>.Success(entity.Map());
-		}
+		var findEntity = await CustomerQueries.FindQuery(databaseContext, query.Id);
+		return findEntity is null
+			? Result<CustomerModel>.Failure("Not Found")
+			: Result<CustomerModel>.Success(findEntity.Map());
 	}
 }

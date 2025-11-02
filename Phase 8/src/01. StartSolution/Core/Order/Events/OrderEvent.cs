@@ -1,11 +1,9 @@
 ﻿namespace Core.Order.Events;
 
-using System.Text;
 using Common.Entities;
 using Common.Models.Order;
-using DataAccess;
 
-public class OrderEvent : INotification
+public class OrderEvent
 {
 	public OrderModel Data { get; set; }
 }

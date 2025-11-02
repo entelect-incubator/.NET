@@ -3,12 +3,13 @@
 using Core.Customer.Commands;
 using Core.Customer.Queries;
 
-public class CustomerController : ApiController
+public sealed class CustomerController : ApiController
 {
 	/// <summary>
 	/// Get Customer by Id.
 	/// </summary>
 	/// <param name="id">int.</param>
+	/// <param name="cancellationToken"></param>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	/// <response code="200">Get a customer</response>
 	/// <response code="400">Error getting a customer</response>
@@ -17,28 +18,22 @@ public class CustomerController : ApiController
 	[ProducesResponseType(typeof(Result<CustomerModel>), 200)]
 	[ProducesResponseType(typeof(ErrorResult), 400)]
 	[ProducesResponseType(typeof(ErrorResult), 404)]
-	public async Task<ActionResult> GetCustomer(int id)
-	{
-		var result = await this.Mediator.Send(new GetCustomerQuery { Id = id });
-		return ResponseHelper.ResponseOutcome(result, this);
-	}
+	public async Task<ActionResult> GetCustomer(int id, CancellationToken cancellationToken)
+		=> ResponseHelper.ResponseOutcome(await new GetCustomer(id).ExecuteAsync(this.Dispatcher, cancellationToken), this);
 
 	/// <summary>
 	/// Get all Customers.
 	/// </summary>
-	/// <returns>A <see cref="Task"/> repres
-	/// enting the asynchronous operation.</returns>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	/// <param name="cancellationToken"></param>
 	/// <response code="200">Customer Search</response>
 	/// <response code="400">Error searching for customers</response>
 	[HttpPost]
-	[ProducesResponseType(typeof(ListResult<CustomerModel>), 200)]
+	[ProducesResponseType(typeof(Result<IEnumerable<CustomerModel>>), 200)]
 	[ProducesResponseType(typeof(ErrorResult), 400)]
 	[Route("Search")]
-	public async Task<ActionResult> Search()
-	{
-		var result = await this.Mediator.Send(new GetCustomersQuery());
-		return ResponseHelper.ResponseOutcome(result, this);
-	}
+	public async Task<ActionResult> Search(CancellationToken cancellationToken)
+		=> ResponseHelper.ResponseOutcome(await new GetCustomers().ExecuteAsync(this.Dispatcher, cancellationToken), this);
 
 	/// <summary>
 	/// Create Customer.
@@ -54,21 +49,15 @@ public class CustomerController : ApiController
 	///     }.
 	/// </remarks>
 	/// <param name="model">CustomerModel.</param>
+	/// <param name="cancellationToken"></param>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	/// <response code="200">Customer created</response>
 	/// <response code="400">Error creating a customer</response>
 	[HttpPost]
 	[ProducesResponseType(typeof(Result<CustomerModel>), 200)]
 	[ProducesResponseType(typeof(ErrorResult), 400)]
-	public async Task<ActionResult<CustomerModel>> Create(CreateCustomerModel model)
-	{
-		var result = await this.Mediator.Send(new CreateCustomerCommand
-		{
-			Data = model
-		});
-
-		return ResponseHelper.ResponseOutcome(result, this);
-	}
+	public async Task<ActionResult<CustomerModel>> Create(CreateCustomerModel model, CancellationToken cancellationToken)
+		=> ResponseHelper.ResponseOutcome(await this.Dispatcher.Send(new CreateCustomer(model), cancellationToken), this);
 
 	/// <summary>
 	/// Update Customer.
@@ -81,38 +70,31 @@ public class CustomerController : ApiController
 	///       "email": "person.a@gmail.com"
 	///     }.
 	/// </remarks>
+	/// <param name="id"></param>
 	/// <param name="model">CustomerModel.</param>
+	/// <param name="cancellationToken"></param>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	/// <response code="200">Customer updated</response>
 	/// <response code="400">Error updating a customer</response>
 	/// <response code="404">Customer not found</response>
-	[HttpPut]
+	[HttpPut("{id}")]
 	[ProducesResponseType(typeof(Result<CustomerModel>), 200)]
 	[ProducesResponseType(typeof(ErrorResult), 400)]
 	[ProducesResponseType(typeof(Result), 404)]
-	public async Task<ActionResult> Update(UpdateCustomerModel model)
-	{
-		var result = await this.Mediator.Send(new UpdateCustomerCommand
-		{
-			Data = model
-		});
-
-		return ResponseHelper.ResponseOutcome(result, this);
-	}
+	public async Task<ActionResult> Update(int id, UpdateCustomerModel model, CancellationToken cancellationToken)
+		=> ResponseHelper.ResponseOutcome(await this.Dispatcher.Send(new UpdateCustomer(id, model), cancellationToken), this);
 
 	/// <summary>
 	/// Remove Customer by Id.
 	/// </summary>
 	/// <param name="id">int.</param>
+	/// <param name="cancellationToken"></param>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	/// <response code="200">Customer deleted</response>
 	/// <response code="400">Error deleting a customer</response>
 	[HttpDelete("{id}")]
 	[ProducesResponseType(typeof(Result), 200)]
 	[ProducesResponseType(typeof(ErrorResult), 400)]
-	public async Task<ActionResult> Delete(int id)
-	{
-		var result = await this.Mediator.Send(new DeleteCustomerCommand { Id = id });
-		return ResponseHelper.ResponseOutcome(result, this);
-	}
+	public async Task<ActionResult> Delete(int id, CancellationToken cancellationToken)
+		=> ResponseHelper.ResponseOutcome(await this.Dispatcher.Send(new DeleteCustomer(id), cancellationToken), this);
 }

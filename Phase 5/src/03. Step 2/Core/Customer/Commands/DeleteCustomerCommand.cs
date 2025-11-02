@@ -1,15 +1,15 @@
-﻿namespace Core.Customer.Commands;
+namespace Core.Customer.Commands;
 
-public class DeleteCustomerCommand : IRequest<Result>
+public sealed class DeleteCustomerCommand : ICommand<Result>
 {
 	public int? Id { get; set; }
 }
 
-public class DeleteCustomerCommandHandler(DatabaseContext databaseContext) : IRequestHandler<DeleteCustomerCommand, Result>
+public sealed class DeleteCustomerCommandHandler(DatabaseContext databaseContext) : ICommandHandler<DeleteCustomerCommand, Result>
 {
 	public async Task<Result> Handle(DeleteCustomerCommand request, CancellationToken cancellationToken)
 	{
-		if (request.Id == null)
+		if (request.Id is null)
 		{
 			return Result.Failure("Error");
 		}

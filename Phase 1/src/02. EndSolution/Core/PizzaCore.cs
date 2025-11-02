@@ -5,7 +5,7 @@ public class PizzaCore(DatabaseContext databaseContext) : IPizzaCore
 	public async Task<PizzaModel?> GetAsync(int id)
 	{
 		var entity = await databaseContext.Pizzas.FirstOrDefaultAsync(x => x.Id == id);
-		if(entity == null)
+		if(entity is null)
 		{
 			return null;
 		}
@@ -16,11 +16,6 @@ public class PizzaCore(DatabaseContext databaseContext) : IPizzaCore
 	public async Task<IEnumerable<PizzaModel>?> GetAllAsync()
 	{
 		var entities = await databaseContext.Pizzas.Select(x => x).AsNoTracking().ToListAsync();
-		if (entities.Count == 0)
-		{
-			return null;
-		}
-
 		return entities.Map();
 	}
 
@@ -43,7 +38,7 @@ public class PizzaCore(DatabaseContext databaseContext) : IPizzaCore
 	public async Task<PizzaModel?> UpdateAsync(PizzaModel Pizza)
 	{
 		var findEntity = await databaseContext.Pizzas.FirstOrDefaultAsync(x => x.Id == Pizza.Id);
-		if (findEntity == null)
+		if (findEntity is null)
 		{
 			return null;
 		}
@@ -59,10 +54,15 @@ public class PizzaCore(DatabaseContext databaseContext) : IPizzaCore
 
 	public async Task<bool> DeleteAsync(int id)
 	{
-		var result = await databaseContext.Pizzas
-			.Where(e => e.Id == id)
-			.ExecuteDeleteAsync();
+		var entity = await databaseContext.Pizzas.FirstOrDefaultAsync(x => x.Id == id);
+		if (entity is null)
+		{
+			return false;
+		}
 
-		return result == 1;
+		databaseContext.Pizzas.Remove(entity);
+		await databaseContext.SaveChangesAsync();
+
+		return true;
 	}
 }

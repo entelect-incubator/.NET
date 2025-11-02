@@ -1,4 +1,4 @@
-﻿namespace Api.Helpers;
+namespace Api.Helpers;
 
 public static class ResponseHelper
 {
@@ -17,7 +17,7 @@ public static class ResponseHelper
         return controller.Ok(result);
     }
 
-    public static ActionResult ResponseOutcome<T>(ListResult<T> result, ApiController controller)
+    public static ActionResult ResponseOutcome<T>(Result<IEnumerable<T>> result, ApiController controller)
     {
         if (!result.Succeeded)
         {

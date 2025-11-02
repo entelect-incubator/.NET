@@ -1,35 +1,29 @@
-﻿namespace Core.Customer.Commands;
+namespace Core.Customer.Commands;
 
-public class UpdateCustomerCommand : IRequest<Result<CustomerModel>>
+using Common.Models.Results;
+using Core.Pizza;
+
+public interface IUpdateCustomerCommand
 {
-	public int? Id { get; set; }
-
-	public UpdateCustomerModel? Data { get; set; }
+	Task<Result<CustomerModel>> ExecuteAsync(int id, UpdateCustomerModel model, CancellationToken cancellationToken = default);
 }
 
-public class UpdateCustomerCommandHandler(DatabaseContext databaseContext) : IRequestHandler<UpdateCustomerCommand, Result<CustomerModel>>
+public sealed class UpdateCustomerCommand(DatabaseContext databaseContext) : IUpdateCustomerCommand
 {
-	public async Task<Result<CustomerModel>> Handle(UpdateCustomerCommand request, CancellationToken cancellationToken)
+	public async Task<Result<CustomerModel>> ExecuteAsync(int id, UpdateCustomerModel model, CancellationToken cancellationToken = default)
 	{
-		if (request.Data == null || request.Id == null)
-		{
-			return Result<CustomerModel>.Failure("Error updating a Customer");
-		}
-
-		var model = request.Data;
-		var query = EF.CompileAsyncQuery((DatabaseContext db, int id) => db.Customers.FirstOrDefault(c => c.Id == id));
-		var findEntity = await query(databaseContext, request.Id.Value);
-		if (findEntity == null)
+		var findEntity = await CustomerQueries.FindQuery(databaseContext, id);
+		if (findEntity is null)
 		{
 			return Result<CustomerModel>.Failure("Not found");
 		}
 
-		findEntity.Name = !string.IsNullOrEmpty(model?.Name) ? model?.Name : findEntity.Name;
-		findEntity.Address = !string.IsNullOrEmpty(model?.Address) ? model?.Address : findEntity.Address;
-		findEntity.Cellphone = !string.IsNullOrEmpty(model?.Cellphone) ? model?.Cellphone : findEntity.Cellphone;
-		findEntity.Email = !string.IsNullOrEmpty(model?.Email) ? model?.Email : findEntity.Email;
+		findEntity.Name = model.Name is null ? findEntity.Name : model.Name;
+		findEntity.Address = model.Address;
+		findEntity.Cellphone = model.Cellphone;
+		findEntity.Email = model.Email;
 
-		var outcome = databaseContext.Customers.Update(findEntity);
+		databaseContext.Customers.Update(findEntity);
 		var result = await databaseContext.SaveChangesAsync(cancellationToken);
 
 		return result > 0 ? Result<CustomerModel>.Success(findEntity.Map()) : Result<CustomerModel>.Failure("Error");

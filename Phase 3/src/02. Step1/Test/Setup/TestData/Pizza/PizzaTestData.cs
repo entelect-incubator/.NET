@@ -2,34 +2,35 @@
 
 public static class PizzaTestData
 {
-	public static Faker faker = new();
+	/// <summary>
+	/// Standard Pezza pizza menu - aligned with Theme project
+	/// Source: Theme/index.html, SOLUTION.md
+	/// </summary>
+	private static readonly List<string> PizzaNames =
+	[
+		"Hawaiian Pizza",
+		"Pepperoni Pizza",
+		"Regina Pizza",
+		"Margherita Pizza"
+	];
 
-	public static PizzaModel Pizza = new()
+	private static readonly Faker Faker = new();
+
+	public static PizzaModel Pizza => new()
 	{
 		Id = 1,
-		Name = faker.PickRandom(pizzas),
+		Name = Faker.PickRandom(PizzaNames),
 		Description = string.Empty,
-		Price = faker.Finance.Amount(),
+		Price = Faker.Finance.Amount(),
 		DateCreated = DateTime.Now,
 	};
 
-	public static PizzaModel PizzaModel = new()
+	public static PizzaModel PizzaModel => new()
 	{
 		Id = 1,
-		Name = faker.PickRandom(pizzas),
+		Name = Faker.PickRandom(PizzaNames),
 		Description = string.Empty,
-		Price = faker.Finance.Amount(),
+		Price = Faker.Finance.Amount(),
 		DateCreated = DateTime.Now
-		
-	};
-
-	private static readonly List<string> pizzas = new() 
-	{ 
-		"Veggie Pizza",
-		"Pepperoni Pizza",
-		"Meat Pizza",
-		"Margherita Pizza",
-		"BBQ Chicken Pizza",
-		"Hawaiian Pizza"
 	};
 }

@@ -10,15 +10,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Serialization;
 
-public class Startup
+public class Startup(IConfiguration configuration)
 {
-	public IConfiguration ConfigRoot
-	{
-		get;
-	}
-
-	public Startup(IConfiguration configuration) => this.ConfigRoot = configuration;
-
 	public void ConfigureServices(IServiceCollection services)
 	{
 		services.AddControllers(options => options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true)
@@ -52,7 +45,7 @@ public class Startup
 		app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Pezza API V1"));
 		app.UseHttpsRedirection();
 		app.UseRouting();
-		app.UseEndpoints(endpoints => endpoints.MapControllers());
+		app.MapControllers();
 		app.UseAuthorization();
 		app.Run();
 	}

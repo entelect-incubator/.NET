@@ -1,41 +1,128 @@
-<img align="left" width="116" height="116" src="pezza-logo.png" />
+# Pezza - Phase 8 — Security
 
-# &nbsp;**Pezza - Phase 7**
+![Pezza logo](./pezza-logo.png "Pezza logo")
 
-<br/><br/>
+[![.NET - Phase 8 - Security](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase8-startsolution.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase8-startsolution.yml)
 
-# **UI**
+## Quick facts
 
-In Phase 7 we will build the Front End implementations for the API in a variety of ways and technologies. * Remember to always be technology agnostic. Choose the technology that suites the use case the best.
+- Estimated time: 4 - 8 hours
+- Difficulty: Intermediate ▮▮▮▯▯ (3/5)
+- Target SDK: .NET 10 (net10)
+- Audience: Developers moving from other platforms to C# who need to secure web APIs and web apps
 
-## **Setup**
+## Goal
 
-- [ ] Use the Final Solution from Phase 6 to get started or use Phase3\01. StartSolution
-- [ ] To allow calls from your Web.API you need to add CORS in your starup.cs
+This phase focuses on improving the security posture of the Pezza solution: authentication and authorization, anti-forgery, secure headers, HTTPS/HSTS, secrets management, and small hardening changes that make the solution safe for demos and local testing.
 
-[About CORS](https://www.youtube.com/watch?v=UjozQOaGt1k)
+## Prerequisites
 
-public void ConfigureServices(IServiceCollection services)
+- Completed Phase 7 (Api & Api.Client available)
+- .NET SDK 10 installed
+- Basic knowledge of authentication concepts (JWT/OAuth2) and web security fundamentals
 
-```cs
-services.AddCors(options =>
+## What you'll do (high level)
+
+1. Add or validate authentication (JWT/OAuth2) for the Api and protect endpoints.
+2. Add antiforgery validation to MVC endpoints that accept browser POSTs.
+3. Enforce HTTPS and HSTS for production environments.
+4. Harden cookie settings, secure headers and secrets handling.
+5. Run quick automated checks and add CI validations for build and basic security tests where possible.
+
+## Quick checklist & snippets
+
+1. Enforce HTTPS & HSTS (Program.cs / Startup)
+
+```csharp
+if (!app.Environment.IsDevelopment())
 {
-    options.AddPolicy(
-        "CorsPolicy",
-        builder => builder.AllowAnyOrigin()
-            .AllowAnyMethod()
-            .AllowAnyHeader());
+    app.UseExceptionHandler("/Home/Error");
+    app.UseHsts();
+}
+
+app.UseHttpsRedirection();
+```
+
+1. Secure cookie settings
+
+```csharp
+services.ConfigureApplicationCookie(options =>
+{
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    options.Cookie.SameSite = SameSiteMode.Strict;
 });
 ```
 
-public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+1. JWT authentication (example)
 
-```cs
-app.UseCors("CorsPolicy");
+```csharp
+services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = Configuration["Jwt:Issuer"],
+            ValidAudience = Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
+        };
+    });
+
+app.UseAuthentication();
+app.UseAuthorization();
 ```
 
-## **Steps**
+1. Antiforgery for browser POSTs
 
-- [ ] [Step 1 - Dashboard (Pezza back office)](https://github.com/entelect-incubator/.NET/tree/master/Phase%203/02.%20Dashboard)
-- [ ] [Step 2 - Website (Customers to order Pizza's)](https://github.com/entelect-incubator/.NET/tree/master/Phase%203/03.%20Website) 
- 
+```csharp
+services.AddAntiforgery(options => options.HeaderName = "X-CSRF-TOKEN");
+
+[ValidateAntiForgeryToken]
+public IActionResult PostOrder(OrderModel model) { ... }
+```
+
+1. Secure headers (minimal middleware)
+
+```csharp
+app.Use(async (context, next) =>
+{
+    context.Response.Headers["X-Content-Type-Options"] = "nosniff";
+    context.Response.Headers["X-Frame-Options"] = "DENY";
+    context.Response.Headers["Referrer-Policy"] = "no-referrer";
+    await next();
+});
+```
+
+1. Secrets & data protection
+
+- Use `dotnet user-secrets` for local dev secrets.
+- Use a vault (Azure Key Vault, AWS Secrets Manager) for CI/production secrets.
+- Persist data protection keys to a shared store in multi-instance deployments.
+
+## Validate / Quick commands
+
+```powershell
+# check .NET version (should be 10.x)
+dotnet --version
+
+# build the Phase 8 solution
+dotnet build "./Phase 8/src/01. StartSolution/Pezza.sln"
+
+# run tests (if present)
+dotnet test "./Phase 8/src/01. StartSolution/Pezza.sln"
+```
+
+## Outcomes / Learning goals
+
+- Configure JWT/OAuth and protect API endpoints.
+- Harden cookie policies, antiforgery and secure headers for web UIs.
+- Understand secrets management options for dev and CI.
+
+---
+
+If you'd like, I can make a small, gated code change to the `Api` project's `Program.cs` to enable HTTPS/HSTS and add the secure-headers middleware behind an environment check — I will only do that if you ask me to create a PR.
+

@@ -1,5 +1,6 @@
-namespace Test.Core;
+﻿namespace Test.Core;
 
+using Common.Models;
 using global::Core.Pizza.Commands;
 using global::Core.Pizza.Queries;
 using Test.Setup.TestData.Pizza;
@@ -31,7 +32,7 @@ public class TestPizzaCore : QueryTestBase
 
 		if (!resultCreate.Succeeded)
 		{
-			Assert.IsTrue(false);
+			Assert.That(false, Is.True);
 		}
 
 		this.model = resultCreate.Data;
@@ -47,7 +48,7 @@ public class TestPizzaCore : QueryTestBase
 				Id = this.model.Id
 			}, CancellationToken.None);
 
-		Assert.IsTrue(resultGet?.Data != null);
+		Assert.That(resultGet?.Data , Is.Not.Null);
 	}
 
 	[Test]
@@ -56,11 +57,11 @@ public class TestPizzaCore : QueryTestBase
 		var sutGetAll = new GetPizzasQueryHandler(this.Context, this.CachingService);
 		var resultGetAll = await sutGetAll.Handle(new GetPizzasQuery(), CancellationToken.None);
 
-		Assert.IsTrue(resultGetAll?.Data.Count == 1);
+		Assert.That(resultGetAll?.Data.Count , Is.EqualTo(1));
 	}
 
 	[Test]
-	public void SaveAsync() => Assert.IsTrue(this.model != null);
+	public void SaveAsync() => Assert.That(this.model , Is.Not.Null);
 
 	[Test]
 	public async Task UpdateAsync()
@@ -76,7 +77,7 @@ public class TestPizzaCore : QueryTestBase
 				}
 			}, CancellationToken.None);
 
-		Assert.IsTrue(resultUpdate.Succeeded);
+		Assert.That(resultUpdate.Succeeded, Is.True);
 	}
 
 	[Test]
@@ -89,6 +90,6 @@ public class TestPizzaCore : QueryTestBase
 				Id = this.model.Id
 			}, CancellationToken.None);
 
-		Assert.IsTrue(outcomeDelete.Succeeded);
+		Assert.That(outcomeDelete.Succeeded, Is.True);
 	}
 }

@@ -1,13 +1,13 @@
-﻿namespace Core.Customer.Queries;
+namespace Core.Customer.Queries;
 
-public class GetCustomersQuery : IRequest<ListResult<CustomerModel>>
+public sealed class GetCustomersQuery : IQuery<Result<IEnumerable<CustomerModel>>>
 {
 	public SearchCustomerModel Data { get; set; }
 }
 
-public class GetCustomersQueryHandler(DatabaseContext databaseContext) : IRequestHandler<GetCustomersQuery, ListResult<CustomerModel>>
+public sealed class GetCustomersQueryHandler(DatabaseContext databaseContext) : IQueryHandler<GetCustomersQuery, Result<IEnumerable<CustomerModel>>>
 {
-	public async Task<ListResult<CustomerModel>> Handle(GetCustomersQuery request, CancellationToken cancellationToken)
+	public async Task<Result<IEnumerable<CustomerModel>>> Handle(GetCustomersQuery request, CancellationToken cancellationToken)
 	{
 		var entity = request.Data;
 		if (string.IsNullOrEmpty(entity.OrderBy))
@@ -24,9 +24,9 @@ public class GetCustomersQueryHandler(DatabaseContext databaseContext) : IReques
 			.FilterByEmail(entity.Email)
 			.OrderBy(entity.OrderBy);
 
-		var count = entities.Count();
+		var count = await entities.CountAsync(cancellationToken);
 		var paged = await entities.ApplyPaging(entity.PagingArgs).ToListAsync(cancellationToken);
 
-		return ListResult<CustomerModel>.Success(paged.Map(), count);
+		return Result<IEnumerable<CustomerModel>>.Success(paged.Map(), count);
 	}
 }

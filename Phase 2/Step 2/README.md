@@ -1,4 +1,4 @@
-<img align="left" width="116" height="116" src="../Assets/pezza-logo.png" />
+﻿<img align="left" width="116" height="116" src="../Assets/pezza-logo.png" />
 
 # &nbsp;**Pezza - Phase 2 - Step 2**
 
@@ -43,22 +43,51 @@ public static class CustomerTestData
 
 ### **Testing Core Layer**
 
+## Step 2: Unit Testing
+
+**Difficulty**: ★★★☆☆ (Intermediate)  
+**Estimated Time**: 1.5 - 2 hours  
+**Prerequisites**: 
+- Completed Step 1 scaffolding
+- Understanding of NUnit and unit testing basics
+- QueryTestBase foundation from Phase 2 starter
+
+### Learning Outcomes
+After completing this step, you will understand:
+- Creating test data with Faker for realistic scenarios
+- Testing handler classes with in-memory DbContext
+- Using [TestFixture] and [SetUp] attributes
+- Testing CRUD operations (create, read, update, delete)
+- Implementing modern Assert.That() syntax for assertions
+
+---
+
+### Testing Core Layer
+
 Create a Folder in the Test Project called **Core**. Create a Test Core Class for every Entity.
 
-We will test every method inside of the Core class - GetAsync, GetAllAsync, SaveAsync, UpdateAsync and DeleteAsync. The class will inherit from QueryTestBase created earlier.We will test every method inside of the Core class - GetAsync, GetAllAsync, SaveAsync, UpdateAsync and DeleteAsync. The class will inherit from QueryTestBase created earlier.
+We will test every method inside of the Core class - GetAsync, GetAllAsync, SaveAsync, UpdateAsync and DeleteAsync. The class will inherit from QueryTestBase created earlier.
 
-Every test method will start with [Test], this indicates it as a Unit Test. Every Test class will have an attribute [TestFixture] at the top. We will use [SetUp] to intialize our handlers or data access layer and resue it in every test.
+Every test method will start with [Test], this indicates it as a Unit Test. Every Test class will have an attribute [TestFixture] at the top. We will use [SetUp] to initialise our handlers or data access layer and reuse it in every test.
 
-It will contain a new Handler with the In Memory DBContext.
+We will declare a new Handler for every test and inject the DbContext into it:
 
- We will declare a new Handler for every test and inject the DbContext into it. i.e. var sutCreate = new CreateCustomerCommandHandler(this.Context);
+```cs
+var sutCreate = new CreateCustomerCommandHandler(this.Context);
+```
 
- Then we will test the Command or Query Handler with the Test Data created earlier i.e. var resultCreate = await sutCreate.Handle(new CreateCustomerCommand
-            {
-                Data = CustomerTestData.CustomerDataDTO
-            }, CancellationToken.None);
+Then we will test the Command or Query Handler with the Test Data created earlier:
 
- Next we will test the the result.
+```cs
+var resultCreate = await sutCreate.Handle(
+    new CreateCustomerCommand
+    {
+        Data = CustomerTestData.CustomerModel
+    }, 
+    CancellationToken.None);
+```
+
+Next we will test the result with modern assertions.
 
 TestCustomerCore.cs in Core folder
 
@@ -98,7 +127,7 @@ public class TestCustomerCore : QueryTestBase
 
 		if (!resultCreate.Succeeded)
 		{
-			Assert.IsTrue(false);
+			Assert.That(false, Is.True);
 		}
 
 		this.model = resultCreate.Data;
@@ -114,7 +143,7 @@ public class TestCustomerCore : QueryTestBase
 				Id = this.model.Id
 			}, CancellationToken.None);
 
-		Assert.IsTrue(resultGet?.Data != null);
+		Assert.That(resultGet?.Data , Is.Not.Null);
 	}
 
 	[Test]
@@ -123,11 +152,11 @@ public class TestCustomerCore : QueryTestBase
 		var sutGetAll = new GetCustomersQueryHandler(this.Context);
 		var resultGetAll = await sutGetAll.Handle(new GetCustomersQuery(), CancellationToken.None);
 
-		Assert.IsTrue(resultGetAll?.Data.Count == 1);
+		Assert.That(resultGetAll?.Data.Count , Is.EqualTo(1));
 	}
 
 	[Test]
-	public void SaveAsync() => Assert.IsTrue(this.model != null);
+	public void SaveAsync() => Assert.That(this.model , Is.Not.Null);
 
 	[Test]
 	public async Task UpdateAsync()
@@ -143,9 +172,33 @@ public class TestCustomerCore : QueryTestBase
 				}
 			}, CancellationToken.None);
 
-		Assert.IsTrue(resultUpdate.Succeeded);
+		Assert.That(resultUpdate.Succeeded, Is.True);
 	}
 
+---
+
+## Summary
+
+You have successfully completed Step 2! Your unit tests now cover all CRUD operations for your handlers using an in-memory database context.
+
+The test structure you've implemented - using [TestFixture], [SetUp], test data, and modern Assert.That() syntax - is industry-standard and will serve as a foundation for testing throughout the remaining phases.
+
+### What You've Accomplished
+- ✅ Created test data with Faker for realistic test scenarios
+- ✅ Implemented [TestFixture] and [SetUp] attributes for test organization
+- ✅ Built handlers with in-memory DbContext for isolated testing
+- ✅ Tested create, read, update, and delete operations
+- ✅ Used modern Assert.That() constraints for clear assertions
+
+### Best Practices You've Applied
+- Test one thing per test method with clear naming
+- Use [SetUp] to initialize shared test data and handlers
+- Create builders for complex test scenarios
+- Assert both success and failure cases
+- Keep tests focused and readable
+
+### Next Step
+Move to Step 3 to implement your API controllers and connect them to your tested handlers via MediatR!
 	[Test]
 	public async Task DeleteAsync()
 	{
@@ -156,7 +209,7 @@ public class TestCustomerCore : QueryTestBase
 				Id = this.model.Id
 			}, CancellationToken.None);
 
-		Assert.IsTrue(outcomeDelete.Succeeded);
+		Assert.That(outcomeDelete.Succeeded, Is.True);
 	}
 }
 ```

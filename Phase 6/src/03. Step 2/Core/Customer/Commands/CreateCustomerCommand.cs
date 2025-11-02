@@ -1,11 +1,11 @@
-﻿namespace Core.Customer.Commands;
+namespace Core.Customer.Commands;
 
-public class CreateCustomerCommand : IRequest<Result<CustomerModel>>
+public sealed class CreateCustomerCommand : ICommand<Result<CustomerModel>>
 {
 	public CreateCustomerModel? Data { get; set; }
 }
 
-public class CreateCustomerCommandHandler(DatabaseContext databaseContext) : IRequestHandler<CreateCustomerCommand, Result<CustomerModel>>
+public sealed class CreateCustomerCommandHandler(DatabaseContext databaseContext) : ICommandHandler<CreateCustomerCommand, Result<CustomerModel>>
 {
 	public async Task<Result<CustomerModel>> Handle(CreateCustomerCommand request, CancellationToken cancellationToken)
 	{

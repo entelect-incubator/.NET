@@ -1,6 +1,6 @@
-﻿namespace Core.Customer.Commands;
+namespace Core.Customer.Commands;
 
-public class CreateCustomerCommandValidator : AbstractValidator<CreateCustomerCommand>
+public sealed class CreateCustomerCommandValidator : AbstractValidator<CreateCustomerCommand>
 {
 	public CreateCustomerCommandValidator()
 	{

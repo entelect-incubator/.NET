@@ -13,12 +13,12 @@ using Newtonsoft.Json.Serialization;
 
 public class Startup
 {
-	public Startup(IConfiguration configuration) => this.ConfigRoot = configuration;
-
 	public IConfiguration ConfigRoot
 	{
 		get;
 	}
+
+	public Startup(IConfiguration configuration) => this.ConfigRoot = configuration;
 
 	public void ConfigureServices(IServiceCollection services)
 	{
@@ -43,7 +43,8 @@ public class Startup
 		});
 
 		services.AddDbContext<DatabaseContext>(options =>
-			options.UseInMemoryDatabase("PezzaDB"));
+			options.UseInMemoryDatabase(Guid.NewGuid().ToString())
+		);
 	}
 
 	public void Configure(WebApplication app, IWebHostEnvironment env)
@@ -53,7 +54,7 @@ public class Startup
 		app.UseHttpsRedirection();
 		app.UseMiddleware(typeof(ExceptionHandlerMiddleware));
 		app.UseRouting();
-		app.UseEndpoints(endpoints => endpoints.MapControllers());
+		app.MapControllers();
 		app.UseAuthorization();
 		app.Run();
 	}

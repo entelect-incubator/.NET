@@ -1,0 +1,40 @@
+name: Phase 9 - Tailwind build + .NET build
+
+on:
+    push:
+        branches: [main, upgrade/all-net10]
+    pull_request:
+        branches: [main]
+
+jobs:
+    build:
+        runs-on: windows-latest
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "18"
+
+            - name: Install Tailwind deps
+              working-directory: Phase 9/Website/Blazor/Client
+              run: |
+                  npm ci
+
+            - name: Build Tailwind CSS
+              working-directory: Phase 9/Website/Blazor/Client
+              run: |
+                  npm run build:css
+
+            - name: Setup .NET 10
+              uses: actions/setup-dotnet@v4
+              with:
+                  dotnet-version: "10.0.x"
+
+            - name: Restore & Build Solution
+              run: |
+                  dotnet restore "Phase 9/Website/Blazor/Pezza.Blazor.sln"
+                  dotnet build "Phase 9/Website/Blazor/Pezza.Blazor.sln" -c Release

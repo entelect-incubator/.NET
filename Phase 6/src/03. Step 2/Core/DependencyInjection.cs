@@ -4,6 +4,8 @@ using System.Reflection;
 using Common.Behaviour;
 using Core.Customer.Commands;
 using FluentValidation;
+using LiteBus.Commands.Abstractions;
+using LiteBus.Queries.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 
 public static class DependencyInjection

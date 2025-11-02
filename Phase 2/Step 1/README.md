@@ -4,9 +4,28 @@
 
 <br/><br/>
 
-This Phase might feel a bit tedious, but it puts down a strong foundation to build off from for the entire incubator.
+## Step 1: Scaffolding
 
-If at any point you are struggling you can reference Phase 2\src\02. EndSolution
+**Difficulty**: ★★★☆☆ (Intermediate)  
+**Estimated Time**: 1.5 - 2.5 hours  
+**Prerequisites**: 
+- Completed Phase 2 main README
+- Familiarity with Entity Framework Core
+- Understanding of CQRS concepts
+
+### Learning Outcomes
+After completing this step, you will understand:
+- How to install and configure MediatR
+- Creating database entities for multiple models (Customer, Pizza)
+- Building mappers for DTOs and entities
+- Setting up EF Core mappings
+- Organizing the Core project structure for CQRS patterns
+
+---
+
+This step puts down a strong foundation to build off from for the entire incubator. While it might feel a bit tedious, each piece is essential for CQRS implementation.
+
+If at any point you are struggling, you can reference Phase 2/src/02. EndSolution
 
 ## **Install Mediatr**
 
@@ -67,7 +86,7 @@ public class Pizza
 
 ### **Models**
 
-Create Models for each Entity. For seperation of concern we will create seperate Models for each action. Can also be copied from **Phase 2\src\02. EndSolution\Common\Models**
+Create Models for each Entity. For separation of concern we will create separate Models for each action. Can also be copied from **Phase 2\src\02. EndSolution\Common\Models**
 
 ![](./Assets/2023-04-10-21-23-57.png)
 
@@ -438,7 +457,7 @@ global using Common.Models;
 
 Create the following Commands for Customer and Pizza in Core Project inside the Entity Name Folder/Commands <br/> ![](./Assets/2021-08-16-06-51-20.png)
 
-We will move from PizzaCore concept now to seperate Command or Querie for each operation. It is important to start seeing the patterns here.
+We will move from PizzaCore concept now to separate Command or Querie for each operation. It is important to start seeing the patterns here.
 
 We will also be using the new Models relevant to each operation.
 
@@ -456,7 +475,7 @@ public class CreatePizzaCommandHandler(DatabaseContext databaseContext) : IReque
 {
 	public async Task<Result<PizzaModel>> Handle(CreatePizzaCommand request, CancellationToken cancellationToken)
 	{
-		if(request.Data == null)
+		if(request.Data is null)
 		{
 			return Result<PizzaModel>.Failure("Error");
 		}
@@ -490,14 +509,14 @@ public class DeletePizzaCommandHandler(DatabaseContext databaseContext) : IReque
 {
 	public async Task<Result> Handle(DeletePizzaCommand request, CancellationToken cancellationToken)
 	{
-		if (request.Id == null)
+		if (request.Id is null)
 		{
 			return Result.Failure("Error");
 		}
 
 		var query = EF.CompileAsyncQuery((DatabaseContext db, int id) => db.Pizzas.FirstOrDefault(c => c.Id == id));
 		var findEntity = await query(databaseContext, request.Id.Value);
-		if (findEntity == null)
+		if (findEntity is null)
 		{
 			return Result.Failure("Not found");
 		}
@@ -526,7 +545,7 @@ public class UpdatePizzaCommandHandler(DatabaseContext databaseContext) : IReque
 {
 	public async Task<Result<PizzaModel>> Handle(UpdatePizzaCommand request, CancellationToken cancellationToken)
 	{
-		if (request.Data == null || request.Id == null)
+		if (request.Data is null || request.Id is null)
 		{
 			return Result<PizzaModel>.Failure("Error");
 		}
@@ -534,7 +553,7 @@ public class UpdatePizzaCommandHandler(DatabaseContext databaseContext) : IReque
 		var model = request.Data;
 		var query = EF.CompileAsyncQuery((DatabaseContext db, int id) => db.Pizzas.FirstOrDefault(c => c.Id == id));
 		var findEntity = await query(databaseContext, request.Id.Value);
-		if (findEntity == null)
+		if (findEntity is null)
 		{
 			return Result<PizzaModel>.Failure("Not found");
 		}
@@ -577,7 +596,7 @@ public class GetPizzaQueryHandler(DatabaseContext databaseContext) : IRequestHan
 	{
 		var query = EF.CompileAsyncQuery((DatabaseContext db, int id) => db.Pizzas.FirstOrDefault(c => c.Id == id));
 		var entity = await query(databaseContext, request.Id);
-		if (entity == null)
+		if (entity is null)
 		{
 			return Result<PizzaModel>.Failure("Not Found");
 		}
@@ -602,7 +621,7 @@ public class GetPizzasQueryHandler(DatabaseContext databaseContext) : IRequestHa
 	{
 		var entities = databaseContext.Pizzas.Select(x => x).AsNoTracking();
 
-		var count = entities.Count();
+		var count = await entities.CountAsync(cancellationToken);
 		var paged = await entities.ToListAsync(cancellationToken);
 
 		return ListResult<PizzaModel>.Success(paged.Map(), count);
@@ -698,10 +717,42 @@ public static class DependencyInjection
 }
 ```
 
-### **Remove Core.Contracts Project and any refrence to PizzaCore.cs or IPizzaCore.cs**
+### **Remove Core.Contracts Project and any reference to PizzaCore.cs or IPizzaCore.cs**
 
+---
 
-## **STEP 2 - Unit Tests**
+## Summary
 
-Move to Step 2
-[Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%202/Step%202)
+You have successfully completed Step 1! You've created a solid foundation for CQRS implementation with MediatR.
+
+Your project now has:
+- ✅ Entities for Customer and Pizza with modern properties
+- ✅ DTOs and Models for clean data transfer
+- ✅ Mapper extensions for entity-to-model conversion
+- ✅ EF Core database mappings for Entity Framework
+- ✅ Command and Query handlers following CQRS principles
+- ✅ Dependency injection configured with MediatR
+- ✅ Pipeline behaviors for cross-cutting concerns
+
+### Key Accomplishments
+- Created database entities with proper data types
+- Built mapper classes for clean entity-DTO conversion
+- Configured EF Core with fluent API mappings
+- Implemented handlers that will process commands and queries
+- Set up DependencyInjection for centralized configuration
+
+### Architecture Review
+Your project structure now follows:
+- **Common**: Shared entities, models, and mappers
+- **Core**: Command/Query handlers and business logic
+- **DataAccess**: EF Core context and mappings
+
+This separation of concerns creates a maintainable and testable codebase!
+
+---
+
+## STEP 2 - Unit Tests
+
+Move to Step 2 to create comprehensive unit tests for your handlers.
+
+[Proceed to Step 2](https://github.com/entelect-incubator/.NET/tree/master/Phase%202/Step%202)

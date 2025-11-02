@@ -1,105 +1,36 @@
 <img align="left" width="116" height="116" src="../pezza-logo.png" />
 
-# &nbsp;**Pezza - Phase 6 - Step 2** [![.NET - Phase 6 - Step 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-step2.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-step2.yml)
+# &nbsp;**Pezza - Phase 5 - Step 2** [![.NET - Phase 5 - Step 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase5-step2.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase5-step2.yml)
 
 <br/><br/>
 
-## **Events**
+## **Compression**
 
-Mediatr allows you to publish domain events when a command is handled. This applies the SOLID principle in seperating domain events from commands. In this example, we will be sending out an email to the customer to notify them that their pizza is ready for collection. We achieve this by creating an event that we publish with MediatR when the command for updating an order to completed is handled.
+To improve the response time we will be adding compression. There is a variety of other things you can do to improve performance, this is just one of them.
 
-The following material is valuable in getting a better understanding of these patterns:
-- [Domain Event Pattern](https://microservices.io/patterns/data/domain-event.html)
-- [Immediate Domain Event Salvation with MediatR](https://ardalis.com/immediate-domain-event-salvation-with-mediatr/)
+Open up Startup.cs in API.
 
-Create a new folder Common Models folder called Order and inside create a new Order Model.
-
-OrderModel.cs
+Add the following to the ConfigureServices method.
 
 ```cs
-namespace Common.Models.Order;
-
-public class OrderModel
+services.AddResponseCompression(options =>
 {
-	public required CustomerModel Customer { get; set; }
-
-	public required List<PizzaModel> Pizzas { get; set; }
-}
+    options.Providers.Add<BrotliCompressionProvider>();
+    options.Providers.Add<GzipCompressionProvider>();
+});
+services.AddResponseCompression();
 ```
 
-In Core create a new folder Order. Inside of Order create a folder called Commands and inside a Command called OrderCommand.cs. Inside Order create a folder called Events and inside create EmailEvent.cs. Here we will call the EmailService.cs created in the previous step.
-
-OrderCommand.cs
+Add the following to the Configure method.
 
 ```cs
-namespace Core.Order.Commands;
-
-using Common.Models.Order;
-using Core.Order.Events;
-
-public class OrderCommand : IRequest<Result>
-{
-	public required OrderModel Data { get; set; }
-}
-
-public class OrderCommandHandler(IMediator mediator) : IRequestHandler<OrderCommand, Result>
-{
-	public async Task<Result> Handle(OrderCommand request, CancellationToken cancellationToken)
-	{
-		if(request.Data == null)
-		{
-			return Result.Failure("Error");
-		}
-
-		await mediator.Publish(new OrderEvent { Data = request.Data }, cancellationToken);
-
-		return Result.Success();
-	}
-}
+app.UseResponseCompression();
 ```
 
-OrderEvent.cs
+Brotli compression is used by default if it is supported by the client. If Brotli is not supported, Gzip can be used if the client supports it.
 
-```cs
-namespace Core.Order.Events;
+You can read more on response compression [here](https://docs.microsoft.com/en-us/aspnet/core/performance/response-compression?view=aspnetcore-5.0).
 
-using System.Text;
-using Common.Models.Order;
-using Core.Email;
+## **Move to Phase 6**
 
-public class OrderEvent : INotification
-{
-	public OrderModel Data { get; set; }
-}
-
-public class OrderEventHandler(DatabaseContext databaseContext) : INotificationHandler<OrderEvent>
-{
-	async Task INotificationHandler<OrderEvent>.Handle(OrderEvent notification, CancellationToken cancellationToken)
-	{
-		var path = AppDomain.CurrentDomain.BaseDirectory + "\\Email\\Templates\\OrderCompleted.html";
-		var html = File.ReadAllText(path);
-
-		html = html.Replace("%name%", Convert.ToString(notification.Data.Customer.Name));
-
-		var pizzasContent = new StringBuilder();
-		foreach (var pizza in notification.Data.Pizzas)
-		{
-			pizzasContent.AppendLine($"<strong>{pizza.Name}</strong> - {pizza.Description}<br/>");
-		}
-
-		html = html.Replace("%pizzas%", pizzasContent.ToString());
-		var emailService = new EmailService
-		{
-			Customer = notification.Data.Customer,
-			HtmlContent = html
-		};
-
-		var send = await emailService.SendEmail();
-	}
-}
-```
-
-## **Step 3 - Background Job Scheduler**
-
-Move to Step 3
-[Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%206/Step%203)
+[Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%206) 

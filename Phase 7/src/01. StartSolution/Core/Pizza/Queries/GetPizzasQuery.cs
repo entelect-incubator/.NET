@@ -1,15 +1,18 @@
-﻿namespace Core.Pizza.Queries;
+namespace Core.Pizza.Queries;
 
-public class GetPizzasQuery : IRequest<ListResult<PizzaModel>>
+using System.Linq;
+using LazyCache;
+
+public sealed class GetPizzasQuery : IQuery<Result<IEnumerable<PizzaModel>>>
 {
 	public SearchPizzaModel Data { get; set; }
 }
 
-public class GetPizzasQueryHandler(DatabaseContext databaseContext, IAppCache cache) : IRequestHandler<GetPizzasQuery, ListResult<PizzaModel>>
+public sealed class GetPizzasQueryHandler(DatabaseContext databaseContext, IAppCache cache) : IQueryHandler<GetPizzasQuery, Result<IEnumerable<PizzaModel>>>
 {
 	private readonly TimeSpan cacheExpiry = new(12, 0, 0);
 
-	public async Task<ListResult<PizzaModel>> Handle(GetPizzasQuery request, CancellationToken cancellationToken)
+	public async Task<Result<IEnumerable<PizzaModel>>> Handle(GetPizzasQuery request, CancellationToken cancellationToken)
 	{
 		var entity = request.Data;
 
@@ -24,7 +27,7 @@ public class GetPizzasQueryHandler(DatabaseContext databaseContext, IAppCache ca
 				.OrderBy(x => x.DateCreated)
 				.ToList();
 
-			return ListResult<PizzaModel>.Success(data, cachedData.Count());
+			return Result<IEnumerable<PizzaModel>>.Success(data, cachedData.Count());
 		}
 
 		if (string.IsNullOrEmpty(entity.OrderBy))
@@ -39,10 +42,10 @@ public class GetPizzasQueryHandler(DatabaseContext databaseContext, IAppCache ca
 			.FilterByDescription(entity.Description)
 			.OrderBy(entity.OrderBy);
 
-		var count = entities.Count();
+		var count = await entities.CountAsync(cancellationToken);
 		var paged = await entities.ApplyPaging(entity.PagingArgs).ToListAsync(cancellationToken);
 
-		return ListResult<PizzaModel>.Success(paged.Map(), count);
+		return Result<IEnumerable<PizzaModel>>.Success(paged.Map(), count);
 	}
 
 	private async Task<IEnumerable<PizzaModel>> GetData()

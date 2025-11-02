@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFramework>net8.0</TargetFramework>
@@ -10,8 +10,8 @@
 
 	<ItemGroup>
 	  <PackageReference Include="FluentValidation" Version="11.5.2" />
+	  <PackageReference Include="LiteBus" Version="1.0.0" />
 	  <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.5.2" />
-	  <PackageReference Include="LazyCache" Version="2.4.0" />
 	  <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
 	    <PrivateAssets>all</PrivateAssets>
 	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

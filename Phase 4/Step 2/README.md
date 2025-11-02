@@ -1,91 +1,231 @@
 <img align="left" width="116" height="116" src="../pezza-logo.png" />
 
-# &nbsp;**Pezza - Phase 4 - Step 2** [![.NET - Phase 4 - Step 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase4-step2.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase4-step2.yml)
+# &nbsp;**Pezza - Phase 3 - Step 2** [![.NET - Phase 3 - Step 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase3-step2.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase3-step2.yml)
 
-<br/><br/><br/>
+<br/><br/>
 
-## Error handling
+## **Search Models**
 
-Install Nuget Package Serilog.AspNetCore and Serilog.Sinks.File on all but the Test project.
-
-![](./Assets/2021-01-15-11-13-06.png)
-
-In the root of Common, create Logging.cs as per the following code snippet. Notice that Logging is a static class. This makes it easy to use in any calling code without the need of injecting it.
-
+Let's extend our Models to cater for filtering and pagination. In Common\Models create PagingArgs.cs
 
 ```cs
-namespace Common;
+namespace Common.Models;
 
-using Serilog;
-
-public static class Logging
+public class PagingArgs
 {
-    public static void LogInfo(string name, object data)
+    private int limit = 20;
+
+    public static PagingArgs NoPaging => new PagingArgs { UsePaging = false };
+
+    public static PagingArgs Default => new PagingArgs { UsePaging = true, Limit = 20, Offset = 0 };
+
+    public static PagingArgs FirstItem => new PagingArgs { UsePaging = true, Limit = 1, Offset = 0 };
+
+    public int Offset { get; set; }
+
+    public int Limit
     {
-        Setup();
-        Log.Information(name, data);
+        get => this.limit;
+
+        set
+        {
+            if (value == 0)
+            {
+                value = 20;
+            }
+
+            this.limit = value;
+        }
     }
 
-    public static void LogException(Exception e)
-    {
-        Setup();
-        Log.Fatal(e, "Exception");
-    }
-
-    private static void Setup() => Log.Logger = new LoggerConfiguration()
-        .Enrich.FromLogContext()
-        .WriteTo.File(@"logs\log.txt", rollingInterval: RollingInterval.Day)
-        .CreateLogger();
+    public bool UsePaging { get; set; }
 }
 ```
 
-Modify ExceptionHandlerMiddleware.cs by logging an exception in the final else of the HandleExceptionAsync Method. All exceptions that we have not defined behaviour for gets handled here.
+Add an extension method in Common to do the Pagination. Create a new folder called Extensions in Common and add Extensions.cs
 
 ```cs
-else
-{
-    var code = HttpStatusCode.InternalServerError;
-    var result = JsonSerializer.Serialize(new { isSuccess = false, error = exception.Message });
-    context.Response.ContentType = "application/json";
-    context.Response.StatusCode = (int)code;
-    Logging.LogException(exception);
+namespace Common.Extensions;
 
-    return context.Response.WriteAsync(result);
+public static class Extensions
+{
+    public static IQueryable<T> ApplyPaging<T>(this IQueryable<T> query, PagingArgs pagingArgs)
+    {
+        var myPagingArgs = pagingArgs;
+
+        if (pagingArgs == null)
+        {
+            myPagingArgs = PagingArgs.Default;
+        }
+
+        return myPagingArgs.UsePaging ? query.Skip(myPagingArgs.Offset).Take(myPagingArgs.Limit) : query;
+    }
 }
 ```
 
-Update PerformanceBehaviour.cs by removing the old logging and using the new static Logging class instead.
+Add paging option to all the Search Models
 
 ```cs
-namespace Common.Behaviour;
+public string? OrderBy { get; set; }
 
-public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+public PagingArgs PagingArgs { get; set; } = PagingArgs.NoPaging;
+```
+
+## **Add filtering**
+
+Filter classes are created for every entity. These filters will make use of fluent design for readability. In each filter, you create a rule for every property that you want to filter on. If that property has a value, it builds up a query before executing it to the database. See it as building up a SQL WHERE clause.
+
+Create a folder called Filters in DataAccess and add CustomerFilter.cs.
+
+```cs
+namespace Common.Filters;
+
+public static class CustomerFilter
 {
-	private readonly Stopwatch timer = new Stopwatch();
-
-	public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
+	public static IQueryable<Customer> FilterByName(this IQueryable<Customer> query, string name)
 	{
-		this.timer.Restart();
-
-		var response = await next();
-
-		this.timer.Stop();
-
-		var elapsedMilliseconds = this.timer.ElapsedMilliseconds;
-
-		if (elapsedMilliseconds > 500)
+		if (string.IsNullOrWhiteSpace(name))
 		{
-			var requestName = typeof(TRequest).Name;
-			Logging.LogInfo($"CleanArchitecture Long Running Request: {requestName} ({elapsedMilliseconds} milliseconds)", request);
+			return query;
 		}
 
-		return response;
+		return query.Where(x => x.Name.Contains(name));
+	}
+
+	public static IQueryable<Customer> FilterByAddress(this IQueryable<Customer> query, string address)
+	{
+		if (string.IsNullOrWhiteSpace(address))
+		{
+			return query;
+		}
+
+		return query.Where(x => x.Address.Contains(address));
+	}
+
+	public static IQueryable<Customer> FilterByPhone(this IQueryable<Customer> query, string cellphone)
+	{
+		if (string.IsNullOrWhiteSpace(cellphone))
+		{
+			return query;
+		}
+
+		return query.Where(x => x.Cellphone.Contains(cellphone));
+	}
+
+	public static IQueryable<Customer> FilterByEmail(this IQueryable<Customer> query, string email)
+	{
+		if (string.IsNullOrWhiteSpace(email))
+		{
+			return query;
+		}
+
+		return query.Where(x => x.Email.Contains(email));
+	}
+
+	public static IQueryable<Customer> FilterByDateCreated(this IQueryable<Customer> query, DateTime? dateCreated)
+	{
+		if (!dateCreated.HasValue)
+		{
+			return query;
+		}
+
+		return query.Where(x => x.DateCreated == dateCreated.Value);
 	}
 }
 ```
 
-Serilog provides sinks for writing log events to storage in various formats. Read more on [provided sinks](https://github.com/serilog/serilog/wiki/Provided-Sinks) or move on to the next phase.
+Add another filter for Pizza called PizzaFilter.cs
 
-## **Move to Phase 5**
+### **Modifying Core**
 
-[Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%205)
+Modify the get all query for Customer and Pizza in the Core Project.
+
+The implementations of all Queries methods need to be modified to include filtering. Remember to install System.Linq.Dynamic.Core Nuget Package on the Core Project.
+
+Modify GlobalUsings.cs
+
+```cs
+global using System.Linq.Dynamic.Core;
+global using Common.Extensions;
+global using Common.Filters;
+global using Common.Mappers;
+global using Common.Models;
+global using Core.Pizza.Commands;
+global using DataAccess;
+global using MediatR;
+global using Microsoft.EntityFrameworkCore;
+```
+
+```cs
+namespace Core.Customer.Queries;
+
+public class GetCustomersQuery : IRequest<ListResult<CustomerModel>>
+{
+	public SearchCustomerModel Data { get; set; }
+
+	public class GetCustomersQueryHandler(DatabaseContext databaseContext) : IRequestHandler<GetCustomersQuery, ListResult<CustomerModel>>
+	{
+		public async Task<ListResult<CustomerModel>> Handle(GetCustomersQuery request, CancellationToken cancellationToken)
+		{
+			var entity = request.Data;
+			if (string.IsNullOrEmpty(entity.OrderBy))
+			{
+				entity.OrderBy = "DateCreated desc";
+			}
+			var entities = databaseContext.Customers
+				.Select(x => x)
+				.AsNoTracking()
+				.FilterByName(entity.Name)
+				.FilterByAddress(entity.Address)
+				.FilterByPhone(entity.Cellphone)
+				.FilterByEmail(entity.Email)
+				.OrderBy(entity.OrderBy);
+
+			var count = await entities.CountAsync(cancellationToken);
+			var paged = await entities.ApplyPaging(entity.PagingArgs).ToListAsync(cancellationToken);
+
+			return ListResult<CustomerModel>.Success(paged.Map(), count);
+		}
+	}
+}
+```
+
+Make sure GetPizzasQuery has also been modified.
+
+### **Modifying Controllers**
+
+Modify all the Search Action Methods in the controllers.
+
+For example, modify CustomerController.cs as follows.
+
+```cs
+/// <summary>
+	/// Get all Customers.
+	/// </summary>
+	/// <returns>A <see cref="Task"/> repres
+	/// enting the asynchronous operation.</returns>
+	/// <response code="200">Customer Search</response>
+	/// <response code="400">Error searching for customers</response>
+	[HttpPost]
+	[ProducesResponseType(typeof(ListResult<CustomerModel>), 200)]
+	[ProducesResponseType(typeof(ErrorResult), 400)]
+	[Route("Search")]
+	public async Task<ActionResult> Search(SearchCustomerModel data)
+	{
+		var result = await this.Mediator.Send(new GetCustomersQuery()
+		{
+			Data = data
+		});
+		return ResponseHelper.ResponseOutcome(result, this);
+	}
+```
+
+Make sure to modify PizzaController as well
+
+### **Modify Unit Tests**
+
+Modify unit tests to incorporate our changes.
+
+## **Move to Phase 4**
+
+[Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%204)

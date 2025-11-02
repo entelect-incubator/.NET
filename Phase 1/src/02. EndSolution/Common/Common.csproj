@@ -10,8 +10,4 @@
 	<ItemGroup>
 		<Folder Include="Entities\" />
 	</ItemGroup>
-
-	<ItemGroup>
-	  <PackageReference Include="All" Version="1.1.0.1" />
-	</ItemGroup>
 </Project>

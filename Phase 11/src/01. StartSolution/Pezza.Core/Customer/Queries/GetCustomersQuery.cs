@@ -1,0 +1,58 @@
+namespace Core.Customer.Queries;
+
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Dynamic.Core;
+using System.Threading;
+using System.Threading.Tasks;
+using AutoMapper;
+
+using Microsoft.EntityFrameworkCore;
+using Pezza.Pezza.Common.DTO;
+using Pezza.Common.Extensions;
+using Pezza.Common.Filters;
+using Pezza.Pezza.Common.Models;
+using DataAccess;
+
+public sealed class GetCustomersQuery : ICommand<ListResult<CustomerDTO>>
+{
+    public CustomerDTO Data { get; set; }
+}
+
+public sealed class GetCustomersQueryHandler : ICommandHandler<GetCustomersQuery, ListResult<CustomerDTO>>
+{
+    private readonly DatabaseContext databaseContext;
+
+    private readonly IMapper mapper;
+
+    public GetCustomersQueryHandler(DatabaseContext databaseContext, IMapper mapper)
+        => (this.databaseContext, this.mapper) = (databaseContext, mapper);
+
+    public async Task<ListResult<CustomerDTO>> Handle(GetCustomersQuery request, CancellationToken cancellationToken)
+    {
+        var dto = request.Data;
+
+        if (string.IsNullOrEmpty(dto.OrderBy))
+        {
+            dto.OrderBy = "DateCreated desc";
+        }
+
+        var entities = this.databaseContext.Customers.Select(x => x)
+            .AsNoTracking()
+            .FilterByName(dto.Name)
+            .FilterByAddress(dto.Address?.Address)
+            .FilterByCity(dto.Address?.City)
+            .FilterByProvince(dto.Address?.Province)
+            .FilterByPostalCode(dto.Address?.PostalCode)
+            .FilterByPhone(dto.Phone)
+            .FilterByEmail(dto.Email)
+            .FilterByContactPerson(dto.ContactPerson)
+            .OrderBy(dto.OrderBy);
+
+        var count = await entities.CountAsync(cancellationToken);
+        var paged = this.mapper.Map<List<CustomerDTO>>(await entities.ApplyPaging(dto.PagingArgs).OrderBy(dto.OrderBy).ToListAsync(cancellationToken));
+
+        return ListResult<CustomerDTO>.Success(paged, count);
+    }
+}
+

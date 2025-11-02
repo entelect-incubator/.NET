@@ -1,17 +1,20 @@
-﻿namespace Core.Customer.Queries;
+namespace Core.Customer.Queries;
 
-public class GetCustomersQuery : IRequest<ListResult<CustomerModel>>
+public record GetCustomers() : IQuery<Result<IEnumerable<CustomerModel>>>
 {
-	public class GetCustomersQueryHandler(DatabaseContext databaseContext) : IRequestHandler<GetCustomersQuery, ListResult<CustomerModel>>
+	public Task<Result<IEnumerable<CustomerModel>>> ExecuteAsync(Dispatcher dispatcher, CancellationToken ct = default)
+		=> dispatcher.Query<GetCustomers, Result<IEnumerable<CustomerModel>>>(this, ct);
+};
+
+public sealed class GetCustomersHandler(DatabaseContext databaseContext) : IQueryHandler<GetCustomers, Result<IEnumerable<CustomerModel>>>
+{
+	public async Task<Result<IEnumerable<CustomerModel>>> Handle(GetCustomers query, CancellationToken cancellationToken = default)
 	{
-		public async Task<ListResult<CustomerModel>> Handle(GetCustomersQuery request, CancellationToken cancellationToken)
-		{
-			var entities = databaseContext.Customers.Select(x => x).AsNoTracking();
+		var entities = databaseContext.Customers.Select(x => x).AsNoTracking();
 
-			var count = entities.Count();
-			var paged = await entities.ToListAsync(cancellationToken);
+		var count = await entities.CountAsync(cancellationToken);
+		var paged = await entities.ToListAsync(cancellationToken);
 
-			return ListResult<CustomerModel>.Success(paged.Map(), count);
-		}
+		return Result<IEnumerable<CustomerModel>>.Success(paged.Map(), count);
 	}
 }

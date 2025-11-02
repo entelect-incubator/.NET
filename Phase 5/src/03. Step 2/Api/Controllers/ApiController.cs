@@ -1,13 +1,17 @@
-﻿namespace Api.Controllers;
+namespace Api.Controllers;
 
-using MediatR;
+using LiteBus.Commands.Abstractions;
+using LiteBus.Queries.Abstractions;
 
 [ApiController]
 [Route("[controller]")]
 [Produces("application/json")]
 public abstract class ApiController : ControllerBase
 {
-	private IMediator mediator;
+    private ICommandMediator cmdMediator;
+		private IQueryMediator qryMediator;
 
-	protected IMediator Mediator => this.mediator ??= this.HttpContext.RequestServices.GetService<IMediator>();
+    protected ICommandMediator CmdMediator => cmdMediator ??= HttpContext.RequestServices.GetRequiredService<ICommandMediator>();
+
+		protected IQueryMediator QryMediator => qryMediator ??= HttpContext.RequestServices.GetRequiredService<IQueryMediator>();
 }

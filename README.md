@@ -64,9 +64,28 @@ Links to the official documentation:
 - [.NET foundation](https://dotnetfoundation.org/) - The .NET Foundation is an independent, non-profit organization established to support an innovative, commercially friendly, open-source ecosystem around the .NET platform.
 - [.NET Youtube](https://www.youtube.com/dotnet)
 
-## Prerequirements?
+## Develop with AI
 
-- [ ] .NET Prerequirements - [Read more...](https://github.com/entelect-incubator/.NET/blob/master/Prerequirements.md)
+New to AI-assisted development? Learn how to work effectively with GitHub Copilot, ChatGPT, and other AI tools while maintaining clean architecture and coding standards.
+
+- 📚 **[Develop with AI — Full Guide](./DEVELOP_WITH_AI.md)** - Comprehensive guide covering architecture, design patterns, naming conventions, async patterns, and DRY principles
+- ⚡ **[Quick Reference](./AI_QUICK_REFERENCE.md)** - One-page cheat sheet with essential patterns, naming rules, and anti-patterns
+- 💡 **[Prompting Examples](./AI_PROMPTING_EXAMPLES.md)** - 10+ real-world scenarios with copy-paste-ready AI prompts for common tasks
+
+**Key Topics:**
+- Clean architecture and CQRS patterns
+- Primary constructors and property naming (no underscores)
+- Result<T> pattern for consistent error handling
+- DRY principles and extension methods
+- MediatR command/query bus patterns
+- Async/await best practices
+- Code review checklist
+
+Start with the Quick Reference, then dive into the Full Guide for complete context and patterns.
+
+## Prerequisites
+
+- [ ] .NET Prerequisites - [Read more...](https://github.com/entelect-incubator/.NET/blob/master/Prerequisites.md)
 - [ ] Setup [Read more...](https://github.com/entelect-incubator/.NET/blob/master/Setup.md)
 
 # Pezza Digital Solutions
@@ -188,41 +207,27 @@ An API client is a set of tools and protocols that operate from an application o
 - [ ] Intro
 - [ ] API Client
 
-### Phase 8 - User Interface
+### Phase 8 - Security
 
-Overview
-- [ ] [MVC Part 1](https://web.microsoftstream.com/video/61e64cfa-c3ba-45c3-9811-e5bc25968a2a?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
-- [ ] [MVC Part 2](https://web.microsoftstream.com/video/315b2034-0aa5-43ee-b030-562f4a597cfd?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
+Now that the Api and clients are in place we need to secure the solution before exposing it publicly. This phase focuses on authentication (JWT/OAuth), antiforgery for UI forms, HTTPS/HSTS, secure cookies, secure headers and secrets management.
 
-We will be building a basic Pizza website for Customers and a basic Admin Back-End. To help us do this we will use the [Pezza Branding Guide & Design System](https://github.com/entelect-incubator/DesignSystem).
-
-[Documentation](https://web.microsoftstream.com/video/315b2034-0aa5-43ee-b030-562f4a597cfd?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
-
-Pezza Website
-
-- [MVC](https://github.com/entelect-incubator/.NET/tree/master/Phase%207/03.%20Website/Html/src)
-
-Pezza Admin Back-End
-
-- MVC - [Click here to get started](https://web.microsoftstream.com/video/315b2034-0aa5-43ee-b030-562f4a597cfd?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9) 
-<br/>[![.NET - Phase 7 - Dashboard - MVC](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase7-dashboard-mvc.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase7-dashboard-mvc.yml)
-
-[Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%207)
-
-### Phase 9 - Security
-
-Now that we have increased the performance lets and an increase of customers we need to secure our website.
-
-Overview
-- [ ] [Security](https://web.microsoftstream.com/video/2a2b5226-34cb-49ac-b8fe-880cb9ac893c?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
-
-Add Security
-- [ ] API Oauth / JWT Token
-- [ ] MVC Antiforgy Tokens
+- [ ] Authentication: JWT or OAuth2 for the Api
+- [ ] Antiforgery: validate tokens in MVC forms
+- [ ] HTTPS & HSTS: enforce in production
+- [ ] Secrets: move sensitive values to user-secrets or a vault
 
 [Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%208)
 
-[![.NET - Phase 8 - Step 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase8-step2.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase8-step2.yml)
+### Phase 9 - User Interface
+
+Build the front-end clients for the Api — admin dashboard (Portal) and customer website. Choose server-side MVC, Razor, Blazor, or a JS framework depending on the learning goals.
+
+- [ ] Dashboard (Portal)
+- [ ] Customer Website
+
+[Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%209)
+
+[![.NET - Phase 9 - Step 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase9-step2.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase9-step2.yml)
   
 ### Phase 10 - Recommended libraries
 

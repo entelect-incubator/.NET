@@ -8,7 +8,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Common\Common.csproj" />
+	  <ProjectReference Include="..\Common\Common.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -16,9 +16,5 @@
 		<Using Include="System.Collections.Generic" />
 		<Using Include="System.Threading.Tasks" />
 		<Using Include="Common.Models" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <PackageReference Include="All" Version="1.1.0.1" />
 	</ItemGroup>
 </Project>

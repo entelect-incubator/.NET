@@ -2,34 +2,35 @@
 
 public static class PizzaTestData
 {
-	public static Faker faker = new();
-
-	public static PizzaModel Pizza = new()
-	{
-		Id = 1,
-		Name = faker.PickRandom(pizzas),
-		Description = string.Empty,
-		Price = faker.Finance.Amount(),
-		DateCreated = DateTime.Now,
-	};
-
-	public static PizzaModel PizzaModel = new()
-	{
-		Id = 1,
-		Name = faker.PickRandom(pizzas),
-		Description = string.Empty,
-		Price = faker.Finance.Amount(),
-		DateCreated = DateTime.Now
-		
-	};
-
-	private static readonly List<string> pizzas = new() 
-	{ 
-		"Veggie Pizza",
+	/// <summary>
+	/// Standard Pezza pizza menu - aligned with Theme project
+	/// Source: Theme/index.html, SOLUTION.md
+	/// </summary>
+	private static readonly List<string> Pizzas = 
+	[
+		"Hawaiian Pizza",
 		"Pepperoni Pizza",
-		"Meat Pizza",
-		"Margherita Pizza",
-		"BBQ Chicken Pizza",
-		"Hawaiian Pizza"
+		"Regina Pizza",
+		"Margherita Pizza"
+	];
+
+	public static Faker Faker = new();
+
+	public static PizzaModel PizzaModel => new()
+	{
+		Id = 0,
+		Name = Faker.PickRandom(Pizzas),
+		Description = "Test Pizza",
+		Price = Faker.Finance.Amount(1, 20),
+		DateCreated = DateTime.UtcNow
+	};
+
+	public static Common.Entities.Pizza PizzaEntity => new()
+	{
+		Id = 1,
+		Name = Faker.PickRandom(Pizzas),
+		Description = "Test Pizza",
+		Price = Faker.Finance.Amount(1, 20),
+		DateCreated = DateTime.UtcNow
 	};
 }

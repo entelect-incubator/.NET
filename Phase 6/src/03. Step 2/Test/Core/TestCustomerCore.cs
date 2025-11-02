@@ -33,7 +33,7 @@ public class TestCustomerCore : QueryTestBase
 
 		if (!resultCreate.Succeeded)
 		{
-			Assert.IsTrue(false);
+			Assert.That(false, Is.True);
 		}
 
 		this.model = resultCreate.Data;
@@ -49,7 +49,7 @@ public class TestCustomerCore : QueryTestBase
 				Id = this.model.Id
 			}, CancellationToken.None);
 
-		Assert.IsTrue(resultGet?.Data != null);
+		Assert.That(resultGet?.Data , Is.Not.Null);
 	}
 
 	[Test]
@@ -58,11 +58,11 @@ public class TestCustomerCore : QueryTestBase
 		var sutGetAll = new GetCustomersQueryHandler(this.Context);
 		var resultGetAll = await sutGetAll.Handle(new GetCustomersQuery(), CancellationToken.None);
 
-		Assert.IsTrue(resultGetAll?.Data.Count == 1);
+		Assert.That(resultGetAll?.Data.Count , Is.EqualTo(1));
 	}
 
 	[Test]
-	public void SaveAsync() => Assert.IsTrue(this.model != null);
+	public void SaveAsync() => Assert.That(this.model , Is.Not.Null);
 
 	[Test]
 	public async Task UpdateAsync()
@@ -78,7 +78,7 @@ public class TestCustomerCore : QueryTestBase
 				}
 			}, CancellationToken.None);
 
-		Assert.IsTrue(resultUpdate.Succeeded);
+		Assert.That(resultUpdate.Succeeded, Is.True);
 	}
 
 	[Test]
@@ -91,6 +91,6 @@ public class TestCustomerCore : QueryTestBase
 				Id = this.model.Id
 			}, CancellationToken.None);
 
-		Assert.IsTrue(outcomeDelete.Succeeded);
+		Assert.That(outcomeDelete.Succeeded, Is.True);
 	}
 }

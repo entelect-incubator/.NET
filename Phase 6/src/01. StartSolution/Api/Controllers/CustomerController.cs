@@ -1,4 +1,4 @@
-﻿namespace Api.Controllers;
+namespace Api.Controllers;
 
 using Core.Customer.Commands;
 using Core.Customer.Queries;
@@ -19,7 +19,7 @@ public class CustomerController : ApiController
 	[ProducesResponseType(typeof(ErrorResult), 404)]
 	public async Task<ActionResult> GetCustomer(int id)
 	{
-		var result = await this.Mediator.Send(new GetCustomerQuery { Id = id });
+		var result = await this.QryMediator.SendAsync(new GetCustomerQuery { Id = id }, CancellationToken.None);
 		return ResponseHelper.ResponseOutcome(result, this);
 	}
 
@@ -31,15 +31,15 @@ public class CustomerController : ApiController
 	/// <response code="200">Customer Search</response>
 	/// <response code="400">Error searching for customers</response>
 	[HttpPost]
-	[ProducesResponseType(typeof(ListResult<CustomerModel>), 200)]
+	[ProducesResponseType(typeof(Result<IEnumerable<CustomerModel>>), 200)]
 	[ProducesResponseType(typeof(ErrorResult), 400)]
 	[Route("Search")]
 	public async Task<ActionResult> Search(SearchCustomerModel data)
 	{
-		var result = await this.Mediator.Send(new GetCustomersQuery()
+		var result = await this.QryMediator.SendAsync(new GetCustomersQuery()
 		{
 			Data = data
-		});
+		}, CancellationToken.None);
 		return ResponseHelper.ResponseOutcome(result, this);
 	}
 
@@ -65,7 +65,7 @@ public class CustomerController : ApiController
 	[ProducesResponseType(typeof(ErrorResult), 400)]
 	public async Task<ActionResult<CustomerModel>> Create(CreateCustomerModel model)
 	{
-		var result = await this.Mediator.Send(new CreateCustomerCommand
+		var result = await this.CmdMediator.SendAsync(new CreateCustomerCommand
 		{
 			Data = model
 		});
@@ -95,7 +95,7 @@ public class CustomerController : ApiController
 	[ProducesResponseType(typeof(Result), 404)]
 	public async Task<ActionResult> Update(UpdateCustomerModel model)
 	{
-		var result = await this.Mediator.Send(new UpdateCustomerCommand
+		var result = await this.CmdMediator.SendAsync(new UpdateCustomerCommand
 		{
 			Data = model
 		});
@@ -115,7 +115,7 @@ public class CustomerController : ApiController
 	[ProducesResponseType(typeof(ErrorResult), 400)]
 	public async Task<ActionResult> Delete(int id)
 	{
-		var result = await this.Mediator.Send(new DeleteCustomerCommand { Id = id });
+		var result = await this.CmdMediator.SendAsync(new DeleteCustomerCommand { Id = id });
 		return ResponseHelper.ResponseOutcome(result, this);
 	}
 }

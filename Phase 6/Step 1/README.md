@@ -1,73 +1,216 @@
 <img align="left" width="116" height="116" src="../pezza-logo.png" />
 
-# &nbsp;**Pezza - Phase 6 - Step 1** [![.NET - Phase 6 - Step 1](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-step1.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-step1.yml)
+# &nbsp;**Pezza - Phase 5 - Step 1** [![.NET - Phase 5 - Step 1](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase5-step1.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase5-step1.yml)
 
 <br/><br/>
 
-We are going to create a basic Email Service using [FluentEmail](https://github.com/lukencode/FluentEmail) and [SendGrid](https://sendgrid.com/).
+## **Caching**
 
-## **FluentEmail**
+### **Install Lazy Cache**
 
-Install FluentEmail.Core, HtmlAgilityPack and FluentEmail.Smtp on Core.
+Install Nuget Package LazyCache.AspNetCore on Core and API
 
-![FluentEmail](Assets/2021-01-17-22-57-42.png)
+![](./Assets/2021-01-15-12-44-19.png)
 
-Create a new folder called Email in Core. Create a file inside the folder called EmailService.cs and add the following code.
+### **Dependency Injection in DependencyInjection.cs**
 
-You can just use your own GMail Smtp Credentials to test with.
+In API Startup.cs ConfigureServices() add
 
 ```cs
-namespace Core.Email;
+services.AddLazyCache();
+```
 
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using Common.Models;
-using FluentEmail.Core;
-using HtmlAgilityPack;
+This will inject IAppCache throughout your application.
 
-public class EmailService
+This will cache the request to memory if it doesn't exist. When you change anything on the database it will bust the cache.
+
+Add Data.cs in Common Project to hold the Cache Key.
+
+```cs
+namespace Common;
+
+public static class Data
 {
-	public string HtmlContent { get; set; }
+	public static string CacheKey = "PezzaPizza";
+}
+```
 
-	public CustomerModel Customer { get; set; }
+Modify filter to allows filtering on cached data
 
-	public async Task<Result> SendEmail()
+PizzaFilter.cs in Common Project
+
+```cs
+namespace Common.Filters;
+
+using Common.Models;
+
+public static class PizzaFilter
+{
+	public static IQueryable<Pizza> FilterByName(this IQueryable<Pizza> query, string name)
 	{
-		var doc = new HtmlDocument();
-		doc.LoadHtml(this.HtmlContent);
-		var plainText = doc.DocumentNode.SelectSingleNode("//body").InnerText;
-		plainText = Regex.Replace(plainText, @"\s+", " ").Trim();
+		if (string.IsNullOrWhiteSpace(name))
+		{
+			return query;
+		}
 
-		var email = await Email
-			.From("notify@pezza.com", "Pezza")
-			.To(this.Customer?.Email, this.Customer?.Name)
-			.Subject("Collect your order it while it's hot")
-			.Body(this.HtmlContent)
-			.PlaintextAlternativeBody(plainText)
-			.SendAsync();
+		return query.Where(x => x.Name.Contains(name));
+	}
 
-		return email.Successful ? Result.Success() : Result.Failure("Email could not send");
+	public static IEnumerable<PizzaModel> FilterByName(this IEnumerable<PizzaModel> query, string name)
+	{
+		if (string.IsNullOrWhiteSpace(name))
+		{
+			return query;
+		}
+
+		return query.Where(x => x.Name.Contains(name));
+	}
+
+	public static IQueryable<Pizza> FilterByDescription(this IQueryable<Pizza> query, string description)
+	{
+		if (string.IsNullOrWhiteSpace(description))
+		{
+			return query;
+		}
+
+		return query.Where(x => x.Description.Contains(description));
+	}
+
+	public static IEnumerable<PizzaModel> FilterByDescription(this IEnumerable<PizzaModel> query, string description)
+	{
+		if (string.IsNullOrWhiteSpace(description))
+		{
+			return query;
+		}
+
+		return query.Where(x => x.Description.Contains(description));
+	}
+
+	public static IQueryable<Pizza> FilterByDateCreated(this IQueryable<Pizza> query, DateTime? dateCreated)
+	{
+		if (!dateCreated.HasValue)
+		{
+			return query;
+		}
+
+		return query.Where(x => x.DateCreated == dateCreated.Value);
+	}
+
+	public static IEnumerable<PizzaModel> FilterByDateCreated(this IEnumerable<PizzaModel> query, DateTime? dateCreated)
+	{
+		if (!dateCreated.HasValue)
+		{
+			return query;
+		}
+
+		return query.Where(x => x.DateCreated == dateCreated.Value);
 	}
 }
 ```
 
-We will use an HTML template file. This template file can be read in code and the tags inside the template will be replaced with actual content before it gets sent to the customer.
+Modify GetRestaurantsQuery.cs to add caching
 
-Create OrderCompleted.html inside Core\Email\Templates.
+```cs
+namespace Core.Pizza.Queries;
 
-Copy the HTML from **Phase 6\src\04. Step 3\Core\Email\Templates\OrderCompleted.html** into your newly created OrderCompleted.html.
+using System.Linq;
+using LazyCache;
 
-![Email Service](Assets/2021-01-17-23-03-34.png)
+public class GetPizzasQuery : IRequest<ListResult<PizzaModel>>
+{
+	public SearchPizzaModel Data { get; set; }
 
-The HTML might look a bit strange to you. It is because it is made for email client support.
+	public class GetPizzasQueryHandler(DatabaseContext databaseContext, IAppCache cache) : IRequestHandler<GetPizzasQuery, ListResult<PizzaModel>>
+	{
+		private readonly TimeSpan cacheExpiry = new(12, 0, 0);
 
-Right-click on OrderCompleted.html Properties and choose Copy always for Copy to Output.
+		public async Task<ListResult<PizzaModel>> Handle(GetPizzasQuery request, CancellationToken cancellationToken)
+		{
+			var entity = request.Data;
 
-![](Assets/2021-01-19-07-54-33.png)
+			Task<IEnumerable<PizzaModel>> DataDelegate() => this.GetData();
+			var cachedData = await cache.GetOrAddAsync(Common.Data.CacheKey, DataDelegate, this.cacheExpiry);
 
-In the next step we will look at how to call the email service with the use of MediatR events.
+			if(cachedData != null)
+			{
+				var data = cachedData?
+					.FilterByName(entity.Name)
+					.FilterByDescription(entity.Description)
+					.OrderBy(x => x.DateCreated)
+					.ToList();
 
-## **STEP 2 - Event**
+				return ListResult<PizzaModel>.Success(data, cachedData.Count());
+			}
 
-Move to Step 2
-[Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%206/Step%202)
+			if (string.IsNullOrEmpty(entity.OrderBy))
+			{
+				entity.OrderBy = "DateCreated desc";
+			}
+
+			var entities = databaseContext.Pizzas
+				.Select(x => x)
+				.AsNoTracking()
+				.FilterByName(entity.Name)
+				.FilterByDescription(entity.Description)
+				.OrderBy(entity.OrderBy);
+
+			var count = await entities.CountAsync(cancellationToken);
+			var paged = await entities.ApplyPaging(entity.PagingArgs).ToListAsync(cancellationToken);
+
+			return ListResult<PizzaModel>.Success(paged.Map(), count);
+		}
+
+		private async Task<IEnumerable<PizzaModel>> GetData()
+		{
+			var entities = await databaseContext.Pizzas.Select(x => x)
+				.AsNoTracking()
+				.ToListAsync();
+
+			return entities.Map();
+		}
+	}
+}
+```
+
+Remember to bust the cache when ever a CRUD operation happens. Add the following to the Pizza Commands.
+
+In the Primary Constructor
+
+```cs
+public class UpdatePizzaCommandHandler(DatabaseContext databaseContext, IAppCache cache) : IRequestHandler<UpdatePizzaCommand, Result<PizzaModel>>
+```
+
+After the Command has finished
+
+```cs
+cache.Remove(Common.Data.CacheKey);
+```
+
+## **Unit Test**
+
+Add CachingService to QueryTestBase
+
+```cs
+namespace Test.Setup;
+
+using LazyCache;
+using static DatabaseContextFactory;
+
+public class QueryTestBase : IDisposable
+{
+	public CachingService CachingService = new();
+
+	public DatabaseContext Context => Create();
+
+	public void Dispose() => Destroy(this.Context);
+}
+```
+
+Add CachingService to all RestaurantDataAccess constructors
+
+```cs
+var sutGetAll = new GetPizzasQueryHandler(this.Context, this.CachingService);
+```
+
+Move to Phase 5 Step 2
+[Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%205/Step%202)

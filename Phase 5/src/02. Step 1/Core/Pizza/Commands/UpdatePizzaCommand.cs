@@ -1,19 +1,17 @@
-﻿namespace Core.Pizza.Commands;
+namespace Core.Pizza.Commands;
 
-using LazyCache;
-
-public class UpdatePizzaCommand : IRequest<Result<PizzaModel>>
+public sealed class UpdatePizzaCommand : ICommand<Result<PizzaModel>>
 {
 	public int? Id { get; set; }
 
 	public UpdatePizzaModel? Data { get; set; }
 }
 
-public class UpdatePizzaCommandHandler(DatabaseContext databaseContext, IAppCache cache) : IRequestHandler<UpdatePizzaCommand, Result<PizzaModel>>
+public sealed class UpdatePizzaCommandHandler(DatabaseContext databaseContext) : ICommandHandler<UpdatePizzaCommand, Result<PizzaModel>>
 {
 	public async Task<Result<PizzaModel>> Handle(UpdatePizzaCommand request, CancellationToken cancellationToken)
 	{
-		if (request.Data == null || request.Id == null)
+		if (request.Data is null || request.Id is null)
 		{
 			return Result<PizzaModel>.Failure("Error");
 		}
@@ -21,7 +19,7 @@ public class UpdatePizzaCommandHandler(DatabaseContext databaseContext, IAppCach
 		var model = request.Data;
 		var query = EF.CompileAsyncQuery((DatabaseContext db, int id) => db.Pizzas.FirstOrDefault(c => c.Id == id));
 		var findEntity = await query(databaseContext, request.Id.Value);
-		if (findEntity == null)
+		if (findEntity is null)
 		{
 			return Result<PizzaModel>.Failure("Not found");
 		}
@@ -32,8 +30,6 @@ public class UpdatePizzaCommandHandler(DatabaseContext databaseContext, IAppCach
 
 		var outcome = databaseContext.Pizzas.Update(findEntity);
 		var result = await databaseContext.SaveChangesAsync(cancellationToken);
-
-		cache.Remove(Common.Data.CacheKey);
 
 		return result > 0 ? Result<PizzaModel>.Success(findEntity.Map()) : Result<PizzaModel>.Failure("Error");
 	}

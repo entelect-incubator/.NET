@@ -1,6 +1,6 @@
-﻿namespace Core.Customer.Commands;
+namespace Core.Customer.Commands;
 
-public class DeleteCustomerCommandValidator : AbstractValidator<DeleteCustomerCommand>
+public sealed class DeleteCustomerCommandValidator : AbstractValidator<DeleteCustomerCommand>
 {
 	public DeleteCustomerCommandValidator()
 	{

@@ -2,6 +2,8 @@ namespace Api;
 
 using System.Reflection;
 using System.Text.Json.Serialization;
+using Api.Handlers;
+using Core;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -10,15 +12,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Serialization;
 
-public class Startup
+public class Startup(IConfiguration configuration)
 {
-	public IConfiguration ConfigRoot
-	{
-		get;
-	}
-
-	public Startup(IConfiguration configuration) => this.ConfigRoot = configuration;
-
 	public void ConfigureServices(IServiceCollection services)
 	{
 		services.AddControllers(options => options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true)
@@ -26,7 +21,12 @@ public class Startup
 			.AddNewtonsoftJson(x => x.SerializerSettings.ContractResolver = new DefaultContractResolver())
 			.AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
-		DependencyInjection.AddApplication(services);
+		// Application services
+		services.AddApplication();
+
+		// Register exception handler
+		services.AddExceptionHandler<GlobalExceptionHandler>();
+		services.AddProblemDetails();
 
 		services.AddSwaggerGen(c =>
 		{
@@ -48,11 +48,13 @@ public class Startup
 
 	public void Configure(WebApplication app, IWebHostEnvironment env)
 	{
+		app.UseExceptionHandler();
+
 		app.UseSwagger();
 		app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Pezza API V1"));
 		app.UseHttpsRedirection();
 		app.UseRouting();
-		app.UseEndpoints(endpoints => endpoints.MapControllers());
+		app.MapControllers();
 		app.UseAuthorization();
 		app.Run();
 	}

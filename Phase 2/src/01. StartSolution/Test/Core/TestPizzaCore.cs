@@ -21,21 +21,21 @@ public class TestPizzaCore : QueryTestBase
 	public async Task GetAsync()
 	{
 		var response = await this.handler.GetAsync(this.Pizza.Id);
-		Assert.IsTrue(response != null);
+		Assert.That(response != null, Is.True);
 	}
 
 	[Test]
 	public async Task GetAllAsync()
 	{
 		var response = await this.handler.GetAllAsync();
-		Assert.IsTrue(response.Count() == 1);
+		Assert.That(response.Count(), Is.EqualTo(1));
 	}
 
 	[Test]
 	public void SaveAsync()
 	{
 		var outcome = this.Pizza.Id != 0;
-		Assert.IsTrue(outcome);
+		Assert.That(outcome, Is.True);
 	}
 
 	[Test]
@@ -46,13 +46,13 @@ public class TestPizzaCore : QueryTestBase
 		var response = await this.handler.UpdateAsync(this.Pizza);
 		var outcome = response.Name.Equals(originalPizza.Name);
 
-		Assert.IsTrue(outcome);
+		Assert.That(outcome, Is.True);
 	}
 
 	[Test]
 	public async Task DeleteAsync()
 	{
 		var response = await this.handler.DeleteAsync(this.Pizza.Id);
-		Assert.IsTrue(response);
+		Assert.That(response, Is.True);
 	}
 }

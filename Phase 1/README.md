@@ -1,8 +1,96 @@
-<img align="left" width="116" height="116" src="./Assets/pezza-logo.png" />
+﻿<img align="left" width="116" height="116" src="./Assets/pezza-logo.png" />
 
 # &nbsp;**Pezza - Phase 1** [![.NET](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase1-finalsolution.yml/badge.svg?branch=master)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase1-finalsolution.yml)
 
-<br/><br/>
+Requires .NET SDK: 10.0.x
+
+Estimated time: 3–6 hours — Difficulty: ★★☆☆☆
+
+Prerequisites: see `Prerequisites.md` and `Fundamentals/README.md`.
+
+Purpose
+
+This phase teaches you how to scaffold a small, testable solution and refactor it into a Clean Architecture (layered) layout. We'll focus on the Pezza stock domain so you learn how to separate domain, application, infrastructure and presentation layers.
+
+Validation
+
+- Build the phase solution (example):
+
+	dotnet build "Phase 1/src/01. StartSolution/Pezza.sln" -c Release
+
+- Run tests (if present):
+
+	dotnet test "Phase 1/src/01. StartSolution/Pezza.sln" -c Release
+
+Learning outcomes
+
+- Create a clean, layered solution scaffold
+- Understand where domain entities, DTOs and mappings live
+- Build a simple in-memory EF Core database and map entities
+- Add unit tests for data-access and mapping code
+
+## **Modern .NET 10 Patterns Used in This Phase**
+
+This phase demonstrates several modern C# and .NET 10 patterns:
+
+### **1. Primary Constructors**
+Instead of traditional constructor declarations with backing fields, we use primary constructors for cleaner, more concise code:
+
+```cs
+// Modern: Primary Constructor
+public class DatabaseContext(DbContextOptions options) : DbContext(options)
+{
+    // Dependencies are automatically parameters
+}
+
+// Modern: Startup Class
+public class Startup(IConfiguration configuration)
+{
+    public IConfiguration ConfigRoot { get; } = configuration;
+}
+```
+
+### **2. GlobalUsings.cs for Namespace Management**
+Centralize all global `using` statements in a single file for each project to reduce repetition:
+
+```cs
+// GlobalUsings.cs
+global using Common.Entities;
+global using Common.Models;
+global using Microsoft.EntityFrameworkCore;
+```
+
+### **3. Implicit Usings**
+Enable implicit usings in the project file for built-in .NET namespaces:
+
+```xml
+<ImplicitUsings>enable</ImplicitUsings>
+```
+
+### **4. Modern NUnit Assert Syntax**
+Use the new constraint-based assert syntax instead of legacy `Assert.IsTrue()`:
+
+```cs
+// New Syntax
+Assert.That(response, Is.Not.Null);
+Assert.That(count, Is.EqualTo(1));
+Assert.That(result, Is.True);
+
+// Old Syntax (deprecated)
+Assert.That(response , Is.Not.Null);
+Assert.That(count , Is.EqualTo(1));
+```
+
+### **5. Generic Dependency Injection**
+Use generic type registration for better performance and compile-time type checking:
+
+```cs
+// Modern: Generic DI
+services.AddTransient<IPizzaCore, PizzaCore>();
+
+// Reflection-based (less performant)
+services.AddTransient(typeof(IPizzaCore), typeof(PizzaCore));
+```
 
 We will be looking at creating a solution for Pezza's customers only. We will start with what a typical solution might look like and refactor it into a clean architecture that can be used throughout the rest of the incubator. We will only be focussing on the Pezza Stock for this Phase. This is to show the scaffold of a new solution and projects according to [.NET Clean Architecture](https://github.com/entelect-incubator/.NET-CleanArchitecture).
 
@@ -45,10 +133,37 @@ Make sure ImplicitUsings is enabled in the ProperyGroup
 <ImplicitUsings>enable</ImplicitUsings>
 ```
 
-Add GlobalUsings.cs
+Add GlobalUsings.cs to Common project
 
 ```cs
 global using Common.Entities;
+global using Common.Models;
+```
+
+Create a folder *Contracts* where all interfaces will go into
+
+Create IPizzaCore.cs in Core.Contracts
+
+```cs
+namespace Core.Contracts;
+
+public interface IPizzaCore
+{
+	Task<PizzaModel?> GetAsync(int id);
+
+	Task<IEnumerable<PizzaModel>?> GetAllAsync();
+
+	Task<PizzaModel?> UpdateAsync(PizzaModel pizza);
+
+	Task<PizzaModel?> SaveAsync(PizzaModel pizza);
+
+	Task<bool> DeleteAsync(int id);
+}
+```
+
+Add GlobalUsings.cs to Core.Contracts project
+
+```cs
 global using Common.Models;
 ```
 
@@ -145,7 +260,7 @@ public static class Mapper
 
 ## **Create the Database Layer**
 
-Create a new Class Library Dataccess  <br/>![](./Assets/2023-04-23-22-49-21.png)
+Create a new Class Library `DataAccess`  <br/>![](./Assets/2023-04-23-22-49-21.png)
 
 Add Implicit Usings to the csproj file by double clicking on the project.
 
@@ -224,16 +339,8 @@ public sealed class PizzaMap : IEntityTypeConfiguration<Pizza>
 ```cs
 namespace DataAccess;
 
-public class DatabaseContext : DbContext
+public class DatabaseContext(DbContextOptions options) : DbContext(options)
 {
-    public DatabaseContext()
-    {
-    }
-
-    public DatabaseContext(DbContextOptions options) : base(options)
-    {
-    }
-
     public virtual DbSet<Pizza> Pizzas { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -565,7 +672,7 @@ public class PizzaCore(DatabaseContext databaseContext) : IPizzaCore
 	public async Task<PizzaModel?> GetAsync(int id)
 	{
 		var entity = await databaseContext.Pizzas.FirstOrDefaultAsync(x => x.Id == id);
-		if(entity == null)
+		if(entity is null)
 		{
 			return null;
 		}
@@ -603,7 +710,7 @@ public class PizzaCore(DatabaseContext databaseContext) : IPizzaCore
 	public async Task<PizzaModel?> UpdateAsync(PizzaModel Pizza)
 	{
 		var findEntity = await databaseContext.Pizzas.FirstOrDefaultAsync(x => x.Id == Pizza.Id);
-		if (findEntity == null)
+		if (findEntity is null)
 		{
 			return null;
 		}
@@ -644,12 +751,14 @@ public static class DependencyInjection
 {
 	public static IServiceCollection AddApplication(this IServiceCollection services)
 	{
-		services.AddTransient(typeof(IPizzaCore), typeof(PizzaCore));
+		services.AddTransient<IPizzaCore, PizzaCore>();
 
 		return services;
 	}
 }
 ```
+
+**Note:** The DependencyInjection pattern uses generic type registration (`AddTransient<IPizzaCore, PizzaCore>()`) instead of the reflection-based approach. This provides better performance and compile-time type checking.
 
 ### **Create the Core Layer Unit Tests**
 
@@ -659,13 +768,13 @@ For accessing the Database we will be using [Entity Framework Core](https://gith
 
 **Nuget Packages Required**
 - [ ]  Microsoft.EntityFrameworkCore.Relational
-- [ ]  Sytem.Linq.Dynamic.Core
+- [ ]  System.Linq.Dynamic.Core
 
 Inside the folder **Core** create a class **TestPizzaCore.cs**. Also, add new PizzaModel to PizzaTestData.cs <br/>
 
 ![](./Assets/2023-04-01-15-37-03.png)
 
-Inside PizzaTestData.cs add the follwoing
+Inside PizzaTestData.cs add the following
 
 ```cs
 namespace Test.Setup.TestData.Pizza;
@@ -729,21 +838,21 @@ public class TestPizzaCore : QueryTestBase
 	public async Task GetAsync()
 	{
 		var response = await this.handler.GetAsync(this.Pizza.Id);
-		Assert.IsTrue(response != null);
+		Assert.That(response, Is.Not.Null);
 	}
 
 	[Test]
 	public async Task GetAllAsync()
 	{
 		var response = await this.handler.GetAllAsync();
-		Assert.IsTrue(response.Count() == 1);
+		Assert.That(response.Count(), Is.EqualTo(1));
 	}
 
 	[Test]
 	public void SaveAsync()
 	{
 		var outcome = this.Pizza.Id != 0;
-		Assert.IsTrue(outcome);
+		Assert.That(outcome, Is.True);
 	}
 
 	[Test]
@@ -754,14 +863,14 @@ public class TestPizzaCore : QueryTestBase
 		var response = await this.handler.UpdateAsync(this.Pizza);
 		var outcome = response.Name.Equals(originalPizza.Name);
 
-		Assert.IsTrue(outcome);
+		Assert.That(outcome, Is.True);
 	}
 
 	[Test]
 	public async Task DeleteAsync()
 	{
 		var response = await this.handler.DeleteAsync(this.Pizza.Id);
-		Assert.IsTrue(response);
+		Assert.That(response, Is.True);
 	}
 }
 ```
@@ -907,22 +1016,12 @@ namespace Api;
 
 using System.Reflection;
 using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Serialization;
 
-public class Startup
+public class Startup(IConfiguration configuration)
 {
-	public IConfiguration ConfigRoot
-	{
-		get;
-	}
-
-	public Startup(IConfiguration configuration) => this.ConfigRoot = configuration;
+	public IConfiguration ConfigRoot { get; } = configuration;
 
 	public void ConfigureServices(IServiceCollection services)
 	{
@@ -957,7 +1056,7 @@ public class Startup
 		app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Pezza API V1"));
 		app.UseHttpsRedirection();
 		app.UseRouting();
-		app.UseEndpoints(endpoints => endpoints.MapControllers());
+		app.MapControllers();
 		app.UseAuthorization();
 		app.Run();
 	}

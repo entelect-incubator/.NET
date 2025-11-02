@@ -21,23 +21,8 @@ For this Incubator we will be using The latest version of .NET [Scan through the
     7. Environments (dev, stage, prod)
     8. Logging
     9. Routing
-    10. Handle errors
-    11. Make HTTP requests
-    12. Static files
+    This file was renamed to `Prerequisites.md` to fix a spelling and improve clarity.
 
-- [ ] Principles, Frameworks and Architectures
+    Please see: `Prerequisites.md`
 
-We will also, build a solution based on the Single Responsibility Principle. To help us achieve this we will be making use of the CQRS pattern alongside a Clean Code Architecture. If you have never heard about these terms, don't worry we will be discussing them in detail.
-
-## Implicit Usings
-
-[Implicit Usings](https://devblogs.microsoft.com/dotnet/welcome-to-csharp-10/)
-
-## Entity Framework Core
-
-- [What it is](https://learn.microsoft.com/en-us/ef/core/)
-- [What's new in EF Core 7](https://learn.microsoft.com/en-us/ef/core/what-is-new/ef-core-7.0/whatsnew)
-
-# Intro
-
-- [ ] [Setup](https://github.com/entelect-incubator/.NET/blob/master/Setup.md)
+    This file is kept for backwards compatibility; update any links to point to `Prerequisites.md`.

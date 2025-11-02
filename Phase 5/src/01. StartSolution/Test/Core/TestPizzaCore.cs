@@ -1,4 +1,4 @@
-namespace Test.Core;
+﻿namespace Test.Core;
 
 using Common.Models;
 using global::Core.Pizza.Commands;
@@ -20,7 +20,7 @@ public class TestPizzaCore : QueryTestBase
 	{
 		this.model = PizzaTestData.PizzaModel;
 		var sutCreate = new CreatePizzaCommandHandler(this.Context);
-		var resultCreate = await sutCreate.Handle(
+		var resultCreate = await sutCreate.HandleAsync(
 			new CreatePizzaCommand
 			{
 				Data = new CreatePizzaModel
@@ -32,7 +32,7 @@ public class TestPizzaCore : QueryTestBase
 
 		if (!resultCreate.Succeeded)
 		{
-			Assert.IsTrue(false);
+			Assert.That(false, Is.True);
 		}
 
 		this.model = resultCreate.Data;
@@ -42,32 +42,34 @@ public class TestPizzaCore : QueryTestBase
 	public async Task GetAsync()
 	{
 		var sutGet = new GetPizzaQueryHandler(this.Context);
-		var resultGet = await sutGet.Handle(
+		var resultGet = await sutGet.HandleAsync(
 			new GetPizzaQuery
 			{
 				Id = this.model.Id
 			}, CancellationToken.None);
 
-		Assert.IsTrue(resultGet?.Data != null);
+		Assert.That(resultGet?.Data , Is.Not.Null);
 	}
 
 	[Test]
 	public async Task GetAllAsync()
 	{
 		var sutGetAll = new GetPizzasQueryHandler(this.Context);
-		var resultGetAll = await sutGetAll.Handle(new GetPizzasQuery(), CancellationToken.None);
+		var resultGetAll = await sutGetAll.HandleAsync(new GetPizzasQuery { Data = new() }, CancellationToken.None);
 
-		Assert.IsTrue(resultGetAll?.Data.Count == 1);
+		Assert.That(resultGetAll?.Data, Is.Not.Null);
+		Assert.That(resultGetAll?.Data.Count, Is.GreaterThanOrEqualTo(1));
+		Assert.That(resultGetAll?.Data.Any(p => p.Id == this.model.Id), Is.True);
 	}
 
 	[Test]
-	public void SaveAsync() => Assert.IsTrue(this.model != null);
+	public void SaveAsync() => Assert.That(this.model , Is.Not.Null);
 
 	[Test]
 	public async Task UpdateAsync()
 	{
 		var sutUpdate = new UpdatePizzaCommandHandler(this.Context);
-		var resultUpdate = await sutUpdate.Handle(
+		var resultUpdate = await sutUpdate.HandleAsync(
 			new UpdatePizzaCommand
 			{
 				Id = this.model.Id,
@@ -77,19 +79,19 @@ public class TestPizzaCore : QueryTestBase
 				}
 			}, CancellationToken.None);
 
-		Assert.IsTrue(resultUpdate.Succeeded);
+		Assert.That(resultUpdate.Succeeded, Is.True);
 	}
 
 	[Test]
 	public async Task DeleteAsync()
 	{
 		var sutDelete = new DeletePizzaCommandHandler(this.Context);
-		var outcomeDelete = await sutDelete.Handle(
+		var outcomeDelete = await sutDelete.HandleAsync(
 			new DeletePizzaCommand
 			{
 				Id = this.model.Id
 			}, CancellationToken.None);
 
-		Assert.IsTrue(outcomeDelete.Succeeded);
+		Assert.That(outcomeDelete.Succeeded, Is.True);
 	}
 }

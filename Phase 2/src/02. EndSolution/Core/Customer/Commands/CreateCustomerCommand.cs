@@ -1,25 +1,22 @@
-﻿namespace Core.Customer.Commands;
+namespace Core.Customer.Commands;
 
-public class CreateCustomerCommand : IRequest<Result<CustomerModel>>
+using Common.Models.Results;
+
+public interface ICreateCustomerCommand
 {
-	public CreateCustomerModel? Data { get; set; }
+	Task<Result<CustomerModel>> ExecuteAsync(CreateCustomerModel model, CancellationToken cancellationToken = default);
 }
 
-public class CreateCustomerCommandHandler(DatabaseContext databaseContext) : IRequestHandler<CreateCustomerCommand, Result<CustomerModel>>
+public sealed class CreateCustomerCommand(DatabaseContext databaseContext) : ICreateCustomerCommand
 {
-	public async Task<Result<CustomerModel>> Handle(CreateCustomerCommand request, CancellationToken cancellationToken)
+	public async Task<Result<CustomerModel>> ExecuteAsync(CreateCustomerModel model, CancellationToken cancellationToken)
 	{
-		if (request.Data == null)
-		{
-			return Result<CustomerModel>.Failure($"Error");
-		}
-
 		var entity = new Common.Entities.Customer
 		{
-			Name = request.Data.Name,
-			Email = request.Data.Email,
-			Address = request.Data.Address,
-			Cellphone = request.Data.Cellphone,
+			Name = model.Name,
+			Email = model.Email,
+			Address = model.Address,
+			Cellphone = model.Cellphone,
 			DateCreated = DateTime.UtcNow
 		};
 		databaseContext.Customers.Add(entity);

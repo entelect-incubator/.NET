@@ -1,5 +1,9 @@
 ﻿namespace Common.Behaviours;
 
+// DEPRECATED: MediatR IPipelineBehavior not supported in LiteBus
+// Validation is now handled directly in command/query handlers or via middleware
+
+/*
 using ValidationException = FluentValidation.ValidationException;
 
 public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
@@ -24,7 +28,7 @@ public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TReques
 				throw new ValidationException(failures);
 			}
 		}
-
 		return await next();
 	}
 }
+*/

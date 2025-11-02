@@ -1,14 +1,9 @@
-namespace Test.Core;
+﻿namespace Test.Core;
 
 using Common.Models;
 using global::Core.Pizza.Commands;
 using global::Core.Pizza.Queries;
 using Test.Setup.TestData.Pizza;
-using static global::Core.Pizza.Commands.CreatePizzaCommand;
-using static global::Core.Pizza.Commands.DeletePizzaCommand;
-using static global::Core.Pizza.Commands.UpdatePizzaCommand;
-using static global::Core.Pizza.Queries.GetPizzaQuery;
-using static global::Core.Pizza.Queries.GetPizzasQuery;
 
 [TestFixture]
 public class TestPizzaCore : QueryTestBase
@@ -19,20 +14,17 @@ public class TestPizzaCore : QueryTestBase
 	public async Task Init()
 	{
 		this.model = PizzaTestData.PizzaModel;
-		var sutCreate = new CreatePizzaCommandHandler(this.Context);
-		var resultCreate = await sutCreate.Handle(
-			new CreatePizzaCommand
+		var sutCreate = new CreatePizzaHandler(this.Context);
+		var resultCreate = await sutCreate.Handle(new CreatePizza(
+			new CreatePizzaModel()
 			{
-				Data = new CreatePizzaModel
-				{
-					Name = this.model.Name,
-					Price = 19
-				}
-			}, CancellationToken.None);
+				Name = this.model.Name,
+				Price = 19
+			}), CancellationToken.None);
 
-		if (!resultCreate.Succeeded)
+		if (resultCreate.HasError)
 		{
-			Assert.IsTrue(false);
+			Assert.That(false, Is.True);
 		}
 
 		this.model = resultCreate.Data;
@@ -41,55 +33,44 @@ public class TestPizzaCore : QueryTestBase
 	[Test]
 	public async Task GetAsync()
 	{
-		var sutGet = new GetPizzaQueryHandler(this.Context);
-		var resultGet = await sutGet.Handle(
-			new GetPizzaQuery
-			{
-				Id = this.model.Id
-			}, CancellationToken.None);
+		var sutGet = new GetPizzaHandler(this.Context);
+		var resultGet = await sutGet.Handle(new GetPizza(this.model.Id), CancellationToken.None);
 
-		Assert.IsTrue(resultGet?.Data != null);
+		Assert.That(resultGet?.Data, Is.Not.Null);
 	}
 
 	[Test]
 	public async Task GetAllAsync()
 	{
-		var sutGetAll = new GetPizzasQueryHandler(this.Context);
-		var resultGetAll = await sutGetAll.Handle(new GetPizzasQuery(), CancellationToken.None);
+		var sutGetAll = new GetPizzasHandler(this.Context);
+		var resultGetAll = await sutGetAll.Handle(new GetPizzas(), CancellationToken.None);
 
-		Assert.IsTrue(resultGetAll?.Data.Count == 1);
+		Assert.That(resultGetAll?.Count, Is.Not.Null);
+		Assert.That(resultGetAll?.Count, Is.GreaterThanOrEqualTo(1));
 	}
 
 	[Test]
-	public void SaveAsync() => Assert.IsTrue(this.model != null);
+	public void SaveAsync() => Assert.That(this.model, Is.Not.Null);
 
 	[Test]
 	public async Task UpdateAsync()
 	{
-		var sutUpdate = new UpdatePizzaCommandHandler(this.Context);
-		var resultUpdate = await sutUpdate.Handle(
-			new UpdatePizzaCommand
+		var sutUpdate = new UpdatePizzaHandler(this.Context);
+		var resultUpdate = await sutUpdate.Handle(new UpdatePizza(this.model.Id,
+			new UpdatePizzaModel
 			{
-				Id = this.model.Id,
-				Data = new UpdatePizzaModel
-				{
-					Price = 20
-				}
-			}, CancellationToken.None);
+				Price = 20
+			}), CancellationToken.None);
 
-		Assert.IsTrue(resultUpdate.Succeeded);
+		Assert.That(resultUpdate.HasError, Is.False);
 	}
 
 	[Test]
 	public async Task DeleteAsync()
 	{
-		var sutDelete = new DeletePizzaCommandHandler(this.Context);
-		var outcomeDelete = await sutDelete.Handle(
-			new DeletePizzaCommand
-			{
-				Id = this.model.Id
-			}, CancellationToken.None);
+		var sutDelete = new DeletePizzaHandler(this.Context);
+		var outcomeDelete = await sutDelete.Handle(new DeletePizza(this.model.Id), CancellationToken.None);
 
-		Assert.IsTrue(outcomeDelete.Succeeded);
+		Assert.That(outcomeDelete.HasError, Is.False);
 	}
 }

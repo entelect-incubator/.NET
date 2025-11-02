@@ -1,4 +1,4 @@
-﻿namespace Scheduler.Jobs;
+namespace Scheduler.Jobs;
 
 using System.Threading.Tasks;
 using Common;
@@ -6,7 +6,7 @@ using Common.Mappers;
 using Core.Email;
 using Core.Notify.Commands;
 using Core.Pizza.Queries;
-using MediatR;
+
 
 public interface IOrderCompleteJob
 {

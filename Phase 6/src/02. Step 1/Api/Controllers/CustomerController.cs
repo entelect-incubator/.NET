@@ -1,4 +1,4 @@
-﻿namespace Api.Controllers;
+namespace Api.Controllers;
 
 using Core.Customer.Commands;
 using Core.Customer.Queries;
@@ -31,7 +31,7 @@ public class CustomerController : ApiController
 	/// <response code="200">Customer Search</response>
 	/// <response code="400">Error searching for customers</response>
 	[HttpPost]
-	[ProducesResponseType(typeof(ListResult<CustomerModel>), 200)]
+	[ProducesResponseType(typeof(Result<IEnumerable<CustomerModel>>), 200)]
 	[ProducesResponseType(typeof(ErrorResult), 400)]
 	[Route("Search")]
 	public async Task<ActionResult> Search(SearchCustomerModel data)

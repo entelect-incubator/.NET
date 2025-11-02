@@ -1,0 +1,35 @@
+namespace Core.Product.Commands;
+
+using System.Threading;
+using System.Threading.Tasks;
+using AutoMapper;
+
+using Pezza.Pezza.Common.DTO;
+using Pezza.Pezza.Common.Entities;
+using Pezza.Pezza.Common.Models;
+using Core.Helpers;
+using DataAccess;
+
+public sealed class CreateProductCommand : ICommand<Result<ProductDTO>>
+{
+    public ProductDTO Data { get; set; }
+}
+
+public sealed class CreateProductCommandHandler : ICommandHandler<CreateProductCommand, Result<ProductDTO>>
+{
+    private readonly DatabaseContext databaseContext;
+
+    private readonly IMapper mapper;
+
+    public CreateProductCommandHandler(DatabaseContext databaseContext, IMapper mapper)
+        => (this.databaseContext, this.mapper) = (databaseContext, mapper);
+
+    public async Task<Result<ProductDTO>> Handle(CreateProductCommand request, CancellationToken cancellationToken)
+    {
+        var entity = this.mapper.Map<Product>(request.Data);
+        this.databaseContext.Products.Add(entity);
+
+        return await CoreHelper<ProductDTO>.Outcome(this.databaseContext, this.mapper, cancellationToken, entity, "Error creating a product");
+    }
+}
+

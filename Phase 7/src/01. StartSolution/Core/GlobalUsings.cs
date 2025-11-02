@@ -1,4 +1,3 @@
-﻿global using System.Linq;
 global using System.Linq.Dynamic.Core;
 global using Common.Extensions;
 global using Common.Filters;
@@ -7,6 +6,6 @@ global using Common.Models;
 global using Core.Pizza.Commands;
 global using DataAccess;
 global using FluentValidation;
-global using LazyCache;
-global using MediatR;
+global using LiteBus.Commands.Abstractions;
+global using LiteBus.Queries.Abstractions;
 global using Microsoft.EntityFrameworkCore;

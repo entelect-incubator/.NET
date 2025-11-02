@@ -1,24 +1,20 @@
-﻿namespace Core.Customer.Commands;
+namespace Core.Customer.Commands;
 
-public class DeleteCustomerCommand : IRequest<Result>
+public record DeleteCustomer(int Id) : ICommand<Result>;
+
+public sealed class DeleteCustomerHandler(DatabaseContext databaseContext) : ICommandHandler<DeleteCustomer, Result>
 {
-	public int? Id { get; set; }
-
-	public class DeleteCustomerCommandHandler(DatabaseContext databaseContext) : IRequestHandler<DeleteCustomerCommand, Result>
+	public async Task<Result> Handle(DeleteCustomer command, CancellationToken cancellationToken = default)
 	{
-		public async Task<Result> Handle(DeleteCustomerCommand request, CancellationToken cancellationToken)
+		var entity = await databaseContext.Customers.FirstOrDefaultAsync(x => x.Id == command.Id, cancellationToken);
+		if (entity is null)
 		{
-			if (request.Id == null)
-			{
-				return Result.Failure("Error");
-			}
-
-			var result = await databaseContext.Customers
-				.Where(u => u.Id == request.Id)
-				.ExecuteDeleteAsync(cancellationToken);
-
-			return result > 0 ? Result.Success() : Result.Failure("Error");
-
+			return Result.Failure("Error");
 		}
+
+		databaseContext.Customers.Remove(entity);
+		var result = await databaseContext.SaveChangesAsync(cancellationToken);
+
+		return result > 0 ? Result.Success() : Result.Failure("Error");
 	}
 }

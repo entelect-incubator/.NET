@@ -1,21 +1,18 @@
-﻿namespace Core.Pizza.Queries;
+namespace Core.Pizza.Queries;
 
-public class GetPizzaQuery : IRequest<Result<PizzaModel>>
+public record GetPizza(int Id) : IQuery<Result<PizzaModel>>
 {
-	public int Id { get; set; }
-}
+	public Task<Result<PizzaModel>> ExecuteAsync(Dispatcher dispatcher, CancellationToken ct = default)
+		=> dispatcher.Query<GetPizza, Result<PizzaModel>>(this, ct);
+};
 
-public class GetPizzaQueryHandler(DatabaseContext databaseContext) : IRequestHandler<GetPizzaQuery, Result<PizzaModel>>
+public sealed class GetPizzaHandler(DatabaseContext databaseContext) : IQueryHandler<GetPizza, Result<PizzaModel>>
 {
-	public async Task<Result<PizzaModel>> Handle(GetPizzaQuery request, CancellationToken cancellationToken)
+	public async Task<Result<PizzaModel>> Handle(GetPizza query, CancellationToken cancellationToken = default)
 	{
-		var query = EF.CompileAsyncQuery((DatabaseContext db, int id) => db.Pizzas.FirstOrDefault(c => c.Id == id));
-		var entity = await query(databaseContext, request.Id);
-		if (entity == null)
-		{
-			return Result<PizzaModel>.Failure("Not Found");
-		}
-
-		return Result<PizzaModel>.Success(entity.Map());
+		var entity = await PizzaQueries.FindQuery(databaseContext, query.Id);
+		return entity is null
+			? Result<PizzaModel>.Failure("Not Found")
+			: Result<PizzaModel>.Success(entity.Map());
 	}
 }

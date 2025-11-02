@@ -15,15 +15,15 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="1" Version="1.0.0" />
-		<PackageReference Include="Bogus" Version="34.0.2" />
-		<PackageReference Include="nunit" Version="3.13.3" />
-		<PackageReference Include="NUnit3TestAdapter" Version="4.3.0" />
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.0" />
+		<PackageReference Include="Bogus" Version="35.6.5" />
+		<PackageReference Include="nunit" Version="4.4.0" />
+		<PackageReference Include="NUnit3TestAdapter" Version="5.2.0" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <ProjectReference Include="..\Common\Common.csproj" />
+	  <ProjectReference Include="..\Core.Contracts\Core.Contracts.csproj" />
 	  <ProjectReference Include="..\Core\Core.csproj" />
 	</ItemGroup>
 </Project>

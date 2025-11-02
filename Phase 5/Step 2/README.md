@@ -1,36 +1,109 @@
 <img align="left" width="116" height="116" src="../pezza-logo.png" />
 
-# &nbsp;**Pezza - Phase 5 - Step 2** [![.NET - Phase 5 - Step 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase5-step2.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase5-step2.yml)
+# &nbsp;**Pezza - Phase 4 - Step 2** [![.NET - Phase 4 - Step 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase4-step2.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase4-step2.yml)
 
-<br/><br/>
+<br/><br/><br/>
 
-## **Compression**
+## Error Handling & Logging
 
-To improve the response time we will be adding compression. There is a variety of other things you can do to improve performance, this is just one of them.
+**Difficulty**: ★★★☆☆ (Intermediate)  
+**Estimated Time**: 2-3 hours  
+**Prerequisites**:
+- Completed Phase 1-3
+- Step 1 of Phase 4 completed
+- Understanding of middleware concepts
 
-Open up Startup.cs in API.
+### Learning Outcomes
 
-Add the following to the ConfigureServices method.
+After completing this step, you will:
+- Implement centralized error handling middleware
+- Create consistent error response patterns
+- Configure Serilog for structured logging
+- Handle exceptions appropriately by type
+- Understand logging best practices and sinks
+
+---
+
+Install Nuget Package Serilog.AspNetCore and Serilog.Sinks.File on all but the Test project.
+
+![](./Assets/2021-01-15-11-13-06.png)
+
+In the root of Common, create Logging.cs as per the following code snippet. Notice that Logging is a static class. This makes it easy to use in any calling code without the need of injecting it.
+
 
 ```cs
-services.AddResponseCompression(options =>
+namespace Common;
+
+using Serilog;
+
+public static class Logging
 {
-    options.Providers.Add<BrotliCompressionProvider>();
-    options.Providers.Add<GzipCompressionProvider>();
-});
-services.AddResponseCompression();
+    public static void LogInfo(string name, object data)
+    {
+        Setup();
+        Log.Information(name, data);
+    }
+
+    public static void LogException(Exception e)
+    {
+        Setup();
+        Log.Fatal(e, "Exception");
+    }
+
+    private static void Setup() => Log.Logger = new LoggerConfiguration()
+        .Enrich.FromLogContext()
+        .WriteTo.File(@"logs\log.txt", rollingInterval: RollingInterval.Day)
+        .CreateLogger();
+}
 ```
 
-Add the following to the Configure method.
+Modify ExceptionHandlerMiddleware.cs by logging an exception in the final else of the HandleExceptionAsync Method. All exceptions that we have not defined behaviour for gets handled here.
 
 ```cs
-app.UseResponseCompression();
+else
+{
+    var code = HttpStatusCode.InternalServerError;
+    var result = JsonSerializer.Serialize(new { isSuccess = false, error = exception.Message });
+    context.Response.ContentType = "application/json";
+    context.Response.StatusCode = (int)code;
+    Logging.LogException(exception);
+
+    return context.Response.WriteAsync(result);
+}
 ```
 
-Brotli compression is used by default if it is supported by the client. If Brotli is not supported, Gzip can be used if the client supports it.
+Update PerformanceBehaviour.cs by removing the old logging and using the new static Logging class instead.
 
-You can read more on response compression [here](https://docs.microsoft.com/en-us/aspnet/core/performance/response-compression?view=aspnetcore-5.0).
+```cs
+namespace Common.Behaviour;
 
-## **Move to Phase 6**
+public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+{
+	private readonly Stopwatch timer = new Stopwatch();
 
-[Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%206) 
+	public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
+	{
+		this.timer.Restart();
+
+		var response = await next();
+
+		this.timer.Stop();
+
+		var elapsedMilliseconds = this.timer.ElapsedMilliseconds;
+
+		if (elapsedMilliseconds > 500)
+		{
+			var requestName = typeof(TRequest).Name;
+			Logging.LogInfo($"CleanArchitecture Long Running Request: {requestName} ({elapsedMilliseconds} milliseconds)", request);
+		}
+
+		return response;
+	}
+}
+```
+
+Serilog provides sinks for writing log events to storage in various formats. Read more on [provided sinks](https://github.com/serilog/serilog/wiki/Provided-Sinks) or move on to the next phase.
+
+## **Move to Phase 5**
+
+[Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%205)

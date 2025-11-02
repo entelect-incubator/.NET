@@ -1,24 +1,17 @@
-﻿namespace Core.Pizza.Commands;
+namespace Core.Pizza.Commands;
 
-public class CreatePizzaCommand : IRequest<Result<PizzaModel>>
-{
-	public CreatePizzaModel? Data { get; set; }
-}
+public sealed record CreatePizza(CreatePizzaModel Model) : ICommand<Result<PizzaModel>>;
 
-public class CreatePizzaCommandHandler(DatabaseContext databaseContext) : IRequestHandler<CreatePizzaCommand, Result<PizzaModel>>
+
+public sealed class CreatePizzaHandler(DatabaseContext databaseContext) : ICommandHandler<CreatePizza, Result<PizzaModel>>
 {
-	public async Task<Result<PizzaModel>> Handle(CreatePizzaCommand request, CancellationToken cancellationToken)
+	public async Task<Result<PizzaModel>> Handle(CreatePizza query, CancellationToken cancellationToken = default)
 	{
-		if(request.Data == null)
-		{
-			return Result<PizzaModel>.Failure("Error");
-		}
-
 		var entity = new Common.Entities.Pizza
 		{
-			Name= request.Data.Name,
-			Description= request.Data.Description,
-			Price = request.Data.Price,
+			Name = query.Model.Name,
+			Description = query.Model.Description,
+			Price = query.Model.Price,
 			DateCreated = DateTime.UtcNow
 		};
 		databaseContext.Pizzas.Add(entity);

@@ -1,173 +1,708 @@
-<img align="left" width="116" height="116" src="../pezza-logo.png" />
+<img align="left" width="116" height="116" src="../Assets//pezza-logo.png" />
 
-# &nbsp;**Pezza - Phase 3 - Step 1** [![.NET - Phase 3 - Step 1](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phas3-step1.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phas3-step1.yml)
+# &nbsp;**Pezza - Phase 2 - Step 1**
 
 <br/><br/>
 
-## **Install FluentValidation**
+## Step 1: Scaffolding
 
-This helps us separate validation rules into separate classes for SOLID principal.
+**Difficulty**: ★★★☆☆ (Intermediate)  
+**Estimated Time**: 1.5 - 2.5 hours  
+**Prerequisites**: 
+- Completed Phase 2 main README
+- Familiarity with Entity Framework Core
+- Understanding of CQRS concepts
 
-Install FluentValidation on the Core Project.
+### Learning Outcomes
+After completing this step, you will understand:
+- How to install and configure MediatR
+- Creating database entities for multiple models (Customer, Pizza)
+- Building mappers for DTOs and entities
+- Setting up EF Core mappings
+- Organizing the Core project structure for CQRS patterns
 
-![FluentValidation Nuget](Assets/2021-01-14-08-44-04.png)
+---
 
-### **Add Validators to your Commands**
+This step puts down a strong foundation to build off from for the entire incubator. While it might feel a bit tedious, each piece is essential for CQRS implementation.
 
-For every Command create a CommandNamevalidator.cs, because you only want to validate the data that gets send into the Command.
+If at any point you are struggling, you can reference Phase 2/src/02. EndSolution
 
-Add to GlobalUsings.cs in Core Project
+## **Install Mediatr**
+
+To help us with CQRS we will be using the Mediatr Nuget package.
+
+What is Mediatr?
+In-process messaging with no dependencies.
+
+Supports request/response, commands, queries, notifications and events, synchronous and async with intelligent dispatching via C# generic variance.
+
+Install Mediatr on the Core Project and your Common Project
+
+![](./Assets/2023-04-10-21-01-30.png)
+
+## **Create the other database entities and update database context**
+
+### **Entities**
+
+Representing Database Tables Entities
+
+![](./Assets/2023-04-10-21-05-59.png)
 
 ```cs
-global using Common.Mappers;
-global using Common.Models;
-global using Core.Pizza.Commands;
-global using DataAccess;
-global using FluentValidation;
-global using MediatR;
-global using Microsoft.EntityFrameworkCore;
+namespace Common.Entities;
+
+public sealed class Customer
+{
+	public int Id { get; set; }
+
+	public required string Name { get; set; }
+
+	public string? Address { get; set; }
+
+	public string? Email { get; set; }
+
+	public string? Cellphone { get; set; }
+
+	public DateTime DateCreated { get; set; }
+}
 ```
 
-Let's start with creating Validators for Pizza Commands.
+```cs
+namespace Common.Entities;
 
-Add a new class in the folder Pizza/Commands 
+public class Pizza
+{
+	public int Id { get; set; }
 
-CreatePizzaCommandValidator.cs
+	public required string Name { get; set; }
+
+	public string? Description { get; set; }
+
+	public decimal Price { get; set; }
+
+	public DateTime? DateCreated { get; set; }
+}
+```
+
+### **Models**
+
+Create Models for each Entity. For separation of concern we will create separate Models for each action. Can also be copied from **Phase 2\src\02. EndSolution\Common\Models**
+
+![](./Assets/2023-04-10-21-23-57.png)
+
+Change Mapper.cs to PizzaMapper.cs
 
 ```cs
-namespace Core.Customer.Commands;
+namespace Common.Mappers;
 
-public class CreatePizzaCommandValidator : AbstractValidator<CreatePizzaCommand>
+public static class PizzaMapper
 {
-	public CreatePizzaCommandValidator()
+	public static PizzaModel Map(this Pizza entity)
+		=> new()
+		{
+			Id = entity.Id,
+			Name = entity.Name,
+			Description = entity.Description,
+			Price = entity.Price,
+			DateCreated = entity.DateCreated
+		};
+
+	public static Pizza Map(this PizzaModel model)
 	{
-		this.RuleFor(r => r.Data.Name)
-			.MaximumLength(100)
-			.NotEmpty();
+		var entity = new Pizza
+		{
+			Id = model.Id,
+			Name = model.Name,
+			Description = model.Description,
+			DateCreated = model.DateCreated
+		};
 
-		this.RuleFor(r => r.Data.Description)
-			.MaximumLength(500)
-			.NotEmpty();
+		if (model.Price.HasValue)
+		{
+			entity.Price = model.Price.Value;
+		}
 
-		this.RuleFor(r => r.Data.Price)
-			.PrecisionScale(4, 2, false)
-			.NotEmpty();
+		return entity;
 	}
+
+	public static IEnumerable<PizzaModel> Map(this List<Pizza> entities)
+		=> entities.Select(x => x.Map());
+
+	public static IEnumerable<Pizza> Map(this List<PizzaModel> models)
+		=> models.Select(x => x.Map());
 }
 ```
 
-DeletePizzaCommandValidator.cs
+Add Customer to CustomerMapper.cs
 
 ```cs
-namespace Core.Customer.Commands;
+namespace Common.Mappers;
 
-public class DeletePizzaCommandValidator : AbstractValidator<DeletePizzaCommand>
+public static class CustomerMapper
 {
-	public DeletePizzaCommandValidator()
+	public static CustomerModel Map(this Customer entity)
+		=> new()
+		{
+			Id = entity.Id,
+			Name = entity.Name,
+			Address = entity.Address,
+			Cellphone = entity.Cellphone,
+			Email = entity.Email,
+			DateCreated = entity.DateCreated
+		};
+
+	public static Customer Map(this CustomerModel model)
 	{
-		this.RuleFor(r => r.Id)
-			.NotEmpty();
+		var entity = new Customer
+		{
+			Id = model.Id,
+			Name = model.Name,
+			DateCreated = model.DateCreated
+		};
+
+		if (!string.IsNullOrEmpty(model.Address))
+		{
+			entity.Address = model.Address;
+		}
+
+		if (!string.IsNullOrEmpty(model.Cellphone))
+		{
+			entity.Cellphone = model.Cellphone;
+		}
+
+		if (!string.IsNullOrEmpty(model.Email))
+		{
+			entity.Email = model.Email;
+		}
+
+		return entity;
 	}
+
+	public static IEnumerable<CustomerModel> Map(this List<Customer> entities)
+		=> entities.Select(x => x.Map());
+
+	public static IEnumerable<Customer> Map(this List<CustomerModel> models)
+		=> models.Select(x => x.Map());
 }
 ```
 
-UpdatePizzaCommandValidator.cs
+### **Unit Tests Test Data**
+
+![](./Assets/2023-04-10-21-33-20.png)
+
+
+### **Database EFCore Maps**
+
+Add CustomerMap.cs to Mapping folder
+
+![](./Assets/2023-04-10-21-37-55.png)
 
 ```cs
-namespace Core.Customer.Commands;
+namespace DataAccess.Mapping;
 
-public class UpdatePizzaCommandValidator : AbstractValidator<UpdatePizzaCommand>
+using Microsoft.EntityFrameworkCore;
+using Common.Entities;
+
+public sealed class CustomerMap : IEntityTypeConfiguration<Customer>
 {
-    public UpdatePizzaCommandValidator()
-    {
-        this.RuleFor(r => r.Data)
-            .NotNull();
+	public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Customer> builder)
+	{
+		builder.ToTable("Customer", "dbo");
 
-        this.RuleFor(r => r.Id)
-            .NotEmpty();
+		builder.HasKey(t => t.Id);
 
-        this.RuleFor(r => r.Data.Name)
-            .MaximumLength(100);
+		builder.Property(t => t.Id)
+			.IsRequired()
+			.HasColumnName("Id")
+			.HasColumnType("int")
+			.ValueGeneratedOnAdd();
 
-        this.RuleFor(r => r.Data.Description)
-            .MaximumLength(500);
+		builder.Property(t => t.Name)
+			.IsRequired()
+			.HasColumnName("Name")
+			.HasColumnType("varchar(100)")
+			.HasMaxLength(100);
 
-		this.RuleFor(r => r.Data.Price)
-			.PrecisionScale(4, 2, false);
+		builder.Property(t => t.Address)
+			.HasColumnName("Address")
+			.HasColumnType("varchar(500)")
+			.HasMaxLength(500);
 
+		builder.Property(t => t.Email)
+			.HasColumnName("Email")
+			.HasColumnType("varchar(500)")
+			.HasMaxLength(500);
+
+		builder.Property(t => t.Cellphone)
+			.HasColumnName("Cellphone")
+			.HasColumnType("varchar(50)")
+			.HasMaxLength(50);
+
+		builder.Property(t => t.DateCreated)
+			.IsRequired()
+			.HasColumnName("DateCreated")
+			.HasColumnType("datetime")
+			.HasDefaultValueSql("(getdate())");
 	}
 }
 ```
 
-Now add validations for Customer Commands.
-
-![](./Assets/2023-04-13-06-36-53.png)
-
-### Validation Pipeline
-
-In Phase 2 you would have noticed ValidationBehavior.cs in Common. This intercepts Mediatr pipeline before it hits the Command Handler for Validation. If any Fluent Validation fails it throws a ValidationException, that we can intercept in Api.
-
-![](Assets/2021-04-15-21-25-46.png)
-
-Update GlobalUsings.cs in Common Project
+Update DatabaseContext.cs
 
 ```cs
-global using System.Collections.Generic;
+namespace DataAccess;
+
+using Common.Entities;
+using DataAccess.Mapping;
+using Microsoft.EntityFrameworkCore;
+
+public class DatabaseContext : DbContext
+{
+	public DatabaseContext()
+	{
+	}
+
+	public DatabaseContext(DbContextOptions options) : base(options)
+	{
+	}
+
+	public virtual DbSet<Customer> Customers { get; set; }
+
+	public virtual DbSet<Pizza> Pizzas { get; set; }
+
+	protected override void OnModelCreating(ModelBuilder modelBuilder)
+	{
+		modelBuilder.ApplyConfiguration(new CustomerMap());
+		modelBuilder.ApplyConfiguration(new PizzaMap());
+	}
+
+	protected override void OnConfiguring
+	   (DbContextOptionsBuilder optionsBuilder) => optionsBuilder.UseInMemoryDatabase(databaseName: "PezzaDb");
+}
+
+```
+
+### **Business Logic - Core**
+
+We will be moving to CQRS pattern for the Core Layer. This helps Single Responsibility.
+
+[CQRS Overview](https://docs.microsoft.com/en-us/azure/architecture/patterns/cqrs)
+
+To help us out achieving this we will be using a Nuget Package - Mediatr
+
+[Mediatr](https://github.com/jbogard/MediatR)
+
+To create consistency with the result we send back from the Core layer we will utilize a Result.cs class. This helps to create unity between all Commands and Queries.
+
+## **Common Models**
+
+Instead of throwing or using exceptions, we will return a Result object indicating success or failure of an operation.
+
+```cs
+namespace Common.Models;
+
+public class Result
+{
+	public Result()
+	{
+	}
+
+	internal Result(bool succeeded, string error)
+	{
+		this.Succeeded = succeeded;
+
+		this.Errors = new List<object>
+		{
+			error
+		};
+	}
+
+	internal Result(bool succeeded, List<object> errors)
+	{
+		this.Succeeded = succeeded;
+		this.Errors = errors;
+	}
+
+	internal Result(bool succeeded, List<string> errors)
+	{
+		this.Succeeded = succeeded;
+		this.Errors = errors.ToList<object>();
+	}
+
+	public bool Succeeded { get; set; }
+
+	public List<object> Errors { get; set; }
+
+	public static Result Success() => new(true, new List<object> { });
+
+	public static Result Failure(List<object> errors) => new(false, errors);
+
+	public static Result Failure(List<string> errors) => new(false, errors);
+
+	public static Result Failure(string error) => new(false, error);
+}
+
+public class Result<T>
+{
+	internal Result(bool succeeded, string error)
+	{
+		this.Succeeded = succeeded;
+		this.Errors = new List<object>
+		{
+			error
+		};
+	}
+
+	internal Result(bool succeeded, List<object> errors)
+	{
+		this.Succeeded = succeeded;
+		this.Errors = errors;
+	}
+
+	internal Result(bool succeeded, T data, List<object> errors)
+	{
+		this.Succeeded = succeeded;
+		this.Errors = errors;
+		this.Data = data;
+	}
+
+	public bool Succeeded { get; set; }
+
+	public T Data { get; set; }
+
+	public List<object> Errors { get; set; }
+
+	public static Result<T> Success(T data) => new(true, data, new List<object> { });
+
+	public static Result<T> Failure(string error) => new(false, error);
+
+	public static Result<T> Failure(List<object> errors) => new(false, errors);
+}
+
+public class ListResult<T>
+{
+	internal ListResult(bool succeeded, string error)
+	{
+		this.Succeeded = succeeded;
+		this.Errors = new List<object>
+		{
+			error
+		};
+	}
+
+	internal ListResult(bool succeeded, List<object> errors)
+	{
+		this.Succeeded = succeeded;
+		this.Errors = errors;
+	}
+
+	internal ListResult(bool succeeded, List<T> data, int count, List<object> errors)
+	{
+		this.Succeeded = succeeded;
+		this.Errors = errors;
+		this.Data = data;
+		this.Count = count;
+	}
+
+	internal ListResult(bool succeeded, IEnumerable<T> data, int count, List<object> errors)
+	{
+		this.Succeeded = succeeded;
+		this.Errors = errors;
+		this.Data = data.ToList();
+		this.Count = count;
+	}
+
+	public bool Succeeded { get; set; }
+
+	public List<T> Data { get; set; }
+
+	public List<object> Errors { get; set; }
+
+	public int Count { get; set; }
+
+	public static ListResult<T> Success(List<T> data, int count) => new(true, data, count, new List<object> { });
+
+	public static ListResult<T> Success(IEnumerable<T> data, int count) => new(true, data, count, new List<object> { });
+
+	public static ListResult<T> Failure(string error) => new(false, error);
+
+	public static ListResult<T> Failure(List<object> errors) => new(false, errors);
+}
+
+public class ListOutcome<T>
+{
+	public List<T>? Data { get; set; }
+
+	public int Count { get; set; }
+
+	public List<string>? Errors { get; set; }
+}
+
+public class ErrorResult : Result
+{
+	public ErrorResult() => this.Succeeded = false;
+
+	[DefaultValue(false)]
+	public new bool Succeeded { get; set; }
+}
+```
+
+Update GlobalUsings.cs
+
+```cs
 global using System.ComponentModel;
-global using System.ComponentModel.DataAnnotations;
-global using System.Diagnostics;
-global using System.Linq;
-global using System.Threading;
-global using System.Threading.Tasks;
 global using Common.Entities;
 global using Common.Models;
-global using FluentValidation;
-global using MediatR;
 ```
 
+Create the following Commands for Customer and Pizza in Core Project inside the Entity Name Folder/Commands <br/> ![](./Assets/2021-08-16-06-51-20.png)
+
+We will move from PizzaCore concept now to separate Command or Querie for each operation. It is important to start seeing the patterns here.
+
+We will also be using the new Models relevant to each operation.
+
+- Create Command
+
 ```cs
-namespace Common.Behaviours;
+namespace Core.Pizza.Commands;
 
-using ValidationException = FluentValidation.ValidationException;
-
-public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
-	where TRequest : IRequest<TResponse>
+public class CreatePizzaCommand : IRequest<Result<PizzaModel>>
 {
-	private readonly IEnumerable<IValidator<TRequest>> validators;
+	public CreatePizzaModel? Data { get; set; }
+}
 
-	public ValidationBehavior(IEnumerable<IValidator<TRequest>> validators)
-		=> this.validators = validators;
+public class CreatePizzaCommandHandler(DatabaseContext databaseContext) : IRequestHandler<CreatePizzaCommand, Result<PizzaModel>>
+{
+	public async Task<Result<PizzaModel>> Handle(CreatePizzaCommand request, CancellationToken cancellationToken)
+	{
+		if(request.Data is null)
+		{
+			return Result<PizzaModel>.Failure("Error");
+		}
+
+		var entity = new Common.Entities.Pizza
+		{
+			Name= request.Data.Name,
+			Description= request.Data.Description,
+			Price = request.Data.Price,
+			DateCreated = DateTime.UtcNow
+		};
+		databaseContext.Pizzas.Add(entity);
+		var result = await databaseContext.SaveChangesAsync(cancellationToken);
+
+		return result > 0 ? Result<PizzaModel>.Success(entity.Map()) : Result<PizzaModel>.Failure("Error");
+	}
+}
+```
+
+- Delete Command
+
+```cs
+namespace Core.Pizza.Commands;
+
+public class DeletePizzaCommand : IRequest<Result>
+{
+	public int? Id { get; set; }
+}
+
+public class DeletePizzaCommandHandler(DatabaseContext databaseContext) : IRequestHandler<DeletePizzaCommand, Result>
+{
+	public async Task<Result> Handle(DeletePizzaCommand request, CancellationToken cancellationToken)
+	{
+		if (request.Id is null)
+		{
+			return Result.Failure("Error");
+		}
+
+		var query = EF.CompileAsyncQuery((DatabaseContext db, int id) => db.Pizzas.FirstOrDefault(c => c.Id == id));
+		var findEntity = await query(databaseContext, request.Id.Value);
+		if (findEntity is null)
+		{
+			return Result.Failure("Not found");
+		}
+
+		databaseContext.Pizzas.Remove(findEntity);
+		var result = await databaseContext.SaveChangesAsync(cancellationToken);
+
+		return result > 0 ? Result.Success() : Result.Failure("Error");
+	}
+}
+```
+
+- Update Command
+
+```cs
+namespace Core.Pizza.Commands;
+
+public class UpdatePizzaCommand : IRequest<Result<PizzaModel>>
+{
+	public int? Id { get; set; }
+
+	public UpdatePizzaModel? Data { get; set; }
+}
+
+public class UpdatePizzaCommandHandler(DatabaseContext databaseContext) : IRequestHandler<UpdatePizzaCommand, Result<PizzaModel>>
+{
+	public async Task<Result<PizzaModel>> Handle(UpdatePizzaCommand request, CancellationToken cancellationToken)
+	{
+		if (request.Data is null || request.Id is null)
+		{
+			return Result<PizzaModel>.Failure("Error");
+		}
+
+		var model = request.Data;
+		var query = EF.CompileAsyncQuery((DatabaseContext db, int id) => db.Pizzas.FirstOrDefault(c => c.Id == id));
+		var findEntity = await query(databaseContext, request.Id.Value);
+		if (findEntity is null)
+		{
+			return Result<PizzaModel>.Failure("Not found");
+		}
+
+		findEntity.Name = !string.IsNullOrEmpty(model?.Name) ? model?.Name : findEntity.Name;
+		findEntity.Description = !string.IsNullOrEmpty(model?.Description) ? model?.Description : findEntity.Description;
+		findEntity.Price = model.Price.HasValue ? model.Price.Value : findEntity.Price;
+
+		var outcome = databaseContext.Pizzas.Update(findEntity);
+		var result = await databaseContext.SaveChangesAsync(cancellationToken);
+
+		return result > 0 ? Result<PizzaModel>.Success(findEntity.Map()) : Result<PizzaModel>.Failure("Error");
+	}
+}
+```
+
+If a property is not required and can be empty, don't enclose it in a shorthand if or coalescing.
+
+```cs
+findEntity.Description = request.Data?.Description;
+```
+
+Create the following Queries
+
+We will be using [Compiled Queries](https://learn.microsoft.com/en-us/dotnet/framework/data/adonet/ef/language-reference/compiled-queries-linq-to-entities) for performance benefit.
+
+-Get Single
+
+```cs
+namespace Core.Pizza.Queries;
+
+public class GetPizzaQuery : IRequest<Result<PizzaModel>>
+{
+	public int Id { get; set; }
+}
+
+public class GetPizzaQueryHandler(DatabaseContext databaseContext) : IRequestHandler<GetPizzaQuery, Result<PizzaModel>>
+{
+	public async Task<Result<PizzaModel>> Handle(GetPizzaQuery request, CancellationToken cancellationToken)
+	{
+		var query = EF.CompileAsyncQuery((DatabaseContext db, int id) => db.Pizzas.FirstOrDefault(c => c.Id == id));
+		var entity = await query(databaseContext, request.Id);
+		if (entity is null)
+		{
+			return Result<PizzaModel>.Failure("Not Found");
+		}
+
+		return Result<PizzaModel>.Success(entity.Map());
+	}
+}
+```
+
+- Get All
+
+```cs
+namespace Core.Pizza.Queries;
+
+public class GetPizzasQuery : IRequest<ListResult<PizzaModel>>
+{
+}
+
+public class GetPizzasQueryHandler(DatabaseContext databaseContext) : IRequestHandler<GetPizzasQuery, ListResult<PizzaModel>>
+{
+	public async Task<ListResult<PizzaModel>> Handle(GetPizzasQuery request, CancellationToken cancellationToken)
+	{
+		var entities = databaseContext.Pizzas.Select(x => x).AsNoTracking();
+
+		var count = await entities.CountAsync(cancellationToken);
+		var paged = await entities.ToListAsync(cancellationToken);
+
+		return ListResult<PizzaModel>.Success(paged.Map(), count);
+	}
+}
+```
+
+Now, add the Commands and Queries for Customer Entity.
+
+Core Project should look this when you are done.
+
+![](./Assets/2023-04-10-22-38-35.png)
+
+Update DependencyInjection.cs - to include the new DataAccess and CQRS Classes
+
+For MediatR Dependency Injection we need to create 3 Behaviour Classes inside Common. We will add logging later.
+
+- PerformanceBehaviour.cs this will pick up any slow running queries
+
+```cs
+namespace Common.Behaviour;
+
+public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+{
+	private readonly Stopwatch timer = new Stopwatch();
 
 	public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
 	{
-		if (this.validators.Any())
+		this.timer.Restart();
+
+		var response = await next();
+
+		this.timer.Stop();
+
+		var elapsedMilliseconds = this.timer.ElapsedMilliseconds;
+
+		if (elapsedMilliseconds > 500)
 		{
-			var context = new ValidationContext<TRequest>(request);
-
-			var validationResults = await Task.WhenAll(this.validators.Select(v => v.ValidateAsync(context, cancellationToken)));
-			var failures = validationResults.SelectMany(r => r.Errors).Where(f => f != null);
-
-			if (failures.Any())
-			{
-				throw new ValidationException(failures);
-			}
+			var requestName = typeof(TRequest).Name;
+			//this.logger.LogInformation($"CleanArchitecture Long Running Request: {requestName} ({elapsedMilliseconds} milliseconds)", request);
 		}
-		return await next();
+
+		return response;
 	}
 }
 ```
 
-make sure FluentValidation.DependencyInjection Nuget Package is installed.
+- UnhandledExceptionBehaviour.cs this will pick up any exceptions during the executio pipeline.
+
+```cs
+namespace Common.Behaviour;
+
+public class UnhandledExceptionBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+{
+	public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
+	{
+		try
+		{
+			return await next();
+		}
+		catch (Exception ex)
+		{
+			var requestName = typeof(TRequest).Name;
+
+			//this.logger.LogError(ex, "Pezza Request: Unhandled Exception for Request {Name} {@Request}", requestName, request);
+
+			throw;
+		}
+	}
+}
+```
 
 
-DependencyInjection.cs
+DependencyInjection.cs in Core
 
 ```cs
 namespace Core;
 
-using System.Reflection;
 using Common.Behaviour;
 using Core.Customer.Commands;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
 public static class DependencyInjection
@@ -175,119 +710,49 @@ public static class DependencyInjection
 	public static IServiceCollection AddApplication(this IServiceCollection services)
 	{
 		services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<CreateCustomerCommand>());
-
-		AssemblyScanner.FindValidatorsInAssembly(typeof(CreatePizzaCommand).Assembly)
-		   .ForEach(item => services.AddScoped(item.InterfaceType, item.ValidatorType));
-
-		services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-
 		services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnhandledExceptionBehaviour<,>));
 		services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));
-
-
 		return services;
 	}
 }
 ```
 
-## Exception Handler Middleware
+### **Remove Core.Contracts Project and any reference to PizzaCore.cs or IPizzaCore.cs**
 
-Update Global Error handler UnhandledExceptionBehaviour.cs inside Common Project to ExceptionHandlerMiddleware.cs
+---
 
-Make sure Microsoft.AspNetCore.Http Nuget Package is installed.
+## Summary
 
-```cs
-namespace Common.Behaviour;
+You have successfully completed Step 1! You've created a solid foundation for CQRS implementation with MediatR.
 
-using System.Net;
-using System.Text.Json;
-using Microsoft.AspNetCore.Http;
+Your project now has:
+- ✅ Entities for Customer and Pizza with modern properties
+- ✅ DTOs and Models for clean data transfer
+- ✅ Mapper extensions for entity-to-model conversion
+- ✅ EF Core database mappings for Entity Framework
+- ✅ Command and Query handlers following CQRS principles
+- ✅ Dependency injection configured with MediatR
+- ✅ Pipeline behaviors for cross-cutting concerns
 
-public class ExceptionHandlerMiddleware
-{
-	private readonly RequestDelegate next;
+### Key Accomplishments
+- Created database entities with proper data types
+- Built mapper classes for clean entity-DTO conversion
+- Configured EF Core with fluent API mappings
+- Implemented handlers that will process commands and queries
+- Set up DependencyInjection for centralized configuration
 
-	public ExceptionHandlerMiddleware(RequestDelegate next) => this.next = next;
+### Architecture Review
+Your project structure now follows:
+- **Common**: Shared entities, models, and mappers
+- **Core**: Command/Query handlers and business logic
+- **DataAccess**: EF Core context and mappings
 
-	public async Task Invoke(HttpContext context /* other dependencies */)
-	{
-		try
-		{
-			await this.next(context);
-		}
-		catch (Exception ex)
-		{
-			await HandleExceptionAsync(context, ex);
-		}
-	}
+This separation of concerns creates a maintainable and testable codebase!
 
-	private static Task HandleExceptionAsync(HttpContext context, Exception exception)
-	{
-		// Log issues and handle exception response
-		if (exception.GetType() == typeof(FluentValidation.ValidationException))
-		{
-			var errors = ((FluentValidation.ValidationException)exception).Errors;
-			if (errors.Any())
-			{
-				var failures = errors.Select(x =>
-				{
-					return new
-					{
-						Property = x.PropertyName.Replace("Data.", ""),
-						Error = x.ErrorMessage.Replace("Data ", "")
-					};
-				});
-				var result = Result.Failure(failures.ToList<object>());
-				var code = HttpStatusCode.BadRequest;
-				var resultJson = JsonSerializer.Serialize(result);
+---
 
-				context.Response.ContentType = "application/json";
-				context.Response.StatusCode = (int)code;
+## STEP 2 - Unit Tests
 
-				return context.Response.WriteAsync(resultJson);
-			}
-			else
-			{
-				var code = HttpStatusCode.BadRequest;
-				var result = Result.Failure(exception?.Message);
-				var resultJson = JsonSerializer.Serialize(result);
+Move to Step 2 to create comprehensive unit tests for your handlers.
 
-				context.Response.ContentType = "application/json";
-				context.Response.StatusCode = (int)code;
-
-				return context.Response.WriteAsync(resultJson);
-			}
-		}
-		else
-		{
-			var code = HttpStatusCode.InternalServerError;
-			var result = JsonSerializer.Serialize(new { isSuccess = false, error = exception.Message });
-			context.Response.ContentType = "application/json";
-			context.Response.StatusCode = (int)code;
-
-			return context.Response.WriteAsync(result);
-		}
-	}
-}
-```
-
-Remove the following line from DependencyInjection.cs on Core Project
-
-```cs
-services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnhandledExceptionBehaviour<,>));
-```
-
-In Startup.cs in Configure() call the middleware
-
-```cs
-app.UseMiddleware(typeof(ExceptionHandlerMiddleware));
-```
-
-When the validation rules get violated a Bad Request will be returned.
-
-![Validation example](Assets/2021-04-15-21-28-29.png)
-
-## **STEP 2 - Filtering & Searching**
-
-Move to Step 2
-[Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%203/Step%202)
+[Proceed to Step 2](https://github.com/entelect-incubator/.NET/tree/master/Phase%202/Step%202)

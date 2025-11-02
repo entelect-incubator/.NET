@@ -1,15 +1,7 @@
 namespace DataAccess;
 
-public class DatabaseContext : DbContext
+public class DatabaseContext(DbContextOptions options) : DbContext(options)
 {
-	public DatabaseContext()
-	{
-	}
-
-	public DatabaseContext(DbContextOptions options) : base(options)
-	{
-	}
-
 	public virtual DbSet<Pizza> Pizzas { get; set; }
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder)

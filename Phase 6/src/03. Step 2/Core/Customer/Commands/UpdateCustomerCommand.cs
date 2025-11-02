@@ -1,17 +1,17 @@
-﻿namespace Core.Customer.Commands;
+namespace Core.Customer.Commands;
 
-public class UpdateCustomerCommand : IRequest<Result<CustomerModel>>
+public sealed class UpdateCustomerCommand : ICommand<Result<CustomerModel>>
 {
 	public int? Id { get; set; }
 
 	public UpdateCustomerModel? Data { get; set; }
 }
 
-public class UpdateCustomerCommandHandler(DatabaseContext databaseContext) : IRequestHandler<UpdateCustomerCommand, Result<CustomerModel>>
+public sealed class UpdateCustomerCommandHandler(DatabaseContext databaseContext) : ICommandHandler<UpdateCustomerCommand, Result<CustomerModel>>
 {
 	public async Task<Result<CustomerModel>> Handle(UpdateCustomerCommand request, CancellationToken cancellationToken)
 	{
-		if (request.Data == null || request.Id == null)
+		if (request.Data is null || request.Id is null)
 		{
 			return Result<CustomerModel>.Failure("Error updating a Customer");
 		}
@@ -19,7 +19,7 @@ public class UpdateCustomerCommandHandler(DatabaseContext databaseContext) : IRe
 		var model = request.Data;
 		var query = EF.CompileAsyncQuery((DatabaseContext db, int id) => db.Customers.FirstOrDefault(c => c.Id == id));
 		var findEntity = await query(databaseContext, request.Id.Value);
-		if (findEntity == null)
+		if (findEntity is null)
 		{
 			return Result<CustomerModel>.Failure("Not found");
 		}

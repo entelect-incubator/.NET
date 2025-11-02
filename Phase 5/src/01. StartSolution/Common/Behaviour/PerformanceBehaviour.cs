@@ -1,5 +1,9 @@
 ﻿namespace Common.Behaviour;
 
+// DEPRECATED: MediatR IPipelineBehavior not supported in LiteBus
+// Performance monitoring can be implemented via middleware or aspect-oriented programming
+
+/*
 public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
 {
 	private readonly Stopwatch timer = new Stopwatch();
@@ -17,9 +21,10 @@ public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequ
 		if (elapsedMilliseconds > 500)
 		{
 			var requestName = typeof(TRequest).Name;
-			Logging.LogInfo($"CleanArchitecture Long Running Request: {requestName} ({elapsedMilliseconds} milliseconds)", request);
+			//this.logger.LogInformation($"CleanArchitecture Long Running Request: {requestName} ({elapsedMilliseconds} milliseconds)", request);
 		}
 
 		return response;
 	}
 }
+*/

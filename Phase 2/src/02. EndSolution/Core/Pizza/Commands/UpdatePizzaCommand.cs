@@ -1,32 +1,26 @@
-﻿namespace Core.Pizza.Commands;
+namespace Core.Pizza.Commands;
 
-public class UpdatePizzaCommand : IRequest<Result<PizzaModel>>
+using Common.Models.Results;
+
+public interface IUpdatePizzaCommand
 {
-	public int? Id { get; set; }
-
-	public UpdatePizzaModel? Data { get; set; }
+	Task<Result<PizzaModel>> ExecuteAsync(int id, UpdatePizzaModel model, CancellationToken cancellationToken = default);
 }
 
-public class UpdatePizzaCommandHandler(DatabaseContext databaseContext) : IRequestHandler<UpdatePizzaCommand, Result<PizzaModel>>
+public sealed class UpdatePizzaCommand(DatabaseContext databaseContext) : IUpdatePizzaCommand
 {
-	public async Task<Result<PizzaModel>> Handle(UpdatePizzaCommand request, CancellationToken cancellationToken)
+	public async Task<Result<PizzaModel>> ExecuteAsync(int id, UpdatePizzaModel model, CancellationToken cancellationToken = default)
 	{
-		if (request.Data == null || request.Id == null)
-		{
-			return Result<PizzaModel>.Failure("Error");
-		}
-
-		var model = request.Data;
 		var query = EF.CompileAsyncQuery((DatabaseContext db, int id) => db.Pizzas.FirstOrDefault(c => c.Id == id));
-		var findEntity = await query(databaseContext, request.Id.Value);
-		if (findEntity == null)
+		var findEntity = await query(databaseContext, id);
+		if (findEntity is null)
 		{
 			return Result<PizzaModel>.Failure("Not found");
 		}
 
-		findEntity.Name = !string.IsNullOrEmpty(model?.Name) ? model?.Name : findEntity.Name;
-		findEntity.Description = !string.IsNullOrEmpty(model?.Description) ? model?.Description : findEntity.Description;
-		findEntity.Price = model.Price.HasValue ? model.Price.Value : findEntity.Price;
+		findEntity.Name = model.Name is null ? findEntity.Name : model.Name;
+		findEntity.Description = model.Description;
+		findEntity.Price = model.Price ?? findEntity.Price;
 
 		var outcome = databaseContext.Pizzas.Update(findEntity);
 		var result = await databaseContext.SaveChangesAsync(cancellationToken);
