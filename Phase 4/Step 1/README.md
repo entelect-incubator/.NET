@@ -1,6 +1,6 @@
 <img align="left" width="116" height="116" src="../pezza-logo.png" />
 
-# &nbsp;**Pezza - Phase 3 - Step 1** [![.NET - Phase 3 - Step 1](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phas3-step1.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phas3-step1.yml)
+# &nbsp;**Pezza - Phase 4 - Step 1** [![.NET - Phase 4 - Step 1](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase4-step1.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase4-step1.yml)
 
 <br/><br/>
 
@@ -24,8 +24,9 @@ global using Common.Models;
 global using Core.Pizza.Commands;
 global using DataAccess;
 global using FluentValidation;
-global using MediatR;
 global using Microsoft.EntityFrameworkCore;
+global using Utilities.CQRS;
+global using Utilities.Results;
 ```
 
 Let's start with creating Validators for Pizza Commands.
@@ -103,98 +104,77 @@ Now add validations for Customer Commands.
 
 ![](./Assets/2023-04-13-06-36-53.png)
 
-### Validation Pipeline
+### Validation & Exception Handling
 
-In Phase 2 you would have noticed ValidationBehavior.cs in Common. This intercepts Mediatr pipeline before it hits the Command Handler for Validation. If any Fluent Validation fails it throws a ValidationException, that we can intercept in Api.
+We use explicit validation in handlers combined with middleware to handle all validation errors and exceptions at the HTTP boundary. This provides a clean separation between business logic and error handling.
 
-![](Assets/2021-04-15-21-25-46.png)
+Make sure `FluentValidation.DependencyInjection` NuGet package is installed.
 
-Update GlobalUsings.cs in Common Project
-
-```cs
-global using System.Collections.Generic;
-global using System.ComponentModel;
-global using System.ComponentModel.DataAnnotations;
-global using System.Diagnostics;
-global using System.Linq;
-global using System.Threading;
-global using System.Threading.Tasks;
-global using Common.Entities;
-global using Common.Models;
-global using FluentValidation;
-global using MediatR;
-```
-
-```cs
-namespace Common.Behaviours;
-
-using ValidationException = FluentValidation.ValidationException;
-
-public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
-	where TRequest : IRequest<TResponse>
-{
-	private readonly IEnumerable<IValidator<TRequest>> validators;
-
-	public ValidationBehavior(IEnumerable<IValidator<TRequest>> validators)
-		=> this.validators = validators;
-
-	public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
-	{
-		if (this.validators.Any())
-		{
-			var context = new ValidationContext<TRequest>(request);
-
-			var validationResults = await Task.WhenAll(this.validators.Select(v => v.ValidateAsync(context, cancellationToken)));
-			var failures = validationResults.SelectMany(r => r.Errors).Where(f => f != null);
-
-			if (failures.Any())
-			{
-				throw new ValidationException(failures);
-			}
-		}
-		return await next();
-	}
-}
-```
-
-make sure FluentValidation.DependencyInjection Nuget Package is installed.
-
-
-DependencyInjection.cs
+Update `DependencyInjection.cs` in Core Project to register validators:
 
 ```cs
 namespace Core;
 
 using System.Reflection;
-using Common.Behaviour;
-using Core.Customer.Commands;
 using Microsoft.Extensions.DependencyInjection;
 
 public static class DependencyInjection
 {
 	public static IServiceCollection AddApplication(this IServiceCollection services)
 	{
-		services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<CreateCustomerCommand>());
-
-		AssemblyScanner.FindValidatorsInAssembly(typeof(CreatePizzaCommand).Assembly)
-		   .ForEach(item => services.AddScoped(item.InterfaceType, item.ValidatorType));
-
+		// Register all validators from the assembly
 		services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-
-		services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnhandledExceptionBehaviour<,>));
-		services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));
-
 
 		return services;
 	}
 }
 ```
 
+### Using ValidationHelper in Handlers
+
+Each command/query handler is responsible for validating its request using `ValidationHelper`. This replaces the old pipeline behavior approach with explicit, testable validation.
+
+Example in a command handler:
+
+```cs
+namespace Core.Pizza.Commands;
+
+using Common.Helpers;
+using MediatR;
+
+public class CreatePizzaCommandHandler : IRequestHandler<CreatePizzaCommand, Result<PizzaModel>>
+{
+	private readonly IEnumerable<IValidator<CreatePizzaCommand>> validators;
+	private readonly DatabaseContext database;
+
+	public CreatePizzaCommandHandler(
+		IEnumerable<IValidator<CreatePizzaCommand>> validators,
+		DatabaseContext database)
+	{
+		this.validators = validators;
+		this.database = database;
+	}
+
+	public async Task<Result<PizzaModel>> Handle(CreatePizzaCommand request, CancellationToken cancellationToken)
+	{
+		// Validate the request - throws ValidationException if invalid
+		await ValidationHelper.ValidateAsync(request, this.validators, cancellationToken);
+
+		// Business logic continues only if validation passes
+		var pizza = new Pizza { ... };
+		this.database.Pizzas.Add(pizza);
+		await this.database.SaveChangesAsync(cancellationToken);
+
+		return Result.Success(MapToPizzaModel(pizza));
+	}
+}
+```
+
 ## Exception Handler Middleware
 
-Update Global Error handler UnhandledExceptionBehaviour.cs inside Common Project to ExceptionHandlerMiddleware.cs
+The middleware catches all exceptions including `ValidationException` and returns appropriate HTTP responses.
 
-Make sure Microsoft.AspNetCore.Http Nuget Package is installed.
+Create `ExceptionHandlerMiddleware.cs` in the Common/Behaviour folder:
 
 ```cs
 namespace Common.Behaviour;
@@ -209,7 +189,7 @@ public class ExceptionHandlerMiddleware
 
 	public ExceptionHandlerMiddleware(RequestDelegate next) => this.next = next;
 
-	public async Task Invoke(HttpContext context /* other dependencies */)
+	public async Task Invoke(HttpContext context)
 	{
 		try
 		{
@@ -223,7 +203,6 @@ public class ExceptionHandlerMiddleware
 
 	private static Task HandleExceptionAsync(HttpContext context, Exception exception)
 	{
-		// Log issues and handle exception response
 		if (exception.GetType() == typeof(FluentValidation.ValidationException))
 		{
 			var errors = ((FluentValidation.ValidationException)exception).Errors;
@@ -238,56 +217,36 @@ public class ExceptionHandlerMiddleware
 					};
 				});
 				var result = Result.Failure(failures.ToList<object>());
-				var code = HttpStatusCode.BadRequest;
 				var resultJson = JsonSerializer.Serialize(result);
 
 				context.Response.ContentType = "application/json";
-				context.Response.StatusCode = (int)code;
-
-				return context.Response.WriteAsync(resultJson);
-			}
-			else
-			{
-				var code = HttpStatusCode.BadRequest;
-				var result = Result.Failure(exception?.Message);
-				var resultJson = JsonSerializer.Serialize(result);
-
-				context.Response.ContentType = "application/json";
-				context.Response.StatusCode = (int)code;
-
+				context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
 				return context.Response.WriteAsync(resultJson);
 			}
 		}
-		else
-		{
-			var code = HttpStatusCode.InternalServerError;
-			var result = JsonSerializer.Serialize(new { isSuccess = false, error = exception.Message });
-			context.Response.ContentType = "application/json";
-			context.Response.StatusCode = (int)code;
 
-			return context.Response.WriteAsync(result);
-		}
+		var code = HttpStatusCode.InternalServerError;
+		var result = JsonSerializer.Serialize(new { isSuccess = false, error = exception.Message });
+		context.Response.ContentType = "application/json";
+		context.Response.StatusCode = (int)code;
+
+		return context.Response.WriteAsync(result);
 	}
 }
 ```
 
-Remove the following line from DependencyInjection.cs on Core Project
-
-```cs
-services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnhandledExceptionBehaviour<,>));
-```
-
-In Startup.cs in Configure() call the middleware
+Register the middleware in `Startup.cs` in the `Configure()` method:
 
 ```cs
 app.UseMiddleware(typeof(ExceptionHandlerMiddleware));
 ```
 
-When the validation rules get violated a Bad Request will be returned.
+When validation rules are violated, a Bad Request (400) with validation errors will be returned.
 
 ![Validation example](Assets/2021-04-15-21-28-29.png)
 
 ## **STEP 2 - Filtering & Searching**
 
 Move to Step 2
-[Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%203/Step%202)
+
+[Go to Phase 4 Step 2](https://github.com/entelect-incubator/.NET/tree/master/Phase%204/Step%202)

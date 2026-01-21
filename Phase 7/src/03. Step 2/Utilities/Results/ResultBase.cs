@@ -12,6 +12,10 @@ public abstract class ResultBase
 
 	public Dictionary<string, List<string>> ValidationErrors { get; set; } = [];
 
+	public bool IsSuccess => this.ErrorResult == ErrorResults.None;
+
+	public bool Succeeded => this.IsSuccess;
+
 	public void AddError(string error)
 	{
 		this.ErrorResult = ErrorResults.GeneralError;

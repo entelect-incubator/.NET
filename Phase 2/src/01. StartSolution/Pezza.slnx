@@ -3,6 +3,7 @@
     <Project Path="Api/Api.csproj" />
   </Folder>
   <Folder Name="/02 Core/">
+    <Project Path="Core.Contracts/Core.Contracts.csproj" />
     <Project Path="Core/Core.csproj" />
   </Folder>
   <Folder Name="/03 Database/">

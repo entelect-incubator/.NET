@@ -6,7 +6,7 @@ public sealed class CreateCustomerCommand : ICommand<Result<CustomerModel>>
 
 	public sealed class CreateCustomerCommandHandler(DatabaseContext databaseContext) : ICommandHandler<CreateCustomerCommand, Result<CustomerModel>>
 	{
-		public async Task<Result<CustomerModel>> HandleAsync(CreateCustomerCommand request, CancellationToken cancellationToken)
+		public async Task<Result<CustomerModel>> Handle(CreateCustomerCommand request, CancellationToken cancellationToken)
 		{
 			if (request.Data == null)
 			{

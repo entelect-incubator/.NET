@@ -3,16 +3,16 @@ namespace Core.Pizza.Queries;
 using System.Linq;
 using LazyCache;
 
-public sealed class GetPizzasQuery : IQuery<Result<IEnumerable<PizzaModel>>>
+public sealed class GetPizzasQuery : IQuery<ListResult<PizzaModel>>
 {
 	public SearchPizzaModel Data { get; set; }
 }
 
-public sealed class GetPizzasQueryHandler(DatabaseContext databaseContext, IAppCache cache) : IQueryHandler<GetPizzasQuery, Result<IEnumerable<PizzaModel>>>
+public sealed class GetPizzasQueryHandler(DatabaseContext databaseContext, IAppCache cache) : IQueryHandler<GetPizzasQuery, ListResult<PizzaModel>>
 {
 	private readonly TimeSpan cacheExpiry = new(12, 0, 0);
 
-	public async Task<Result<IEnumerable<PizzaModel>>> Handle(GetPizzasQuery request, CancellationToken cancellationToken)
+	public async Task<ListResult<PizzaModel>> Handle(GetPizzasQuery request, CancellationToken cancellationToken)
 	{
 		var entity = request.Data;
 
@@ -27,7 +27,7 @@ public sealed class GetPizzasQueryHandler(DatabaseContext databaseContext, IAppC
 				.OrderBy(x => x.DateCreated)
 				.ToList();
 
-			return Result<IEnumerable<PizzaModel>>.Success(data, cachedData.Count());
+			return ListResult<PizzaModel>.Success(data, cachedData.Count());
 		}
 
 		if (string.IsNullOrEmpty(entity.OrderBy))
@@ -45,7 +45,7 @@ public sealed class GetPizzasQueryHandler(DatabaseContext databaseContext, IAppC
 		var count = await entities.CountAsync(cancellationToken);
 		var paged = await entities.ApplyPaging(entity.PagingArgs).ToListAsync(cancellationToken);
 
-		return Result<IEnumerable<PizzaModel>>.Success(paged.Map(), count);
+		return ListResult<PizzaModel>.Success(paged.Map(), count);
 	}
 
 	private async Task<IEnumerable<PizzaModel>> GetData()

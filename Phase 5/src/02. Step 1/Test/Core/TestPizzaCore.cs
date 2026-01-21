@@ -20,7 +20,7 @@ public class TestPizzaCore : QueryTestBase
 	{
 		this.model = PizzaTestData.PizzaModel;
 		var sutCreate = new CreatePizzaCommandHandler(this.Context);
-		var resultCreate = await sutCreate.HandleAsync(
+		var resultCreate = await sutCreate.Handle(
 			new CreatePizzaCommand
 			{
 				Data = new CreatePizzaModel
@@ -42,7 +42,7 @@ public class TestPizzaCore : QueryTestBase
 	public async Task GetAsync()
 	{
 		var sutGet = new GetPizzaQueryHandler(this.Context);
-		var resultGet = await sutGet.HandleAsync(
+		var resultGet = await sutGet.Handle(
 			new GetPizzaQuery
 			{
 				Id = this.model.Id
@@ -55,7 +55,7 @@ public class TestPizzaCore : QueryTestBase
 	public async Task GetAllAsync()
 	{
 		var sutGetAll = new GetPizzasQueryHandler(this.Context);
-		var resultGetAll = await sutGetAll.HandleAsync(new GetPizzasQuery(), CancellationToken.None);
+		var resultGetAll = await sutGetAll.Handle(new GetPizzasQuery(), CancellationToken.None);
 
 		Assert.That(resultGetAll?.Data.Count, Is.EqualTo(1));
 	}
@@ -67,7 +67,7 @@ public class TestPizzaCore : QueryTestBase
 	public async Task UpdateAsync()
 	{
 		var sutUpdate = new UpdatePizzaCommandHandler(this.Context);
-		var resultUpdate = await sutUpdate.HandleAsync(
+		var resultUpdate = await sutUpdate.Handle(
 			new UpdatePizzaCommand
 			{
 				Id = this.model.Id,
@@ -84,7 +84,7 @@ public class TestPizzaCore : QueryTestBase
 	public async Task DeleteAsync()
 	{
 		var sutDelete = new DeletePizzaCommandHandler(this.Context);
-		var outcomeDelete = await sutDelete.HandleAsync(
+		var outcomeDelete = await sutDelete.Handle(
 			new DeletePizzaCommand
 			{
 				Id = this.model.Id

@@ -1,0 +1,48 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Build outputs
+bin/
+obj/
+
+# IDE
+.vscode/
+.vs/
+*.swp
+*.swo
+*~
+
+# Dependencies
+node_modules/
+packages/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test results
+TestResults/
+*.trx
+coverage/
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+.travis.yml
+azure-pipelines.yml
+
+# Documentation
+*.md
+docs/
+
+# Temporary files
+tmp/
+temp/
+*.log

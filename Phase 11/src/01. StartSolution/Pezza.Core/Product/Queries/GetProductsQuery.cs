@@ -14,29 +14,23 @@ using Pezza.Common.Filters;
 using Pezza.Pezza.Common.Models;
 using DataAccess;
 
-public sealed class GetProductsQuery : ICommand<ListResult<ProductDTO>>
+public sealed class GetProductsQuery : IQuery<Result<IEnumerable<ProductDTO>>>
 {
-    public ProductDTO Data { get; set; }
+    public ProductDTO? Data { get; set; }
 }
 
-public sealed class GetProductsQueryHandler : ICommandHandler<GetProductsQuery, ListResult<ProductDTO>>
-{
-    private readonly DatabaseContext databaseContext;
-
-    private readonly IMapper mapper;
-
-    public GetProductsQueryHandler(DatabaseContext databaseContext, IMapper mapper)
-        => (this.databaseContext, this.mapper) = (databaseContext, mapper);
-
-    public async Task<ListResult<ProductDTO>> Handle(GetProductsQuery request, CancellationToken cancellationToken)
+public sealed class GetProductsQueryHandler(DatabaseContext databaseContext, IMapper mapper)
+    : IQueryHandler<GetProductsQuery, Result<IEnumerable<ProductDTO>>>\n{\n    public async Task<Result<IEnumerable<ProductDTO>>> HandleAsync(GetProductsQuery request, CancellationToken cancellationToken)
     {
-        var dto = request.Data;
-        if (string.IsNullOrEmpty(dto.OrderBy))
+        if (request.Data == null)
         {
-            dto.OrderBy = "DateCreated desc";
+            return Result<IEnumerable<ProductDTO>>.Failure("Product search data is required");
         }
 
-        var entities = this.databaseContext.Products.Select(x => x)
+        var dto = request.Data;
+        dto.OrderBy ??= "DateCreated desc";
+
+        var entities = databaseContext.Products.Select(x => x)
             .AsNoTracking()
             .FilterByName(dto.Name)
             .FilterByDescription(dto.Description)
@@ -50,9 +44,9 @@ public sealed class GetProductsQueryHandler : ICommandHandler<GetProductsQuery, 
             .OrderBy(dto.OrderBy);
 
         var count = await entities.CountAsync(cancellationToken);
-        var paged = this.mapper.Map<List<ProductDTO>>(await entities.ApplyPaging(dto.PagingArgs).OrderBy(dto.OrderBy).ToListAsync(cancellationToken));
+        var paged = mapper.Map<List<ProductDTO>>(await entities.ApplyPaging(dto.PagingArgs).OrderBy(dto.OrderBy).ToListAsync(cancellationToken));
 
-        return ListResult<ProductDTO>.Success(paged, count);
+        return Result<IEnumerable<ProductDTO>>.Success(paged, count);
     }
 }
 

@@ -1,5 +1,6 @@
 ﻿namespace Api.Controllers;
 
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -41,7 +42,7 @@ public class ProductController : ApiController
     /// <response code="200">Product Search.</response>
     /// <response code="400">Error searching for products.</response>
     [HttpPost]
-    [ProducesResponseType(typeof(ListResult<ProductDTO>), 200)]
+    [ProducesResponseType(typeof(Result<IEnumerable<ProductDTO>>), 200)]
     [ProducesResponseType(typeof(ErrorResult), 400)]
     [Route("Search")]
     public async Task<ActionResult> Search(ProductDTO dto, CancellationToken cancellationToken = default)

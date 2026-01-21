@@ -21,8 +21,6 @@ public static class DependencyInjection
             .ForEach(item => services.AddScoped(item.InterfaceType, item.ValidatorType));
 
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
-        ////services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));
 
         services.AddAutoMapper(typeof(MappingProfile));
 

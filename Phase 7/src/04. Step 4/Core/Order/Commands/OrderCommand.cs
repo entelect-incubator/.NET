@@ -8,7 +8,7 @@ public sealed class OrderCommand : ICommand<Result>
 	public required OrderModel Data { get; set; }
 }
 
-public sealed class OrderCommandHandler(IMediator mediator) : ICommandHandler<OrderCommand, Result>
+public sealed class OrderCommandHandler(Dispatcher dispatcher) : ICommandHandler<OrderCommand, Result>
 {
 	public async Task<Result> Handle(OrderCommand request, CancellationToken cancellationToken)
 	{
@@ -17,7 +17,7 @@ public sealed class OrderCommandHandler(IMediator mediator) : ICommandHandler<Or
 			return Result.Failure("Error");
 		}
 
-		await mediator.Publish(new OrderEvent { Data = request.Data }, cancellationToken);
+		await dispatcher.Publish(new OrderEvent { Data = request.Data }, cancellationToken);
 
 		return Result.Success();
 	}

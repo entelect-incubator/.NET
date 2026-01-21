@@ -14,24 +14,24 @@ using Pezza.Common.Filters;
 using Pezza.Pezza.Common.Models;
 using DataAccess;
 
-public sealed class GetOrdersQuery : ICommand<ListResult<OrderDTO>>
+public sealed class GetOrdersQuery : IQuery<Result<IEnumerable<OrderDTO>>>
 {
-    public OrderDTO Data { get; set; }
+    public OrderDTO? Data { get; set; }
 }
 
-public sealed class GetOrdersQueryHandler : ICommandHandler<GetOrdersQuery, ListResult<OrderDTO>>
+public sealed class GetOrdersQueryHandler(DatabaseContext databaseContext, IMapper mapper) : IQueryHandler<GetOrdersQuery, Result<IEnumerable<OrderDTO>>>
 {
-    private readonly DatabaseContext databaseContext;
-
-    private readonly IMapper mapper;
-
-    public GetOrdersQueryHandler(DatabaseContext databaseContext, IMapper mapper)
-        => (this.databaseContext, this.mapper) = (databaseContext, mapper);
-
-    public async Task<ListResult<OrderDTO>> Handle(GetOrdersQuery request, CancellationToken cancellationToken)
+    public async Task<Result<IEnumerable<OrderDTO>>> HandleAsync(GetOrdersQuery request, CancellationToken cancellationToken)
     {
+        if (request.Data == null)
+        {
+            return Result<IEnumerable<OrderDTO>>.Failure("Order search criteria is required");
+        }
+
         var dto = request.Data;
-        var entities = this.databaseContext.Orders
+        dto.OrderBy ??= "DateCreated desc";
+
+        var entities = databaseContext.Orders
             .Include(x => x.OrderItems)
             .ThenInclude(x => x.Product)
             .Include(x => x.Restaurant)
@@ -43,9 +43,9 @@ public sealed class GetOrdersQueryHandler : ICommandHandler<GetOrdersQuery, List
             .FilterByCompleted(dto.Completed);
 
         var count = await entities.CountAsync(cancellationToken);
-        var paged = this.mapper.Map<List<OrderDTO>>(await entities.ApplyPaging(dto.PagingArgs).OrderBy(dto.OrderBy).ToListAsync(cancellationToken));
+        var paged = mapper.Map<List<OrderDTO>>(await entities.ApplyPaging(dto.PagingArgs).OrderBy(dto.OrderBy).ToListAsync(cancellationToken));
 
-        return ListResult<OrderDTO>.Success(paged, count);
+        return Result<IEnumerable<OrderDTO>>.Success(paged, count);
     }
 }
 

@@ -1,109 +1,167 @@
 <img align="left" width="116" height="116" src="../pezza-logo.png" />
 
-# &nbsp;**Pezza - Phase 4 - Step 2** [![.NET - Phase 4 - Step 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase4-step2.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase4-step2.yml)
+# &nbsp;**Pezza - Phase 5 - Step 2** [![.NET - Phase 5 - Final Solution](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase5-finalsolution.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase5-finalsolution.yml)
 
 <br/><br/><br/>
 
-## Error Handling & Logging
+## Centralized Error Handling with GlobalExceptionHandler
 
-**Difficulty**: ★★★☆☆ (Intermediate)  
-**Estimated Time**: 2-3 hours  
+**Difficulty**: ★★★★☆ (Advanced Intermediate)  
+**Estimated Time**: 2-3 hours
 **Prerequisites**:
-- Completed Phase 1-3
-- Step 1 of Phase 4 completed
-- Understanding of middleware concepts
+
+- Completed Phase 5 Step 1 (Analyzers & Standards)
+- Understanding of custom MediatorLite dispatcher pattern from Phase 3
+- Understanding of exception handling concepts
 
 ### Learning Outcomes
 
 After completing this step, you will:
-- Implement centralized error handling middleware
-- Create consistent error response patterns
-- Configure Serilog for structured logging
-- Handle exceptions appropriately by type
-- Understand logging best practices and sinks
+
+- Implement centralized error handling using `IExceptionHandler`
+- Create RFC 7231 Problem Details responses
+- Integrate structured logging (Serilog) into exception handlers
+- Handle different exception types appropriately
+- Understand modern .NET 8+ error handling patterns
 
 ---
 
-Install Nuget Package Serilog.AspNetCore and Serilog.Sinks.File on all but the Test project.
+## Implementation
 
-![](./Assets/2021-01-15-11-13-06.png)
+### Step 1: Create GlobalExceptionHandler
 
-In the root of Common, create Logging.cs as per the following code snippet. Notice that Logging is a static class. This makes it easy to use in any calling code without the need of injecting it.
-
-
-```cs
-namespace Common;
-
-using Serilog;
-
-public static class Logging
-{
-    public static void LogInfo(string name, object data)
-    {
-        Setup();
-        Log.Information(name, data);
-    }
-
-    public static void LogException(Exception e)
-    {
-        Setup();
-        Log.Fatal(e, "Exception");
-    }
-
-    private static void Setup() => Log.Logger = new LoggerConfiguration()
-        .Enrich.FromLogContext()
-        .WriteTo.File(@"logs\log.txt", rollingInterval: RollingInterval.Day)
-        .CreateLogger();
-}
-```
-
-Modify ExceptionHandlerMiddleware.cs by logging an exception in the final else of the HandleExceptionAsync Method. All exceptions that we have not defined behaviour for gets handled here.
+Create a new file `Api/Handlers/GlobalExceptionHandler.cs`:
 
 ```cs
-else
+namespace Api.Handlers;
+
+using System.Net;
+using System.Text.Json;
+using Common.Models;
+using FluentValidation;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Http;
+
+public sealed class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) 
+	: IExceptionHandler
 {
-    var code = HttpStatusCode.InternalServerError;
-    var result = JsonSerializer.Serialize(new { isSuccess = false, error = exception.Message });
-    context.Response.ContentType = "application/json";
-    context.Response.StatusCode = (int)code;
-    Logging.LogException(exception);
-
-    return context.Response.WriteAsync(result);
-}
-```
-
-Update PerformanceBehaviour.cs by removing the old logging and using the new static Logging class instead.
-
-```cs
-namespace Common.Behaviour;
-
-public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
-{
-	private readonly Stopwatch timer = new Stopwatch();
-
-	public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
+	public async ValueTask<bool> TryHandleAsync(
+		HttpContext httpContext,
+		Exception exception,
+		CancellationToken cancellationToken)
 	{
-		this.timer.Restart();
+		logger.LogError(exception, "An unhandled exception occurred");
 
-		var response = await next();
+		var response = httpContext.Response;
+		response.ContentType = "application/json";
 
-		this.timer.Stop();
-
-		var elapsedMilliseconds = this.timer.ElapsedMilliseconds;
-
-		if (elapsedMilliseconds > 500)
+		var errorResponse = exception switch
 		{
-			var requestName = typeof(TRequest).Name;
-			Logging.LogInfo($"CleanArchitecture Long Running Request: {requestName} ({elapsedMilliseconds} milliseconds)", request);
-		}
+			ValidationException validationException => new
+			{
+				httpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest,
+				errors = validationException.Errors.Select(e => new
+				{
+					field = e.PropertyName,
+					message = e.ErrorMessage
+				})
+			},
+			_ => new
+			{
+				httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError,
+				error = "An internal server error occurred"
+			}
+		};
 
-		return response;
+		response.StatusCode = errorResponse.StatusCode;
+		await response.WriteAsJsonAsync(errorResponse, cancellationToken: cancellationToken);
+
+		return true;
 	}
 }
 ```
 
-Serilog provides sinks for writing log events to storage in various formats. Read more on [provided sinks](https://github.com/serilog/serilog/wiki/Provided-Sinks) or move on to the next phase.
+### Step 2: Configure in Startup
 
-## **Move to Phase 5**
+Register the handler in your `Api/Program.cs` or startup configuration:
 
-[Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%205)
+```cs
+services.AddExceptionHandler<GlobalExceptionHandler>();
+services.AddProblemDetails();
+
+// In Configure()
+app.UseExceptionHandler();
+```
+
+### Step 3: Integrate Serilog for Structured Logging
+
+Install NuGet packages:
+
+```cs
+Serilog.AspNetCore
+Serilog.Sinks.Console
+Serilog.Sinks.File
+```
+
+Configure in `Program.cs`:
+
+```cs
+using Serilog;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Add Serilog
+Log.Logger = new LoggerConfiguration()
+	.MinimumLevel.Information()
+	.Enrich.FromLogContext()
+	.WriteTo.Console()
+	.WriteTo.File("logs/app-log.txt", rollingInterval: RollingInterval.Day)
+	.CreateLogger();
+
+builder.Host.UseSerilog();
+
+// ... rest of configuration
+```
+
+The logger injected into GlobalExceptionHandler will automatically log all exceptions with structured data.
+
+### Step 4: Handle Validation Exceptions
+
+When handlers use `ValidationHelper.ValidateAsync()` and it throws `ValidationException`, the GlobalExceptionHandler will catch it and return a proper 400 Bad Request response.
+
+Example handler using validation:
+
+```cs
+public sealed class CreateCustomerCommandHandler(
+	IEnumerable<IValidator<CreateCustomerCommand>> validators,
+	DatabaseContext database) 
+	: ICommandHandler<CreateCustomerCommand, Result<CustomerModel>>
+{
+	public async Task<Result<CustomerModel>> Handle(
+		CreateCustomerCommand command,
+		CancellationToken cancellationToken)
+	{
+		// Validation is explicit in the handler
+		await ValidationHelper.ValidateAsync(command, validators, cancellationToken);
+
+		// Business logic here...
+		var customer = new Customer { /* ... */ };
+		database.Customers.Add(customer);
+		await database.SaveChangesAsync(cancellationToken);
+
+		return Result<CustomerModel>.Success(customer.Map());
+	}
+}
+```
+
+## Key Points
+
+- **GlobalExceptionHandler** replaces old middleware-based exception handling
+- **ValidationHelper** in handlers makes validation explicit and testable
+- **Serilog** provides structured logging for debugging and monitoring
+- **RFC 7231 Problem Details** ensures consistent error responses across your API
+- **Modern .NET patterns** use `IExceptionHandler` instead of try-catch middleware
+
+## Next Steps
+
+[Move to Phase 6 - Caching & Compression](https://github.com/entelect-incubator/.NET/tree/master/Phase%206)

@@ -2,23 +2,18 @@ namespace Core.Pizza.Commands;
 
 public sealed class UpdatePizzaCommand : ICommand<Result<PizzaModel>>
 {
-	public int? Id { get; set; }
+	public required int Id { get; set; }
 
-	public UpdatePizzaModel? Data { get; set; }
+	public required UpdatePizzaModel Data { get; set; }
 }
 
 public sealed class UpdatePizzaCommandHandler(DatabaseContext databaseContext) : ICommandHandler<UpdatePizzaCommand, Result<PizzaModel>>
 {
-	public async Task<Result<PizzaModel>> HandleAsync(UpdatePizzaCommand request, CancellationToken cancellationToken)
+	public async Task<Result<PizzaModel>> Handle(UpdatePizzaCommand request, CancellationToken cancellationToken)
 	{
-		if (request.Data is null || request.Id is null)
-		{
-			return Result<PizzaModel>.Failure("Error");
-		}
-
 		var model = request.Data;
 		var query = EF.CompileAsyncQuery((DatabaseContext db, int id) => db.Pizzas.FirstOrDefault(c => c.Id == id));
-		var findEntity = await query(databaseContext, request.Id.Value);
+		var findEntity = await query(databaseContext, request.Id);
 		if (findEntity is null)
 		{
 			return Result<PizzaModel>.Failure("Not found");

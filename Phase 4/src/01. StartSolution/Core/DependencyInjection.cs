@@ -7,7 +7,7 @@ using Utilities.CQRS;
 
 /// <summary>
 /// Dependency injection configuration for the Core application layer.
-/// Registers LiteBus mediators and core application services.
+/// Registers custom Dispatcher and core application services.
 /// </summary>
 public static class DependencyInjection
 {

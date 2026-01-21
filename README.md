@@ -6,21 +6,21 @@
 
 ## What you will be learning?
 
-- [ ] What is it?
+- [ ] What is .NET?
 - [ ] Why should I learn about it?
 - [ ] Official documentation
-- [ ] Prerequirements?
+- [ ] Prerequisites
+- [ ] Develop with AI
 - [ ] Building the Pezza Digital Solutions
-  - [ ] CRUD System
-  - [ ] Handling Background Jobs
-  - [ ] Creating an API
-    - [ ] RESTful - Web API
-  - [ ] Schedule Background Jobs
-    - [ ] Hangfire
-  - [ ] Building a Front-End to consume your API
-    - [ ] MVC
-- [ ] Security
-- [ ] Microservices
+  - [ ] Phase 1-4: Foundation & Best Practices
+  - [ ] Phase 5-6: Performance & Events
+  - [ ] Phase 7-9: Microservices, Security & UI
+  - [ ] Phase 10-11: Database Migrations & Cloud-Native Orchestration
+  - [ ] Phase 12: LiteBus CQRS Migration
+  - [ ] Phase 13: AI Integration with MCP Server
+  - [ ] Phase 14: External API Integration
+  - [ ] Phase 15: Container Registry Publishing
+- [ ] Complete architecture overview
 - [ ] Recommended libraries
 
 ## What is it?
@@ -77,11 +77,30 @@ New to AI-assisted development? Learn how to work effectively with GitHub Copilo
 - Primary constructors and property naming (no underscores)
 - Result<T> pattern for consistent error handling
 - DRY principles and extension methods
-- MediatR command/query bus patterns
+- Custom Dispatcher pattern for command/query separation
 - Async/await best practices
 - Code review checklist
 
 Start with the Quick Reference, then dive into the Full Guide for complete context and patterns.
+
+## Design Patterns
+
+Learn essential design patterns and architectural principles used throughout this incubator:
+
+- 🎯 **[Design Patterns Hub](../Design-Patterns/README.md)** - Comprehensive guide to SOLID principles, Result pattern, CQRS, Dispatcher/Mediator, Repository pattern, and more
+- 📖 **[Pattern Cheat Sheets](../Design-Patterns/Cheat-Sheets/)** - Quick reference guides
+- 🏗️ **[Project Templates](../Design-Patterns/Project-Templates/)** - Ready-to-use starter templates
+
+**Core Patterns Covered:**
+- SOLID Principles
+- Result Pattern for error handling
+- CQRS (Command Query Responsibility Segregation)
+- Dispatcher/Mediator for decoupling
+- Repository Pattern for data access
+- Dependency Injection
+- Feature-based architecture
+- Clean Code principles
+- Testing patterns
 
 ## Prerequisites
 
@@ -110,13 +129,14 @@ flowchart TD;
 
 ## Learning Outcomes
 
-### Phase 1 - Getting started
+### Phase 1 - Getting Started
 
-We will be starting with how to make a basic project and refactoring it into a solution following the single responsibility principle and how to set up a basic clean code architecture / layered architecture. This setup format will be used throughout the incubator.
+Learn the fundamentals of .NET project structure and clean architecture. Refactor a basic project into a layered solution following single responsibility principles.
 
-Overview
-
+**Topics:**
 - [ ] [Data Transfer Objects (DTOs)](https://docs.microsoft.com/en-us/aspnet/web-api/overview/data/using-web-api-with-entity-framework/part-5)
+- [ ] Clean architecture / layered architecture
+- [ ] Project structure and organization
 
 [Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%201)
 
@@ -124,32 +144,28 @@ Overview
 
 ### Phase 2 - Scaffolding
 
-We will be extending the foundation from Phase 1 to all Entities CRUD operations, we will also be moving to use CQRS Pattern and Mediatr NuGet Package.
+Extend the foundation to all entities with full CRUD operations. Introduction to CQRS pattern and MediatR.
 
-Overview
+**Topics:**
+- [ ] CQRS Pattern
+- [ ] MediatR NuGet Package
+- [ ] Complete CRUD operations
 
 [Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%202)
 
 [![.NET - Phase 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase2-finalsolution.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase2-finalsolution.yml)
 
-### Phase 3 - Data Validation and Data Pagination
+### Phase 3 - Data Validation and Pagination
 
-Now that we have deployed phase 2, we can make a few enhancements. Also, it will be easier for the customer and admin to search and filter through the data, so we will add that in as well.
+Enhance data handling with validation, filtering, searching, and pagination. Deep dive into Entity Framework Core.
 
-Overview
+**Topics:**
 - [ ] [Getting Started with Entity Framework Core](https://www.youtube.com/watch?v=SryQxUeChMc&ab_channel=dotnet)
-
-Improve how data is displayed and validated
-
 - [ ] Fluent Validation
-- [ ] Filtering
-- [ ] Searching
+- [ ] Filtering and Searching
 - [ ] Pagination
-- [ ] Entity Framework Core
-  - [ ] Migrations
-  - [ ] Change Tracker API
-  - [ ] Lazy Loading, Eager Loading, Explicit Loading
-  - [ ] TPH, TPC, TPT
+- [ ] EF Core: Migrations, Change Tracker, Loading Strategies
+- [ ] TPH, TPC, TPT inheritance patterns
 
 [Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%203)
 
@@ -157,42 +173,38 @@ Improve how data is displayed and validated
 
 ### Phase 4 - Coding Standards and Error Handling
 
- When we work as part of a team, we usually need to adhere to coding standards. Let's have a look at how we can enforce some of the most basic standards and adding error handling.
-  
-Overview
-- [ ] [Error Handling](https://web.microsoftstream.com/video/5fcd4c8a-4e7b-41ac-9836-d1366da97c82?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
+Implement team coding standards and comprehensive error handling strategies.
 
-- [ ] Coding Standards
+**Topics:**
+- [ ] [Error Handling](https://web.microsoftstream.com/video/5fcd4c8a-4e7b-41ac-9836-d1366da97c82?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
+- [ ] Coding standards enforcement
+- [ ] Exception handling patterns
 
 [Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%204)
 
 [![.NET - Phase 4 - Step 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase4-step2.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase4-step2.yml)
-  
+
 ### Phase 5 - Performance Improvement
 
-To improve performance we introduce caching and compression. Caching is useful in scenarios where we retrieve data that does not change very often. Response compression usually increases the responsiveness of an app in cases where the client supports it.
-Overview
+Optimize application performance with caching and compression strategies.
+
+**Topics:**
 - [ ] [Performance and Memory Management](https://web.microsoftstream.com/video/64098be8-6979-4c10-85f4-efa91d0cb1f1?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
-
-Increasing Performance
-
-- [ ] Caching
-- [ ] Compression
+- [ ] Response caching
+- [ ] Compression middleware
 
 [Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%205)
 
 [![.NET - Phase 5 - Step 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase5-step2.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase5-step2.yml)
 
-### Phase 6 - Events
+### Phase 6 - Events and Background Jobs
 
-We would like to notify the customer as soon as his order has been completed and ready for collection.
+Implement domain events, email notifications, and background job processing.
 
-Increasing Performance
-
-- [ ] Domain Events
-- [ ] Simple Email Notification
-- [ ] Schedule Background Jobs
-  - [ ] Hangfire
+**Topics:**
+- [ ] Domain Events pattern
+- [ ] Email notification system
+- [ ] Background job scheduling with Hangfire
 
 [Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%206)
 
@@ -200,35 +212,124 @@ Increasing Performance
 
 ### Phase 7 - Microservices
 
-- [ ] [Overview](https://learn.microsoft.com/en-us/aspnet/core/tutorials/getting-started-with-nswag?view=aspnetcore-7.0&tabs=visual-studio)
+Build API clients and understand microservices architecture patterns.
 
-An API client is a set of tools and protocols that operate from an application on a computer. They help you to bypass some operations when developing a web application rather than reinventing the wheel every time. Using a client API is a great way to speed up the development process.
+**Topics:**
+- [ ] [NSwag Overview](https://learn.microsoft.com/en-us/aspnet/core/tutorials/getting-started-with-nswag?view=aspnetcore-7.0&tabs=visual-studio)
+- [ ] API client generation
+- [ ] Service-to-service communication
 
-- [ ] Intro
-- [ ] API Client
+[Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%207)
 
 ### Phase 8 - Security
 
-Now that the Api and clients are in place we need to secure the solution before exposing it publicly. This phase focuses on authentication (JWT/OAuth), antiforgery for UI forms, HTTPS/HSTS, secure cookies, secure headers and secrets management.
+Secure your application with authentication, authorization, and security best practices.
 
-- [ ] Authentication: JWT or OAuth2 for the Api
-- [ ] Antiforgery: validate tokens in MVC forms
-- [ ] HTTPS & HSTS: enforce in production
-- [ ] Secrets: move sensitive values to user-secrets or a vault
+**Topics:**
+- [ ] JWT Authentication
+- [ ] OAuth2 integration
+- [ ] Antiforgery tokens
+- [ ] HTTPS & HSTS
+- [ ] Secrets management
 
 [Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%208)
 
 ### Phase 9 - User Interface
 
-Build the front-end clients for the Api — admin dashboard (Portal) and customer website. Choose server-side MVC, Razor, Blazor, or a JS framework depending on the learning goals.
+Build front-end clients with MVC, Razor, or Blazor for admin dashboard and customer website.
 
-- [ ] Dashboard (Portal)
+**Topics:**
+- [ ] Admin Dashboard (Portal)
 - [ ] Customer Website
+- [ ] Server-side rendering
 
 [Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%209)
 
 [![.NET - Phase 9 - Step 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase9-step2.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase9-step2.yml)
-  
-### Phase 10 - Recommended libraries
 
-- [ ] Nuget libraries
+### Phase 10 - Database Migrations
+
+Implement automated database migrations using DbUp for version-controlled schema management.
+
+**Topics:**
+- [ ] DbUp migration framework
+- [ ] Version tracking
+- [ ] Idempotent migrations
+- [ ] CI/CD integration
+
+[Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%2010)
+
+### Phase 11 - Cloud-Native Orchestration
+
+Combine .NET Aspire orchestration with DbUp migrations for production-ready microservices.
+
+**Topics:**
+- [ ] .NET Aspire 8.0 service orchestration
+- [ ] Service discovery and health checks
+- [ ] OpenTelemetry observability
+- [ ] Docker containerization
+
+[Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%2011)
+
+### Phase 12 - Custom Dispatcher Pattern
+
+Implement a custom CQRS dispatcher from scratch for complete control over command/query separation and pipeline behaviors.
+
+**Topics:**
+- [ ] Custom Dispatcher implementation (based on [stianleroux/Dispatch](https://github.com/stianleroux/Dispatch))
+- [ ] ICommand<TResult> and IQuery<TResult> interfaces
+- [ ] Pipeline behaviors for cross-cutting concerns
+- [ ] Scrutor for automatic handler registration
+- [ ] Exception handling and actions
+- [ ] Notification pattern for domain events
+- [ ] Clean separation of commands and queries
+
+[Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%2012)
+
+### Phase 13 - MCP Server & AI Integration
+
+Build a Model Context Protocol (MCP) server enabling AI assistants to interact with your application through natural language.
+
+**Topics:**
+- [ ] Model Context Protocol (MCP)
+- [ ] STDIO-based communication
+- [ ] JSON-RPC message handling
+- [ ] AI tool integration (Claude, ChatGPT)
+- [ ] 18 domain-specific tools for pizza management
+
+[Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%2013)
+
+### Phase 14 - External API Integration
+
+Learn to integrate with external APIs using the Pezza Mock Delivery Service, implementing webhooks, retry logic, and resilient patterns.
+
+**Topics:**
+- [ ] HttpClient patterns with typed clients
+- [ ] Webhook receivers
+- [ ] Retry policies with Polly
+- [ ] Event-driven integration
+- [ ] Multi-service docker-compose
+
+[Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%2014)
+
+### Phase 15 - GitHub Container Registry Publishing
+
+Containerize and publish the Pezza API to GitHub Container Registry using GitHub Actions CI/CD.
+
+**Topics:**
+- [ ] Docker multi-stage builds
+- [ ] GitHub Actions workflows
+- [ ] GitHub Container Registry (GHCR)
+- [ ] Image versioning strategies
+- [ ] Frontend consumption patterns
+
+[Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%2015)
+
+## Complete Architecture Guide
+
+For a comprehensive overview of all phases and architecture evolution:
+- 📖 **[Architecture Complete](./ARCHITECTURE-COMPLETE.md)** - Full phase overview, technology stack evolution, and running instructions
+
+## Recommended Libraries
+
+- [ ] NuGet libraries and tools used across all phases

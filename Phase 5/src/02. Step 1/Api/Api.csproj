@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
 	<PropertyGroup>
 		<TargetFramework>net10.0</TargetFramework>
@@ -16,9 +16,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="LiteBus" Version="4.1.0" />
-		<PackageReference Include="LiteBus.Events.Extensions.MicrosoftDependencyInjection" Version="3.1.0" />
-		<PackageReference Include="LiteBus.Extensions.MicrosoftDependencyInjection" Version="3.1.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="9.0.10" />
 		<PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
 		  <PrivateAssets>all</PrivateAssets>

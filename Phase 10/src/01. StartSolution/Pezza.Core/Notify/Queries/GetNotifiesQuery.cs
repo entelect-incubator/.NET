@@ -14,29 +14,24 @@ using Pezza.Common.Filters;
 using Pezza.Pezza.Common.Models;
 using DataAccess;
 
-public sealed class GetNotifiesQuery : ICommand<ListResult<NotifyDTO>>
+public sealed class GetNotifiesQuery : IQuery<Result<IEnumerable<NotifyDTO>>>
 {
-    public NotifyDTO Data { get; set; }
+    public NotifyDTO? Data { get; set; }
 }
 
-public sealed class GetNotifiesQueryHandler : ICommandHandler<GetNotifiesQuery, ListResult<NotifyDTO>>
+public sealed class GetNotifiesQueryHandler(DatabaseContext databaseContext, IMapper mapper) : IQueryHandler<GetNotifiesQuery, Result<IEnumerable<NotifyDTO>>>
 {
-    private readonly DatabaseContext databaseContext;
-
-    private readonly IMapper mapper;
-
-    public GetNotifiesQueryHandler(DatabaseContext databaseContext, IMapper mapper)
-        => (this.databaseContext, this.mapper) = (databaseContext, mapper);
-
-    public async Task<ListResult<NotifyDTO>> Handle(GetNotifiesQuery request, CancellationToken cancellationToken)
+    public async Task<Result<IEnumerable<NotifyDTO>>> HandleAsync(GetNotifiesQuery request, CancellationToken cancellationToken)
     {
-        var dto = request.Data;
-        if (string.IsNullOrEmpty(dto.OrderBy))
+        if (request.Data == null)
         {
-            dto.OrderBy = "DateSent desc";
+            return Result<IEnumerable<NotifyDTO>>.Failure("Notify search criteria is required");
         }
 
-        var entities = this.databaseContext.Notify.Select(x => x)
+        var dto = request.Data;
+        dto.OrderBy ??= "DateSent desc";
+
+        var entities = databaseContext.Notify.Select(x => x)
             .AsNoTracking()
             .FilterByCustomerId(dto.CustomerId)
             .FilterByEmail(dto.Email)
@@ -46,9 +41,9 @@ public sealed class GetNotifiesQueryHandler : ICommandHandler<GetNotifiesQuery, 
             .OrderBy(dto.OrderBy);
 
         var count = await entities.CountAsync(cancellationToken);
-        var paged = this.mapper.Map<List<NotifyDTO>>(await entities.ApplyPaging(dto.PagingArgs).OrderBy(dto.OrderBy).ToListAsync(cancellationToken));
+        var paged = mapper.Map<List<NotifyDTO>>(await entities.ApplyPaging(dto.PagingArgs).OrderBy(dto.OrderBy).ToListAsync(cancellationToken));
 
-        return ListResult<NotifyDTO>.Success(paged, count);
+        return Result<IEnumerable<NotifyDTO>>.Success(paged, count);
     }
 }
 

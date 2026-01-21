@@ -6,7 +6,7 @@ using Test.Setup.TestData.Customer;
 
 /// <summary>
 /// Unit tests for customer business logic operations.
-/// Tests CRUD operations (Create, Read, Update, Delete) for customer entities using LiteBus command/query handlers.
+/// Tests CRUD operations (Create, Read, Update, Delete) for customer entities using custom dispatcher command/query handlers.
 /// </summary>
 [TestFixture]
 public class TestCustomerCore : QueryTestBase

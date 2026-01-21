@@ -1,6 +1,4 @@
-
-
-# &nbsp;**Pezza - Phase 7 — Events & Background Tasks** [![.NET - Phase 7 - Final Solution](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase7-finalsolution.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase7-finalsolution.yml)
+﻿# &nbsp;**Pezza - Phase 7  Events & Background Tasks** [![.NET - Phase 7 - Final Solution](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase7-finalsolution.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase7-finalsolution.yml)
 
 ![Pezza logo](./Assets/pezza-logo.png)
 
@@ -8,161 +6,91 @@
 
 - .NET SDK required: 10 (net10)
 - Estimated time: 6 - 10 hours
-- Difficulty: ★★★★★ (advanced)
+- Difficulty:  (advanced)
 - Audience: developers who completed Phase 6; ready to implement event-driven architecture and background processing
 - **Building on**: Phase 6's caching and optimization patterns
-- **New Concepts**: Domain events, event handlers, background job scheduling
+- **New Concepts**: Domain events, event handlers, background job scheduling with Hangfire
 
-## Goal
+## Why Phase 7? Event-Driven Architecture
 
-This phase introduces **event-driven architecture** and **background job processing** to complete a production-grade system:
+In previous phases, commands executed synchronously and returned results immediately. But in production systems:
 
-- **Domain Events**: Publish events from command handlers to decouple concerns
-- **Event Handlers**: React to events asynchronously without blocking command execution
-- **Background Jobs**: Schedule reliable, retryable work (email, notifications, exports) using Hangfire
-- **Idempotency**: Ensure background jobs can safely retry without side effects
-- **Order Processing**: Complete example of event-driven order workflow
+- **Tight Coupling**: Handlers directly call multiple services (email, notifications, exports), blocking responses
+- **Scalability Issues**: Long-running work (sending emails, generating reports) slows down API responses
+- **Retry Challenges**: If email fails, the entire operation fails; no built-in retry logic
+- **Separation of Concerns**: Business logic (order creation) mixes with side effects (notifications)
 
-Learn to build scalable, loosely-coupled systems where commands trigger events, and handlers react asynchronously.
+**Solution**: Decouple commands from their side effects using **domain events** and **background jobs**:
+
+- Commands publish events after success, then return immediately
+- Event handlers react asynchronously without blocking the user
+- Background jobs (Hangfire) handle retries, scheduling, and reliability
+- Result: Faster APIs, loosely-coupled features, production-ready error handling
+
+## What We're Building
+
+A **complete event-driven order processing system** with event handlers and background jobs.
+
+## Design Patterns Used in This Phase
+
+- **[CQRS Pattern](https://github.com/entelect-incubator/Design-Patterns/tree/main/CQRS)**  Commands publish domain events
+- **[Dispatcher/Mediator Pattern](https://github.com/entelect-incubator/Design-Patterns/tree/main/Dispatcher-Mediator)**  Custom dispatcher with Publish() method
+- **[Publisher-Subscriber Pattern](https://learn.microsoft.com/en-us/dotnet/architecture/dapr-for-net-developers/pub-sub)**  Event handlers react to events
+- **[Result Pattern](https://github.com/entelect-incubator/Design-Patterns/tree/main/Result-Pattern)**  Background jobs use Result<T> for idempotent retries
+- **[Idempotent Operations](https://stackoverflow.com/questions/1077412/what-is-an-idempotent-operation)**  Jobs safe to retry
 
 ## Prerequisites
 
-- Completed Phase 6 (understand caching, optimization, and dispatcher foundation)
-- .NET 10 SDK installed and on PATH
-- Familiarity with event-driven patterns and background job concepts
-- Understanding of async/await and task scheduling
+- Completed Phase 6
+- .NET 10 SDK installed
+- Understanding of event-driven patterns
+- Familiarity with Hangfire
 
 ## How to validate this phase locally
 
-1. Build the start solution:
-
-```powershell
+\\\powershell
 dotnet build "Phase 7/src/01. StartSolution/Pezza.sln"
-```
-
-2. Run tests:
-
-```powershell
 dotnet test "Phase 7/src/01. StartSolution/Pezza.sln"
-```
+\\\
 
 ## Topics / learning outcomes
 
-- Implement **domain events** that commands publish
-- Create **event handlers** that react to domain events asynchronously
-- Understand the **Publisher-Subscriber pattern** and decoupling benefits
-- Use **Hangfire** for reliable, scheduled background jobs with retry logic
-- Implement **idempotent event handlers** to handle retries safely
-- Build an **event-driven order processing workflow** as capstone
+- Implement domain events that commands publish via Dispatcher.Publish()
+- Create event handlers (INotificationHandler<>) that react asynchronously
+- Understand Publisher-Subscriber pattern and decoupling
+- Use Hangfire for reliable background jobs with automatic retries
+- Design idempotent event handlers for safe retries
+- Build complete event-driven order processing workflow
 
-## Key Patterns: Events & Background Jobs
+## Knowledge Check: Event-Driven Architecture
 
-**Publishing Domain Events:**
+1. **What happens when a command handler publishes a domain event?**
+   - **Answer**: The handler calls \dispatcher.Publish(event, ct)\, which returns immediately. The Dispatcher executes all registered event handlers asynchronously in parallel without blocking the command's response.
 
-```csharp
-// Command publishes event after successful execution
-public sealed class CreateOrderCommandHandler(
-    DatabaseContext db,
-    Dispatcher dispatcher) 
-    : ICommandHandler<CreateOrderCommand, Result<OrderModel>>
-{
-    public async Task<Result<OrderModel>> Handle(CreateOrderCommand command, CancellationToken ct)
-    {
-        var order = new Order { /* ... */ };
-        db.Orders.Add(order);
-        await db.SaveChangesAsync(ct);
+2. **How does Publisher-Subscriber pattern benefit Phase 7?**
+   - **Answer**: Commands focus on core business logic. Side effects (email, inventory, logging) separate into independent handlers. If one fails, others still execute. Handlers can be added/removed without changing commands.
 
-        // Publish event — handlers will react asynchronously
-        await dispatcher.Publish(
-            new OrderCreatedEvent { OrderId = order.Id }, 
-            ct);
+3. **Why are Hangfire jobs idempotent?**
+   - **Answer**: On failure, Hangfire automatically retries. Without idempotency, retrying creates duplicates (email twice, deduct stock twice). With checks like \if (order.ConfirmationSentAt != null) return;\, retries are safe.
 
-        return Result<OrderModel>.Success(order.Map());
-    }
-}
-```
+4. **What's the difference between \dispatcher.Send()\ and \dispatcher.Publish()\?**
+   - **Answer**: \Send()\ executes a single command handler synchronously and blocks. \Publish()\ executes all event handlers asynchronously in parallel without blocking. Send is request-response; Publish is fire-and-forget.
 
-**Reacting to Events:**
+5. **How does the Dispatcher register event handlers?**
+   - **Answer**: In DependencyInjection.cs, Scrutor scans for types assignable to \INotificationHandler<>\ and registers them as scoped. When \Publish()\ is called, the Dispatcher retrieves handlers via \_serviceProvider.GetServices<INotificationHandler<TEvent>>()\.
 
-```csharp
-// Event handler — executes asynchronously without blocking command
-public sealed class SendOrderConfirmationHandler(
-    IEmailService emailService) 
-    : INotificationHandler<OrderCreatedEvent>
-{
-    public async Task Handle(OrderCreatedEvent notification, CancellationToken ct)
-    {
-        // Send confirmation email asynchronously
-        await emailService.SendOrderConfirmationAsync(
-            notification.OrderId, 
-            ct);
-    }
-}
-```
-
-**Background Jobs with Hangfire:**
-
-```csharp
-// Schedule a job to retry email sending
-public sealed class EmailServiceJob
-{
-    public async Task SendOrderEmailAsync(int orderId)
-    {
-        var order = await db.Orders.FirstOrDefaultAsync(o => o.Id == orderId);
-        if (order is null) return; // Idempotent — safe to retry
-
-        try
-        {
-            await emailService.SendAsync(order.Email, order.ConfirmationTemplate);
-        }
-        catch
-        {
-            // Hangfire will retry automatically
-            BackgroundJob.Schedule(
-                () => SendOrderEmailAsync(orderId),
-                TimeSpan.FromMinutes(5));
-        }
-    }
-}
-```
-
-## References
-
-- Domain Events Pattern: [Vaughn Vernon - Domain Events](https://vaughnvernon.com/2010/04/08/domain-events/)
-- Publisher-Subscriber Pattern: [Microsoft Docs](https://learn.microsoft.com/en-us/dotnet/architecture/dapr-for-net-developers/pub-sub)
-- Hangfire: [https://www.hangfire.io/](https://www.hangfire.io/)
-- Idempotency: [Idempotent API Design](https://stackoverflow.com/questions/1077412/what-is-an-idempotent-operation)
-- Event Sourcing (advanced): [Microsoft Docs](https://learn.microsoft.com/en-us/dotnet/architecture/microservices/microservice-ddd-cqrs-patterns/domain-events-design-implementation)
-
-## Architecture Diagram: Event Flow
-
-```
-User Request
-    ↓
-Controller Receives CreateOrderCommand
-    ↓
-Dispatcher.Send(command)
-    ↓
-CreateOrderCommandHandler executes
-    ├─→ Validates command
-    ├─→ Creates order in database
-    ├─→ Returns OrderModel result
-    └─→ Publishes OrderCreatedEvent
-         ↓
-    Event Handlers (Async):
-    ├─→ SendOrderConfirmationHandler
-    ├─→ UpdateInventoryHandler
-    ├─→ LogOrderMetricsHandler
-         ↓
-    Background Jobs (Hangfire):
-    ├─→ EmailServiceJob (retry on failure)
-    ├─→ NotificationServiceJob
-    └─→ ExportOrderJob (scheduled)
-```
+6. **When should you use domain events instead of calling methods directly?**
+   - **Answer**: Use events for optional side effects (email, logging, notifications). Use direct calls for required operations (validate, deduct stock immediately). Phase 7 decouples optional work into events.
 
 ## Steps
 
-- [ ] [Step 1 - Email Service & Hangfire Setup](Phase%207/src/02.%20Step%201)
-- [ ] [Step 2 - Domain Events & Notifications](Phase%207/src/03.%20Step%202)
-- [ ] [Step 3 - Background Job Scheduling](Phase%207/src/04.%20Step%203)
-- [ ] [Step 4 - Order Processing Workflow](Phase%207/src/04.%20Step%204)
+- [ ] [Step 1 - Email Service & Hangfire Setup](./Step%201)
+- [ ] [Step 2 - Domain Events & Notifications](./Step%202)
+- [ ] [Step 3 - Background Job Scheduling](./Step%203)
+- [ ] [Step 4 - Order Processing Workflow](./Step%204)
+
+---
+
+**Phase 7 Complete**: You now have an event-driven, production-ready order processing system with reliable background jobs!
+
+[Move to Phase 8](https://github.com/entelect-incubator/.NET/tree/master/Phase%208)

@@ -48,7 +48,7 @@ public class TestPizzaCore : QueryTestBase
 				Id = this.model.Id
 			}, CancellationToken.None);
 
-		Assert.That(resultGet?.Data, Is.Not.Null);
+		Assert.That(resultGet?.Data , Is.Not.Null);
 	}
 
 	[Test]
@@ -57,11 +57,11 @@ public class TestPizzaCore : QueryTestBase
 		var sutGetAll = new GetPizzasQueryHandler(this.Context);
 		var resultGetAll = await sutGetAll.HandleAsync(new GetPizzasQuery(), CancellationToken.None);
 
-		Assert.That(resultGetAll?.Data.Count, Is.EqualTo(1));
+		Assert.That(resultGetAll?.Data.Count , Is.EqualTo(1));
 	}
 
 	[Test]
-	public void SaveAsync() => Assert.That(this.model, Is.Not.Null);
+	public void SaveAsync() => Assert.That(this.model , Is.Not.Null);
 
 	[Test]
 	public async Task UpdateAsync()

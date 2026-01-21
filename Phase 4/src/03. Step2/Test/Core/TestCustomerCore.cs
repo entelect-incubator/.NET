@@ -59,7 +59,7 @@ public class TestCustomerCore : QueryTestBase
 		var resultGetAll = await sutGetAll.Handle(new GetCustomersQuery { Data = new() }, CancellationToken.None);
 
 		Assert.That(resultGetAll?.Data, Is.Not.Null);
-		Assert.That(resultGetAll?.Data.Count, Is.GreaterThanOrEqualTo(1));
+		Assert.That(resultGetAll?.Data.Count(), Is.GreaterThanOrEqualTo(1));
 		Assert.That(resultGetAll?.Data.Any(c => c.Id == this.model.Id), Is.True);
 	}
 

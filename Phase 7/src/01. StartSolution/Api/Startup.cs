@@ -2,8 +2,10 @@ namespace Api;
 
 using System.Reflection;
 using System.Text.Json.Serialization;
+using Common.Behaviour;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -40,9 +42,16 @@ public class Startup
 			var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
 			c.IncludeXmlComments(xmlPath);
 		});
-
+		services.AddLazyCache();
 		services.AddDbContext<DatabaseContext>(options =>
 			options.UseInMemoryDatabase("PezzaDB"));
+
+		services.AddResponseCompression(options =>
+		{
+			options.Providers.Add<BrotliCompressionProvider>();
+			options.Providers.Add<GzipCompressionProvider>();
+		});
+		services.AddResponseCompression();
 	}
 
 	public void Configure(WebApplication app, IWebHostEnvironment env)
@@ -50,11 +59,11 @@ public class Startup
 		app.UseSwagger();
 		app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Pezza API V1"));
 		app.UseHttpsRedirection();
-
-		// app.UseMiddleware(typeof(ExceptionHandlerMiddleware));
+		app.UseMiddleware(typeof(ExceptionHandlerMiddleware));
 		app.UseRouting();
 		app.MapControllers();
 		app.UseAuthorization();
+		app.UseResponseCompression();
 		app.Run();
 	}
 }

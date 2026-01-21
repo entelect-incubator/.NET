@@ -6,6 +6,5 @@ global using System.Threading;
 global using System.Threading.Tasks;
 global using Common.Entities;
 global using Common.Models;
+global using Dispatch;
 global using FluentValidation;
-global using LiteBus.Commands.Abstractions;
-global using LiteBus.Queries.Abstractions;

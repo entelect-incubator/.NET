@@ -1,8 +1,6 @@
-# Pezza - Phase 8 — Security
+# &nbsp;**Pezza - Phase 9 — Security** [![.NET - Phase 9](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase9-finalsolution.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase9-finalsolution.yml)
 
 ![Pezza logo](./pezza-logo.png "Pezza logo")
-
-[![.NET - Phase 8 - Security](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase8-startsolution.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase8-startsolution.yml)
 
 ## Quick facts
 
@@ -126,3 +124,5 @@ dotnet test "./Phase 8/src/01. StartSolution/Pezza.sln"
 
 If you'd like, I can make a small, gated code change to the `Api` project's `Program.cs` to enable HTTPS/HSTS and add the secure-headers middleware behind an environment check — I will only do that if you ask me to create a PR.
 
+
+[Move to Phase 10](https://github.com/entelect-incubator/.NET/tree/master/Phase%2010)

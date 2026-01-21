@@ -1,8 +1,6 @@
-# Pezza - Phase 7
+# &nbsp;**Pezza - Phase 8 — OpenAPI & NSwag Client** [![.NET - Phase 8](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase8-finalsolution.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase8-finalsolution.yml)
 
 ![Pezza logo](./pezza-logo.png "Pezza logo")
-
-[![.NET - Phase 7 - Start Solution](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase7-startsolution.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase7-startsolution.yml)
 
 ## Quick facts
 
@@ -17,7 +15,7 @@ This phase shows how to generate an Api.Client from the running Api using NSwag 
 
 ## Prerequisites
 
-- Completed Phase 6 (API running locally)
+- Completed Phase 7 (API running locally)
 - .NET SDK 10 installed
 - Basic understanding of OpenAPI/Swagger and HTTP APIs
 
@@ -138,5 +136,4 @@ Finished client (example):
 
 When you're happy with the generated client, move to Phase 8 to create the UI that consumes the Api and/or the generated client.
 
-[Go to Phase 8 - Create UIs](../Phase 8)
-
+[Move to Phase 9](https://github.com/entelect-incubator/.NET/tree/master/Phase%209)

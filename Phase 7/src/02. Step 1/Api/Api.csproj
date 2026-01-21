@@ -29,5 +29,6 @@
 		<ProjectReference Include="..\Common\Common.csproj" />
 		<ProjectReference Include="..\Core\Core.csproj" />
 		<ProjectReference Include="..\DataAccess\DataAccess.csproj" />
+		<ProjectReference Include="..\Utilities\Utilities.csproj" />
 	</ItemGroup>
 </Project>

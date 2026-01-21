@@ -5,7 +5,7 @@ using Core.Pizza.Queries;
 
 [ApiController]
 [Route("[controller]")]
-public class PizzaController() : ApiController
+public class PizzaController(Dispatcher dispatcher) : ApiController(dispatcher)
 {
 	/// <summary>
 	/// Get Pizza by Id.
@@ -17,7 +17,7 @@ public class PizzaController() : ApiController
 	[ProducesResponseType(404)]
 	public async Task<ActionResult> Get(int id)
 	{
-		var result = await this.QryMediator.SendAsync(new GetPizzaQuery { Id = id }, CancellationToken.None);
+		var result = await this.Dispatcher.Query<GetPizzaQuery, Result<PizzaModel>>(new GetPizzaQuery { Id = id }, CancellationToken.None);
 		return ResponseHelper.ResponseOutcome(result, this);
 	}
 
@@ -29,10 +29,11 @@ public class PizzaController() : ApiController
 	[ProducesResponseType(200)]
 	public async Task<ActionResult> Search(SearchPizzaModel data)
 	{
-		var result = await this.QryMediator.SendAsync(new GetPizzasQuery()
-		{
-			Data = data
-		}, CancellationToken.None);
+		var result = await this.Dispatcher.Query<GetPizzasQuery, Result<IEnumerable<PizzaModel>>>(
+			new GetPizzasQuery()
+			{
+				Data = data
+			}, CancellationToken.None);
 		return ResponseHelper.ResponseOutcome(result, this);
 	}
 
@@ -56,14 +57,13 @@ public class PizzaController() : ApiController
 	[ProducesResponseType(400)]
 	public async Task<ActionResult<Pizza>> Create([FromBody] CreatePizzaModel model)
 	{
-		var result = await this.CmdMediator.SendAsync(new CreatePizzaCommand
+		var result = await this.Dispatcher.Send<CreatePizzaCommand, Result<PizzaModel>>(new CreatePizzaCommand
 		{
 			Data = model
 		});
 
 		return ResponseHelper.ResponseOutcome(result, this);
 	}
-
 
 	/// <summary>
 	/// Update Pizza.
@@ -83,7 +83,7 @@ public class PizzaController() : ApiController
 	[ProducesResponseType(400)]
 	public async Task<ActionResult> Update([FromBody] UpdatePizzaModel model)
 	{
-		var result = await this.CmdMediator.SendAsync(new UpdatePizzaCommand
+		var result = await this.Dispatcher.Send<UpdatePizzaCommand, Result<PizzaModel>>(new UpdatePizzaCommand
 		{
 			Data = model
 		});
@@ -101,7 +101,7 @@ public class PizzaController() : ApiController
 	[ProducesResponseType(400)]
 	public async Task<ActionResult> Delete(int id)
 	{
-		var result = await this.CmdMediator.SendAsync(new DeletePizzaCommand { Id = id });
+		var result = await this.Dispatcher.Send<DeletePizzaCommand, Result>(new DeletePizzaCommand { Id = id });
 		return ResponseHelper.ResponseOutcome(result, this);
 	}
 }

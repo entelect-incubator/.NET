@@ -1,8 +1,13 @@
-# Phase 11: Complete Cloud-Native Stack (Aspire + DbUp Integration)
+# Phase 12: Complete Cloud-Native Stack (Aspire + DbUp Integration)
 
 This phase combines **Aspire orchestration** with **DbUp migrations** to create a complete, production-ready cloud-native architecture with automated database versioning and service orchestration.
 
 ## Architecture Overview
+
+**What’s unique in Phase 12**
+- Adds Aspire orchestration on top of the Phase 11 DbUp migrations.
+- Ensures migrations run before API startup with service dependencies wired in AspireHost.
+- Extends observability (logging, metrics, tracing) across migrations and API.
 
 ### The Complete Stack
 
@@ -38,41 +43,45 @@ OpenTelemetry Stack:
 └── Tracing (W3C Trace Context)
 ```
 
-## Key Innovations in Phase 11
+## Key Innovations in Phase 12
 
 ### 1. Orchestrated Migrations
+
 - DbUp runs **before** Pezza.Api starts
 - Automatic schema versioning and tracking
 - Zero-downtime deployment ready
 
 ### 2. Service Dependencies
+
 - AspireHost manages dependency ordering
 - Network isolation with Docker
 - Health checks on all services
 
 ### 3. Full Observability
+
 - Structured logging from both API and migrations
 - Distributed tracing across services
 - Real-time Aspire dashboard monitoring
 
 ### 4. Production Patterns
+
 - Database backup strategies
 - Migration rollback procedures
 - CI/CD integration examples
 
 ## Prerequisites
 
-- .NET 8.0 SDK or later
+- .NET 10.0 SDK or later
 - Docker Desktop (for SQL Server container)
 - 2GB free disk space (for Docker image)
 - SQL Server Express (local) or equivalent
 
 ## Running Migrations
 
-### Option 1: Run from Visual Studio
+### Option 1: Run from Visual Studio (Phase 12 path)
 
 ```powershell
-cd Phase10/src/01.StartSolution
+cd "Phase 12/src/01. StartSolution"
 dotnet run --project DbUp.Migrations/DbUp.Migrations.csproj
 ```
 
@@ -103,7 +112,8 @@ dotnet run --project DbUp.Migrations/DbUp.Migrations.csproj
 Scripts follow the format: `{SequenceNumber}_{ScriptName}.sql`
 
 Example:
-```
+
+```text
 Scripts/001_Initial/001_InitialSetup.sql
 Scripts/002_Tables/001_CreateTables.sql
 Scripts/003_Data/001_InsertSampleData.sql
@@ -131,7 +141,8 @@ CREATE TABLE [dbo].[Pizza] (...)
 ### Core Tables
 
 #### Customer
-```
+
+```sql
 Id (GUID, PK)
 FirstName, LastName, Email
 Phone, Address, City, ZipCode
@@ -139,7 +150,8 @@ CreatedDate, UpdatedDate
 ```
 
 #### Pizza
-```
+
+```sql
 Id (GUID, PK)
 Name, Description, Price
 PictureUrl, Offer, OfferStarts, OfferEnds
@@ -147,7 +159,8 @@ CreatedDate, UpdatedDate
 ```
 
 #### Order
-```
+
+```sql
 Id (GUID, PK)
 CustomerId (FK → Customer)
 OrderNumber (UNIQUE)
@@ -156,7 +169,8 @@ CreatedDate, UpdatedDate
 ```
 
 #### OrderItem
-```
+
+```sql
 Id (GUID, PK)
 OrderId (FK → Order, CASCADE)
 PizzaId (FK → Pizza)
@@ -165,7 +179,8 @@ CreatedDate
 ```
 
 #### Stock
-```
+
+```sql
 Id (GUID, PK)
 PizzaId (FK → Pizza, CASCADE)
 Quantity, ReorderLevel
@@ -173,7 +188,8 @@ CreatedDate, UpdatedDate
 ```
 
 #### Notify
-```
+
+```sql
 Id (GUID, PK)
 Title, Message
 IsRead
@@ -181,7 +197,8 @@ CreatedDate
 ```
 
 #### SchemaVersions (DbUp Internal)
-```
+
+```sql
 Id (INT, PK - Identity)
 SchemaVersion, Description
 Installed, Success
@@ -257,7 +274,7 @@ Id  SchemaVersion  Description              Installed            Success
 
 DbUp logs to console with Serilog:
 
-```
+```text
 [10:30:15 INF] Starting database migration...
 [10:30:15 INF] Connection string: Server=localhost,1433;User Id=sa;Password=****;...
 [10:30:15 INF] Executing script: 001_InitialSetup.sql
@@ -289,7 +306,7 @@ dotnet run --project DbUp.Migrations/DbUp.Migrations.csproj -- "Server=prod-sql.
 
 ### Azure SQL / Cloud
 
-```
+```json
 Server=pezza.database.windows.net;User Id=sa@pezza;Password=AzurePassword123!;Database=pezza-db;Encrypt=true;TrustServerCertificate=false;Connection Timeout=30
 ```
 
@@ -325,14 +342,14 @@ jobs:
       
       - name: Run Migrations
         run: |
-          dotnet run --project Phase10/src/01.StartSolution/DbUp.Migrations/DbUp.Migrations.csproj -- \
+          dotnet run --project "Phase 12/src/01. StartSolution/DbUp.Migrations/DbUp.Migrations.csproj" -- \
             "Server=localhost;User Id=sa;Password=TestPassword123!;Database=pezza-db;TrustServerCertificate=true"
 ```
 
 ## Directory Structure
 
-```
-Phase 10/
+```md
+Phase 12/
 ├── src/
 │   ├── 01. StartSolution/
 │   │   ├── DbUp.Migrations/
@@ -352,7 +369,7 @@ Phase 10/
 │   │   ├── Pezza.Common/
 │   │   ├── AspireHost/
 │   │   ├── docker-compose.yml
-│   │   └── .NET.Pezza.sln
+│   │   └── Pezza.slnx
 │   └── ... (other solution items)
 └── README.md
 ```
@@ -381,16 +398,19 @@ END
 ## Performance Tips
 
 ### Indexes
+
 - Create indexes on foreign keys
 - Create indexes on frequently searched columns (Email, Name)
 - Use filtered indexes for sparse data
 
 ### Constraints
+
 - Enforce NOT NULL where appropriate
 - Use UNIQUE constraints for business keys (OrderNumber)
 - Cascade deletes carefully to prevent data loss
 
 ### Batch Operations
+
 - Insert sample data in batches of 1000+
 - Use bulk insert tools for large datasets
 - Monitor migration execution time
@@ -399,7 +419,7 @@ END
 
 ### Connection String Errors
 
-```
+```text
 Error: Cannot open database 'pezza-db' requested by the login.
 ```
 
@@ -409,30 +429,32 @@ Error: Cannot open database 'pezza-db' requested by the login.
 
 ### Script Execution Failures
 
-```
+```text
 Error: Column 'PizzaId' already exists in table 'Pizza'
 ```
 
-**Solution**: 
+**Solution**:
+
 - Check if script ran previously: `SELECT * FROM SchemaVersions`
 - Make scripts idempotent with `IF NOT EXISTS` checks
 
 ### Permission Denied
 
-```
+```text
 Error: The server principal 'domain\user' is not able to access the database 'pezza-db'
 ```
 
 **Solution**:
+
 - Grant user database access: `GRANT CONNECT ON DATABASE pezza-db TO [domain\user]`
 - Use SQL authentication if Windows auth unavailable
 
 ## Integration with Pezza.Api
 
-In Phase 11, DbUp migrations will be integrated with Aspire orchestration:
+In Phase 12, DbUp migrations are orchestrated by Aspire so migrations run before the API starts:
 
 ```csharp
-// AspireHost/Program.cs - Phase 11 example
+// AspireHost/Program.cs - Phase 12 example
 var database = builder
     .AddSqlServer("sql-server")
     .AddDatabase("pezza-db");
@@ -447,11 +469,6 @@ var api = builder
     .WithReference(migrations); // Ensure migrations run first
 ```
 
-## Next Steps
-
-- **Phase 11**: Combine Aspire orchestration with DbUp migrations
-- **Phase 12**: Create MCP Server for AI integration
-
 ## References
 
 - [DbUp Documentation](https://dbup.readthedocs.io/)
@@ -459,3 +476,5 @@ var api = builder
 - [SQL Server Tutorial](https://learn.microsoft.com/en-us/sql/t-sql/tutorial-writing-transact-sql-statements)
 - [Database Design Best Practices](https://learn.microsoft.com/en-us/sql/relational-databases/tables/primary-and-foreign-key-constraints)
 - [DbUp Advanced Scenarios](https://dbup.readthedocs.io/en/latest/more-info/advanced-scripts/)
+
+[Move to Phase 13](https://github.com/entelect-incubator/.NET/tree/master/Phase%2013)

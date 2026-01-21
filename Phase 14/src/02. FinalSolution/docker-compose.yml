@@ -1,0 +1,112 @@
+version: "3.8"
+
+services:
+  # Pezza Backend API
+  pezza-api:
+    image: pezza-api:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pezza-api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:5000
+      - ConnectionStrings__DefaultConnection=Server=sql-server;Database=Pezza;User Id=sa;Password=YourPassword123!;TrustServerCertificate=true;
+      - DeliveryService__BaseUrl=http://mock-delivery:8080
+      - DeliveryService__WebhookUrl=http://pezza-api:5000/api/delivery-webhooks/delivery
+      - Logging__LogLevel__Default=Information
+      - Logging__LogLevel__Microsoft=Warning
+    ports:
+      - "5000:5000"
+    depends_on:
+      - sql-server
+      - mock-delivery
+    volumes:
+      - ./logs:/app/logs
+    networks:
+      - pezza-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Mock Delivery Service (from Phase 14)
+  # GitHub: https://github.com/entelect-incubator/Pezzza-Mock-Delivery-Service
+  mock-delivery:
+    image: ghcr.io/entelect-incubator/pezzza-mock-delivery-service:latest
+    container_name: pezza-mock-delivery
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+      - MockDelivery__Simulation__StatusTransitionDelaySeconds=10
+      - MockDelivery__Simulation__FailurePercentage=10
+      - MockDelivery__Simulation__EnableRandomDelays=true
+    ports:
+      - "8081:8080"
+    networks:
+      - pezza-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # SQL Server Database
+  sql-server:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: pezza-sql-server
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=YourPassword123!
+      - MSSQL_PID=Developer
+    ports:
+      - "1433:1433"
+    volumes:
+      - pezza-sqldata:/var/opt/mssql
+    networks:
+      - pezza-network
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "/opt/mssql-tools/bin/sqlcmd",
+          "-S",
+          "localhost",
+          "-U",
+          "sa",
+          "-P",
+          "YourPassword123!",
+          "-Q",
+          "SELECT 1",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Adminer - Database viewer
+  # Access at http://localhost:8080
+  # Server: sql-server:1433
+  # Username: sa
+  # Password: YourPassword123!
+  adminer:
+    image: adminer:latest
+    container_name: pezza-adminer
+    environment:
+      - ADMINER_DEFAULT_SERVER=sql-server
+    ports:
+      - "8888:8080"
+    depends_on:
+      - sql-server
+    networks:
+      - pezza-network
+
+networks:
+  pezza-network:
+    driver: bridge
+
+volumes:
+  pezza-sqldata:
+    driver: local

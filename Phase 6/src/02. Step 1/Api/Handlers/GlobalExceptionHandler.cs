@@ -17,7 +17,7 @@ public sealed class GlobalExceptionHandler : IExceptionHandler
 	private readonly ILogger<GlobalExceptionHandler> logger;
 
 	/// <summary>
-	/// Initializes a new instance of the GlobalExceptionHandler class.
+	/// Initializes a new instance of the <see cref="GlobalExceptionHandler"/> class.
 	/// </summary>
 	/// <param name="logger">Logger instance for exception logging</param>
 	public GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger)
@@ -61,7 +61,6 @@ public sealed class GlobalExceptionHandler : IExceptionHandler
 			message = "An internal server error occurred. Please try again later.",
 			errorId = httpContext.TraceIdentifier,
 			exceptionType = exception.GetType().Name,
-			// Include detailed error info only in development
 			details = httpContext.RequestServices
 				.GetService<IWebHostEnvironment>()?
 				.IsDevelopment() == true ? exception.Message : null

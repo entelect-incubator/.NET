@@ -1,17 +1,17 @@
 namespace Api.Controllers;
 
-using LiteBus.Commands.Abstractions;
-using LiteBus.Queries.Abstractions;
+using Core;
+using Microsoft.AspNetCore.Mvc;
 
+/// <summary>
+/// Base API controller with dispatcher support for CQRS operations.
+/// </summary>
 [ApiController]
 [Route("[controller]")]
-[Produces("application/json")]
-public abstract class ApiController : ControllerBase
+public abstract class ApiController(Dispatcher dispatcher) : ControllerBase
 {
-	private ICommandMediator cmdMediator;
-	private IQueryMediator qryMediator;
-
-	protected ICommandMediator CmdMediator => cmdMediator ??= HttpContext.RequestServices.GetRequiredService<ICommandMediator>();
-
-	protected IQueryMediator QryMediator => qryMediator ??= HttpContext.RequestServices.GetRequiredService<IQueryMediator>();
+    /// <summary>
+    /// Gets the dispatcher for executing commands and queries.
+    /// </summary>
+    protected Dispatcher Dispatcher { get; } = dispatcher;
 }

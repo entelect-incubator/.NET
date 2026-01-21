@@ -47,6 +47,17 @@ The following sections describe the primary pivots we are planning for .NET 5. T
 - [ ] Coding Standards - [9 Coding Standards](https://blog.submain.com/coding-standards-c-developers-need/)
 - [ ] Coding Standards - [Coding Guidelines And Best Practices](https://www.c-sharpcorner.com/blogs/c-sharp-coding-guidelines-and-best-practices-v10)
 
+## Design Patterns
+All phases enforce design patterns from day one. For comprehensive guides covering SOLID, CQRS, Result Pattern, Repository, Dependency Injection, and Testing strategies:
+
+**[📖 Design Patterns Learning Hub](https://github.com/entelect-incubator/Design-Patterns)**
+
+Quick reference:
+- [SOLID Principles](https://github.com/entelect-incubator/Design-Patterns/tree/main/SOLID) – Foundation for all code
+- [CQRS Pattern](https://github.com/entelect-incubator/Design-Patterns/tree/main/CQRS) – Separate commands and queries
+- [Result Pattern](https://github.com/entelect-incubator/Design-Patterns/tree/main/Result-Pattern) – Explicit error handling
+- [Testing Patterns](https://github.com/entelect-incubator/Design-Patterns/tree/main/Testing-Patterns) – Negative paths first
+
 ## Back to Intro
 
-[Intro](https://github.com/entelect-incubator/.NET#intro)
+[Intro](../Intro/README.md)

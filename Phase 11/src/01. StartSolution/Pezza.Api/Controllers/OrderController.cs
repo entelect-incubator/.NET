@@ -1,5 +1,6 @@
 namespace Api.Controllers;
 
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -41,7 +42,7 @@ public class OrderController : ApiController
     /// <response code="200">Order Search.</response>
     /// <response code="400">Error searching for orders.</response>
     [HttpPost]
-    [ProducesResponseType(typeof(ListResult<OrderDTO>), 200)]
+    [ProducesResponseType(typeof(Result<IEnumerable<OrderDTO>>), 200)]
     [ProducesResponseType(typeof(ErrorResult), 400)]
     [Route("Search")]
     public async Task<ActionResult> Search(OrderDTO dto, CancellationToken cancellationToken = default)

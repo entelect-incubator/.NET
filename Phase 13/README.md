@@ -1,6 +1,14 @@
-# Phase 12: MCP Server - AI Chat Integration
+# Phase 13: MCP Server - AI Chat Integration
 
 This phase implements a **Model Context Protocol (MCP)** server that enables AI assistants (Claude, ChatGPT, etc.) to interact with the Pezza pizza ordering system through natural language.
+
+> ⚠️ **CODE QUALITY NOTE**: StartSolution uses legacy constructor patterns for learning purposes; **FinalSolution implements C# 12+ primary constructors** as per COPILOT-INSTRUCTIONS. See the conversions in `Pezza.Core` handlers (e.g., `GetNotifiesQueryHandler`, `GetPizzasQueryHandler`) for the correct pattern:
+> ```csharp
+> public sealed class GetPizzasQueryHandler(
+>     DatabaseContext databaseContext,
+>     IMapper mapper) : IQueryHandler<GetPizzasQuery, Result<IEnumerable<PizzaDTO>>>
+> ```
+> Prefer FinalSolution as your reference template.
 
 ## What is MCP?
 
@@ -13,7 +21,7 @@ This phase implements a **Model Context Protocol (MCP)** server that enables AI 
 
 ### MCP Architecture
 
-```
+```mermaid
 ┌────────────────┐
 │ LLM Client     │
 │ (Claude, GPT)  │
@@ -60,9 +68,11 @@ This phase implements a **Model Context Protocol (MCP)** server that enables AI 
 ### Pizza Menu Tools
 
 #### `get_menu` - View Complete Menu
+
 **Description**: Get all available pizzas with prices and descriptions
 
 **Request**:
+
 ```json
 {
   "jsonrpc": "2.0",
@@ -73,6 +83,7 @@ This phase implements a **Model Context Protocol (MCP)** server that enables AI 
 ```
 
 **Response**:
+
 ```json
 {
   "jsonrpc": "2.0",
@@ -103,9 +114,11 @@ This phase implements a **Model Context Protocol (MCP)** server that enables AI 
 ```
 
 #### `search_pizzas` - Search Menu
+
 **Description**: Search for pizzas by name or description keyword
 
 **Request**:
+
 ```json
 {
   "jsonrpc": "2.0",
@@ -118,6 +131,7 @@ This phase implements a **Model Context Protocol (MCP)** server that enables AI 
 ```
 
 **Response**:
+
 ```json
 {
   "jsonrpc": "2.0",
@@ -139,9 +153,11 @@ This phase implements a **Model Context Protocol (MCP)** server that enables AI 
 ```
 
 #### `get_specials` - View Current Offers
+
 **Description**: Get active special offers and discounts
 
 **Request**:
+
 ```json
 {
   "jsonrpc": "2.0",
@@ -152,6 +168,7 @@ This phase implements a **Model Context Protocol (MCP)** server that enables AI 
 ```
 
 **Response**:
+
 ```json
 {
   "jsonrpc": "2.0",
@@ -176,9 +193,11 @@ This phase implements a **Model Context Protocol (MCP)** server that enables AI 
 ### Order Management Tools
 
 #### `create_order` - Place New Order
+
 **Description**: Create a new pizza order for a customer
 
 **Request**:
+
 ```json
 {
   "jsonrpc": "2.0",
@@ -201,6 +220,7 @@ This phase implements a **Model Context Protocol (MCP)** server that enables AI 
 ```
 
 **Response**:
+
 ```json
 {
   "jsonrpc": "2.0",
@@ -220,9 +240,11 @@ This phase implements a **Model Context Protocol (MCP)** server that enables AI 
 ```
 
 #### `get_order_status` - Check Order
+
 **Description**: Get current status of a specific order
 
 **Request**:
+
 ```json
 {
   "jsonrpc": "2.0",
@@ -235,6 +257,7 @@ This phase implements a **Model Context Protocol (MCP)** server that enables AI 
 ```
 
 **Response**:
+
 ```json
 {
   "jsonrpc": "2.0",
@@ -255,9 +278,11 @@ This phase implements a **Model Context Protocol (MCP)** server that enables AI 
 ```
 
 #### `get_customer_orders` - View Customer History
+
 **Description**: Get all orders placed by a customer
 
 **Request**:
+
 ```json
 {
   "jsonrpc": "2.0",
@@ -270,6 +295,7 @@ This phase implements a **Model Context Protocol (MCP)** server that enables AI 
 ```
 
 **Response**:
+
 ```json
 {
   "jsonrpc": "2.0",
@@ -294,9 +320,11 @@ This phase implements a **Model Context Protocol (MCP)** server that enables AI 
 ### Stock Management Tools
 
 #### `get_stock_levels` - Admin: View Inventory
+
 **Description**: Get current quantity of all pizzas in stock
 
 **Request**:
+
 ```json
 {
   "jsonrpc": "2.0",
@@ -307,6 +335,7 @@ This phase implements a **Model Context Protocol (MCP)** server that enables AI 
 ```
 
 **Response**:
+
 ```json
 {
   "jsonrpc": "2.0",
@@ -333,9 +362,11 @@ This phase implements a **Model Context Protocol (MCP)** server that enables AI 
 ```
 
 #### `get_low_stock_alerts` - Admin: Reorder Alert
+
 **Description**: Get items that need reordering
 
 **Request**:
+
 ```json
 {
   "jsonrpc": "2.0",
@@ -346,6 +377,7 @@ This phase implements a **Model Context Protocol (MCP)** server that enables AI 
 ```
 
 **Response**:
+
 ```json
 {
   "jsonrpc": "2.0",
@@ -366,9 +398,11 @@ This phase implements a **Model Context Protocol (MCP)** server that enables AI 
 ```
 
 #### `get_inventory_summary` - Admin: Inventory Stats
+
 **Description**: Get overall inventory statistics
 
 **Request**:
+
 ```json
 {
   "jsonrpc": "2.0",
@@ -379,6 +413,7 @@ This phase implements a **Model Context Protocol (MCP)** server that enables AI 
 ```
 
 **Response**:
+
 ```json
 {
   "jsonrpc": "2.0",
@@ -412,7 +447,7 @@ dotnet run --project Pezza.Mcp/Pezza.Mcp.csproj
 
 ### Server Output
 
-```
+```text
 [10:30:15 INF] Starting Pezza MCP Server...
 [10:30:16 INF] Available MCP Tools:
 [10:30:16 INF]   - get_menu: Get the complete pizza menu with prices and descriptions
@@ -447,7 +482,8 @@ Edit `%APPDATA%\Claude\claude_desktop_config.json`:
 ### Example Claude Conversations
 
 **User**: "What pizzas do you have on special?"
-```
+
+```text
 Claude will use: get_specials() → Returns active offers
 Response: "We have 2 specials running today:
 - Pepperoni: $10.99 (save $1.00)
@@ -455,7 +491,8 @@ Response: "We have 2 specials running today:
 ```
 
 **User**: "I'd like to order 2 Margheritas and 1 Pepperoni for customer 12345678-1234-1234-1234-123456789012"
-```
+
+```text
 Claude will use: 
 1. get_menu() → Find pizza IDs
 2. create_order() → Place the order
@@ -464,7 +501,8 @@ Total: $32.97 (2x Margherita @ $9.99 + 1x Pepperoni @ $10.99)"
 ```
 
 **Admin User**: "What inventory needs reordering?"
-```
+
+```text
 Claude will use: get_low_stock_alerts() → Check inventory
 Response: "2 items need reordering:
 - Pepperoni: Currently 8 units (reorder level: 10), suggest ordering 12 units"
@@ -540,7 +578,7 @@ All requests follow JSON-RPC 2.0:
 
 ### Class Structure
 
-```
+```text
 Pezza.Mcp/
 ├── Program.cs                 (Entry point, STDIO loop)
 ├── appsettings.json          (Connection strings, settings)
@@ -555,7 +593,7 @@ Pezza.Mcp/
 
 ### Data Flow
 
-```
+```text
 STDIO Input
    ↓
 JsonSerializer.Deserialize<McpRequest>()
@@ -579,10 +617,12 @@ Console.WriteLine() → STDIO Output
 ### Authentication & Authorization
 
 Current implementation:
+
 - ⚠️ No authentication required (localhost only recommended)
 - ⚠️ No authorization checks (all tools available to all clients)
 
 **Production Recommendations**:
+
 - Add API key validation
 - Implement role-based access (customers vs. admin)
 - Use HTTPS with mutual TLS authentication
@@ -592,6 +632,7 @@ Current implementation:
 ### Data Validation
 
 All tools validate:
+
 - ✅ Required parameters present
 - ✅ UUID format for IDs
 - ✅ Positive quantities for orders
@@ -600,6 +641,7 @@ All tools validate:
 ### Logging
 
 All requests logged with:
+
 - Request timestamp
 - Method name
 - Parameters (redacted for sensitive data)
@@ -612,6 +654,7 @@ All requests logged with:
 ### Query Optimization
 
 Tools use efficient EF Core queries:
+
 - ✅ `.Select()` projections (avoid loading unnecessary columns)
 - ✅ `.Include()` for related entities
 - ✅ `.OrderBy()` for consistent sorting
@@ -620,6 +663,7 @@ Tools use efficient EF Core queries:
 ### Connection Pooling
 
 SQL Server connection pooling active:
+
 - Min: 10 connections
 - Max: 100 connections
 - Timeout: 15 seconds
@@ -627,6 +671,7 @@ SQL Server connection pooling active:
 ### Response Times
 
 Typical tool response times:
+
 - Menu: 50-100ms
 - Search: 30-80ms
 - Create Order: 100-200ms
@@ -636,22 +681,24 @@ Typical tool response times:
 
 ### Server Won't Start
 
-```
+```text
 Error: Unable to connect to the database
 ```
 
 **Solution**:
+
 1. Check SQL Server is running
 2. Verify connection string in appsettings.json
 3. Ensure migrations have run: `dotnet run --project DbUp.Migrations`
 
 ### No Response from Tools
 
-```
+```text
 Error: STDIO timeout
 ```
 
 **Solution**:
+
 1. Check server logs for errors
 2. Verify JSON is valid
 3. Ensure unique request IDs
@@ -659,11 +706,12 @@ Error: STDIO timeout
 
 ### Slow Responses
 
-```
+```text
 Tool takes > 1 second to respond
 ```
 
 **Solution**:
+
 1. Check database query plans
 2. Add indexes on frequently searched columns
 3. Monitor SQL Server CPU/memory
@@ -730,7 +778,7 @@ public List<McpTool> GetAvailableTools()
 
 ## Directory Structure
 
-```
+```md
 Phase 12/
 ├── src/
 │   ├── 01. StartSolution/
@@ -776,7 +824,7 @@ Phase 12/
 
 ## Learning Outcomes
 
-After completing Phase 12, you'll understand:
+After completing Phase 13, you'll understand:
 
 1. ✅ How LLMs interact with external tools via MCP
 2. ✅ Building STDIO-based protocol handlers
@@ -786,8 +834,5 @@ After completing Phase 12, you'll understand:
 6. ✅ JSON-RPC 2.0 protocol implementation
 7. ✅ Integration testing with LLM clients
 
----
 
-**Estimated Time**: 45 minutes to understand + 30 minutes to integrate with Claude
-
-**Difficulty**: Advanced ▮▮▮▮▯ (4/5)
+[Move to Phase 14](https://github.com/entelect-incubator/.NET/tree/master/Phase%2014)

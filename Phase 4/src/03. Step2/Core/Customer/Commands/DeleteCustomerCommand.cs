@@ -7,7 +7,7 @@ public sealed class DeleteCustomerCommand : ICommand<Result>
 
 public sealed class DeleteCustomerCommandHandler(DatabaseContext databaseContext) : ICommandHandler<DeleteCustomerCommand, Result>
 {
-	public async Task<Result> HandleAsync(DeleteCustomerCommand request, CancellationToken cancellationToken)
+	public async Task<Result> Handle(DeleteCustomerCommand request, CancellationToken cancellationToken)
 	{
 		if (request.Id is null)
 		{

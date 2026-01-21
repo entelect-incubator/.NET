@@ -1,6 +1,6 @@
 <img align="left" width="116" height="116" src="../pezza-logo.png" />
 
-# &nbsp;**Pezza - Phase 6 - Step 4** [![.NET - Phase 6 - Step 4](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-step4.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-step4.yml)
+# &nbsp;**Pezza - Phase 7 - Step 4** [![.NET - Phase 6 - Step 4](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase7-step4.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase7-step4.yml)
 
 <br/><br/>
 
@@ -417,7 +417,6 @@ using (var serviceProvider = services.BuildServiceProvider())
 }
 ```
 
-## **Phase 7 - Microservices**
+## **Phase 8 - OpenAPI & NSwag Client**
 
-Move to Phase 7
-[Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%207)
+[Move to Phase 8](https://github.com/entelect-incubator/.NET/tree/master/Phase%208)

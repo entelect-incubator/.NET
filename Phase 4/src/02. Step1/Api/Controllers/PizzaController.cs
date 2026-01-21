@@ -15,7 +15,7 @@ public class PizzaController() : ApiController
 	[HttpGet("{id}")]
 	[ProducesResponseType(200)]
 	[ProducesResponseType(404)]
-	public async Task<ActionResult> Get(int id)
+	public async Task<ActionResult<Result<PizzaModel>>> Get(int id)
 	{
 		var result = await this.Dispatcher.Query(new GetPizzaQuery { Id = id });
 		return ResponseHelper.ResponseOutcome(result, this);
@@ -27,9 +27,9 @@ public class PizzaController() : ApiController
 	/// <returns>ActionResult</returns>
 	[HttpPost("Search")]
 	[ProducesResponseType(200)]
-	public async Task<ActionResult> Search()
+	public async Task<ActionResult<Result<IEnumerable<PizzaModel>>>> Search(CancellationToken cancellationToken)
 	{
-		var result = await this.Dispatcher.Query(new GetPizzasQuery());
+		var result = await this.Dispatcher.Query(new GetPizzasQuery(), cancellationToken);
 		return ResponseHelper.ResponseOutcome(result, this);
 	}
 
@@ -52,14 +52,10 @@ public class PizzaController() : ApiController
 	[ProducesResponseType(200)]
 	[ProducesResponseType(400)]
 	public async Task<ActionResult<Pizza>> Create([FromBody] CreatePizzaModel model)
-	{
-		var result = await this.Dispatcher.Send(new CreatePizzaCommand
+		=> ResponseHelper.ResponseOutcome(await this.Dispatcher.Send(new CreatePizzaCommand
 		{
 			Data = model
-		});
-
-		return ResponseHelper.ResponseOutcome(result, this);
-	}
+		}), this);
 
 
 	/// <summary>
@@ -73,20 +69,18 @@ public class PizzaController() : ApiController
 	///       "price": "119"
 	///     }
 	/// </remarks>
+	/// <param name="id"></param>
 	/// <param name="model">Pizza Model</param>
 	/// <returns>ActionResult</returns>
-	[HttpPut]
+	[HttpPut("{id}")]
 	[ProducesResponseType(200)]
 	[ProducesResponseType(400)]
-	public async Task<ActionResult> Update([FromBody] UpdatePizzaModel model)
-	{
-		var result = await this.Dispatcher.Send(new UpdatePizzaCommand
+	public async Task<ActionResult> Update([FromRoute] int id, [FromBody] UpdatePizzaModel model)
+		=> ResponseHelper.ResponseOutcome(await this.Dispatcher.Send(new UpdatePizzaCommand
 		{
+			Id = id,
 			Data = model
-		});
-
-		return ResponseHelper.ResponseOutcome(result, this);
-	}
+		}), this);
 
 	/// <summary>
 	/// Delete Pizza by Id.

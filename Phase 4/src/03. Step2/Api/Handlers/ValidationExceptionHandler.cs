@@ -3,6 +3,7 @@ namespace Api.Handlers;
 using System.Net;
 using FluentValidation;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.Extensions.Logging;
 
 /// <summary>
 /// Specialized exception handler for FluentValidation validation failures.
@@ -49,10 +50,13 @@ public sealed class ValidationExceptionHandler : IExceptionHandler
 		}
 
 		// Log validation failure (not as an error, but as expected validation failure)
-		this.logger.LogWarning(
-			"Validation failed for request {TraceId}: {FailureCount} errors",
-			httpContext.TraceIdentifier,
-			validationException.Errors.Count);
+		if (this.logger.IsEnabled(LogLevel.Warning))
+		{
+			this.logger.LogWarning(
+				"Validation failed for request {TraceId}: {FailureCount} errors",
+				httpContext.TraceIdentifier,
+				validationException.Errors.Count());
+		}
 
 		// Set response status and content type
 		httpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;

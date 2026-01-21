@@ -12,18 +12,13 @@ using Microsoft.AspNetCore.Diagnostics;
 /// It provides a cleaner alternative to traditional middleware-based exception handling.
 /// Multiple handlers can be registered and will execute in registration order.
 /// </remarks>
-public sealed class GlobalExceptionHandler : IExceptionHandler
+/// <remarks>
+/// Initializes a new instance of the GlobalExceptionHandler class.
+/// </remarks>
+/// <param name="logger">Logger instance for exception logging</param>
+public sealed class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IExceptionHandler
 {
-	private readonly ILogger<GlobalExceptionHandler> logger;
-
-	/// <summary>
-	/// Initializes a new instance of the GlobalExceptionHandler class.
-	/// </summary>
-	/// <param name="logger">Logger instance for exception logging</param>
-	public GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger)
-	{
-		this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
-	}
+	private readonly ILogger<GlobalExceptionHandler> logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
 	/// <summary>
 	/// Attempts to handle an exception asynchronously.

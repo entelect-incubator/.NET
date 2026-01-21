@@ -1,6 +1,6 @@
 <img align="left" width="116" height="116" src="../Assets/pezza-logo.png" />
 
-# &nbsp;**Pezza - Phase 2 - Step 3**
+# &nbsp;**Pezza - Phase 3 - Step 3**
 
 <br/><br/>
 
@@ -8,262 +8,83 @@
 
 **Difficulty**: ★★★☆☆ (Intermediate)  
 **Estimated Time**: 1.5 - 2 hours  
-**Prerequisites**: 
+**Prerequisites**:
+
 - Completed Steps 1 and 2
 - Understanding of REST API controllers
 - Familiarity with dependency injection
 
 ### Learning Outcomes
-After completing this step, you will understand:
-- Creating unified response patterns with ResponseHelper
-- Using IMediator in controllers via dependency injection
-- Implementing CQRS commands and queries in API endpoints
-- Handling success and error responses consistently
-- Using Result<T> and ListResult<T> for API responses
+
+- Wire controllers to the custom dispatcher
+- Use `ResponseHelper` for consistent HTTP responses
+- Return `Result<T>` and `ListResult<T>` from endpoints
+- Keep controllers thin and handler-focused
 
 ---
 
-## **API Response Helper**
+## What You Build
 
-Finishing up the API to use CQRS
+1) **ResponseHelper** (`Api/Helpers/ResponseHelper.cs`) centralizes HTTP response logic
+2) **Base ApiController** exposes `Dispatcher` from DI
+3) **Feature controllers** call `dispatcher.Send` and `dispatcher.Query`
+4) **Swagger** for quick endpoint verification
 
-To return clean, unified responses to consumers of the API, we create an ActionResult Helper class. Depending on the data retrieved from the Core layer, it will cater for the HTTP response and prevent duplicating code in controllers.
+### Controller Pattern
 
-Create a Helpers folder in Api and ResponseHelper.cs inside it with the following code.
-
-```cs
-namespace Api.Helpers;
-
-public static class ResponseHelper
+```csharp
+[HttpPost]
+public async Task<ActionResult> Create(
+    CreatePizzaCommand command,
+    CancellationToken ct)
 {
-    public static ActionResult ResponseOutcome<T>(Result<T> result, ApiController controller)
-    {
-        if (result.Data == null)
-        {
-            return controller.NotFound(Result.Failure($"{typeof(T).Name.Replace("Model", string.Empty)} not found"));
-        }
-
-        if (!result.Succeeded)
-        {
-            return controller.BadRequest(result);
-        }
-
-        return controller.Ok(result);
-    }
-
-    public static ActionResult ResponseOutcome<T>(ListResult<T> result, ApiController controller)
-    {
-        if (!result.Succeeded)
-        {
-            return controller.BadRequest(result);
-        }
-
-        return controller.Ok(result);
-    }
-
-    public static ActionResult ResponseOutcome(Result result, ApiController controller)
-    {
-        if (!result.Succeeded)
-        {
-            return controller.BadRequest(result);
-        }
-
-        return controller.Ok(result);
-    }
+    var result = await dispatcher.Send(command, ct);
+    return ResponseHelper.ResponseOutcome(result, this);
 }
 ```
 
-## **STEP 3 - Finishing the API Controller**
+### Base Controller
 
-### **Base Api Controller** Will be used to inject Mediatr into all other Controllers
+- `Api/Controllers/ApiController.cs` exposes `Dispatcher` from `HttpContext.RequestServices`
+- No direct knowledge of handlers inside controllers
 
-![Api Controller!](Assets/2020-11-20-11-16-51.png)
+### DI Configuration
 
-ApiController.cs
-
-```cs
-namespace Api.Controllers;
-
-using MediatR;
-
-[ApiController]
-[Route("[controller]")]
-[Produces("application/json")]
-public abstract class ApiController : ControllerBase
-{
-    private IMediator mediator;
-
-	protected IMediator Mediator => this.mediator ??= this.HttpContext.RequestServices.GetService<IMediator>();
-}
-```
-
-Now let's modify the Customer Controller to use Mediatr.
-
-Inherit from the ApiController instead of ControllerBase
-
-```cs
-public class StockController : ApiController
-```
-
-Modify all the functions to use Mediatr and the new DataDTO's
-
-```cs
-namespace Api.Controllers;
-
-using Core.Pizza.Commands;
-using Core.Pizza.Queries;
-
-[ApiController]
-[Route("[controller]")]
-public class PizzaController() : ApiController
-{
-	/// <summary>
-	/// Get Pizza by Id.
-	/// </summary>
-	/// <param name="id">Pizza Id</param>
-	/// <returns>ActionResult</returns>
-	[HttpGet("{id}")]
-	[ProducesResponseType(200)]
-	[ProducesResponseType(404)]
-	public async Task<ActionResult> Get(int id)
-	{
-		var result = await this.Mediator.Send(new GetPizzaQuery { Id = id });
-		return ResponseHelper.ResponseOutcome(result, this);
-	}
-
-	/// <summary>
-	/// Get all Pizzas.
-	/// </summary>
-	/// <returns>ActionResult</returns>
-	[HttpPost("Search")]
-	[ProducesResponseType(200)]
-	public async Task<ActionResult> Search()
-	{
-		var result = await this.Mediator.Send(new GetPizzasQuery());
-		return ResponseHelper.ResponseOutcome(result, this);
-	}
-
-	/// <summary>
-	/// Create Pizza.
-	/// </summary>
-	/// <remarks>
-	/// Sample request:
-	///
-	///     POST api/Pizza
-	///     {
-	///       "name": "Hawaiian",
-	///       "description": "Hawaiian pizza is a pizza originating in Canada, and is traditionally topped with pineapple, tomato sauce, cheese, and either ham or bacon.",
-	///       "price": "99"
-	///     }
-	/// </remarks>
-	/// <param name="model">Pizza Model</param>
-	/// <returns>ActionResult</returns>
-	[HttpPost]
-	[ProducesResponseType(200)]
-	[ProducesResponseType(400)]
-	public async Task<ActionResult<Pizza>> Create([FromBody] CreatePizzaModel model)
-	{
-		var result = await this.Mediator.Send(new CreatePizzaCommand
-		{
-			Data = model
-		});
-
-		return ResponseHelper.ResponseOutcome(result, this);
-	}
-
-
-	/// <summary>
-	/// Update Pizza.
-	/// </summary>
-	/// <remarks>
-	/// Sample request:
-	///
-	///     PUT api/Pizza/1
-	///     {
-	///       "price": "119"
-	///     }
-	/// </remarks>
-	/// <param name="model">Pizza Model</param>
-	/// <returns>ActionResult</returns>
-	[HttpPut]
-	[ProducesResponseType(200)]
-	[ProducesResponseType(400)]
-	public async Task<ActionResult> Update([FromBody] UpdatePizzaModel model)
-	{
-		var result = await this.Mediator.Send(new UpdatePizzaCommand
-		{
-			Data = model
-		});
-
-		return ResponseHelper.ResponseOutcome(result, this);
-	}
-
-	/// <summary>
-	/// Delete Pizza by Id.
-	/// </summary>
-	/// <param name="id">Pizza Id</param>
-	/// <returns>ActionResult</returns>
-	[HttpDelete("{id}")]
-	[ProducesResponseType(200)]
-	[ProducesResponseType(400)]
-	public async Task<ActionResult> Delete(int id)
-	{
-		var result = await this.Mediator.Send(new DeletePizzaCommand { Id = id });
-		return ResponseHelper.ResponseOutcome(result, this);
-	}
-}
-```
-
-Complete the Customer Controller
-
-![](./Assets/2023-04-13-05-44-28.png)
-
-Right-Click on you Api project -> Properties -> Debug.
-
-Change Launch Browser to Open "swagger"
-
-![](Assets/2020-11-25-00-39-15.png)
-
-Press F5 and Run your API. You should see something like this.
-
-![](./Assets/2023-04-13-05-45-44.png)
+- `Core/DependencyInjection.cs` registers `Dispatcher` and scans handlers via Scrutor
+- `Api/Startup.cs` calls `services.AddApplication();`
 
 ---
 
-## Summary
+## Checklist
 
-You have successfully completed Step 3! Your CQRS implementation is now complete and accessible through a clean, unified API.
-
-The ResponseHelper pattern ensures consistent responses across all endpoints, while IMediator orchestrates your business logic from the Core layer. This is a production-ready pattern used across the entire incubator phases.
-
-### What You've Accomplished
-- ✅ Created a unified ResponseHelper for consistent API responses
-- ✅ Built a base ApiController with IMediator dependency injection
-- ✅ Implemented CQRS commands and queries in controllers
-- ✅ Set up Swagger/OpenAPI for API documentation
-- ✅ Created a fully functional CQRS API
+- [ ] Base ApiController exposes `Dispatcher` from DI
+- [ ] Controllers call `dispatcher.Send(command, ct)` 
+- [ ] ResponseHelper returns consistent ActionResult envelopes
+- [ ] Swagger runs and endpoints work
 
 ---
 
-## 🎉 Phase 2 Complete!
+## What You Learned
 
-Congratulations on completing Phase 2! You now have a solid understanding of CQRS patterns and the MediatR pipeline.
+After Step 3, you understand:
 
-**Next Steps:**
-- Move on to Phase 3 to learn about advanced patterns and middleware
-- Explore additional MediatR features like validation and caching behaviors
-- Practice building more complex command/query handlers
-- Consider adding additional pipeline behaviors for cross-cutting concerns
+- How controllers become thinner by delegating to the dispatcher
+- Why centralized `ResponseHelper` beats duplicated status code logic
+- The trade-off: slightly more abstraction for cleaner controllers
+- How the dispatcher resolves handlers at runtime via generic constraints
 
-**Key Concepts to Remember:**
-- Commands modify state, Queries retrieve state
-- Use Result<T> and ListResult<T> for consistent responses
-- MediatR dispatches requests to appropriate handlers
-- ResponseHelper prevents code duplication across endpoints
-- The modern .slnx format provides better performance and IDE support
+---
 
-### You are done with the Back-End that will be used to build most of the Front-End stack.
+## 🎉 Phase 3 Complete!
 
-## **Move to Phase 3**
+You've built a custom dispatcher from scratch and understand:
 
-[Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%203)
+- **Why** mediator patterns exist (decoupling, extensibility)
+- **How** generic constraints enable type-safe routing
+- **When** to use a dispatcher vs direct injection
+
+**Next:** Phase 4 adds validation behaviors, transaction handling, and demonstrates extending the dispatcher with decorators.
+
+## Next Step
+
+[Go to Phase 4](https://github.com/entelect-incubator/.NET/tree/master/Phase%204)

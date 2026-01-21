@@ -1,8 +1,13 @@
-# Phase 10: DbUp Database Migrations
+# Phase 11: DbUp Database Migrations
 
 This phase introduces **database versioning and migrations** using DbUp, enabling repeatable and auditable schema and data changes.
 
 ## Architecture Overview
+
+**What's unique in Phase 11**
+- Focused on DbUp migrations as a standalone capability (no Aspire orchestration yet).
+- Establishes idempotent SQL Server migrations and CI-friendly execution paths.
+- Phase 12 will reuse these scripts but orchestrate them with Aspire before APIs start.
 
 ### Key Components
 
@@ -31,10 +36,10 @@ This phase introduces **database versioning and migrations** using DbUp, enablin
 
 ## Running Migrations
 
-### Option 1: Run from Visual Studio
+### Option 1: Run from Visual Studio (Phase 11 path)
 
 ```powershell
-cd Phase10/src/01.StartSolution
+cd "Phase 11/src/01. StartSolution"
 dotnet run --project DbUp.Migrations/DbUp.Migrations.csproj
 ```
 
@@ -93,7 +98,8 @@ CREATE TABLE [dbo].[Pizza] (...)
 ### Core Tables
 
 #### Customer
-```
+
+```sql
 Id (GUID, PK)
 FirstName, LastName, Email
 Phone, Address, City, ZipCode
@@ -101,7 +107,8 @@ CreatedDate, UpdatedDate
 ```
 
 #### Pizza
-```
+
+```sql
 Id (GUID, PK)
 Name, Description, Price
 PictureUrl, Offer, OfferStarts, OfferEnds
@@ -109,7 +116,8 @@ CreatedDate, UpdatedDate
 ```
 
 #### Order
-```
+
+```sql
 Id (GUID, PK)
 CustomerId (FK → Customer)
 OrderNumber (UNIQUE)
@@ -118,7 +126,8 @@ CreatedDate, UpdatedDate
 ```
 
 #### OrderItem
-```
+
+```sql
 Id (GUID, PK)
 OrderId (FK → Order, CASCADE)
 PizzaId (FK → Pizza)
@@ -127,7 +136,8 @@ CreatedDate
 ```
 
 #### Stock
-```
+
+```sql
 Id (GUID, PK)
 PizzaId (FK → Pizza, CASCADE)
 Quantity, ReorderLevel
@@ -135,7 +145,8 @@ CreatedDate, UpdatedDate
 ```
 
 #### Notify
-```
+
+```sql
 Id (GUID, PK)
 Title, Message
 IsRead
@@ -143,7 +154,8 @@ CreatedDate
 ```
 
 #### SchemaVersions (DbUp Internal)
-```
+
+```sql
 Id (INT, PK - Identity)
 SchemaVersion, Description
 Installed, Success
@@ -208,7 +220,8 @@ SELECT * FROM [dbo].[SchemaVersions] ORDER BY [SchemaVersion]
 ```
 
 Output:
-```
+
+```text
 Id  SchemaVersion  Description              Installed            Success
 1   1              001_InitialSetup         2025-10-30 14:32:10  1
 2   2              001_CreateTables         2025-10-30 14:32:11  1
@@ -219,7 +232,7 @@ Id  SchemaVersion  Description              Installed            Success
 
 DbUp logs to console with Serilog:
 
-```
+```shell
 [10:30:15 INF] Starting database migration...
 [10:30:15 INF] Connection string: Server=localhost,1433;User Id=sa;Password=****;...
 [10:30:15 INF] Executing script: 001_InitialSetup.sql
@@ -251,7 +264,7 @@ dotnet run --project DbUp.Migrations/DbUp.Migrations.csproj -- "Server=prod-sql.
 
 ### Azure SQL / Cloud
 
-```
+```json
 Server=pezza.database.windows.net;User Id=sa@pezza;Password=AzurePassword123!;Database=pezza-db;Encrypt=true;TrustServerCertificate=false;Connection Timeout=30
 ```
 
@@ -287,14 +300,14 @@ jobs:
       
       - name: Run Migrations
         run: |
-          dotnet run --project Phase10/src/01.StartSolution/DbUp.Migrations/DbUp.Migrations.csproj -- \
+          dotnet run --project "Phase 11/src/01. StartSolution/DbUp.Migrations/DbUp.Migrations.csproj" -- \
             "Server=localhost;User Id=sa;Password=TestPassword123!;Database=pezza-db;TrustServerCertificate=true"
 ```
 
 ## Directory Structure
 
-```
-Phase 10/
+```md
+Phase 11/
 ├── src/
 │   ├── 01. StartSolution/
 │   │   ├── DbUp.Migrations/
@@ -314,7 +327,7 @@ Phase 10/
 │   │   ├── Pezza.Common/
 │   │   ├── AspireHost/
 │   │   ├── docker-compose.yml
-│   │   └── .NET.Pezza.sln
+│   │   └── Pezza.slnx
 │   └── ... (other solution items)
 └── README.md
 ```
@@ -343,16 +356,19 @@ END
 ## Performance Tips
 
 ### Indexes
+
 - Create indexes on foreign keys
 - Create indexes on frequently searched columns (Email, Name)
 - Use filtered indexes for sparse data
 
 ### Constraints
+
 - Enforce NOT NULL where appropriate
 - Use UNIQUE constraints for business keys (OrderNumber)
 - Cascade deletes carefully to prevent data loss
 
 ### Batch Operations
+
 - Insert sample data in batches of 1000+
 - Use bulk insert tools for large datasets
 - Monitor migration execution time
@@ -361,31 +377,34 @@ END
 
 ### Connection String Errors
 
-```
+```text
 Error: Cannot open database 'pezza-db' requested by the login.
 ```
 
-**Solution**: 
+**Solution**:
+
 - Check database exists: `SELECT name FROM sys.databases`
 - Create database if missing: `CREATE DATABASE [pezza-db]`
 
 ### Script Execution Failures
 
-```
+```text
 Error: Column 'PizzaId' already exists in table 'Pizza'
 ```
 
-**Solution**: 
+**Solution**:
+
 - Check if script ran previously: `SELECT * FROM SchemaVersions`
 - Make scripts idempotent with `IF NOT EXISTS` checks
 
 ### Permission Denied
 
-```
+```text
 Error: The server principal 'domain\user' is not able to access the database 'pezza-db'
 ```
 
-**Solution**:
+### Solution
+
 - Grant user database access: `GRANT CONNECT ON DATABASE pezza-db TO [domain\user]`
 - Use SQL authentication if Windows auth unavailable
 
@@ -409,11 +428,6 @@ var api = builder
     .WithReference(migrations); // Ensure migrations run first
 ```
 
-## Next Steps
-
-- **Phase 11**: Combine Aspire orchestration with DbUp migrations
-- **Phase 12**: Create MCP Server for AI integration
-
 ## References
 
 - [DbUp Documentation](https://dbup.readthedocs.io/)
@@ -421,3 +435,5 @@ var api = builder
 - [SQL Server Tutorial](https://learn.microsoft.com/en-us/sql/t-sql/tutorial-writing-transact-sql-statements)
 - [Database Design Best Practices](https://learn.microsoft.com/en-us/sql/relational-databases/tables/primary-and-foreign-key-constraints)
 - [DbUp Advanced Scenarios](https://dbup.readthedocs.io/en/latest/more-info/advanced-scripts/)
+
+[Move to Phase 12](https://github.com/entelect-incubator/.NET/tree/master/Phase%2012)

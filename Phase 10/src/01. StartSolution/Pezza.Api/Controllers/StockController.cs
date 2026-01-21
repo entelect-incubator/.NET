@@ -1,5 +1,6 @@
 namespace Api.Controllers;
 
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -41,7 +42,7 @@ public class StockController : ApiController
     /// <response code="200">Stock Search.</response>
     /// <response code="400">Error searching for pizza.</response>
     [HttpPost]
-    [ProducesResponseType(typeof(ListResult<PizzaModel>), 200)]
+    [ProducesResponseType(typeof(Result<IEnumerable<PizzaModel>>), 200)]
     [ProducesResponseType(typeof(ErrorResult), 400)]
     [Route("Search")]
     public async Task<ActionResult> Search(PizzaModel dto, CancellationToken cancellationToken = default)

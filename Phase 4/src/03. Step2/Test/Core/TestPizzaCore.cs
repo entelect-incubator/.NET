@@ -58,7 +58,7 @@ public class TestPizzaCore : QueryTestBase
 		var resultGetAll = await sutGetAll.Handle(new GetPizzasQuery { Data = new() }, CancellationToken.None);
 
 		Assert.That(resultGetAll?.Data, Is.Not.Null);
-		Assert.That(resultGetAll?.Data.Count, Is.GreaterThanOrEqualTo(1));
+		Assert.That(resultGetAll?.Data.Count(), Is.GreaterThanOrEqualTo(1));
 		Assert.That(resultGetAll?.Data.Any(p => p.Id == this.model.Id), Is.True);
 	}
 

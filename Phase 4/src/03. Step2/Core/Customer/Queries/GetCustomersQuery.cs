@@ -7,7 +7,7 @@ public sealed class GetCustomersQuery : IQuery<Result<IEnumerable<CustomerModel>
 
 public sealed class GetCustomersQueryHandler(DatabaseContext databaseContext) : IQueryHandler<GetCustomersQuery, Result<IEnumerable<CustomerModel>>>
 {
-	public async Task<Result<IEnumerable<CustomerModel>>> HandleAsync(GetCustomersQuery request, CancellationToken cancellationToken)
+	public async Task<Result<IEnumerable<CustomerModel>>> Handle(GetCustomersQuery request, CancellationToken cancellationToken)
 	{
 		var entity = request.Data;
 		if (string.IsNullOrEmpty(entity.OrderBy))

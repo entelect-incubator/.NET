@@ -6,7 +6,7 @@ public sealed class GetPizzasQuery : IQuery<Result<IEnumerable<PizzaModel>>>
 
 public sealed class GetPizzasQueryHandler(DatabaseContext databaseContext) : IQueryHandler<GetPizzasQuery, Result<IEnumerable<PizzaModel>>>
 {
-	public async Task<Result<IEnumerable<PizzaModel>>> HandleAsync(GetPizzasQuery request, CancellationToken cancellationToken)
+	public async Task<Result<IEnumerable<PizzaModel>>> Handle(GetPizzasQuery query, CancellationToken cancellationToken)
 	{
 		var entities = databaseContext.Pizzas.Select(x => x).AsNoTracking();
 

@@ -31,7 +31,7 @@ public class TestCustomerCore : QueryTestBase
 				}
 			}, CancellationToken.None);
 
-		if (!resultCreate.Succeeded)
+		if (resultCreate.HasError)
 		{
 			Assert.That(false, Is.True);
 		}
@@ -59,7 +59,7 @@ public class TestCustomerCore : QueryTestBase
 		var resultGetAll = await sutGetAll.Handle(new GetCustomersQuery(), CancellationToken.None);
 
 		Assert.That(resultGetAll?.Data, Is.Not.Null);
-		Assert.That(resultGetAll?.Data.Count, Is.GreaterThanOrEqualTo(1));
+		Assert.That(resultGetAll?.Data.Count(), Is.GreaterThanOrEqualTo(1));
 		Assert.That(resultGetAll?.Data.Any(c => c.Id == this.model.Id), Is.True);
 	}
 
@@ -80,7 +80,7 @@ public class TestCustomerCore : QueryTestBase
 				}
 			}, CancellationToken.None);
 
-		Assert.That(resultUpdate.Succeeded, Is.True);
+		Assert.That(resultUpdate.HasError, Is.False);
 	}
 
 	[Test]
@@ -93,6 +93,6 @@ public class TestCustomerCore : QueryTestBase
 				Id = this.model.Id
 			}, CancellationToken.None);
 
-		Assert.That(outcomeDelete.Succeeded, Is.True);
+		Assert.That(outcomeDelete.HasError, Is.False);
 	}
 }

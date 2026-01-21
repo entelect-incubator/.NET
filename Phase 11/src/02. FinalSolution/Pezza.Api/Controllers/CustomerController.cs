@@ -1,4 +1,5 @@
 ﻿namespace Api.Controllers;
+using System.Collections.Generic;
 
 using System.Threading;
 using System.Threading.Tasks;
@@ -43,7 +44,7 @@ public class CustomerController : ApiController
     /// <response code="200">Customer Search.</response>
     /// <response code="400">Error searching for customers.</response>
     [HttpPost]
-    [ProducesResponseType(typeof(ListResult<CustomerDTO>), 200)]
+    [ProducesResponseType(typeof(Result<IEnumerable<CustomerDTO>>), 200)]
     [ProducesResponseType(typeof(ErrorResult), 400)]
     [Route("Search")]
     public async Task<ActionResult> Search(CustomerDTO dto, CancellationToken cancellationToken = default)

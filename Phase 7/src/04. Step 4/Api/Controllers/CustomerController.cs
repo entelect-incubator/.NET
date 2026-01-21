@@ -5,7 +5,9 @@ using Core.Customer.Commands;
 using Core.Customer.Queries;
 using Core.Order.Queries;
 
-public class CustomerController : ApiController
+[ApiController]
+[Route("[controller]")]
+public class CustomerController(Dispatcher dispatcher) : ApiController(dispatcher)
 {
 	/// <summary>
 	/// Get Customer by Id.
@@ -21,7 +23,7 @@ public class CustomerController : ApiController
 	[ProducesResponseType(typeof(ErrorResult), 404)]
 	public async Task<ActionResult> GetCustomer(int id)
 	{
-		var result = await this.Mediator.Send(new GetCustomerQuery { Id = id });
+		var result = await this.Dispatcher.Query<GetCustomerQuery, Result<CustomerModel>>(new GetCustomerQuery { Id = id }, CancellationToken.None);
 		return ResponseHelper.ResponseOutcome(result, this);
 	}
 
@@ -39,7 +41,7 @@ public class CustomerController : ApiController
 	[ProducesResponseType(typeof(ErrorResult), 404)]
 	public async Task<ActionResult> GetOrders(int id)
 	{
-		var result = await this.Mediator.Send(new GetOrdersQuery { CustomerId = id });
+		var result = await this.Dispatcher.Query<GetOrdersQuery, Result<IEnumerable<OrderModel>>>(new GetOrdersQuery { CustomerId = id }, CancellationToken.None);
 		return ResponseHelper.ResponseOutcome(result, this);
 	}
 
@@ -56,10 +58,10 @@ public class CustomerController : ApiController
 	[Route("Search")]
 	public async Task<ActionResult> Search(SearchCustomerModel data)
 	{
-		var result = await this.Mediator.Send(new GetCustomersQuery()
+		var result = await this.Dispatcher.Query<GetCustomersQuery, Result<IEnumerable<CustomerModel>>>(new GetCustomersQuery()
 		{
 			Data = data
-		});
+		}, CancellationToken.None);
 		return ResponseHelper.ResponseOutcome(result, this);
 	}
 
@@ -85,10 +87,10 @@ public class CustomerController : ApiController
 	[ProducesResponseType(typeof(ErrorResult), 400)]
 	public async Task<ActionResult<CustomerModel>> Create(CreateCustomerModel model)
 	{
-		var result = await this.Mediator.Send(new CreateCustomerCommand
+		var result = await this.Dispatcher.Send<CreateCustomerCommand, Result<CustomerModel>>(new CreateCustomerCommand
 		{
 			Data = model
-		});
+		}, CancellationToken.None);
 
 		return ResponseHelper.ResponseOutcome(result, this);
 	}
@@ -115,10 +117,10 @@ public class CustomerController : ApiController
 	[ProducesResponseType(typeof(Result), 404)]
 	public async Task<ActionResult> Update(UpdateCustomerModel model)
 	{
-		var result = await this.Mediator.Send(new UpdateCustomerCommand
+		var result = await this.Dispatcher.Send<UpdateCustomerCommand, Result<CustomerModel>>(new UpdateCustomerCommand
 		{
 			Data = model
-		});
+		}, CancellationToken.None);
 
 		return ResponseHelper.ResponseOutcome(result, this);
 	}
@@ -135,7 +137,7 @@ public class CustomerController : ApiController
 	[ProducesResponseType(typeof(ErrorResult), 400)]
 	public async Task<ActionResult> Delete(int id)
 	{
-		var result = await this.Mediator.Send(new DeleteCustomerCommand { Id = id });
+		var result = await this.Dispatcher.Send<DeleteCustomerCommand, Result>(new DeleteCustomerCommand { Id = id }, CancellationToken.None);
 		return ResponseHelper.ResponseOutcome(result, this);
 	}
 }

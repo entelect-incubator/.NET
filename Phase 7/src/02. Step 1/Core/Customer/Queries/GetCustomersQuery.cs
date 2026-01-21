@@ -2,7 +2,7 @@ namespace Core.Customer.Queries;
 
 public sealed class GetCustomersQuery : IQuery<Result<IEnumerable<CustomerModel>>>
 {
-	public SearchCustomerModel Data { get; set; }
+	public SearchCustomerModel Data { get; set; } = new();
 }
 
 public sealed class GetCustomersQueryHandler(DatabaseContext databaseContext) : IQueryHandler<GetCustomersQuery, Result<IEnumerable<CustomerModel>>>

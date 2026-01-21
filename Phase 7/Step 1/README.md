@@ -1,6 +1,6 @@
 <img align="left" width="116" height="116" src="../pezza-logo.png" />
 
-# &nbsp;**Pezza - Phase 6 - Step 1** [![.NET - Phase 6 - Step 1](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-step1.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-step1.yml)
+# &nbsp;**Pezza - Phase 7 - Step 1** [![.NET - Phase 7 - Step 1](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-step1.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase7-step1.yml)
 
 <br/><br/>
 
@@ -69,5 +69,4 @@ In the next step we will look at how to call the email service with the use of M
 
 ## **STEP 2 - Event**
 
-Move to Step 2
-[Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%206/Step%202)
+[Move to Step 2](https://github.com/entelect-incubator/.NET/tree/master/Phase%207/Step%202)

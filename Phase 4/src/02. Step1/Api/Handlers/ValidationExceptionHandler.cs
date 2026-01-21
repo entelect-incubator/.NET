@@ -3,6 +3,7 @@ namespace Api.Handlers;
 using System.Net;
 using FluentValidation;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.Extensions.Logging;
 
 /// <summary>
 /// Specialized exception handler for FluentValidation validation failures.
@@ -16,18 +17,12 @@ using Microsoft.AspNetCore.Diagnostics;
 /// services.AddExceptionHandler<ValidationExceptionHandler>();
 /// services.AddExceptionHandler<GlobalExceptionHandler>();
 /// </remarks>
-public sealed class ValidationExceptionHandler : IExceptionHandler
+/// <summary>
+/// Initializes a new instance of the ValidationExceptionHandler class.
+/// </summary>
+public sealed class ValidationExceptionHandler(ILogger<ValidationExceptionHandler> logger) : IExceptionHandler
 {
-	private readonly ILogger<ValidationExceptionHandler> logger;
-
-	/// <summary>
-	/// Initializes a new instance of the ValidationExceptionHandler class.
-	/// </summary>
-	/// <param name="logger">Logger instance for validation error logging</param>
-	public ValidationExceptionHandler(ILogger<ValidationExceptionHandler> logger)
-	{
-		this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
-	}
+	private readonly ILogger<ValidationExceptionHandler> logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
 	/// <summary>
 	/// Handles FluentValidation ValidationException specifically.
@@ -49,10 +44,13 @@ public sealed class ValidationExceptionHandler : IExceptionHandler
 		}
 
 		// Log validation failure (not as an error, but as expected validation failure)
-		this.logger.LogWarning(
-			"Validation failed for request {TraceId}: {FailureCount} errors",
-			httpContext.TraceIdentifier,
-			validationException.Errors.Count);
+		if (this.logger.IsEnabled(LogLevel.Warning))
+		{
+			this.logger.LogWarning(
+				"Validation failed for request {TraceId}: {FailureCount} errors",
+				httpContext.TraceIdentifier,
+				validationException.Errors.Count());
+		}
 
 		// Set response status and content type
 		httpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;

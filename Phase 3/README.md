@@ -13,78 +13,64 @@
 
 ## Goal
 
-This phase teaches **CQRS (Command Query Responsibility Segregation)** through building your own custom, lightweight dispatcher pattern. Rather than using an external library like MediatR or LiteBus, you'll implement a minimal CQRS library in-house, learning:
+**Phase 3** builds on Phase 2's handler pattern by introducing a **lightweight dispatcher** that centralizes command/query routing. Instead of controllers knowing about specific handler interfaces, they now send commands/queries through a single dispatcher.
 
-- How mediator patterns work under the hood
-- Why dispatcher abstraction matters
-- How to design extensible, reusable framework code
-- Trade-offs between simplicity and feature-richness
+### **Why Build Your Own Dispatcher?**
 
-By implementing your own minimal CQRS dispatcher, you'll understand:
-1. **When** to use this pattern
-2. **How** it works internally
-3. **Why** it's better than directly calling services
-4. **What trade-offs** exist in different implementations
+Rather than using MediatR or another framework, you'll implement a minimal CQRS dispatcher (~60 lines) to understand:
 
-This is **hands-on architecture learning** — not just "use this library" — so you can make informed decisions about patterns and tools in real projects.
+1. **How** mediator patterns work internally
+2. **When** centralized routing beats direct injection
+3. **What** trade-offs exist between simplicity and features
+
+This is hands-on architecture—you'll know exactly how the abstraction works because you built it.
 
 See Microsoft docs: [CQRS pattern](https://docs.microsoft.com/azure/architecture/patterns/cqrs)
 
 ## Architecture Overview
 
-### **Phase 2 vs Phase 3: A Natural Progression**
+### **From Phase 2 to Phase 3: Why Add a Dispatcher?**
 
-| Aspect                | Phase 2 (FromServices)                           | Phase 3 (Dispatcher)                      |
-| --------------------- | ------------------------------------------------ | ----------------------------------------- |
-| **Pattern**           | Direct service injection                         | Centralized dispatcher                    |
-| **Service Discovery** | Controller knows service type                    | Controller uses dispatcher only           |
-| **Extensibility**     | Limited (each controller must know all services) | Open (dispatcher can add features)        |
-| **Learning Value**    | DI fundamentals                                  | Architecture & inversion of control       |
-| **Use Case**          | Simple CRUD                                      | Growing business logic                    |
-| **Code Flexibility**  | Service interface changes = controller changes   | Service changes isolated from controllers |
-
-### **Why Add a Dispatcher?**
-
-**Phase 2 approach (direct services):**
+**Phase 2 (Explicit Injection):**
 
 ```csharp
 [HttpPost]
-public async Task<Result> Create(
-    [FromServices] ICreatePizzaCommand service,  // Controller knows about service
-    CreatePizzaDto dto,
+public async Task<ActionResult> Create(
+    [FromServices] ICreatePizzaCommand handler,  // Controller knows handler type
+    CreatePizzaModel model,
     CancellationToken ct)
-    => await service.ExecuteAsync(dto, ct);
+    => ResponseHelper.ResponseOutcome(await handler.ExecuteAsync(model, ct), this);
 ```
 
-**Problems:**
+**Limitations:**
 
-- Controllers must import and know about specific services
-- Adding validation, logging, or caching requires modifying every controller and service
-- Hard to test because each controller-service combo is tightly coupled
-- No single place to apply cross-cutting concerns
+- Controllers must import handler interfaces
+- Each action needs `[FromServices]` injection
+- Adding cross-cutting concerns (logging, validation) requires changing every handler
+- No single place to apply consistent behavior
 
-**Phase 3 approach (dispatcher):**
+**Phase 3 (Dispatcher):**
 
 ```csharp
 [HttpPost]
-public async Task<Result> Create(
-    CreatePizzaCommand command,          // Just data
-    [FromServices] Dispatcher dispatcher, // Single integration point
+public async Task<ActionResult> Create(
+    CreatePizzaCommand command,       // Just data
     CancellationToken ct)
-    => await dispatcher.Send(command, ct); // Dispatcher routes to handler
+    => ResponseHelper.ResponseOutcome(
+        await dispatcher.Send(command, ct),  // Dispatcher routes
+        this);
 ```
 
 **Benefits:**
 
-- Controllers are **decoupled** from specific services
-- **Single dispatcher** knows how to route and handle all commands/queries
-- Easy to add cross-cutting concerns (logging, validation, transactions) **in one place**
+- Controllers **decoupled** from handler types
+- **Single point** to add logging, validation, transactions
 - New handlers don't require controller changes
-- Testable: mock the dispatcher, not 10 different services
+- Easier testing: mock the dispatcher instead of individual handlers
 
-## The Custom CQRS Library: MediatorLite
+## The Custom Dispatcher (MediatorLite)
 
-This phase includes `Common/CQRS/MediatorLite.cs` — a minimal CQRS implementation you'll understand completely:
+Located in `Common/CQRS/MediatorLite.cs`, this ~60-line dispatcher contains everything you need:
 
 ```csharp
 public interface ICommand<TResult> { }
@@ -96,12 +82,6 @@ public interface ICommandHandler<TCommand, TResult>
     Task<TResult> Handle(TCommand command, CancellationToken ct);
 }
 
-public interface IQueryHandler<TQuery, TResult> 
-    where TQuery : IQuery<TResult>
-{
-    Task<TResult> Handle(TQuery query, CancellationToken ct);
-}
-
 public class Dispatcher(IServiceProvider provider)
 {
     public Task<TResult> Send<TCommand, TResult>(TCommand command, CancellationToken ct = default)
@@ -110,37 +90,17 @@ public class Dispatcher(IServiceProvider provider)
         var handler = provider.GetRequiredService<ICommandHandler<TCommand, TResult>>();
         return handler.Handle(command, ct);
     }
-
-    public Task<TResult> Query<TQuery, TResult>(TQuery query, CancellationToken ct = default)
-        where TQuery : IQuery<TResult>
-    {
-        var handler = provider.GetRequiredService<IQueryHandler<TQuery, TResult>>();
-        return handler.Handle(query, ct);
-    }
+    // ... Query method follows same pattern
 }
 ```
 
-**That's it!** ~60 lines of code contains the entire pattern.
+**How It Works:**
 
-### **How It Works**
-
-1. **Command/Query definition** → Lightweight data object inheriting from `ICommand<T>` or `IQuery<T>`
-2. **Handler registration** → Scanned and registered by Scrutor in DependencyInjection.cs
-3. **Dispatcher sends** → `dispatcher.Send(command, ct)` → Retrieves matching handler from DI container
-4. **Handler executes** → Business logic runs, returns result
-5. **Controller receives** → Result returned to caller
-
-```
-Controller
-   ↓
-Dispatcher.Send(command, ct)
-   ↓
-DI Container: GetRequiredService<ICommandHandler<CreatePizzaCommand, PizzaModel>>()
-   ↓
-Handler executes business logic
-   ↓
-Result returned to controller
-```
+1. Command/query inherits from `ICommand<TResult>` or `IQuery<TResult>`
+2. Handler implements `ICommandHandler<TCommand, TResult>`
+3. Scrutor scans and registers handlers automatically
+4. Dispatcher resolves the right handler via generic constraints and DI
+5. Business logic executes, returns `Result<T>`
 
 ## Step-by-Step: Phase 3 Structure
 
@@ -150,7 +110,7 @@ Result returned to controller
 
 Focus:
 
-- Understand the Dispatcher and MediatorLite library
+- Understand the Dispatcher (MediatorLite) library
 - Implement basic commands and queries
 - See how handlers are automatically discovered
 - Learn dispatcher extension methods
@@ -401,9 +361,9 @@ You now understand what all of these are doing under the hood.
 
 ## Common Mistakes & Solutions
 
-### **Mistake 1: Handler Not Found**
+### ❌ **Mistake 1: Handler Not Found**
 
-```
+```cs
 InvalidOperationException: No service for type 
 'ICommandHandler<CreatePizzaCommand, Result<PizzaModel>>' has been registered.
 ```
@@ -435,9 +395,9 @@ public sealed class CreatePizzaHanler
     : ICommandHandler<CreatePizzaCommand, Result<PizzaModel>>
 ```
 
-### **Mistake 2: Generic Type Mismatch**
+### ❌ **Mistake 2: Generic Type Mismatch**
 
-```
+```cs
 InvalidOperationException: No service registered for type 
 'ICommandHandler<ICommand<Result<PizzaModel>>, Result<PizzaModel>>'
 ```
@@ -457,7 +417,7 @@ var result = await dispatcher.Send(cmd, ct);
 var result = await dispatcher.Send<CreatePizzaCommand, Result<PizzaModel>>(cmd, ct);
 ```
 
-### **Mistake 3: Forgetting CancellationToken**
+### ❌ **Mistake 3: Forgetting CancellationToken**
 
 ```csharp
 // ❌ Lost cancellation support (request can't be cancelled)
@@ -537,9 +497,46 @@ public class CreatePizzaCommandHandlerTests
 - Use in-memory database for fast, isolated tests
 - Focus on business logic, not framework plumbing
 
+---
+
+## 🎓 What You Should Know By Now
+
+After completing Phase 3, you should understand:
+
+### **Dispatcher Pattern**
+- Why centralized routing beats explicit `[FromServices]` at scale
+- How generic constraints (`where TCommand : ICommand<TResult>`) enable type-safe dispatch
+- The trade-off: slightly more abstraction for much better extensibility
+- When to build your own vs. use a library like MediatR
+
+### **Generic Constraints**
+- How `ICommand<TResult>` constrains the dispatcher's `Send` method
+- Why the compiler can infer types: `dispatcher.Send(command, ct)` → finds the right handler
+- Using `GetRequiredService<ICommandHandler<TCommand, TResult>>()` for DI resolution
+
+### **Scrutor Assembly Scanning**
+- How `.FromAssemblyOf<T>()` locates types in the same assembly
+- Registering implementations via `.AsImplementedInterfaces()`
+- Why scanning beats manual registration for growing codebases
+
+### **Architectural Insights**
+- **Separation of concerns**: Commands carry data; handlers contain logic; controllers orchestrate
+- **Single responsibility**: Each handler does one thing (create pizza, fetch pizza, etc.)
+- **Open/closed**: Add new handlers without changing existing controllers
+- **Cross-cutting**: Dispatcher becomes the place to add logging, validation, caching
+
+### **Testing Benefits**
+- Mock the dispatcher instead of 10+ individual handler interfaces
+- Test handlers in isolation without controllers or HTTP
+- In-memory DbContext keeps tests fast and repeatable
+
+**Next**: Phase 4 adds validation behaviors, transaction handling, and demonstrates how to extend the dispatcher with decorators.
+
+---
+
 ## Next Phase
 
-**Phase 4** will build on this by:
+Phase 4 will enhance the dispatcher by:
 
 - Adding more business logic (customer commands, order processing)
 - Introducing validation behaviors
@@ -555,12 +552,10 @@ public class CreatePizzaCommandHandlerTests
 
 ## Troubleshooting
 
-**Q: Do I need async/await for queries?**
-
+**Q: Do I need async/await for queries?**  
 A: Yes. Keep everything async for scalability. Even if a query is fast, use `async` to avoid blocking threads.
 
-**Q: Can handlers have dependencies?**
-
+**Q: Can handlers have dependencies?**  
 A: Absolutely! Inject anything you need:
 
 ```csharp
@@ -571,8 +566,7 @@ public sealed class CreatePizzaCommandHandler(
     : ICommandHandler<CreatePizzaCommand, Result<PizzaModel>>
 ```
 
-**Q: What if I need to call another command from within a handler?**
-
+**Q: What if I need to call another command from within a handler?**  
 A: Inject the dispatcher and call it:
 
 ```csharp
@@ -593,14 +587,3 @@ public sealed class CreateOrderCommandHandler(
 ```
 
 This is considered **orchestration** — use carefully to avoid making commands too interdependent.
-
-## Implement CQRS Pattern
-
-
-## Next Phase
-
-Phase 4 will build on this foundation by introducing:
-- Command and Query handler implementation
-- Validation behavior using FluentValidation
-- Advanced CQRS patterns
-- Customer and Order commands/queries

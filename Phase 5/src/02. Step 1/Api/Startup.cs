@@ -3,6 +3,7 @@ namespace Api;
 using System.Reflection;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;

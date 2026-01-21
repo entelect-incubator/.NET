@@ -1,25 +1,32 @@
 namespace Core;
 
 using System.Reflection;
-using Common.Behaviour;
 using Core.Customer.Commands;
+using Dispatch;
 using FluentValidation;
-using LiteBus.Commands.Abstractions;
-using LiteBus.Queries.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 
 public static class DependencyInjection
 {
 	public static IServiceCollection AddApplication(this IServiceCollection services)
 	{
-		services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<CreateCustomerCommand>());
+		services.AddScoped<Dispatcher>();
 
-		AssemblyScanner.FindValidatorsInAssembly(typeof(CreatePizzaCommand).Assembly)
+		var assembly = typeof(CreateCustomerCommand).Assembly;
+
+		services.Scan(scan => scan
+			.FromAssemblies(assembly)
+			.AddClasses(c => c.AssignableTo(typeof(ICommandHandler<,>)))
+			.AsImplementedInterfaces()
+			.WithScopedLifetime()
+			.AddClasses(c => c.AssignableTo(typeof(IQueryHandler<,>)))
+			.AsImplementedInterfaces()
+			.WithScopedLifetime());
+
+		AssemblyScanner.FindValidatorsInAssembly(assembly)
 		   .ForEach(item => services.AddScoped(item.InterfaceType, item.ValidatorType));
 
 		services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-
-		services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));
 
 		return services;
 	}

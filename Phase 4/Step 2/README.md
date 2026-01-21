@@ -1,6 +1,6 @@
 <img align="left" width="116" height="116" src="../pezza-logo.png" />
 
-# &nbsp;**Pezza - Phase 3 - Step 2** [![.NET - Phase 3 - Step 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase3-step2.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase3-step2.yml)
+# &nbsp;**Pezza - Phase 4 - Step 2** [![.NET - Phase 4 - Step 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase4-step2.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase4-step2.yml)
 
 <br/><br/>
 
@@ -152,40 +152,41 @@ global using Common.Mappers;
 global using Common.Models;
 global using Core.Pizza.Commands;
 global using DataAccess;
-global using MediatR;
+global using Dispatch;
+global using FluentValidation;
 global using Microsoft.EntityFrameworkCore;
 ```
 
 ```cs
 namespace Core.Customer.Queries;
 
-public class GetCustomersQuery : IRequest<ListResult<CustomerModel>>
+public sealed class GetCustomersQuery : IQuery<Result<IEnumerable<CustomerModel>>>
 {
 	public SearchCustomerModel Data { get; set; }
+}
 
-	public class GetCustomersQueryHandler(DatabaseContext databaseContext) : IRequestHandler<GetCustomersQuery, ListResult<CustomerModel>>
+public sealed class GetCustomersQueryHandler(DatabaseContext databaseContext) : IQueryHandler<GetCustomersQuery, Result<IEnumerable<CustomerModel>>>
+{
+	public async Task<Result<IEnumerable<CustomerModel>>> Handle(GetCustomersQuery request, CancellationToken cancellationToken)
 	{
-		public async Task<ListResult<CustomerModel>> Handle(GetCustomersQuery request, CancellationToken cancellationToken)
+		var entity = request.Data;
+		if (string.IsNullOrEmpty(entity.OrderBy))
 		{
-			var entity = request.Data;
-			if (string.IsNullOrEmpty(entity.OrderBy))
-			{
-				entity.OrderBy = "DateCreated desc";
-			}
-			var entities = databaseContext.Customers
-				.Select(x => x)
-				.AsNoTracking()
-				.FilterByName(entity.Name)
-				.FilterByAddress(entity.Address)
-				.FilterByPhone(entity.Cellphone)
-				.FilterByEmail(entity.Email)
-				.OrderBy(entity.OrderBy);
-
-			var count = await entities.CountAsync(cancellationToken);
-			var paged = await entities.ApplyPaging(entity.PagingArgs).ToListAsync(cancellationToken);
-
-			return ListResult<CustomerModel>.Success(paged.Map(), count);
+			entity.OrderBy = "DateCreated desc";
 		}
+		var entities = databaseContext.Customers
+			.Select(x => x)
+			.AsNoTracking()
+			.FilterByName(entity.Name)
+			.FilterByAddress(entity.Address)
+			.FilterByPhone(entity.Cellphone)
+			.FilterByEmail(entity.Email)
+			.OrderBy(entity.OrderBy);
+
+		var count = await entities.CountAsync(cancellationToken);
+		var paged = await entities.ApplyPaging(entity.PagingArgs).ToListAsync(cancellationToken);
+
+		return Result<IEnumerable<CustomerModel>>.Success(paged.Map(), count);
 	}
 }
 ```
@@ -212,7 +213,7 @@ For example, modify CustomerController.cs as follows.
 	[Route("Search")]
 	public async Task<ActionResult> Search(SearchCustomerModel data)
 	{
-		var result = await this.Mediator.Send(new GetCustomersQuery()
+		var result = await this.Dispatcher.Query(new GetCustomersQuery()
 		{
 			Data = data
 		});
@@ -226,6 +227,6 @@ Make sure to modify PizzaController as well
 
 Modify unit tests to incorporate our changes.
 
-## **Move to Phase 4**
+## **Move to Phase 5**
 
-[Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%204)
+[Move to Phase 5](https://github.com/entelect-incubator/.NET/tree/master/Phase%205)

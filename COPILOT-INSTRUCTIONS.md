@@ -7,11 +7,68 @@ This file provides system-level instructions for GitHub Copilot to maintain code
 You are assisting developers in building the Pezza pizza ordering system using .NET 10 with the following architecture:
 
 - **CQRS Pattern**: Commands (write operations) and Queries (read operations) are strictly separated
-- **LiteBus Command/Query Bus**: All business logic flows through ICommandMediator and IQueryMediator for dispatching to handlers
+- **Custom Dispatcher**: All business logic flows through a custom-built Dispatcher (see [Design Patterns - CQRS](https://github.com/entelect-incubator/Design-Patterns/tree/main/03-CQRS-Pattern)) for type-safe command/query routing
 - **Primary Constructors**: C# 12+ primary constructors for all dependency injection (no backing fields)
-- **Result Pattern**: All operations return Result<T> or ListResult<T> for consistent error handling
+- **Result Pattern**: All operations return `Result<T>` or `Result` (non-generic) for consistent error handling (see [Result Pattern Reference](https://github.com/stianleroux/Results/blob/main/Results/Models/Result.cs) and [Design Patterns - Result Pattern](https://github.com/entelect-incubator/Design-Patterns/tree/main/02-Result-Pattern))
 - **Entity Framework Core**: Database access through DbContext with async/await
 - **Clean Architecture**: Controllers → Handlers → Services → Data Access (no business logic in presentation)
+
+## Result Pattern Implementation
+
+The project uses a clean Result pattern with only two types:
+
+- **`Result`** - For operations without data (success/failure only)
+- **`Result<T>`** - For operations that return typed data
+
+### Result<T> Structure
+
+```csharp
+public class Result<T>
+{
+    public bool IsSuccess => ErrorResult == ErrorResults.None;
+    public ErrorResults ErrorResult { get; set; } = ErrorResults.None;
+    public List<string> Errors { get; set; } = [];
+    public Dictionary<string, List<string>> ValidationErrors { get; set; } = [];
+    public string? Message { get; set; }
+    public T? Data { get; set; }
+    public int Count { get; set; }  // For pagination scenarios
+    
+    // Factory methods
+    public static Result<T> Success(T? data = default, int count = 0, string? message = null);
+    public static Result<T> Failure(List<string>? errors = null, string? message = null);
+    public static Result<T> Failure(string error, string? message = null);
+    public static Result<T> Failure(Exception exception);
+    public static Result<T> ValidationFailure(Dictionary<string, List<string>>? validationErrors = null, string? message = null);
+    public static Result<T> NotFound(string? message = null);
+    public static Result<T> Unauthorized(string? message = null);
+    public static Result<T> Forbidden(string? message = null);
+}
+```
+
+### Usage Examples
+
+```csharp
+// Success with data
+return Result<PizzaModel>.Success(pizza);
+
+// Success with pagination
+return Result<IEnumerable<PizzaModel>>.Success(pizzas, count: total);
+
+// Simple failure
+return Result<PizzaModel>.Failure("Pizza not found");
+
+// Validation failure
+return Result<PizzaModel>.ValidationFailure(validationErrors);
+
+// Not found
+return Result<PizzaModel>.NotFound("Pizza with id 5 not found");
+
+// Non-generic for operations without data
+return Result.Success();
+return Result.Failure("Operation failed");
+```
+
+**Important**: Do NOT create `ListResult<T>`, `PagedResult<T>`, or other custom result types. Use `Result<IEnumerable<T>>` with the `Count` property for lists/pagination.
 
 ## Code Standards You Must Follow
 

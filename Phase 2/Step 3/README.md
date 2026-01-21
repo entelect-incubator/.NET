@@ -1,269 +1,126 @@
 <img align="left" width="116" height="116" src="../Assets/pezza-logo.png" />
 
-# &nbsp;**Pezza - Phase 2 - Step 3**
+# **Pezza - Phase 2 - Step 3**
 
 <br/><br/>
 
 ## Step 3: API Implementation
 
-**Difficulty**: ★★★☆☆ (Intermediate)  
+**Difficulty**: 3/5 (Intermediate)  
 **Estimated Time**: 1.5 - 2 hours  
-**Prerequisites**: 
-- Completed Steps 1 and 2
-- Understanding of REST API controllers
-- Familiarity with dependency injection
+**Prerequisites**:
+
+- Steps 1 and 2 complete
+- Basic ASP.NET Core controllers
+- Dependency injection fundamentals
 
 ### Learning Outcomes
-After completing this step, you will understand:
-- Creating unified response patterns with ResponseHelper
-- Using IMediator in controllers via dependency injection
-- Implementing CQRS commands and queries in API endpoints
-- Handling success and error responses consistently
-- Using Result<T> and ListResult<T> for API responses
+
+- Keep controllers thin by calling handler interfaces directly
+- Standardize responses with `ResponseHelper`
+- Pass `CancellationToken` through every async endpoint
+- Configure Swagger to verify endpoints quickly
 
 ---
 
-## **API Response Helper**
+## What You Build in this Step
 
-Finishing up the API to use CQRS
+1) `ResponseHelper` that converts `Result`, `Result<T>`, and `Result<List<T>>` into HTTP responses.  
+2) Minimal `ApiController` base with shared attributes.  
+3) Feature controllers (Pizza/Customer) that resolve handlers via `[FromServices]` and call `ExecuteAsync`.  
+4) Swagger enabled for quick manual validation.
 
-To return clean, unified responses to consumers of the API, we create an ActionResult Helper class. Depending on the data retrieved from the Core layer, it will cater for the HTTP response and prevent duplicating code in controllers.
+Reference implementation: [src/02. EndSolution/Api](../src/02.%20EndSolution/Api).
 
-Create a Helpers folder in Api and ResponseHelper.cs inside it with the following code.
+---
 
-```cs
-namespace Api.Helpers;
+## 1) ResponseHelper
 
-public static class ResponseHelper
-{
-    public static ActionResult ResponseOutcome<T>(Result<T> result, ApiController controller)
-    {
-        if (result.Data == null)
-        {
-            return controller.NotFound(Result.Failure($"{typeof(T).Name.Replace("Model", string.Empty)} not found"));
-        }
+Located at [src/02. EndSolution/Api/Helpers/ResponseHelper.cs](../src/02.%20EndSolution/Api/Helpers/ResponseHelper.cs). It centralizes HTTP status decisions:
 
-        if (!result.Succeeded)
-        {
-            return controller.BadRequest(result);
-        }
-
-        return controller.Ok(result);
-    }
-
-    public static ActionResult ResponseOutcome<T>(ListResult<T> result, ApiController controller)
-    {
-        if (!result.Succeeded)
-        {
-            return controller.BadRequest(result);
-        }
-
-        return controller.Ok(result);
-    }
-
-    public static ActionResult ResponseOutcome(Result result, ApiController controller)
-    {
-        if (!result.Succeeded)
-        {
-            return controller.BadRequest(result);
-        }
-
-        return controller.Ok(result);
-    }
-}
+```csharp
+public static ActionResult ResponseOutcome<T>(Result<T> result, ApiController controller)
+    => result.Data is null
+        ? controller.NotFound(Result.Failure($"{typeof(T).Name.Replace("Model", string.Empty)} not found"))
+        : result.HasError
+            ? controller.BadRequest(result)
+            : controller.Ok(result);
 ```
 
-## **STEP 3 - Finishing the API Controller**
+Use the overloads for `Result<List<T>>` and non-generic `Result` too.
 
-### **Base Api Controller** Will be used to inject Mediatr into all other Controllers
+---
 
-![Api Controller!](Assets/2020-11-20-11-16-51.png)
+## 2) Base ApiController
 
-ApiController.cs
+Keep it lean: shared attributes only. Located at [src/02. EndSolution/Api/Controllers/ApiController.cs](../src/02.%20EndSolution/Api/Controllers/ApiController.cs).
 
-```cs
-namespace Api.Controllers;
-
-using MediatR;
-
+```csharp
 [ApiController]
 [Route("[controller]")]
 [Produces("application/json")]
 public abstract class ApiController : ControllerBase
 {
-    private IMediator mediator;
-
-	protected IMediator Mediator => this.mediator ??= this.HttpContext.RequestServices.GetService<IMediator>();
 }
 ```
 
-Now let's modify the Customer Controller to use Mediatr.
+## 3) Feature Controllers (Handler Injection)
 
-Inherit from the ApiController instead of ControllerBase
+Example: Pizza controller in [src/02. EndSolution/Api/Controllers/PizzaController.cs](../src/02.%20EndSolution/Api/Controllers/PizzaController.cs):
 
-```cs
-public class StockController : ApiController
-```
-
-Modify all the functions to use Mediatr and the new DataDTO's
-
-```cs
-namespace Api.Controllers;
-
-using Core.Pizza.Commands;
-using Core.Pizza.Queries;
-
+```csharp
 [ApiController]
 [Route("[controller]")]
-public class PizzaController() : ApiController
+public sealed class PizzaController : ApiController
 {
-	/// <summary>
-	/// Get Pizza by Id.
-	/// </summary>
-	/// <param name="id">Pizza Id</param>
-	/// <returns>ActionResult</returns>
-	[HttpGet("{id}")]
-	[ProducesResponseType(200)]
-	[ProducesResponseType(404)]
-	public async Task<ActionResult> Get(int id)
-	{
-		var result = await this.Mediator.Send(new GetPizzaQuery { Id = id });
-		return ResponseHelper.ResponseOutcome(result, this);
-	}
+    [HttpGet("{id}")]
+    public async Task<ActionResult> Get([FromServices] IGetPizzaQuery query, int id, CancellationToken cancellationToken)
+        => ResponseHelper.ResponseOutcome(await query.ExecuteAsync(id, cancellationToken), this);
 
-	/// <summary>
-	/// Get all Pizzas.
-	/// </summary>
-	/// <returns>ActionResult</returns>
-	[HttpPost("Search")]
-	[ProducesResponseType(200)]
-	public async Task<ActionResult> Search()
-	{
-		var result = await this.Mediator.Send(new GetPizzasQuery());
-		return ResponseHelper.ResponseOutcome(result, this);
-	}
+    [HttpPost("Search")]
+    public async Task<ActionResult> Search([FromServices] IGetPizzasQuery query, CancellationToken cancellationToken)
+        => ResponseHelper.ResponseOutcome(await query.ExecuteAsync(cancellationToken), this);
 
-	/// <summary>
-	/// Create Pizza.
-	/// </summary>
-	/// <remarks>
-	/// Sample request:
-	///
-	///     POST api/Pizza
-	///     {
-	///       "name": "Hawaiian",
-	///       "description": "Hawaiian pizza is a pizza originating in Canada, and is traditionally topped with pineapple, tomato sauce, cheese, and either ham or bacon.",
-	///       "price": "99"
-	///     }
-	/// </remarks>
-	/// <param name="model">Pizza Model</param>
-	/// <returns>ActionResult</returns>
-	[HttpPost]
-	[ProducesResponseType(200)]
-	[ProducesResponseType(400)]
-	public async Task<ActionResult<Pizza>> Create([FromBody] CreatePizzaModel model)
-	{
-		var result = await this.Mediator.Send(new CreatePizzaCommand
-		{
-			Data = model
-		});
+    [HttpPost]
+    public async Task<ActionResult<Pizza>> Create([FromServices] ICreatePizzaCommand command, [FromBody] CreatePizzaModel model, CancellationToken cancellationToken)
+        => ResponseHelper.ResponseOutcome(await command.ExecuteAsync(model, cancellationToken), this);
 
-		return ResponseHelper.ResponseOutcome(result, this);
-	}
+    [HttpPut("{id}")]
+    public async Task<ActionResult> Update([FromServices] IUpdatePizzaCommand command, int id, [FromBody] UpdatePizzaModel model, CancellationToken cancellationToken)
+        => ResponseHelper.ResponseOutcome(await command.ExecuteAsync(id, model, cancellationToken), this);
 
-
-	/// <summary>
-	/// Update Pizza.
-	/// </summary>
-	/// <remarks>
-	/// Sample request:
-	///
-	///     PUT api/Pizza/1
-	///     {
-	///       "price": "119"
-	///     }
-	/// </remarks>
-	/// <param name="model">Pizza Model</param>
-	/// <returns>ActionResult</returns>
-	[HttpPut]
-	[ProducesResponseType(200)]
-	[ProducesResponseType(400)]
-	public async Task<ActionResult> Update([FromBody] UpdatePizzaModel model)
-	{
-		var result = await this.Mediator.Send(new UpdatePizzaCommand
-		{
-			Data = model
-		});
-
-		return ResponseHelper.ResponseOutcome(result, this);
-	}
-
-	/// <summary>
-	/// Delete Pizza by Id.
-	/// </summary>
-	/// <param name="id">Pizza Id</param>
-	/// <returns>ActionResult</returns>
-	[HttpDelete("{id}")]
-	[ProducesResponseType(200)]
-	[ProducesResponseType(400)]
-	public async Task<ActionResult> Delete(int id)
-	{
-		var result = await this.Mediator.Send(new DeletePizzaCommand { Id = id });
-		return ResponseHelper.ResponseOutcome(result, this);
-	}
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> Delete([FromServices] IDeletePizzaCommand command, int id, CancellationToken cancellationToken)
+        => ResponseHelper.ResponseOutcome(await command.ExecuteAsync(id, cancellationToken), this);
 }
 ```
 
-Complete the Customer Controller
+Notes:
 
-![](./Assets/2023-04-13-05-44-28.png)
-
-Right-Click on you Api project -> Properties -> Debug.
-
-Change Launch Browser to Open "swagger"
-
-![](Assets/2020-11-25-00-39-15.png)
-
-Press F5 and Run your API. You should see something like this.
-
-![](./Assets/2023-04-13-05-45-44.png)
+- Dependencies are explicit per action using `[FromServices]`.
+- Every async endpoint accepts a `CancellationToken`.
+- Controllers never contain business logic; they delegate to handlers and use `ResponseHelper` for envelopes.
 
 ---
 
-## Summary
+## 4) Swagger / Debugging
 
-You have successfully completed Step 3! Your CQRS implementation is now complete and accessible through a clean, unified API.
-
-The ResponseHelper pattern ensures consistent responses across all endpoints, while IMediator orchestrates your business logic from the Core layer. This is a production-ready pattern used across the entire incubator phases.
-
-### What You've Accomplished
-- ✅ Created a unified ResponseHelper for consistent API responses
-- ✅ Built a base ApiController with IMediator dependency injection
-- ✅ Implemented CQRS commands and queries in controllers
-- ✅ Set up Swagger/OpenAPI for API documentation
-- ✅ Created a fully functional CQRS API
+Ensure Swagger is enabled in `Startup.ConfigureServices` and `Startup.Configure` (already present in EndSolution). Launch the API and verify endpoints at `/swagger`.
 
 ---
 
-## 🎉 Phase 2 Complete!
+## Checklist
 
-Congratulations on completing Phase 2! You now have a solid understanding of CQRS patterns and the MediatR pipeline.
+- [ ] `ResponseHelper` handles all `Result` shapes
+- [ ] Base `ApiController` carries shared attributes only
+- [ ] Controllers resolve handler interfaces via `[FromServices]`
+- [ ] Endpoints pass `CancellationToken` to handlers
+- [ ] Swagger loads and endpoints return consistent envelopes
 
-**Next Steps:**
-- Move on to Phase 3 to learn about advanced patterns and middleware
-- Explore additional MediatR features like validation and caching behaviors
-- Practice building more complex command/query handlers
-- Consider adding additional pipeline behaviors for cross-cutting concerns
+---
 
-**Key Concepts to Remember:**
-- Commands modify state, Queries retrieve state
-- Use Result<T> and ListResult<T> for consistent responses
-- MediatR dispatches requests to appropriate handlers
-- ResponseHelper prevents code duplication across endpoints
-- The modern .slnx format provides better performance and IDE support
+## Phase Wrap-up
 
-### You are done with the Back-End that will be used to build most of the Front-End stack.
+Phase 2 now has handler-based CQRS with clean controllers and standardized responses. Next, Phase 3 introduces the dispatcher/mediator to route commands and queries centrally without changing your handler implementations.
 
-## **Move to Phase 3**
-
-[Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%203)
+[Go to Phase 3](https://github.com/entelect-incubator/.NET/tree/master/Phase%203)

@@ -5,6 +5,7 @@
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<LangVersion>preview</LangVersion>
+		<CodeAnalysisRuleSet>$(ProjectDir)..\StyleCopRuleSet.ruleset</CodeAnalysisRuleSet>
 	</PropertyGroup>
 	<PropertyGroup>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>

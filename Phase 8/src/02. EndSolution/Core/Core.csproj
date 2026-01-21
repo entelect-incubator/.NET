@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFramework>net8.0</TargetFramework>
@@ -12,6 +12,7 @@
 	  <PackageReference Include="FluentEmail.Core" Version="3.0.2" />
 	  <PackageReference Include="FluentEmail.Smtp" Version="3.0.2" />
 	  <PackageReference Include="FluentValidation" Version="11.5.2" />
+	  <PackageReference Include="Scrutor" Version="6.1.0" />
 	  <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.5.2" />
 	  <PackageReference Include="HtmlAgilityPack" Version="1.11.46" />
 	  <PackageReference Include="LazyCache" Version="2.4.0" />

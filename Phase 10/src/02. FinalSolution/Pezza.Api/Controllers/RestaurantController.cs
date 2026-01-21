@@ -1,5 +1,6 @@
 ﻿namespace Api.Controllers;
 
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -41,7 +42,7 @@ public class RestaurantController : ApiController
     /// <response code="200">Restaurant Search.</response>
     /// <response code="400">Error searching for restaurants.</response>
     [HttpPost]
-    [ProducesResponseType(typeof(ListResult<RestaurantDTO>), 200)]
+    [ProducesResponseType(typeof(Result<IEnumerable<RestaurantDTO>>), 200)]
     [ProducesResponseType(typeof(ErrorResult), 400)]
     [Route("Search")]
     public async Task<ActionResult> Search(RestaurantDTO dto, CancellationToken cancellationToken = default)

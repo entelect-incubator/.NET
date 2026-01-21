@@ -10,8 +10,6 @@
     <ItemGroup>
         <PackageReference Include="AutoMapper" Version="12.0.0" />
         <PackageReference Include="FluentValidation" Version="11.3.0" />
-        <PackageReference Include="LiteBus.Commands" Version="0.8.0" />
-	  <PackageReference Include="LiteBus.Queries" Version="0.8.0" />
         <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.0" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.0" />

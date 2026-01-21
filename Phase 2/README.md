@@ -9,92 +9,98 @@
 - Solution format: **.slnx** (modern format)
 - Estimated time: 4 - 8 hours
 - Difficulty: ★★★☆☆ (intermediate)
-- Audience: developers who completed Phase 1 or have basic CRUD/EF Core experience; recommended for those learning CQRS pattern with LiteBus mediator
+- Audience: developers who completed Phase 1 or have basic CRUD/EF Core experience; recommended for those learning CQRS handler patterns before adding a dispatcher in Phase 3
 
 ## Goal
 
-This phase teaches **CQRS fundamentals** through the simplest possible approach: **FromServices dependency injection**. Rather than using a mediator library, you'll inject command/query services directly into controllers, learning:
+Phase 2 teaches **CQRS fundamentals** by building command/query handlers that controllers call directly through dependency injection. You'll learn:
 
-- How to structure business logic in service classes
-- Separation of concerns (queries separate from commands)
-- Clean dependency injection patterns
-- How to test services in isolation
-- Why this pattern is great for onboarding and clarity
+- **Why**: Separate read operations (queries) from write operations (commands) for cleaner code
+- **What**: Handler interfaces that encapsulate business logic behind clear contracts
+- **How**: Automatic registration via Scrutor and explicit `[FromServices]` injection
 
-This phase prioritizes **clarity and simplicity** over architectural sophistication. You'll understand the problem that CQRS solves before learning solutions like mediators (Phase 3+).
+This phase keeps dependencies **explicit and visible**—controllers show exactly which handlers they need. Phase 3 will add a central dispatcher to streamline this further.
 
 See Microsoft docs: [CQRS pattern](https://docs.microsoft.com/azure/architecture/patterns/cqrs)
+
+## Design Patterns Reference
+
+This phase implements key patterns from the [Incubator Design Patterns Hub](../../Design-Patterns/README.md):
+
+- 🎯 **[CQRS Pattern](../../Design-Patterns/03-CQRS-Pattern/)** - Separate commands (writes) from queries (reads)
+- 🎯 **[Result Pattern](../../Design-Patterns/02-Result-Pattern/)** - Type-safe success/failure responses
+- 🎯 **[Dependency Injection](../../Design-Patterns/06-Dependency-Injection/)** - Scrutor assembly scanning
+
+For detailed explanations, see the [Design Patterns README](../../Design-Patterns/README.md).
 
 ## Modern .NET 10 Patterns in This Phase
 
 This phase demonstrates several contemporary C# and .NET 10 patterns:
 
-### **1. FromServices Pattern: Direct Dependency Injection**
+### **1. Interface-First CQRS Handlers (No MediatR)**
 
-**FromServices** is an ASP.NET Core feature that injects services directly into action methods, rather than controller constructors. This keeps controllers lean and follows the Single Responsibility Principle:
+Phase 2 keeps things simple: controllers inject the exact handler interfaces they need. This makes CQRS explicit without introducing a mediator yet.
 
 ```csharp
-// Query service interface - handles data retrieval
+// Query interface
 public interface IGetPizzaQuery
 {
-    Task<PizzaModel?> ExecuteAsync(int id, CancellationToken ct);
+    Task<Result<PizzaModel>> ExecuteAsync(int id, CancellationToken ct = default);
 }
 
-// Query handler - implements the query logic
+// Handler implementation
 public sealed class GetPizzaQueryHandler(DatabaseContext db) : IGetPizzaQuery
 {
-    public async Task<PizzaModel?> ExecuteAsync(int id, CancellationToken ct)
+    public async Task<Result<PizzaModel>> ExecuteAsync(int id, CancellationToken ct = default)
     {
-        var pizza = await db.Pizzas
-            .FirstOrDefaultAsync(p => p.Id == id, ct);
-        return pizza?.Map();
+        var entity = await db.Pizzas.FindAsync(id, ct);
+        return entity is null
+            ? Result<PizzaModel>.Failure("Not found")
+            : Result<PizzaModel>.Success(entity.Map());
     }
 }
 
-// Controller uses FromServices for injection
+// Controller uses DI to resolve the handler
 [ApiController]
 [Route("[controller]")]
-public sealed class PizzaController : ApiController
+public sealed class PizzaController : ControllerBase
 {
     [HttpGet("{id}")]
-    public async Task<ActionResult> Get(
-        int id,
-        [FromServices] IGetPizzaQuery query,  // Injected by FromServices
-        CancellationToken ct)
-    {
-        var result = await query.ExecuteAsync(id, ct);
-        return result is null ? NotFound() : Ok(result);
-    }
+    public async Task<ActionResult> Get([FromServices] IGetPizzaQuery query, int id, CancellationToken ct)
+        => ResponseHelper.ResponseOutcome(await query.ExecuteAsync(id, ct), this);
 }
 ```
 
-**Why FromServices?**
+**Why start interface-first?**
 
-| Benefit                  | Explanation                                    |
-| ------------------------ | ---------------------------------------------- |
-| **Clarity**              | It's obvious what each action depends on       |
-| **No Constructor Bloat** | Controllers stay simple                        |
-| **Testable**             | Mock the injected service easily               |
-| **Scope Control**        | Services are scoped per-request automatically  |
-| **Learning-Friendly**    | New developers see exactly what a method needs |
+| Benefit             | Explanation                                           |
+| ------------------- | ----------------------------------------------------- |
+| **Clarity**         | Controllers show exactly which handler they need      |
+| **Zero magic**      | No hidden mediator behavior yet                       |
+| **Testability**     | Interfaces are easy to mock in unit tests             |
+| **Sets up Phase 3** | Handlers remain unchanged when the dispatcher arrives |
 
 ### **2. Automatic Handler Discovery with Scrutor**
 
-Services are **auto-discovered and registered** using the Scrutor library for assembly scanning:
+Handlers are **auto-discovered and registered** using Scrutor assembly scanning. In Phase 2 we scan explicit namespaces for command/query interfaces:
 
 ```csharp
-// In Api/Startup.cs
-public static void ConfigureServices(IServiceCollection services)
+// In Core/DependencyInjection.cs
+public static IServiceCollection AddApplication(this IServiceCollection services)
 {
-    // Register all IGetPizzaQuery, ICreatePizzaCommand, etc. implementations
     services.Scan(scan => scan
-        .FromAssemblyOf<GetPizzaQueryHandler>()
-        .AddClasses(c => 
-            c.Where(t => t.Name.EndsWith("Query") || t.Name.EndsWith("Command")))
+        .FromAssemblyOf<ICreatePizzaCommand>()
+        .AddClasses(c => c.InNamespaces("Core.Pizza.Commands", "Core.Customer.Commands"))
         .AsImplementedInterfaces()
         .WithScopedLifetime());
-    
-    // Result: All query/command handlers are registered automatically
+
+    services.Scan(scan => scan
+        .FromAssemblyOf<IGetPizzaQuery>()
+        .AddClasses(c => c.InNamespaces("Core.Pizza.Queries", "Core.Customer.Queries"))
+        .AsImplementedInterfaces()
+        .WithScopedLifetime());
+
+    return services;
 }
 ```
 
@@ -106,6 +112,7 @@ public static void ConfigureServices(IServiceCollection services)
 4. Controllers then inject via `[FromServices]`
 
 ### **3. CancellationToken in All Async Methods**
+
 All async methods now properly support cancellation tokens for graceful shutdown and timeout handling:
 
 ```cs
@@ -230,7 +237,7 @@ public sealed class GetPizzaQueryHandler(DatabaseContext db) : IGetPizzaQuery
 4. Returns `Func<DatabaseContext, params..., Task<T>>` for async queries
 5. The CancellationToken parameter in the lambda is ignored (but required)
 
-**Example: CustomerQueries with Compiled Queries**
+#### Example: CustomerQueries with Compiled Queries
 
 ```csharp
 public sealed class GetCustomersQueryHandler(DatabaseContext db) : IGetCustomersQuery
@@ -321,6 +328,7 @@ if (result.Data is not null)
 6. **Readability**: `is not null` is clearer than `!= null`
 
 **C# 9+ Recommendation:**
+
 - Use `is null` / `is not null` for explicit null checks
 - Combine with nullable reference types for compile-time safety
 
@@ -343,6 +351,7 @@ public async Task<Result<PizzaModel>> HandleAsync(UpdatePizzaCommand request, Ca
 ```
 
 **Why compiled queries are good:**
+
 1. **Reduced CPU Overhead**: Query compilation happens once, not per request
 2. **Predictable Performance**: Eliminates variable compilation time in high-throughput scenarios
 3. **Scale Benefit**: Massive impact with millions of queries across application lifetime
@@ -350,12 +359,14 @@ public async Task<Result<PizzaModel>> HandleAsync(UpdatePizzaCommand request, Ca
 5. **Modern Alternative**: Replaces old `CompiledQuery` API with modern async pattern
 
 **When to use:**
+
 - High-frequency queries (called thousands of times)
 - Hot paths in your application
 - Query patterns that are fixed (parameters vary, structure doesn't)
 - Performance-critical scenarios
 
 **When not needed:**
+
 - One-off queries
 - Admin pages with infrequent access
 - Queries with highly variable LINQ structures
@@ -379,6 +390,7 @@ public sealed class UpdateCustomerCommand : ICommand<Result<CustomerModel>>
 ```
 
 **Why `required` is valuable:**
+
 1. **Compile-Time Safety**: Missing required properties are caught by the compiler
 2. **Cleaner Code**: No null checks needed for truly required data
 3. **CQRS Clarity**: Commands always have the data they need
@@ -386,6 +398,7 @@ public sealed class UpdateCustomerCommand : ICommand<Result<CustomerModel>>
 5. **Eliminates Validation**: Reduces need for "X is required" error messages
 
 **Usage pattern:**
+
 ```cs
 // ✅ Valid - all required properties set
 var cmd = new UpdatePizzaCommand 
@@ -402,6 +415,7 @@ var badCmd = new UpdatePizzaCommand
 ```
 
 **Combined with init-only:**
+
 ```cs
 public sealed class UpdatePizzaCommand : ICommand<Result<PizzaModel>>
 {
@@ -423,6 +437,7 @@ var count = await entities.CountAsync(cancellationToken);
 ```
 
 **Why `CountAsync` is better:**
+
 1. **Non-Blocking**: Returns control to thread pool while database works
 2. **Scalability**: Prevents thread pool starvation under high load
 3. **Cancellation Support**: Respects cancellation tokens
@@ -430,6 +445,7 @@ var count = await entities.CountAsync(cancellationToken);
 5. **Consistent Pattern**: All I/O operations should be async
 
 **Complete async pattern:**
+
 ```cs
 // Good pattern for queries
 var count = await _context.Pizzas
@@ -460,6 +476,7 @@ var pizza = await db.Pizzas
 ```
 
 **Why `AsNoTracking()` is good:**
+
 1. **Reduced Memory**: Change tracker overhead eliminated
 2. **CPU Efficiency**: No tracking state management
 3. **Faster Queries**: Skips identity map lookups
@@ -467,10 +484,63 @@ var pizza = await db.Pizzas
 5. **Clear Intent**: Shows query is for read-only access
 
 **Usage guidelines:**
+
 - Use for search/read queries (GetAll, Search, etc.)
 - Use for reporting and analytics
 - Skip for Create/Update/Delete operations
 - Combine with `CountAsync()` for reports
+
+## Postgres with EF Core (Npgsql) Setup
+
+Target Postgres for persistence across incubators. Use the Npgsql EF Core provider and the shared schema.
+
+### Install Npgsql EF Core Provider
+
+```bash
+dotnet add package Npgsql.EntityFrameworkCore.PostgreSQL
+```
+
+### Connection String
+
+```text
+Host=localhost;Port=5432;Database=pezza;Username=postgres;Password=postgres
+```
+
+### DbContext Configuration
+
+```csharp
+using Microsoft.EntityFrameworkCore;
+
+public sealed class DatabaseContext : DbContext
+{
+        public DbSet<Pizza> Pizzas => Set<Pizza>();
+        public DbSet<Customer> Customers => Set<Customer>();
+        public DbSet<Order> Orders => Set<Order>();
+        public DbSet<OrderItem> OrderItems => Set<OrderItem>();
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+                var cs = Environment.GetEnvironmentVariable("CONNECTION_STRING")
+                                 ?? "Host=localhost;Port=5432;Database=pezza;Username=postgres;Password=postgres";
+                optionsBuilder.UseNpgsql(cs);
+        }
+}
+```
+
+### Migrations & Database Update
+
+```bash
+# From the API project folder (where DbContext is)
+dotnet ef migrations add InitPostgres
+dotnet ef database update
+```
+
+### Shared Schema
+
+- Import the shared schema first to align tables and constraints:
+  - See [Intro/postgres-schema.sql](../Intro/postgres-schema.sql)
+
+> Tip: Keep connection strings in environment variables or user secrets for local development.
 
 ### **3. Expression-Bodied Members**
 
@@ -524,12 +594,11 @@ Commands and Queries in CQRS are data transfer objects that carry behavior instr
    - Reduces cognitive load for developers reading the code
 
 **Impact:**
+
 - All Command classes across Phases 3-12 are now sealed
 - All Query classes across Phases 3-12 are now sealed
 - Handler classes are also sealed (same reasoning)
 - Combined with other optimizations, this contributes to Phase 2 EndSolution's improved throughput
-
-```
 
 All public members include proper XML documentation with parameter descriptions:
 
@@ -546,28 +615,22 @@ public async Task<ActionResult> Get(int id, CancellationToken cancellationToken 
 
 ### **5. ApiController Base Class Pattern**
 
-All controllers inherit from a reusable base controller that provides access to LiteBus mediators:
+Controllers inherit from a minimal base controller that keeps shared attributes (`ApiController`, `Route`, `Produces`). Handlers are resolved explicitly per-action via `[FromServices]`, keeping dependencies obvious.
 
 ```cs
+[ApiController]
+[Route("[controller]")]
+[Produces("application/json")]
 public abstract class ApiController : ControllerBase
 {
-    private ICommandMediator? cmdMediator;
-    private IQueryMediator? qryMediator;
-
-    /// <summary>Gets the command mediator for dispatching commands.</summary>
-    protected ICommandMediator CmdMediator => cmdMediator ??= HttpContext.RequestServices.GetRequiredService<ICommandMediator>();
-
-    /// <summary>Gets the query mediator for dispatching queries.</summary>
-    protected IQueryMediator QryMediator => qryMediator ??= HttpContext.RequestServices.GetRequiredService<IQueryMediator>();
 }
 ```
 
 This pattern:
 
-- Provides lazy initialization of mediators (only created when first accessed)
-- Uses null-coalescing assignment operator `??=` (modern C# pattern)
-- Keeps mediator logic centralized in the base class
-- Prepares the foundation for Phase 3+ where commands and queries will be implemented
+- Keeps the base controller lean; no hidden dependencies
+- Makes handler usage explicit in each action ([FromServices] parameters)
+- Leaves room to add dispatcher accessors in Phase 3 without breaking signatures
 
 ### **6. Modern Solution Format (.slnx)**
 
@@ -585,6 +648,7 @@ This phase demonstrates the **Startup Pattern**, which separates application boo
 #### **Why Separate Program.cs and Startup.cs?**
 
 **Program.cs** (the bootstrapper):
+
 ```cs
 // Program.cs - Minimal, clean entry point
 var builder = WebApplication.CreateBuilder(args);
@@ -596,6 +660,7 @@ app.Run();
 ```
 
 **Startup.cs** (the configuration hub):
+
 ```cs
 // Startup.cs - All configuration centralized here
 public class Startup
@@ -644,6 +709,7 @@ public class Startup
 #### **Program.cs vs Top-Level Statements:**
 
 **Top-level statements** (C# 9+, minimalist approach):
+
 ```cs
 // Newer approach - everything inline
 var builder = WebApplication.CreateBuilder(args);
@@ -656,6 +722,7 @@ app.Run();
 ```
 
 **Startup Pattern** (this phase's approach):
+
 ```cs
 // Organized approach - separation of concerns
 var builder = WebApplication.CreateBuilder(args);
@@ -667,6 +734,7 @@ app.Run();
 ```
 
 **Why Phase 2 uses the Startup Pattern:**
+
 1. **Progressive Disclosure** - Configuration logic can grow without cluttering the entry point
 2. **Testing Strategy** - Each method in Startup can have unit tests
 3. **Phase Progression** - Sets up pattern that works better when adding middleware, policies, and advanced features in later phases
@@ -682,9 +750,18 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
-        // Register MediatR
-        services.AddMediatR(cfg => 
-            cfg.RegisterServicesFromAssemblyContaining<CreateCustomerCommand>());
+        // Register CQRS handlers (commands/queries) via Scrutor
+        services.Scan(scan => scan
+            .FromAssemblyOf<ICreatePizzaCommand>()
+            .AddClasses(c => c.InNamespaces("Core.Pizza.Commands", "Core.Customer.Commands"))
+            .AsImplementedInterfaces()
+            .WithScopedLifetime());
+
+        services.Scan(scan => scan
+            .FromAssemblyOf<IGetPizzaQuery>()
+            .AddClasses(c => c.InNamespaces("Core.Pizza.Queries", "Core.Customer.Queries"))
+            .AsImplementedInterfaces()
+            .WithScopedLifetime());
 
         // Register the CONCRETE exception handler
         services.AddExceptionHandler<GlobalExceptionHandler>();
@@ -699,7 +776,7 @@ public void ConfigureServices(IServiceCollection services)
     // ... other services ...
     
     // Call the extension method from Core
-    services.AddApplication();  // This registers GlobalExceptionHandler
+    services.AddApplication();  // Registers handlers + GlobalExceptionHandler
 }
 
 // Api/Program.cs - where middleware pipeline is ACTIVATED
@@ -711,6 +788,7 @@ public void Configure(WebApplication app, IWebHostEnvironment env)
 ```
 
 **Key points:**
+
 - `services.AddExceptionHandler<GlobalExceptionHandler>()` **registers** the handler type
 - `app.UseExceptionHandler()` **activates** the middleware that uses registered handlers
 - Never call `services.AddExceptionHandler()` without a type - it won't have a handler to use!
@@ -730,18 +808,17 @@ public void Configure(WebApplication app, IWebHostEnvironment env)
 dotnet build "Phase 2/src/01. StartSolution/Pezza.slnx"
 ```
 
-2. Run the API project:
+1. Run the API project:
 
 ```powershell
 cd "Phase 2/src/01. StartSolution"
 dotnet run --project Api/Api.csproj
 ```
 
-3. Test the endpoints via Swagger at `https://localhost:7001/swagger`
+1. Test the endpoints via Swagger at `https://localhost:7001/swagger`
 
 ## Architecture Overview
 
-```
 ┌─────────────────────────────────────────┐
 │   API Layer (Controllers)                │
 │   - PizzaController                      │
@@ -751,17 +828,17 @@ dotnet run --project Api/Api.csproj
                │
                ▼
 ┌─────────────────────────────────────────┐
-│   LiteBus Mediator Layer                 │
-│   - ICommandMediator (CmdMediator)       │
-│   - IQueryMediator (QryMediator)         │
-│   - Service Discovery & Routing          │
+│   Core Handler Layer                     │
+│   - Command/Query interfaces             │
+│   - Resolved via DI per action           │
+│   - ResponseHelper for envelopes         │
 └──────────────┬──────────────────────────┘
                │
                ▼
 ┌─────────────────────────────────────────┐
-│   Core Business Logic Layer              │
+│   Business Logic Layer                   │
 │   - PizzaCore (Business Logic)           │
-│   - Commands & Queries (Future)          │
+│   - Handler implementations              │
 └──────────────┬──────────────────────────┘
                │
                ▼
@@ -771,7 +848,6 @@ dotnet run --project Api/Api.csproj
 │   - DatabaseContext                      │
 │   - In-Memory Database                   │
 └─────────────────────────────────────────┘
-```
 
 ## Steps (work through these in order)
 
@@ -782,52 +858,87 @@ dotnet run --project Api/Api.csproj
 
 ## Notes and learning outcomes
 
-- Learn how to structure Commands and Queries using LiteBus (lightweight mediator pattern)
-- Understand CQRS pattern: separate read and write operations
-- Understand separation of concerns: keep domain logic in Core and orchestration in API/Application layers
-- Master CancellationToken usage in async operations for graceful shutdown and timeout handling
+- Structure Commands and Queries behind explicit interfaces (no mediator yet)
+- Understand CQRS: separate read and write operations with dedicated handlers
+- Keep domain logic in Core and orchestration in API/Application layers
+- Master `CancellationToken` usage in async operations for graceful shutdown and timeouts
 - Use expression-bodied members for clean, concise code
-- Implement complete XML documentation for better IDE support and Swagger generation
-- Use dependency injection with LiteBus for service discovery and mediator routing
+- Implement XML documentation for IDE/Swagger support
+- Use dependency injection with Scrutor scanning for handler discovery
 - Understand the modern .slnx solution file format and its benefits
 
 ## Key Code Changes in Phase 2
 
 ### **Controllers**
-- ✅ Added `CancellationToken cancellationToken = default` parameter to all async methods
-- ✅ Cleaned up controller methods to use expression bodies where appropriate
-- ✅ Fixed XML documentation to include all parameters
-- ✅ Removed verbose `this.` qualifiers, using modern C# style
+
+- ✅ Added `CancellationToken cancellationToken` parameter to all async endpoints
+- ✅ Expression-bodied endpoints where readable
+- ✅ XML documentation covers parameters and return types
 
 ### **ApiController Base Class**
-- ✅ Created base controller inheriting from `ControllerBase`
-- ✅ Added protected properties for `ICommandMediator` and `IQueryMediator`
-- ✅ Implemented lazy initialization of mediators using null-coalescing operator
+
+- ✅ Base controller kept minimal; concrete controllers resolve handlers via `[FromServices]`
+- ✅ Produces JSON via attributes
 
 ### **Dependency Injection (Core/DependencyInjection.cs)**
-- ✅ Updated to use `AddLiteBusCommands()` and `AddLiteBusQueries()`
-- ✅ Automatically discovers and registers handlers in the Core assembly
-- ✅ Added XML documentation explaining configuration
-- ✅ Removed old MediatR-specific code
+
+- ✅ Uses Scrutor scanning to register command/query handlers by namespace
+- ✅ Adds `GlobalExceptionHandler` to the pipeline
+- ✅ Removed MediatR/LiteBus references to match the codebase
 
 ### **Startup.cs (Api/Startup.cs)**
-- ✅ Added comprehensive XML documentation
-- ✅ Clarified service configuration
-- ✅ Added comments explaining each configuration section
+
+- ✅ Comprehensive XML documentation
+- ✅ Clear service configuration (controllers, DbContext, Swagger, exception handler)
 
 ## Small checklist for reviewers
 
-- ✅ Ensure all async methods have `CancellationToken cancellationToken = default` parameter
-- ✅ Verify XML documentation includes all parameters (including cancellationToken)
-- ✅ Confirm LiteBus is properly configured with `AddLiteBusCommands()` and `AddLiteBusQueries()`
-- ✅ Check ApiController provides access to `CmdMediator` and `QryMediator`
-- ✅ Verify expression bodies are used where appropriate
-- ✅ Ensure no verbose `this.` qualifiers are used unnecessarily
-- ✅ Confirm modern solution format (.slnx) is in use
+- ✅ Async methods include `CancellationToken cancellationToken` and pass it through
+- ✅ XML documentation is present on public methods
+- ✅ Scrutor registration covers command/query namespaces
+- ✅ Controllers resolve handlers via `[FromServices]`
+- ✅ Expression bodies used where they aid readability
+- ✅ Modern solution format (.slnx) is in use
+
+---
+
+## 🎓 What You Should Know By Now
+
+After completing Phase 2, you should understand:
+
+### **CQRS Fundamentals**
+- Commands modify state, queries retrieve state—never mix the two
+- Handler interfaces (`ICreatePizzaCommand`, `IGetPizzaQuery`) define clear contracts
+- One handler per operation keeps code focused and testable
+
+### **Dependency Injection**
+- Scrutor scans assemblies and registers handlers automatically
+- `[FromServices]` makes dependencies explicit in controller actions
+- Interface-based design enables easy mocking in tests
+
+### **Result Pattern**
+- `Result<T>` eliminates exceptions for expected failures
+- Controllers check `HasError` instead of catching exceptions
+- Consistent envelopes make API responses predictable
+
+### **Async Best Practices**
+- Always accept `CancellationToken` in async methods
+- Pass tokens through the entire call chain
+- Enables graceful shutdown and timeout handling
+
+### **Testing Strategy**
+- In-memory EF Core creates isolated test contexts
+- Test handlers directly—no API calls needed
+- Bogus generates realistic test data
+
+**Next**: Phase 3 introduces a **dispatcher** to centralize handler resolution, letting you add logging, validation, and caching in one place instead of duplicating across controllers.
+
+---
 
 ## Next Phase
 
-Phase 3 will build on this foundation by introducing:
+Phase 3 will build on this foundation by:
+
 - Command and Query handler implementation
 - Validation behavior using FluentValidation
 - Advanced CQRS patterns

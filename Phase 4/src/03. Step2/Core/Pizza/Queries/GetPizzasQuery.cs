@@ -7,7 +7,7 @@ public sealed class GetPizzasQuery : IQuery<Result<IEnumerable<PizzaModel>>>
 
 public sealed class GetPizzasQueryHandler(DatabaseContext databaseContext) : IQueryHandler<GetPizzasQuery, Result<IEnumerable<PizzaModel>>>
 {
-	public async Task<Result<IEnumerable<PizzaModel>>> HandleAsync(GetPizzasQuery request, CancellationToken cancellationToken)
+	public async Task<Result<IEnumerable<PizzaModel>>> Handle(GetPizzasQuery request, CancellationToken cancellationToken)
 	{
 		var entity = request.Data;
 		if (string.IsNullOrEmpty(entity.OrderBy))

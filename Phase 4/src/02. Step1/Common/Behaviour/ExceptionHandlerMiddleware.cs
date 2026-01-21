@@ -26,15 +26,13 @@ public class ExceptionHandlerMiddleware(RequestDelegate next)
 			var errors = ((FluentValidation.ValidationException)exception).Errors;
 			if (errors.Any())
 			{
-				var failures = errors.Select(x =>
-				{
-					return new
-					{
-						Property = x.PropertyName.Replace("Data.", ""),
-						Error = x.ErrorMessage.Replace("Data ", "")
-					};
-				});
-				var result = Result.Failure(failures.ToList<object>());
+				var failures = errors
+					.GroupBy(e => e.PropertyName.Replace("Data.", string.Empty))
+					.ToDictionary(
+						g => g.Key,
+						g => g.Select(e
+							=> e.ErrorMessage.Replace("Data ", string.Empty)).ToList());
+				var result = Result.ValidationFailure(failures);
 				var code = HttpStatusCode.BadRequest;
 				var resultJson = JsonSerializer.Serialize(result);
 

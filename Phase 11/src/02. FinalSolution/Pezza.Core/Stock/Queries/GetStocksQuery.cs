@@ -14,29 +14,25 @@ using Common.Filters;
 using Common.Models;
 using DataAccess;
 
-public sealed class GetStocksQuery : IQuery<ListResult<PizzaModel>>
+public sealed class GetStocksQuery : IQuery<Result<IEnumerable<PizzaModel>>>
 {
-    public PizzaModel Data { get; set; }
+    public PizzaModel? Data { get; set; }
 }
 
-public sealed class GetStocksQueryHandler : IQueryHandler<GetStocksQuery, ListResult<PizzaModel>>
+public sealed class GetStocksQueryHandler(DatabaseContext databaseContext, IMapper mapper)
+    : IQueryHandler<GetStocksQuery, Result<IEnumerable<PizzaModel>>>
 {
-    private readonly DatabaseContext databaseContext;
-
-    private readonly IMapper mapper;
-
-    public GetStocksQueryHandler(DatabaseContext databaseContext, IMapper mapper)
-        => (this.databaseContext, this.mapper) = (databaseContext, mapper);
-
-    public async Task<ListResult<PizzaModel>> HandleAsync(GetStocksQuery request, CancellationToken cancellationToken)
+    public async Task<Result<IEnumerable<PizzaModel>>> HandleAsync(GetStocksQuery request, CancellationToken cancellationToken)
     {
-        var dto = request.Data;
-        if (string.IsNullOrEmpty(dto.OrderBy))
+        if (request.Data == null)
         {
-            dto.OrderBy = "DateCreated desc";
+            return Result<IEnumerable<PizzaModel>>.Failure("Stock search data is required");
         }
 
-        var entities = this.databaseContext.Stocks.Select(x => x)
+        var dto = request.Data;
+        dto.OrderBy ??= "DateCreated desc";
+
+        var entities = databaseContext.Stocks.Select(x => x)
             .AsNoTracking()
             .FilterByName(dto.Name)
             .FilterByUnitOfMeasure(dto.UnitOfMeasure)
@@ -48,8 +44,8 @@ public sealed class GetStocksQueryHandler : IQueryHandler<GetStocksQuery, ListRe
             .OrderBy(dto.OrderBy);
 
         var count = await entities.CountAsync(cancellationToken);
-        var paged = this.mapper.Map<List<PizzaModel>>(await entities.ApplyPaging(dto.PagingArgs).OrderBy(dto.OrderBy).ToListAsync(cancellationToken));
+        var paged = mapper.Map<List<PizzaModel>>(await entities.ApplyPaging(dto.PagingArgs).OrderBy(dto.OrderBy).ToListAsync(cancellationToken));
 
-        return ListResult<PizzaModel>.Success(paged, count);
+        return Result<IEnumerable<PizzaModel>>.Success(paged, count);
     }
 }

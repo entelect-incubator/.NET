@@ -1,0 +1,79 @@
+version: "3.8"
+
+services:
+  pezza-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pezza-api
+    ports:
+      - "5000:5000"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:5000
+      - ConnectionStrings__DefaultConnection=Server=pezza-db;Port=5432;User Id=postgres;Password=postgres;Database=pezza;
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+      - LOG_LEVEL=Information
+    depends_on:
+      pezza-db:
+        condition: service_healthy
+      otel-collector:
+        condition: service_started
+    networks:
+      - pezza-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 40s
+
+  pezza-db:
+    image: ghcr.io/entelect-incubator/pezza-db:latest
+    container_name: pezza-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=pezza
+    volumes:
+      - pezza-db-volume:/var/lib/postgresql/data
+    networks:
+      - pezza-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:latest
+    container_name: otel-collector
+    command: ["--config=/etc/otel-collector-config.yml"]
+    volumes:
+      - ./otel-collector-config.yml:/etc/otel-collector-config.yml
+    ports:
+      - "4317:4317" # OTLP gRPC
+      - "4318:4318" # OTLP HTTP
+      - "8888:8888" # Metrics
+      - "13133:13133" # Health check
+    networks:
+      - pezza-network
+    depends_on:
+      - jaeger
+
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    container_name: jaeger
+    ports:
+      - "16686:16686" # Jaeger UI
+      - "6831:6831/udp"
+    networks:
+      - pezza-network
+
+volumes:
+  pezza-db-volume:
+
+networks:
+  pezza-network:
+    driver: bridge

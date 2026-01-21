@@ -1,10 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFramework>net10.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<LangVersion>preview</LangVersion>
+		<CodeAnalysisRuleSet>$(ProjectDir)..\StyleCopRuleSet.ruleset</CodeAnalysisRuleSet>
 	</PropertyGroup>
 	<PropertyGroup>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -28,5 +29,6 @@
 		<ProjectReference Include="..\Common\Common.csproj" />
 		<ProjectReference Include="..\Core\Core.csproj" />
 		<ProjectReference Include="..\DataAccess\DataAccess.csproj" />
+		<ProjectReference Include="..\Utilities\Utilities.csproj" />
 	</ItemGroup>
 </Project>

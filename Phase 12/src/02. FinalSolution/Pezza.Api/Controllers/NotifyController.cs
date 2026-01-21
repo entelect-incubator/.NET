@@ -1,4 +1,5 @@
 ﻿namespace Api.Controllers;
+using System.Collections.Generic;
 
 using System.Threading;
 using System.Threading.Tasks;
@@ -42,7 +43,7 @@ public class NotifyController : ApiController
     /// <response code="200">Notification Search.</response>
     /// <response code="400">Error searching for notifications.</response>
     [HttpPost]
-    [ProducesResponseType(typeof(ListResult<NotifyDTO>), 200)]
+    [ProducesResponseType(typeof(Result<IEnumerable<NotifyDTO>>), 200)]
     [ProducesResponseType(typeof(ErrorResult), 400)]
     [Route("Search")]
     public async Task<ActionResult> Search(NotifyDTO dto, CancellationToken cancellationToken = default)

@@ -1,4 +1,4 @@
-# Phase 9: Aspire Orchestration with OpenTelemetry
+# Phase 10: Aspire Orchestration with OpenTelemetry
 
 This phase introduces **cloud-native architecture** using .NET Aspire for service orchestration and OpenTelemetry for comprehensive observability.
 
@@ -33,11 +33,12 @@ This phase introduces **cloud-native architecture** using .NET Aspire for servic
 ### Option 1: Using Aspire (Recommended for Development)
 
 ```powershell
-cd Phase9/src/01.StartSolution
+cd Phase 10/src/01. StartSolution
 dotnet run --project AspireHost/AspireHost.csproj
 ```
 
 This will:
+
 1. Start the Aspire orchestration host
 2. Launch SQL Server in a container
 3. Start Pezza.Api with database connection
@@ -46,13 +47,13 @@ This will:
 ### Option 2: Using Docker Compose
 
 ```powershell
-docker-compose -f Phase9/src/01.StartSolution/docker-compose.yml up -d
+docker-compose -f Phase 10/src/01. StartSolution/docker-compose.yml up -d
 ```
 
 Then start the application:
 
 ```powershell
-cd Phase9/src/01.StartSolution
+cd Phase 10/src/01. StartSolution
 dotnet run --project Pezza.Api/Pezza.Api.csproj
 ```
 
@@ -61,6 +62,7 @@ dotnet run --project Pezza.Api/Pezza.Api.csproj
 ### Logging
 
 Configured via `Pezza.Api/Program.cs`:
+
 - Serilog with structured logging
 - OTLP exporter for centralized logging
 - Log levels: Information (default), Error (System/Microsoft)
@@ -68,6 +70,7 @@ Configured via `Pezza.Api/Program.cs`:
 ### Metrics
 
 Enabled through OpenTelemetry:
+
 - ASP.NET Core instrumentation
 - HTTP client instrumentation  
 - Runtime metrics
@@ -75,6 +78,7 @@ Enabled through OpenTelemetry:
 ### Tracing
 
 Distributed tracing configuration:
+
 - ASP.NET Core tracing
 - HTTP client tracing
 - W3C Trace Context propagation
@@ -82,6 +86,7 @@ Distributed tracing configuration:
 ## Service Discovery
 
 Services automatically discoverable via:
+
 - Service name: `http://api`
 - Resilience: Automatic retry policies
 - Circuit breaker patterns included
@@ -103,18 +108,21 @@ var database = builder
 Environment variable: `ConnectionStrings__DefaultConnection`
 
 **SQL Server Format:**
-```
+
+```json
 Server=localhost,1433;User Id=sa;Password=YourComplexPassword123!;Database=pezza-db;TrustServerCertificate=true
 ```
 
-**MySQL Format:**
-```
-Server=localhost;Port=3306;Database=pezza_db;User Id=pezza_user;Password=UserPassword123!
+**PostgreSQL Format:**
+
+```json
+Host=localhost;Port=5432;Database=pezza_db;Username=pezza_user;Password=UserPassword123!
 ```
 
 ## Aspire Dashboard
 
 Access monitoring dashboard:
+
 - **URL**: `http://localhost:18888`
 - **Features**:
   - Service topology visualization
@@ -125,8 +133,8 @@ Access monitoring dashboard:
 
 ## Directory Structure
 
-```
-Phase 9/
+```md
+Phase 10/
 ├── src/
 │   ├── 01. StartSolution/
 │   │   ├── AspireHost/
@@ -165,6 +173,7 @@ await this.CmdMediator.SendAsync(
 ### Aspire Host Settings
 
 `appsettings.json` - Logging configuration:
+
 ```json
 {
   "Logging": {
@@ -179,6 +188,7 @@ await this.CmdMediator.SendAsync(
 ### Environment Variables
 
 Automatically set by AspireHost:
+
 - `ASPIRE_RESOURCE_NAME` - Resource identifier
 - `ASPIRE_DASHBOARD_URL` - Dashboard endpoint
 - OpenTelemetry endpoints for API
@@ -196,6 +206,7 @@ If ports 1433 (SQL Server), 5000 (API), or 18888 (Dashboard) are in use:
 ### Database Connection Issues
 
 Check connection string:
+
 ```powershell
 sqlcmd -S localhost,1433 -U sa -P YourComplexPassword123! -Q "SELECT 1"
 ```
@@ -203,6 +214,7 @@ sqlcmd -S localhost,1433 -U sa -P YourComplexPassword123! -Q "SELECT 1"
 ### OpenTelemetry Not Working
 
 Verify environment variables in Aspire dashboard:
+
 - Check `OTEL_EXPORTER_OTLP_ENDPOINT`
 - Ensure OTLP collector is running (if using external)
 
@@ -326,3 +338,4 @@ dotnet test "./Phase 8/src/01. StartSolution/Pezza.sln"
 
 If you'd like, I can make a small, gated code change to the `Api` project's `Program.cs` to enable HTTPS/HSTS and add the secure-headers middleware behind an environment check — I will only do that if you ask me to create a PR.
 
+[Move to Phase 11](https://github.com/entelect-incubator/.NET/tree/master/Phase%2011)

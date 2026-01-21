@@ -1,27 +1,20 @@
 namespace Api.Controllers;
 
-using LiteBus.Commands.Abstractions;
-using LiteBus.Queries.Abstractions;
+using Dispatch;
 
 /// <summary>
-/// Base API controller providing access to LiteBus command and query mediators.
-/// All controllers should inherit from this to use CmdMediator and QryMediator.
+/// Base API controller providing access to the custom Dispatcher.
+/// All controllers should inherit from this to use the Dispatcher for commands and queries.
 /// </summary>
 [ApiController]
 [Route("[controller]")]
 [Produces("application/json")]
 public abstract class ApiController : ControllerBase
 {
-	private ICommandMediator? cmdMediator;
-	private IQueryMediator? qryMediator;
+	private Dispatcher? dispatcher;
 
 	/// <summary>
-	/// Gets the command mediator for dispatching commands.
+	/// Gets the custom dispatcher for sending commands and queries.
 	/// </summary>
-	protected ICommandMediator CmdMediator => cmdMediator ??= HttpContext.RequestServices.GetRequiredService<ICommandMediator>();
-
-	/// <summary>
-	/// Gets the query mediator for dispatching queries.
-	/// </summary>
-	protected IQueryMediator QryMediator => qryMediator ??= HttpContext.RequestServices.GetRequiredService<IQueryMediator>();
+	protected Dispatcher Dispatcher => dispatcher ??= HttpContext.RequestServices.GetRequiredService<Dispatcher>();
 }

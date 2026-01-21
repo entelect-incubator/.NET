@@ -1,6 +1,6 @@
 <img align="left" width="116" height="116" src="../pezza-logo.png" />
 
-# &nbsp;**Pezza - Phase 6 - Step 3** [![.NET - Phase 6 - Step 3](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-step3.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-step3.yml)
+# &nbsp;**Pezza - Phase 7 - Step 3** [![.NET - Phase 7 - Step 3](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase7-step3.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase7-step3.yml)
 
 <br/><br/>
 
@@ -547,5 +547,4 @@ In the above code, the CRON expression "* * * * *" is an expression to run the j
 
 ## **Step 4 - Orders**
 
-Move to Step 4
-[Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%206/Step%204)
+[Move to Step 4](https://github.com/entelect-incubator/.NET/tree/master/Phase%207/Step%204)

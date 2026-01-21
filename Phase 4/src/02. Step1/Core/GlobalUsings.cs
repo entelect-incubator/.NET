@@ -4,3 +4,5 @@ global using Core.Pizza.Commands;
 global using DataAccess;
 global using FluentValidation;
 global using Microsoft.EntityFrameworkCore;
+global using Utilities.CQRS;
+global using Utilities.Results;

@@ -1,6 +1,6 @@
 <img align="left" width="116" height="116" src="../pezza-logo.png" />
 
-# &nbsp;**Pezza - Phase 6 - Step 2** [![.NET - Phase 6 - Step 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-step2.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-step2.yml)
+# &nbsp;**Pezza - Phase 7 - Step 2** [![.NET - Phase 7 - Step 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-step2.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase7-step2.yml)
 
 <br/><br/>
 
@@ -9,6 +9,7 @@
 Mediatr allows you to publish domain events when a command is handled. This applies the SOLID principle in separating domain events from commands. In this example, we will be sending out an email to the customer to notify them that their pizza is ready for collection. We achieve this by creating an event that we publish with MediatR when the command for updating an order to completed is handled.
 
 The following material is valuable in getting a better understanding of these patterns:
+
 - [Domain Event Pattern](https://microservices.io/patterns/data/domain-event.html)
 - [Immediate Domain Event Salvation with MediatR](https://ardalis.com/immediate-domain-event-salvation-with-mediatr/)
 
@@ -101,5 +102,4 @@ public class OrderEventHandler(DatabaseContext databaseContext) : INotificationH
 
 ## **Step 3 - Background Job Scheduler**
 
-Move to Step 3
-[Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%206/Step%203)
+[Move to Step 3](https://github.com/entelect-incubator/.NET/tree/master/Phase%207/Step%203)

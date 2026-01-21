@@ -19,7 +19,7 @@ public class CustomerController : ApiController
 	[ProducesResponseType(typeof(ErrorResult), 404)]
 	public async Task<ActionResult> GetCustomer(int id)
 	{
-		var result = await this.Mediator.Send(new GetCustomerQuery { Id = id });
+		var result = await this.Dispatcher.Query(new GetCustomerQuery { Id = id });
 		return ResponseHelper.ResponseOutcome(result, this);
 	}
 
@@ -36,7 +36,7 @@ public class CustomerController : ApiController
 	[Route("Search")]
 	public async Task<ActionResult> Search(SearchCustomerModel data)
 	{
-		var result = await this.Mediator.Send(new GetCustomersQuery()
+		var result = await this.QryMediator.Query(new GetCustomersQuery()
 		{
 			Data = data
 		});
@@ -65,7 +65,7 @@ public class CustomerController : ApiController
 	[ProducesResponseType(typeof(ErrorResult), 400)]
 	public async Task<ActionResult<CustomerModel>> Create(CreateCustomerModel model)
 	{
-		var result = await this.Mediator.Send(new CreateCustomerCommand
+		var result = await this.Dispatcher.Send(new CreateCustomerCommand
 		{
 			Data = model
 		});
@@ -95,7 +95,7 @@ public class CustomerController : ApiController
 	[ProducesResponseType(typeof(Result), 404)]
 	public async Task<ActionResult> Update(UpdateCustomerModel model)
 	{
-		var result = await this.Mediator.Send(new UpdateCustomerCommand
+		var result = await this.CmdMediator.Execute(new UpdateCustomerCommand
 		{
 			Data = model
 		});
@@ -115,7 +115,7 @@ public class CustomerController : ApiController
 	[ProducesResponseType(typeof(ErrorResult), 400)]
 	public async Task<ActionResult> Delete(int id)
 	{
-		var result = await this.Mediator.Send(new DeleteCustomerCommand { Id = id });
+		var result = await this.CmdMediator.Execute(new DeleteCustomerCommand { Id = id });
 		return ResponseHelper.ResponseOutcome(result, this);
 	}
 }

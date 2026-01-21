@@ -4,11 +4,6 @@ using Common.Models;
 using global::Core.Pizza.Commands;
 using global::Core.Pizza.Queries;
 using Test.Setup.TestData.Pizza;
-using static global::Core.Pizza.Commands.CreatePizzaCommand;
-using static global::Core.Pizza.Commands.DeletePizzaCommand;
-using static global::Core.Pizza.Commands.UpdatePizzaCommand;
-using static global::Core.Pizza.Queries.GetPizzaQuery;
-using static global::Core.Pizza.Queries.GetPizzasQuery;
 
 [TestFixture]
 public class TestPizzaCore : QueryTestBase
@@ -30,9 +25,9 @@ public class TestPizzaCore : QueryTestBase
 				}
 			}, CancellationToken.None);
 
-		if (!resultCreate.Succeeded)
+		if (resultCreate.HasError)
 		{
-			Assert.That(false, Is.True);
+			Assert.That(false);
 		}
 
 		this.model = resultCreate.Data;
@@ -48,7 +43,7 @@ public class TestPizzaCore : QueryTestBase
 				Id = this.model.Id
 			}, CancellationToken.None);
 
-		Assert.That(resultGet?.Data , Is.Not.Null);
+		Assert.That(resultGet?.Data, Is.Not.Null);
 	}
 
 	[Test]
@@ -58,12 +53,12 @@ public class TestPizzaCore : QueryTestBase
 		var resultGetAll = await sutGetAll.Handle(new GetPizzasQuery(), CancellationToken.None);
 
 		Assert.That(resultGetAll?.Data, Is.Not.Null);
-		Assert.That(resultGetAll?.Data.Count, Is.GreaterThanOrEqualTo(1));
+		Assert.That(resultGetAll?.Data.Count(), Is.GreaterThanOrEqualTo(1));
 		Assert.That(resultGetAll?.Data.Any(p => p.Id == this.model.Id), Is.True);
 	}
 
 	[Test]
-	public void SaveAsync() => Assert.That(this.model , Is.Not.Null);
+	public void SaveAsync() => Assert.That(this.model, Is.Not.Null);
 
 	[Test]
 	public async Task UpdateAsync()
@@ -79,7 +74,7 @@ public class TestPizzaCore : QueryTestBase
 				}
 			}, CancellationToken.None);
 
-		Assert.That(resultUpdate.Succeeded, Is.True);
+		Assert.That(resultUpdate.HasError, Is.False);
 	}
 
 	[Test]
@@ -92,6 +87,6 @@ public class TestPizzaCore : QueryTestBase
 				Id = this.model.Id
 			}, CancellationToken.None);
 
-		Assert.That(outcomeDelete.Succeeded, Is.True);
+		Assert.That(outcomeDelete.HasError, Is.False);
 	}
 }
