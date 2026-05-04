@@ -2,7 +2,7 @@
 
 This phase teaches you how to **containerize and publish the Pezza API** to GitHub Container Registry (GHCR) using **GitHub Actions CI/CD**. You'll learn Docker multi-stage builds, automated image publishing, versioning strategies, and how frontend incubators consume the published API image.
 
-Requires .NET SDK: 8.0.x (Docker handles runtime)
+Requires .NET SDK: 10.0.x (Docker handles runtime)
 
 Estimated time: 2–4 hours — Difficulty: ★★★☆☆
 
@@ -26,7 +26,7 @@ By the end of this phase, you will understand:
 
 ## Architecture
 
-```
+```md
 Phase 14 (Final Solution)
         ↓
     Dockerfile
@@ -42,7 +42,7 @@ Phase 14 (Final Solution)
 
 ## Phase Structure
 
-```
+```md
 Phase 15/
 ├── README.md (this file)
 ├── Dockerfile
@@ -238,6 +238,32 @@ LOG_LEVEL=Information
 OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
 ```
 
+---
+
+Teaching Thread
+
+- From: Phase 14 integrated external services and resilient patterns.
+- This phase: containerize services, set up GHCR publishing and deployable artifacts.
+- Next: roll-up and maintain the incubator content; provide maintenance and contribution guidance.
+
+Libraries (why they matter)
+
+- Docker multi-stage builds: produce small, secure images for publishing.
+- GitHub Actions: CI/CD pipelines for build, test, and publish; document secrets and GHCR usage.
+
+Clean Code & SOLID (teaching notes)
+
+- Keep deployment scripts declarative and idempotent; document expected environment variables and secrets.
+- Ensure observability pieces are enabled in production images (OTel, logs).
+
+MediatR policy
+
+- CI/CD and container publishing are orthogonal to MediatR. If MediatR remains anywhere, add a migration item to remove or document it.
+
+Notes
+
+- Include example workflows for build+publish and local image testing.
+
 ### Secrets for GitHub Actions
 
 To publish to the registry, configure these secrets:
@@ -286,6 +312,7 @@ Check workflow logs:
 ### Image Too Large
 
 Optimize Dockerfile:
+
 - Remove unnecessary files (`.dockerignore`)
 - Delete build artifacts in runtime stage
 - Use slim/alpine base images if compatible
@@ -293,6 +320,7 @@ Optimize Dockerfile:
 ### Version Tags Not Applied
 
 Ensure git tags follow semantic versioning:
+
 ```bash
 git tag v1.0.0
 git push origin v1.0.0

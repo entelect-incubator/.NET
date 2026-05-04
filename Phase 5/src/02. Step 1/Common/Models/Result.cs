@@ -10,10 +10,10 @@ public class Result
 	{
 		this.Succeeded = succeeded;
 
-		this.Errors = new List<object>
-		{
+		this.Errors =
+		[
 			error
-		};
+		];
 	}
 
 	internal Result(bool succeeded, List<object> errors)
@@ -46,10 +46,10 @@ public class Result<T>
 	internal Result(bool succeeded, string error)
 	{
 		this.Succeeded = succeeded;
-		this.Errors = new List<object>
-		{
+		this.Errors =
+		[
 			error
-		};
+		];
 	}
 
 	internal Result(bool succeeded, List<object> errors)
@@ -71,7 +71,7 @@ public class Result<T>
 
 	public List<object> Errors { get; set; }
 
-	public static Result<T> Success(T data) => new(true, data, new List<object> { });
+	public static Result<T> Success(T data) => new(true, data,[]);
 
 	public static Result<T> Failure(string error) => new(false, error);
 
@@ -83,10 +83,10 @@ public class ListResult<T>
 	internal ListResult(bool succeeded, string error)
 	{
 		this.Succeeded = succeeded;
-		this.Errors = new List<object>
-		{
+		this.Errors =
+		[
 			error
-		};
+		];
 	}
 
 	internal ListResult(bool succeeded, List<object> errors)
@@ -119,9 +119,9 @@ public class ListResult<T>
 
 	public int Count { get; set; }
 
-	public static ListResult<T> Success(List<T> data, int count) => new(true, data, count, new List<object> { });
+	public static ListResult<T> Success(List<T> data, int count) => new(true, data, count,[]);
 
-	public static ListResult<T> Success(IEnumerable<T> data, int count) => new(true, data, count, new List<object> { });
+	public static ListResult<T> Success(IEnumerable<T> data, int count) => new(true, data, count,[]);
 
 	public static ListResult<T> Failure(string error) => new(false, error);
 

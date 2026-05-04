@@ -1,5 +1,7 @@
 ﻿namespace Common.Mappers;
 
+using Common.Models.Customer;
+
 public static class CustomerMapper
 {
 	public static CustomerModel Map(this Customer entity)

@@ -11,7 +11,7 @@ public static class OrderMapper
 			Completed = entity.Completed,
 			CustomerId = entity.CustomerId,
 			Customer = entity.Customer.Map(),
-	////		PizzaIds = entity.PizzaIds,
+			////		PizzaIds = entity.PizzaIds,
 			Pizzas = entity.Pizzas.ToList().Map(),
 			DateCreated = entity.DateCreated
 		};
@@ -23,7 +23,7 @@ public static class OrderMapper
 			Completed = model.Completed,
 			CustomerId = model.CustomerId,
 			Customer = model.Customer.Map(),
-		////	PizzaIds = model.PizzaIds,
+			////	PizzaIds = model.PizzaIds,
 			Pizzas = model.Pizzas.Map(),
 			DateCreated = model.DateCreated
 		};
@@ -33,7 +33,7 @@ public static class OrderMapper
 		{
 			Completed = false,
 			CustomerId = model.CustomerId,
-	////		PizzaIds = model.PizzaIds,
+			////		PizzaIds = model.PizzaIds,
 			DateCreated = DateTime.UtcNow
 		};
 

@@ -1,5 +1,6 @@
 ﻿namespace Api.Controllers;
 
+using Common.Models.Pizza;
 using Core.Pizza.Commands;
 using Core.Pizza.Queries;
 
@@ -17,7 +18,7 @@ public class PizzaController() : ApiController
 	[ProducesResponseType(404)]
 	public async Task<ActionResult> Get(int id)
 	{
-		var result = await this.QryMediator.Query(new GetPizzaQuery { Id = id });
+		var result = await this.Dispatcher.Query(new GetPizzaQuery { Id = id }, CancellationToken.None);
 		return ResponseHelper.ResponseOutcome(result, this);
 	}
 
@@ -29,10 +30,10 @@ public class PizzaController() : ApiController
 	[ProducesResponseType(200)]
 	public async Task<ActionResult> Search(SearchPizzaModel data)
 	{
-		var result = await this.QryMediator.Query(new GetPizzasQuery()
+		var result = await this.Dispatcher.Query(new GetPizzasQuery()
 		{
 			Data = data
-		});
+		}, CancellationToken.None);
 		return ResponseHelper.ResponseOutcome(result, this);
 	}
 
@@ -56,10 +57,10 @@ public class PizzaController() : ApiController
 	[ProducesResponseType(400)]
 	public async Task<ActionResult<Pizza>> Create([FromBody] CreatePizzaModel model)
 	{
-		var result = await this.CmdMediator.Execute(new CreatePizzaCommand
+		var result = await this.Dispatcher.Send(new CreatePizzaCommand
 		{
 			Data = model
-		});
+		}, CancellationToken.None);
 
 		return ResponseHelper.ResponseOutcome(result, this);
 	}
@@ -83,10 +84,10 @@ public class PizzaController() : ApiController
 	[ProducesResponseType(400)]
 	public async Task<ActionResult> Update([FromBody] UpdatePizzaModel model)
 	{
-		var result = await this.CmdMediator.Execute(new UpdatePizzaCommand
+		var result = await this.Dispatcher.Send(new UpdatePizzaCommand
 		{
 			Data = model
-		});
+		}, CancellationToken.None);
 
 		return ResponseHelper.ResponseOutcome(result, this);
 	}
@@ -101,7 +102,7 @@ public class PizzaController() : ApiController
 	[ProducesResponseType(400)]
 	public async Task<ActionResult> Delete(int id)
 	{
-		var result = await this.CmdMediator.Execute(new DeletePizzaCommand { Id = id });
+		var result = await this.Dispatcher.Send(new DeletePizzaCommand { Id = id }, CancellationToken.None);
 		return ResponseHelper.ResponseOutcome(result, this);
 	}
 }

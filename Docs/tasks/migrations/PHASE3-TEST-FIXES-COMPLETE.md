@@ -255,7 +255,7 @@ Passed! - Failed: 0, Passed: 10, Skipped: 0, Total: 10, Duration: 877 ms
 
 ### Step 2
 ```
-Test run for D:\Dev\Incubator\.NET\Phase 3\src\03. Step2\Test\bin\Debug\net8.0\Test.dll
+Test run for D:\Dev\Incubator\.NET\Phase 3\src\03. Step2\Test\bin\Debug\net10.0\Test.dll
 
 Passed! - Failed: 0, Passed: 10, Skipped: 0, Total: 10, Duration: 1 s
 ```

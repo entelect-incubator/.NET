@@ -3,11 +3,6 @@ namespace Test.Core;
 using global::Core.Customer.Commands;
 using global::Core.Customer.Queries;
 using Test.Setup.TestData.Customer;
-using static global::Core.Customer.Commands.CreateCustomerCommand;
-using static global::Core.Customer.Commands.DeleteCustomerCommand;
-using static global::Core.Customer.Commands.UpdateCustomerCommand;
-using static global::Core.Customer.Queries.GetCustomerQuery;
-using static global::Core.Customer.Queries.GetCustomersQuery;
 
 [TestFixture]
 public class TestCustomerCore : QueryTestBase

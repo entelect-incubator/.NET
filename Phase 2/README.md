@@ -219,6 +219,32 @@ public sealed class GetPizzaQueryHandler(DatabaseContext db) : IGetPizzaQuery
 
 **Performance**: 20-30% faster for high-traffic queries (no compilation overhead)
 
+---
+
+Teaching Thread
+
+- From: Phase 1 scaffold and clean architecture.
+- This phase: interface-first CQRS handlers with explicit DI and handler contracts.
+- Next: Phase 3 introduces the central `Dispatcher` for routing commands and queries.
+
+Libraries (why they matter)
+
+- Scrutor: assembly scanning to auto-register handler implementations without manual registration.
+- Result Pattern: consistent `Result<T>` return types to model success/failure and messaging.
+
+Clean Code & SOLID (teaching notes)
+
+- Prefer small interfaces and explicit contracts; keep controller wiring obvious for learning.
+- Document handler responsibilities and keep methods focused and short.
+
+MediatR policy
+
+- Phase 2 intentionally avoids MediatR to teach explicit handler wiring. If you later introduce MediatR for production reasons, document the trade-offs and the exact locations where it's used.
+
+Notes
+
+- See design patterns at: ../../Design-Patterns/04-Dispatcher-Mediator/
+
 **When to Use Compiled Queries:**
 
 | Scenario                                 | Use Compiled? | Benefit                          |
@@ -943,3 +969,7 @@ Phase 3 will build on this foundation by:
 - Validation behavior using FluentValidation
 - Advanced CQRS patterns
 - Customer and Order commands/queries
+
+## Next Step
+
+Move to [Step 3 - API](https://github.com/entelect-incubator/.NET/tree/master/Phase%202/Step%203) to wire controllers to these handlers using dependency injection and the shared `ResponseHelper`.

@@ -1,6 +1,5 @@
 namespace Api;
 
-using System.Reflection;
 using System.Text.Json.Serialization;
 using Common.Behaviour;
 using Microsoft.AspNetCore.Builder;
@@ -9,7 +8,6 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Serialization;
 
 public class Startup
@@ -32,7 +30,6 @@ public class Startup
 
 		services.AddSwaggerDocument(config =>
 		{
-			config.GenerateEnumMappingDescription = true;
 			config.PostProcess = document =>
 			{
 				document.Info.Version = "V1";
@@ -61,7 +58,7 @@ public class Startup
 	public void Configure(WebApplication app, IWebHostEnvironment env)
 	{
 		app.UseOpenApi();
-		app.UseSwaggerUi3(c => c.AdditionalSettings.Add("displayRequestDuration", true));
+		app.UseSwaggerUI();
 		app.UseHttpsRedirection();
 		app.UseMiddleware(typeof(ExceptionHandlerMiddleware));
 		app.UseRouting();

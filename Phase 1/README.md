@@ -1177,3 +1177,7 @@ Press F5 and Test all the Pizza Methods.
 ## **Phase 2 - CQRS**
 
 [Move to Phase 2](https://github.com/entelect-incubator/.NET/tree/master/Phase%202)
+
+## Next Step
+
+Move to [Phase 2](https://github.com/entelect-incubator/.NET/tree/master/Phase%202)

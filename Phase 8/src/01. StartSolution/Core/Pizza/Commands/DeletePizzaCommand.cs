@@ -1,5 +1,7 @@
 namespace Core.Pizza.Commands;
 
+using Core;
+
 public sealed class DeletePizzaCommand : ICommand<Result>
 {
 	public int? Id { get; set; }

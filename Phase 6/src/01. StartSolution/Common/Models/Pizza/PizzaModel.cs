@@ -1,4 +1,4 @@
-﻿namespace Common.Models;
+﻿namespace Common.Models.Pizza;
 
 public sealed class PizzaModel
 {

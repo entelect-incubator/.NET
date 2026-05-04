@@ -1,13 +1,11 @@
 ﻿namespace Scheduler.Jobs;
 
+using System.Linq;
 using System.Threading.Tasks;
 using Common;
 using Common.Mappers;
-using Core;
 using Core.Email;
 using Core.Notify.Commands;
-using Core.Pizza.Queries;
-using System.Linq;
 
 public interface IOrderCompleteJob
 {

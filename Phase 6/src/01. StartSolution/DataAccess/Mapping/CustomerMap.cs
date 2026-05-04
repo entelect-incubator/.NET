@@ -1,7 +1,7 @@
 namespace DataAccess.Mapping;
 
-using Microsoft.EntityFrameworkCore;
 using Common.Entities;
+using Microsoft.EntityFrameworkCore;
 
 public sealed class CustomerMap : IEntityTypeConfiguration<Customer>
 {

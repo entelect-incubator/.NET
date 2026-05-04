@@ -1,25 +1,24 @@
-namespace Scheduler.Jobs;
+﻿namespace Scheduler.Jobs;
 
+using System.Linq;
 using System.Threading.Tasks;
 using Common;
 using Common.Mappers;
 using Core.Email;
 using Core.Notify.Commands;
-using Core.Pizza.Queries;
-
 
 public interface IOrderCompleteJob
 {
 	Task SendNotificationAsync();
 }
 
-public sealed class OrderCompleteJob(IMediator mediator) : IOrderCompleteJob
+public sealed class OrderCompleteJob(Dispatcher dispatcher) : IOrderCompleteJob
 {
 	public async Task SendNotificationAsync()
 	{
-		var notifiesResult = await mediator.Send(new GetNotifiesQuery());
+		var notifiesResult = await dispatcher.Query(new GetNotifiesQuery());
 
-		if (notifiesResult.Succeeded && notifiesResult.Data.Count != 0)
+		if (notifiesResult.Succeeded && notifiesResult.Data?.Any() == true)
 		{
 			foreach (var notification in notifiesResult.Data)
 			{
@@ -32,11 +31,11 @@ public sealed class OrderCompleteJob(IMediator mediator) : IOrderCompleteJob
 				if (emailResult.Succeeded)
 				{
 					notification.Sent = true;
-					var updateNotifyResult = await mediator.Send(new UpdateNotifyCommand
+					var updateNotifyResult = await dispatcher.Send<UpdateNotifyCommand, Result>(new UpdateNotifyCommand
 					{
 						Id = notification.Id,
 						Sent = true
-					});
+					}, CancellationToken.None);
 					if (!updateNotifyResult.Succeeded)
 					{
 						Logging.LogException(new Exception(string.Join("", updateNotifyResult.Errors)));

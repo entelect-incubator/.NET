@@ -3,6 +3,7 @@
 using System.Net;
 using System.Text.Json;
 using Microsoft.AspNetCore.Http;
+using Utilities.Results;
 
 public class ExceptionHandlerMiddleware
 {
@@ -30,15 +31,12 @@ public class ExceptionHandlerMiddleware
 			var errors = ((FluentValidation.ValidationException)exception).Errors;
 			if (errors.Any())
 			{
-				var failures = errors.Select(x =>
-				{
-					return new
-					{
-						Property = x.PropertyName.Replace("Data.", string.Empty),
-						Error = x.ErrorMessage.Replace("Data ", string.Empty)
-					};
-				});
-				var result = Result.Failure(failures.ToList<object>());
+				var failures = errors
+					.GroupBy(x => x.PropertyName.Replace("Data.", string.Empty))
+					.ToDictionary(
+						g => g.Key,
+						g => g.Select(x => x.ErrorMessage.Replace("Data ", string.Empty)).ToList());
+				var result = Result.ValidationFailure(failures);
 				var code = HttpStatusCode.BadRequest;
 				var resultJson = JsonSerializer.Serialize(result);
 

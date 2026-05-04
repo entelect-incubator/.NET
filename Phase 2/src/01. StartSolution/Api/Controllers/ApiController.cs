@@ -1,6 +1,6 @@
 namespace Api.Controllers;
 
-using Dispatch;
+using Core;
 
 /// <summary>
 /// Base API controller providing access to the custom Dispatcher.
@@ -16,5 +16,5 @@ public abstract class ApiController : ControllerBase
 	/// <summary>
 	/// Gets the custom dispatcher for sending commands and queries.
 	/// </summary>
-	protected Dispatcher Dispatcher => dispatcher ??= HttpContext.RequestServices.GetRequiredService<Dispatcher>();
+	protected Dispatcher Dispatcher => this.dispatcher ??= this.HttpContext.RequestServices.GetRequiredService<Dispatcher>();
 }

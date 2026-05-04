@@ -1,6 +1,5 @@
 namespace Core;
 
-using Common.CQRS;
 using Core.Pizza.Commands;
 using Core.Pizza.Queries;
 using Microsoft.Extensions.DependencyInjection;

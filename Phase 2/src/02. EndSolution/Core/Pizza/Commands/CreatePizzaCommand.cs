@@ -1,5 +1,6 @@
 namespace Core.Pizza.Commands;
 
+using Common.Models.Pizza;
 using Common.Models.Results;
 
 public interface ICreatePizzaCommand

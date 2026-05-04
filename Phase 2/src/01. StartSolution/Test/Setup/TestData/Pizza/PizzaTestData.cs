@@ -20,16 +20,16 @@ public static class PizzaTestData
 		Description = string.Empty,
 		Price = faker.Finance.Amount(),
 		DateCreated = DateTime.Now
-		
+
 	};
 
-	private static readonly List<string> pizzas = new() 
-	{ 
+	private static readonly List<string> pizzas =
+	[
 		"Veggie Pizza",
 		"Pepperoni Pizza",
 		"Meat Pizza",
 		"Margherita Pizza",
 		"BBQ Chicken Pizza",
 		"Hawaiian Pizza"
-	};
+	];
 }

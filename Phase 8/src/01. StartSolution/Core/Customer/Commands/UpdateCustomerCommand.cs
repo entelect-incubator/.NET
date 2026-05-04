@@ -1,5 +1,8 @@
 namespace Core.Customer.Commands;
 
+using Common.Models.Customer;
+using Core;
+
 public sealed class UpdateCustomerCommand : ICommand<Result<CustomerModel>>
 {
 	public int? Id { get; set; }

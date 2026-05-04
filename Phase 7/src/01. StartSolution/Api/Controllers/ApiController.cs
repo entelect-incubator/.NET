@@ -1,17 +1,13 @@
 namespace Api.Controllers;
 
-using Core;
-using Microsoft.AspNetCore.Mvc;
+using Dispatch;
 
-/// <summary>
-/// Base API controller with dispatcher support for CQRS operations.
-/// </summary>
 [ApiController]
 [Route("[controller]")]
-public abstract class ApiController(Dispatcher dispatcher) : ControllerBase
+[Produces("application/json")]
+public abstract class ApiController : ControllerBase
 {
-    /// <summary>
-    /// Gets the dispatcher for executing commands and queries.
-    /// </summary>
-    protected Dispatcher Dispatcher { get; } = dispatcher;
+	private Dispatcher? dispatcher;
+
+	protected Dispatcher Dispatcher => this.dispatcher ??= this.HttpContext.RequestServices.GetRequiredService<Dispatcher>();
 }

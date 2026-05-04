@@ -32,7 +32,7 @@ BEGIN
         ('Bob', 'Johnson', 'bob@example.com', '555-0003', '789 Pine Rd', 'Chicago', '60601'),
         ('Alice', 'Williams', 'alice@example.com', '555-0004', '321 Elm St', 'Houston', '77001');
     
-    PRINT 'Sample customers inserted successfully';
+        PRINT 'Sample customers inserted successfully';
 END
 ELSE
 BEGIN

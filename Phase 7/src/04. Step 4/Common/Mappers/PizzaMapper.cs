@@ -1,5 +1,7 @@
 ﻿namespace Common.Mappers;
 
+using Common.Models.Pizza;
+
 public static class PizzaMapper
 {
 	public static PizzaModel Map(this Pizza entity)

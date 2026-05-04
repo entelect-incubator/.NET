@@ -1,0 +1,21 @@
+<Solution>
+  <Folder Name="/01 Apis/">
+    <Project Path="Api/Api.csproj" />
+  </Folder>
+  <Folder Name="/02 Core/">
+    <Project Path="Core/Core.csproj" />
+  </Folder>
+  <Folder Name="/03 Database/">
+    <Project Path="DataAccess/DataAccess.csproj" />
+  </Folder>
+  <Folder Name="/04 Common/">
+    <Project Path="Common/Common.csproj" />
+  </Folder>
+  <Folder Name="/05 Tests/">
+    <Project Path="Test/Test.csproj" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path="StyleCopRuleSet.ruleset" />
+  </Folder>
+</Solution>

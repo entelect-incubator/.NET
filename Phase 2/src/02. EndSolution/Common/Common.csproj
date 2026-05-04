@@ -11,8 +11,4 @@
 		<Folder Include="Behaviour\" />
 		<Folder Include="Entities\" />
 	</ItemGroup>
-
-	<ItemGroup>
-	  <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.10" />
-	</ItemGroup>
 </Project>

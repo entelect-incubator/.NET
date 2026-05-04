@@ -2,7 +2,7 @@
 
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Common.Models;
+using Common.Models.Customer;
 using FluentEmail.Core;
 using HtmlAgilityPack;
 

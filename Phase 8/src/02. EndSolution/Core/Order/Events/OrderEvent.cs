@@ -4,6 +4,7 @@ using System.Text;
 using Common.Entities;
 using Common.Models.Order;
 using DataAccess;
+using Utilities.CQRS;
 
 public class OrderEvent : INotification
 {
@@ -12,7 +13,7 @@ public class OrderEvent : INotification
 
 public class OrderEventHandler(DatabaseContext databaseContext) : INotificationHandler<OrderEvent>
 {
-	async Task INotificationHandler<OrderEvent>.Handle(OrderEvent notification, CancellationToken cancellationToken)
+	public async Task Handle(OrderEvent notification, CancellationToken cancellationToken)
 	{
 		var path = AppDomain.CurrentDomain.BaseDirectory + "\\Email\\Templates\\OrderCompleted.html";
 		var html = File.ReadAllText(path);

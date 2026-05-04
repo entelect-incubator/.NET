@@ -1,25 +1,23 @@
 ﻿namespace Utilities.CQRS;
 
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
-public interface ICommand<TResult> { }
-public interface IQuery<TResult> { }
-public interface INotification { }
+public interface ICommand<TResult> : IRequest<TResult> { }
+public interface IQuery<TResult> : IRequest<TResult> { }
+public interface INotification : MediatR.INotification { }
 
-public interface ICommandHandler<TCommand, TResult> where TCommand : ICommand<TResult>
-{
-	Task<TResult> Handle(TCommand command, CancellationToken ct);
-}
+public interface ICommandHandler<TCommand, TResult> : IRequestHandler<TCommand, TResult>
+	where TCommand : ICommand<TResult>
+{ }
 
-public interface IQueryHandler<TQuery, TResult> where TQuery : IQuery<TResult>
-{
-	Task<TResult> Handle(TQuery query, CancellationToken ct);
-}
+public interface IQueryHandler<TQuery, TResult> : IRequestHandler<TQuery, TResult>
+	where TQuery : IQuery<TResult>
+{ }
 
-public interface INotificationHandler<TNotification> where TNotification : INotification
-{
-	Task Handle(TNotification notification, CancellationToken ct);
-}
+public interface INotificationHandler<TNotification> : MediatR.INotificationHandler<TNotification>
+	where TNotification : INotification
+{ }
 
 public class Dispatcher(IServiceProvider provider)
 {

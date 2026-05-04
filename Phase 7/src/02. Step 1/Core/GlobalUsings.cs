@@ -8,3 +8,4 @@ global using DataAccess;
 global using Dispatch;
 global using FluentValidation;
 global using Microsoft.EntityFrameworkCore;
+global using Utilities.Results;

@@ -1,5 +1,7 @@
 namespace Core.Pizza.Commands;
 
+using Common.Models.Pizza;
+
 public sealed record CreatePizza(CreatePizzaModel Model) : ICommand<Result<PizzaModel>>;
 
 

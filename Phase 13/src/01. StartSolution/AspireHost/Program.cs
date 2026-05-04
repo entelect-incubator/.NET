@@ -1,4 +1,5 @@
 global using Aspire.Hosting;
+using AspireHost;
 using Projects;
 
 var builder = DistributedApplication.CreateBuilder(args);
@@ -13,11 +14,10 @@ var migrations = builder
     .WithReference(database)
     .WithEnvironment("ConnectionStrings__DefaultConnection", database.GetConnectionString());
 
-// Add API project - depends on migrations
 var api = builder
-    .AddProject<Pezza_Api>("api")
+    .AddProject<Api>("api")
     .WithReference(database)
-    .WithReference(migrations) // Ensures migrations run before API starts
+    .WithOpenTelemetry()
     .WithHttpEndpoint(port: 5000, name: "http")
     .WithHttpsEndpoint(port: 5001, name: "https");
 

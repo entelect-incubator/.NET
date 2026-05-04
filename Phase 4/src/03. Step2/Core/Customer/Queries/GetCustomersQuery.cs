@@ -1,5 +1,9 @@
 namespace Core.Customer.Queries;
 
+using Common.Models.Customer;
+using Core;
+using DataAccess.Filters;
+
 public sealed class GetCustomersQuery : IQuery<Result<IEnumerable<CustomerModel>>>
 {
 	public SearchCustomerModel Data { get; set; }

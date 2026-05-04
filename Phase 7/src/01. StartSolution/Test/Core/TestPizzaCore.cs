@@ -3,7 +3,6 @@
 using Common.Models;
 using global::Core.Pizza.Commands;
 using global::Core.Pizza.Queries;
-using System.Linq;
 using Test.Setup.TestData.Pizza;
 
 [TestFixture]
@@ -53,7 +52,7 @@ public class TestPizzaCore : QueryTestBase
 		var sutGetAll = new GetPizzasQueryHandler(this.Context, this.CachingService);
 		var resultGetAll = await sutGetAll.Handle(new GetPizzasQuery(), CancellationToken.None);
 
-		Assert.That(resultGetAll?.Data?.Count(), Is.EqualTo(1));
+		Assert.That(resultGetAll?.Data.Count, Is.EqualTo(1));
 	}
 
 	[Test]

@@ -1,9 +1,0 @@
-<Project Sdk="Aspire.AppHost.Sdk/8.0.0">
-    <PropertyGroup>
-        <IsAspireHost>true</IsAspireHost>
-    </PropertyGroup>
-
-    <ItemGroup>
-        <ProjectReference Include="..\Pezza.Api\Pezza.Api.csproj" />
-    </ItemGroup>
-</Project>

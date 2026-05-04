@@ -1,6 +1,6 @@
 namespace Api.Controllers;
 
-using Utilities.CQRS;
+using Core;
 
 [ApiController]
 [Route("[controller]")]

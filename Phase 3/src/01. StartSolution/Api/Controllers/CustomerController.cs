@@ -1,5 +1,6 @@
 ﻿namespace Api.Controllers;
 
+using Common.Models.Customer;
 using Common.Models.Results;
 using Core.Customer.Commands;
 using Core.Customer.Queries;

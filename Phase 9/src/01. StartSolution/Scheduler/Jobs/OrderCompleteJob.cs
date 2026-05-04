@@ -19,9 +19,9 @@ public sealed class OrderCompleteJob(IMediator mediator) : IOrderCompleteJob
 	{
 		var notifiesResult = await mediator.Send(new GetNotifiesQuery());
 
-		if (notifiesResult.Succeeded && notifiesResult.Data.Count != 0)
+		if (!notifiesResult.HasError && notifiesResult.Data?.Count() != 0)
 		{
-			foreach (var notification in notifiesResult.Data)
+			foreach (var notification in notifiesResult.Data!)
 			{
 				var emailService = new EmailService
 				{
@@ -29,7 +29,7 @@ public sealed class OrderCompleteJob(IMediator mediator) : IOrderCompleteJob
 					HtmlContent = notification.EmailContent
 				};
 				var emailResult = await emailService.SendEmail();
-				if (emailResult.Succeeded)
+				if (!emailResult.HasError)
 				{
 					notification.Sent = true;
 					var updateNotifyResult = await mediator.Send(new UpdateNotifyCommand
@@ -37,7 +37,7 @@ public sealed class OrderCompleteJob(IMediator mediator) : IOrderCompleteJob
 						Id = notification.Id,
 						Sent = true
 					});
-					if (!updateNotifyResult.Succeeded)
+					if (updateNotifyResult.HasError)
 					{
 						Logging.LogException(new Exception(string.Join("", updateNotifyResult.Errors)));
 					}

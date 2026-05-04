@@ -37,7 +37,7 @@ public class CustomerController : ApiController
 	public async Task<ActionResult> Search(SearchCustomerModel data)
 	{
 		var result = await this.Dispatcher.Query(
-		    new GetCustomersQuery()
+			new GetCustomersQuery()
 			{
 				Data = data
 			}, CancellationToken.None);

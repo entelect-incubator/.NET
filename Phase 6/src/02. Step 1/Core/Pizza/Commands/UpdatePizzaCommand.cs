@@ -1,5 +1,7 @@
 namespace Core.Pizza.Commands;
 
+using Common.Models.Pizza;
+using Core;
 using LazyCache;
 
 public sealed class UpdatePizzaCommand : ICommand<Result<PizzaModel>>

@@ -1,5 +1,7 @@
 namespace Core.Customer.Commands;
 
+using Common.Models.Customer;
+
 public record UpdateCustomer(int Id, UpdateCustomerModel Model) : ICommand<Result<CustomerModel>>;
 
 public sealed class UpdateCustomerHandler(DatabaseContext databaseContext) : ICommandHandler<UpdateCustomer, Result<CustomerModel>>

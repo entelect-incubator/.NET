@@ -1,4 +1,4 @@
-namespace Dispatch;
+namespace Core;
 
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;

@@ -2,7 +2,7 @@
 
 This phase implements a **Model Context Protocol (MCP)** server that enables AI assistants (Claude, ChatGPT, etc.) to interact with the Pezza pizza ordering system through natural language.
 
-> ⚠️ **CODE QUALITY NOTE**: StartSolution uses legacy constructor patterns for learning purposes; **FinalSolution implements C# 12+ primary constructors** as per COPILOT-INSTRUCTIONS. See the conversions in `Pezza.Core` handlers (e.g., `GetNotifiesQueryHandler`, `GetPizzasQueryHandler`) for the correct pattern:
+> ⚠️ **CODE QUALITY NOTE**: StartSolution uses legacy constructor patterns for learning purposes; **FinalSolution implements C# 12+ primary constructors** as per COPILOT-INSTRUCTIONS. See the conversions in `Core` handlers (e.g., `GetNotifiesQueryHandler`, `GetPizzasQueryHandler`) for the correct pattern:
 > ```csharp
 > public sealed class GetPizzasQueryHandler(
 >     DatabaseContext databaseContext,
@@ -29,7 +29,7 @@ This phase implements a **Model Context Protocol (MCP)** server that enables AI 
          │ JSON-RPC
          │
 ┌────────▼──────────────────────┐
-│   Pezza.Mcp Server (STDIO)    │
+│   Mcp Server (STDIO)    │
 │                               │
 │  ┌──────────────────────────┐ │
 │  │  Pizza Tools             │ │
@@ -58,7 +58,7 @@ This phase implements a **Model Context Protocol (MCP)** server that enables AI 
 ┌────────▼──────────────────┐
 │  Pezza Backend            │
 │  • Database               │
-│  • LiteBus Mediators      │
+│  • Dispatcher / LiteBus   │
 │  • Business Logic         │
 └───────────────────────────┘
 ```
@@ -238,6 +238,32 @@ This phase implements a **Model Context Protocol (MCP)** server that enables AI 
   }
 }
 ```
+
+---
+
+Teaching Thread
+
+- From: Phase 12 migrated to the custom dispatcher.
+- This phase: build an MCP server and integrate AI-assisted workflows and tools.
+- Next: Phase 14 focuses on external API integration.
+
+Libraries (why they matter)
+
+- MCP (Model Context Protocol) tooling: enables structured AI assistant interactions — document how to run and secure an MCP server.
+- AI tooling integration notes: list third-party clients and their educational purpose.
+
+Clean Code & SOLID (teaching notes)
+
+- Treat AI-generated changes as suggestions: require tests and linter passes before accepting.
+- Provide clear instructions on how to validate AI-assisted edits and how to revert them.
+
+Dispatcher policy
+
+- AI integration is independent of dispatcher choice — ensure the dispatcher pattern used by the codebase is reflected in AI examples and prompts.
+
+Notes
+
+- Add example prompts and expected outputs in `AI_PROMPTING_EXAMPLES.md` and link them from this phase README.
 
 #### `get_order_status` - Check Order
 
@@ -434,15 +460,20 @@ This phase implements a **Model Context Protocol (MCP)** server that enables AI 
 
 ### Prerequisites
 
-- .NET 8.0 SDK
+- .NET 10.0 SDK or later
 - SQL Server (running with Phase 11 migrations applied)
 - An LLM that supports MCP (Claude, etc.)
 
 ### Start the Server
 
 ```powershell
-cd Phase12/src/01.StartSolution
-dotnet run --project Pezza.Mcp/Pezza.Mcp.csproj
+# StartSolution path
+cd "Phase 13/src/01. StartSolution"
+dotnet run --project Mcp/Mcp.csproj
+
+# FinalSolution path
+cd "Phase 13/src/02. FinalSolution"
+dotnet run --project Mcp/Mcp.csproj
 ```
 
 ### Server Output
@@ -473,7 +504,7 @@ Edit `%APPDATA%\Claude\claude_desktop_config.json`:
   "mcpServers": {
     "pezza": {
       "command": "dotnet",
-      "args": ["run", "--project", "C:\\Users\\YourName\\Dev\\Incubator\\.NET\\Phase12\\src\\01. StartSolution\\Pezza.Mcp\\Pezza.Mcp.csproj"]
+      "args": ["run", "--project", "C:\\Users\\YourName\\Dev\\Incubator\\.NET\\Phase 13\\src\\02. FinalSolution\\Mcp\\Mcp.csproj"]
     }
   }
 }
@@ -579,7 +610,7 @@ All requests follow JSON-RPC 2.0:
 ### Class Structure
 
 ```text
-Pezza.Mcp/
+Mcp/
 ├── Program.cs                 (Entry point, STDIO loop)
 ├── appsettings.json          (Connection strings, settings)
 ├── Protocol/
@@ -588,7 +619,7 @@ Pezza.Mcp/
 │   └── McpServer.cs          (Route requests to handlers)
 ├── Tools/
 │   └── ToolHandlers.cs       (Pizza, Order, Stock implementations)
-└── Pezza.Mcp.csproj          (Dependencies: EF Core, Serilog)
+└── Mcp.csproj          (Dependencies: EF Core, Serilog)
 ```
 
 ### Data Flow
@@ -779,11 +810,11 @@ public List<McpTool> GetAvailableTools()
 ## Directory Structure
 
 ```md
-Phase 12/
+Phase 13/
 ├── src/
 │   ├── 01. StartSolution/
-│   │   ├── Pezza.Mcp/
-│   │   │   ├── Pezza.Mcp.csproj
+│   │   ├── Mcp/
+│   │   │   ├── Mcp.csproj
 │   │   │   ├── Program.cs (STDIO MCP server)
 │   │   │   ├── GlobalUsings.cs
 │   │   │   ├── appsettings.json
@@ -793,14 +824,25 @@ Phase 12/
 │   │   │   │   └── McpServer.cs (Request routing)
 │   │   │   └── Tools/
 │   │   │       └── ToolHandlers.cs (Pizza/Order/Stock operations)
+│   │   ├── Api/
 │   │   ├── AspireHost/
+│   │   ├── Common/
+│   │   ├── Core/
+│   │   ├── DataAccess/
 │   │   ├── DbUp.Migrations/
-│   │   ├── Pezza.Api/
-│   │   ├── Pezza.Core/
-│   │   ├── Pezza.Common/
-│   │   ├── Pezza.DataAccess/
 │   │   ├── docker-compose.yml
 │   │   └── Pezza.slnx
+│   ├── 02. FinalSolution/
+│   │   ├── Mcp/
+│   │   │   ├── Mcp.csproj
+│   │   │   ├── Program.cs (STDIO MCP server)
+│   │   │   ├── appsettings.json
+│   │   │   ├── Protocol/
+│   │   │   │   └── McpTypes.cs (Request/Response DTOs)
+│   │   │   ├── Server/
+│   │   │   │   └── McpServer.cs (Request routing)
+│   │   │   └── Tools/
+│   │   │       └── ToolHandlers.cs (Pizza/Order/Stock operations)
 │   └── ... (other phases)
 └── README.md
 ```

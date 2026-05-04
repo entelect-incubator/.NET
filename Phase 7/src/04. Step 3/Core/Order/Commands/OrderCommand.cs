@@ -12,7 +12,7 @@ public sealed class OrderCommandHandler(Dispatcher dispatcher) : ICommandHandler
 {
 	public async Task<Result> Handle(OrderCommand request, CancellationToken cancellationToken)
 	{
-		if(request.Data is null)
+		if (request.Data is null)
 		{
 			return Result.Failure("Error");
 		}

@@ -1,5 +1,6 @@
 namespace Core.Pizza.Commands;
 
+using Common.Models.Pizza;
 using Common.Models.Results;
 
 public sealed record UpdatePizza(int Id, UpdatePizzaModel Model) : ICommand<Result<PizzaModel>>;

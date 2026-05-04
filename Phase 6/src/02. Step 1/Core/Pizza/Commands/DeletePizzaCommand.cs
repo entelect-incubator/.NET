@@ -1,5 +1,6 @@
 namespace Core.Pizza.Commands;
 
+using Core;
 using LazyCache;
 
 public sealed class DeletePizzaCommand : ICommand<Result>

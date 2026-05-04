@@ -1,5 +1,7 @@
 ﻿namespace Test.Setup.TestData.Pizza;
 
+using Common.Models.Pizza;
+
 public static class PizzaTestData
 {
 	public static Faker faker = new();
@@ -22,13 +24,13 @@ public static class PizzaTestData
 		DateCreated = DateTime.Now
 	};
 
-	private static readonly List<string> pizzas = new()
-	{
+	private static readonly List<string> pizzas =
+	[
 		"Veggie Pizza",
 		"Pepperoni Pizza",
 		"Meat Pizza",
 		"Margherita Pizza",
 		"BBQ Chicken Pizza",
 		"Hawaiian Pizza"
-	};
+	];
 }

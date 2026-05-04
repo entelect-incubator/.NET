@@ -1,5 +1,7 @@
 ﻿namespace Test.Setup.TestData.Pizza;
 
+using Common.Models.Pizza;
+
 public static class PizzaTestData
 {
 	/// <summary>

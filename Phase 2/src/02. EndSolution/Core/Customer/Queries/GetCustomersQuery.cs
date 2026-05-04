@@ -1,5 +1,6 @@
 namespace Core.Customer.Queries;
 
+using Common.Models.Customer;
 using Common.Models.Results;
 
 public interface IGetCustomersQuery

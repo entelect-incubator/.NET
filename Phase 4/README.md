@@ -408,3 +408,7 @@ After completing Phase 4, you should understand:
 You now have a **production-ready CQRS architecture** with validation, filtering, pagination, and standardized error handling.
 
 [Go to Phase 5](https://github.com/entelect-incubator/.NET/tree/master/Phase%205)
+
+## Next Step
+
+Move to [Phase 5](https://github.com/entelect-incubator/.NET/tree/master/Phase%205)

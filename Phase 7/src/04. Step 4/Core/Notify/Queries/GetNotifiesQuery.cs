@@ -1,4 +1,6 @@
-namespace Core.Pizza.Queries;
+namespace Core.Notify.Queries;
+
+using Core;
 
 public sealed class GetNotifiesQuery : IQuery<Result<IEnumerable<Common.Entities.Notify>>>
 {

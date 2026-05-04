@@ -1,5 +1,5 @@
 {
-  "x-generator": "NSwag v13.19.0.0 (NJsonSchema v10.9.0.0 (Newtonsoft.Json v13.0.0.0))",
+  "x-generator": "NSwag v14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))",
   "swagger": "2.0",
   "info": {
     "title": "Pezza Api",
@@ -115,7 +115,7 @@
             "x-nullable": false,
             "description": "Get customer orders",
             "schema": {
-              "$ref": "#/definitions/ListResultOfOrderModel"
+              "$ref": "#/definitions/ResultOfIEnumerableOfOrderModel"
             }
           },
           "400": {
@@ -167,7 +167,7 @@
             "x-nullable": false,
             "description": "Customer Search",
             "schema": {
-              "$ref": "#/definitions/ListResultOfCustomerModel"
+              "$ref": "#/definitions/ResultOfIEnumerableOfCustomerModel"
             }
           },
           "400": {
@@ -516,24 +516,26 @@
   },
   "definitions": {
     "ResultOfCustomerModel": {
-      "type": "object",
-      "required": [
-        "Succeeded",
-        "Data",
-        "Errors"
-      ],
-      "properties": {
-        "Succeeded": {
-          "type": "boolean"
+      "allOf": [
+        {
+          "$ref": "#/definitions/ResultBase"
         },
-        "Data": {
-          "$ref": "#/definitions/CustomerModel"
-        },
-        "Errors": {
-          "type": "array",
-          "items": {}
+        {
+          "type": "object",
+          "required": [
+            "Count"
+          ],
+          "properties": {
+            "Data": {
+              "$ref": "#/definitions/CustomerModel"
+            },
+            "Count": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
         }
-      }
+      ]
     },
     "CustomerModel": {
       "type": "object",
@@ -565,6 +567,64 @@
         }
       }
     },
+    "ResultBase": {
+      "type": "object",
+      "x-abstract": true,
+      "required": [
+        "ErrorResult",
+        "Errors",
+        "ValidationErrors",
+        "HasError"
+      ],
+      "properties": {
+        "ErrorResult": {
+          "$ref": "#/definitions/ErrorResults"
+        },
+        "Message": {
+          "type": "string"
+        },
+        "Errors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "ValidationErrors": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "HasError": {
+          "type": "boolean"
+        }
+      }
+    },
+    "ErrorResults": {
+      "type": "integer",
+      "description": "",
+      "x-enumNames": [
+        "None",
+        "ValidationError",
+        "NotFound",
+        "GeneralError"
+      ],
+      "x-enum-descriptions": [
+        "None",
+        "Validation Error",
+        "Not Found",
+        "Error"
+      ],
+      "enum": [
+        0,
+        1,
+        2,
+        3
+      ]
+    },
     "ErrorResult": {
       "allOf": [
         {
@@ -573,10 +633,15 @@
         {
           "type": "object",
           "required": [
-            "Succeeded"
+            "IsError",
+            "IsValidationError"
           ],
           "properties": {
-            "Succeeded": {
+            "IsError": {
+              "type": "boolean",
+              "default": true
+            },
+            "IsValidationError": {
               "type": "boolean",
               "default": false
             }
@@ -585,48 +650,39 @@
       ]
     },
     "Result": {
-      "type": "object",
-      "required": [
-        "Succeeded",
-        "Errors"
-      ],
-      "properties": {
-        "Succeeded": {
-          "type": "boolean"
+      "allOf": [
+        {
+          "$ref": "#/definitions/ResultBase"
         },
-        "Errors": {
-          "type": "array",
-          "items": {}
+        {
+          "type": "object"
         }
-      }
+      ]
     },
-    "ListResultOfOrderModel": {
-      "type": "object",
-      "required": [
-        "Succeeded",
-        "Data",
-        "Errors",
-        "Count"
-      ],
-      "properties": {
-        "Succeeded": {
-          "type": "boolean"
+    "ResultOfIEnumerableOfOrderModel": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/ResultBase"
         },
-        "Data": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/OrderModel"
+        {
+          "type": "object",
+          "required": [
+            "Count"
+          ],
+          "properties": {
+            "Data": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/OrderModel"
+              }
+            },
+            "Count": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
-        },
-        "Errors": {
-          "type": "array",
-          "items": {}
-        },
-        "Count": {
-          "type": "integer",
-          "format": "int32"
         }
-      }
+      ]
     },
     "OrderModel": {
       "type": "object",
@@ -699,33 +755,30 @@
         }
       }
     },
-    "ListResultOfCustomerModel": {
-      "type": "object",
-      "required": [
-        "Succeeded",
-        "Data",
-        "Errors",
-        "Count"
-      ],
-      "properties": {
-        "Succeeded": {
-          "type": "boolean"
+    "ResultOfIEnumerableOfCustomerModel": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/ResultBase"
         },
-        "Data": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/CustomerModel"
+        {
+          "type": "object",
+          "required": [
+            "Count"
+          ],
+          "properties": {
+            "Data": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/CustomerModel"
+              }
+            },
+            "Count": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
-        },
-        "Errors": {
-          "type": "array",
-          "items": {}
-        },
-        "Count": {
-          "type": "integer",
-          "format": "int32"
         }
-      }
+      ]
     },
     "SearchCustomerModel": {
       "type": "object",

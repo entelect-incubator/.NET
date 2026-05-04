@@ -8,6 +8,6 @@ global using Core.Pizza.Commands;
 global using DataAccess;
 global using FluentValidation;
 global using LazyCache;
-global using LiteBus.Commands.Abstractions;
-global using LiteBus.Queries.Abstractions;
 global using Microsoft.EntityFrameworkCore;
+global using Utilities.CQRS;
+global using Utilities.Results;

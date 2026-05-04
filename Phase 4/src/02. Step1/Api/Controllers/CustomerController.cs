@@ -1,7 +1,9 @@
 ﻿namespace Api.Controllers;
 
+using Common.Models.Customer;
 using Core.Customer.Commands;
 using Core.Customer.Queries;
+using Helpers;
 
 public class CustomerController : ApiController
 {

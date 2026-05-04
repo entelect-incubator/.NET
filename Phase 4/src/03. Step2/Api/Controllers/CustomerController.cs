@@ -1,5 +1,6 @@
 namespace Api.Controllers;
 
+using Common.Models.Customer;
 using Core.Customer.Commands;
 using Core.Customer.Queries;
 
@@ -19,7 +20,7 @@ public class CustomerController : ApiController
 	[ProducesResponseType(typeof(ErrorResult), 404)]
 	public async Task<ActionResult> GetCustomer(int id)
 	{
-		var result = await this.Dispatcher.Query(new GetCustomerQuery { Id = id });
+		var result = await this.Dispatcher.Query(new GetCustomerQuery { Id = id }, CancellationToken.None);
 		return ResponseHelper.ResponseOutcome(result, this);
 	}
 
@@ -36,10 +37,10 @@ public class CustomerController : ApiController
 	[Route("Search")]
 	public async Task<ActionResult> Search(SearchCustomerModel data)
 	{
-		var result = await this.QryMediator.Query(new GetCustomersQuery()
+		var result = await this.Dispatcher.Query(new GetCustomersQuery()
 		{
 			Data = data
-		});
+		}, CancellationToken.None);
 		return ResponseHelper.ResponseOutcome(result, this);
 	}
 
@@ -68,7 +69,7 @@ public class CustomerController : ApiController
 		var result = await this.Dispatcher.Send(new CreateCustomerCommand
 		{
 			Data = model
-		});
+		}, CancellationToken.None);
 
 		return ResponseHelper.ResponseOutcome(result, this);
 	}
@@ -95,10 +96,10 @@ public class CustomerController : ApiController
 	[ProducesResponseType(typeof(Result), 404)]
 	public async Task<ActionResult> Update(UpdateCustomerModel model)
 	{
-		var result = await this.CmdMediator.Execute(new UpdateCustomerCommand
+		var result = await this.Dispatcher.Send(new UpdateCustomerCommand
 		{
 			Data = model
-		});
+		}, CancellationToken.None);
 
 		return ResponseHelper.ResponseOutcome(result, this);
 	}
@@ -115,7 +116,7 @@ public class CustomerController : ApiController
 	[ProducesResponseType(typeof(ErrorResult), 400)]
 	public async Task<ActionResult> Delete(int id)
 	{
-		var result = await this.CmdMediator.Execute(new DeleteCustomerCommand { Id = id });
+		var result = await this.Dispatcher.Send(new DeleteCustomerCommand { Id = id }, CancellationToken.None);
 		return ResponseHelper.ResponseOutcome(result, this);
 	}
 }

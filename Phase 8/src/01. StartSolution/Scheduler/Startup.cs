@@ -1,4 +1,4 @@
-namespace Api;
+namespace Scheduler;
 
 using System.Reflection;
 using System.Text.Json.Serialization;
@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Scheduler.Jobs;
@@ -86,5 +85,5 @@ public class Startup
 		RecurringJob.AddOrUpdate<IOrderCompleteJob>("SendNotificationAsync", x => x.SendNotificationAsync(), "* * * * *");
 
 		app.Run();
-	}	
+	}
 }

@@ -1,5 +1,6 @@
 ﻿namespace Test.Core;
 
+using Common.Models.Customer;
 using global::Core.Customer.Commands;
 using global::Core.Customer.Queries;
 using Test.Setup.TestData.Customer;

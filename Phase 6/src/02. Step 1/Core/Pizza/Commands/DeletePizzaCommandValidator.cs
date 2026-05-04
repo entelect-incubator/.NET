@@ -1,4 +1,4 @@
-namespace Core.Customer.Commands;
+namespace Core.Pizza.Commands;
 
 public sealed class DeletePizzaCommandValidator : AbstractValidator<DeletePizzaCommand>
 {

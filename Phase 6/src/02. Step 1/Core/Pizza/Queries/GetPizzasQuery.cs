@@ -1,6 +1,9 @@
 namespace Core.Pizza.Queries;
 
 using System.Linq;
+using Common.Models.Pizza;
+using Core;
+using DataAccess.Filters;
 using LazyCache;
 
 public sealed class GetPizzasQuery : IQuery<ListResult<PizzaModel>>

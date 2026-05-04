@@ -1,6 +1,8 @@
 namespace Api.Controllers;
 
+using Common.Models.Customer;
 using Common.Models.Order;
+using Core;
 using Core.Customer.Commands;
 using Core.Customer.Queries;
 using Core.Order.Queries;

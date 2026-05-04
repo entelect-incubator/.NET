@@ -1,5 +1,7 @@
 namespace Core.Customer.Commands;
 
+using Common.Models.Customer;
+
 public record CreateCustomer(CreateCustomerModel Model) : ICommand<Result<CustomerModel>>;
 
 public sealed class CreateCustomerHandler(DatabaseContext databaseContext) : ICommandHandler<CreateCustomer, Result<CustomerModel>>

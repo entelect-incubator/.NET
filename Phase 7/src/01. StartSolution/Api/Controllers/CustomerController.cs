@@ -3,9 +3,7 @@ namespace Api.Controllers;
 using Core.Customer.Commands;
 using Core.Customer.Queries;
 
-[ApiController]
-[Route("[controller]")]
-public class CustomerController(Dispatcher dispatcher) : ApiController(dispatcher)
+public class CustomerController : ApiController
 {
 	/// <summary>
 	/// Get Customer by Id.
@@ -21,7 +19,7 @@ public class CustomerController(Dispatcher dispatcher) : ApiController(dispatche
 	[ProducesResponseType(typeof(ErrorResult), 404)]
 	public async Task<ActionResult> GetCustomer(int id)
 	{
-		var result = await this.Dispatcher.Query<GetCustomerQuery, Result<CustomerModel>>(new GetCustomerQuery { Id = id }, CancellationToken.None);
+		var result = await this.Dispatcher.Query(new GetCustomerQuery { Id = id }, CancellationToken.None);
 		return ResponseHelper.ResponseOutcome(result, this);
 	}
 
@@ -38,7 +36,7 @@ public class CustomerController(Dispatcher dispatcher) : ApiController(dispatche
 	[Route("Search")]
 	public async Task<ActionResult> Search(SearchCustomerModel data)
 	{
-		var result = await this.Dispatcher.Query<GetCustomersQuery, Result<IEnumerable<CustomerModel>>>(
+		var result = await this.Dispatcher.Query(
 			new GetCustomersQuery()
 			{
 				Data = data
@@ -68,7 +66,7 @@ public class CustomerController(Dispatcher dispatcher) : ApiController(dispatche
 	[ProducesResponseType(typeof(ErrorResult), 400)]
 	public async Task<ActionResult<CustomerModel>> Create(CreateCustomerModel model)
 	{
-		var result = await this.Dispatcher.Send<CreateCustomerCommand, Result<CustomerModel>>(new CreateCustomerCommand
+		var result = await this.Dispatcher.Send(new CreateCustomerCommand
 		{
 			Data = model
 		});
@@ -98,7 +96,7 @@ public class CustomerController(Dispatcher dispatcher) : ApiController(dispatche
 	[ProducesResponseType(typeof(Result), 404)]
 	public async Task<ActionResult> Update(UpdateCustomerModel model)
 	{
-		var result = await this.Dispatcher.Send<UpdateCustomerCommand, Result<CustomerModel>>(new UpdateCustomerCommand
+		var result = await this.Dispatcher.Send(new UpdateCustomerCommand
 		{
 			Data = model
 		});
@@ -118,7 +116,7 @@ public class CustomerController(Dispatcher dispatcher) : ApiController(dispatche
 	[ProducesResponseType(typeof(ErrorResult), 400)]
 	public async Task<ActionResult> Delete(int id)
 	{
-		var result = await this.Dispatcher.Send<DeleteCustomerCommand, Result>(new DeleteCustomerCommand { Id = id });
+		var result = await this.Dispatcher.Send(new DeleteCustomerCommand { Id = id });
 		return ResponseHelper.ResponseOutcome(result, this);
 	}
 }

@@ -9,7 +9,7 @@ public sealed class CreatePizzaCommandHandler(DatabaseContext databaseContext) :
 {
 	public async Task<Result<PizzaModel>> Handle(CreatePizzaCommand request, CancellationToken cancellationToken)
 	{
-		if(request.Data is null)
+		if (request.Data is null)
 		{
 			return Result<PizzaModel>.Failure("Error");
 		}

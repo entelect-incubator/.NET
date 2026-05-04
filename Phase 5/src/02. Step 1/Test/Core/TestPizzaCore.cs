@@ -4,11 +4,6 @@ using Common.Models;
 using global::Core.Pizza.Commands;
 using global::Core.Pizza.Queries;
 using Test.Setup.TestData.Pizza;
-using static global::Core.Pizza.Commands.CreatePizzaCommand;
-using static global::Core.Pizza.Commands.DeletePizzaCommand;
-using static global::Core.Pizza.Commands.UpdatePizzaCommand;
-using static global::Core.Pizza.Queries.GetPizzaQuery;
-using static global::Core.Pizza.Queries.GetPizzasQuery;
 
 [TestFixture]
 public class TestPizzaCore : QueryTestBase

@@ -87,6 +87,28 @@ These PowerShell scripts automate the process of updating all phases with modern
 
 ---
 
+### 3. Update-AllSolutions-NuGet.ps1
+**Purpose**: Update NuGet packages to latest versions across all `.sln` and `.slnx` files.
+
+**What it does**:
+- Calls the root `update-packages.ps1` with `-Scope solutions`
+- Uses `dotnet-outdated-tool` in upgrade mode
+- Can include prerelease, transitive packages, and failed-source tolerance switches
+
+**Usage**:
+```powershell
+# Update packages across all solutions
+& "Scripts\Update-AllSolutions-NuGet.ps1"
+
+# Include prerelease versions
+& "Scripts\Update-AllSolutions-NuGet.ps1" -IncludePrerelease
+
+# Include transitive package upgrades
+& "Scripts\Update-AllSolutions-NuGet.ps1" -IncludeTransitive
+```
+
+---
+
 ## GlobalExceptionHandler Details
 
 The new exception handler uses the .NET 8+ IExceptionHandler pattern.

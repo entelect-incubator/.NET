@@ -1,5 +1,7 @@
 namespace Core.Pizza.Queries;
 
+using Common.Models.Pizza;
+
 public record GetPizzas() : IQuery<Result<IEnumerable<PizzaModel>>>
 {
 	public Task<Result<IEnumerable<PizzaModel>>> ExecuteAsync(Dispatcher dispatcher, CancellationToken ct = default)

@@ -1,5 +1,6 @@
 namespace Core.Pizza.Queries;
 
+using Common.Models.Pizza;
 using Common.Models.Results;
 
 public interface IGetPizzaQuery

@@ -1,5 +1,6 @@
 namespace Core.Customer.Commands;
 
+using Common.Models.Customer;
 using Utilities.CQRS;
 using Utilities.Results;
 

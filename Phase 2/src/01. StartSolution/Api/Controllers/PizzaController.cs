@@ -16,7 +16,7 @@ public class PizzaController(IPizzaCore pizzaCore) : ControllerBase
 	public async Task<ActionResult> Get(int id, CancellationToken cancellationToken = default)
 	{
 		var search = await pizzaCore.GetAsync(id);
-		return search == null ? NotFound() : Ok(search);
+		return search == null ? this.NotFound() : this.Ok(search);
 	}
 
 	/// <summary>
@@ -27,7 +27,7 @@ public class PizzaController(IPizzaCore pizzaCore) : ControllerBase
 	[HttpPost("Search")]
 	[ProducesResponseType(200)]
 	public async Task<ActionResult> Search(CancellationToken cancellationToken = default)
-		=> Ok(await pizzaCore.GetAllAsync());
+		=> this.Ok(await pizzaCore.GetAllAsync());
 
 	/// <summary>
 	/// Create Pizza.
@@ -51,7 +51,7 @@ public class PizzaController(IPizzaCore pizzaCore) : ControllerBase
 	public async Task<ActionResult<Pizza>> Create([FromBody] PizzaModel model, CancellationToken cancellationToken = default)
 	{
 		var result = await pizzaCore.SaveAsync(model);
-		return result == null ? BadRequest() : Ok(result);
+		return result == null ? this.BadRequest() : this.Ok(result);
 	}
 
 	/// <summary>
@@ -74,7 +74,7 @@ public class PizzaController(IPizzaCore pizzaCore) : ControllerBase
 	public async Task<ActionResult> Update([FromBody] PizzaModel model, CancellationToken cancellationToken = default)
 	{
 		var result = await pizzaCore.UpdateAsync(model);
-		return result == null ? BadRequest() : Ok(result);
+		return result == null ? this.BadRequest() : this.Ok(result);
 	}
 
 	/// <summary>
@@ -89,6 +89,6 @@ public class PizzaController(IPizzaCore pizzaCore) : ControllerBase
 	public async Task<ActionResult> Delete(int id, CancellationToken cancellationToken = default)
 	{
 		var result = await pizzaCore.DeleteAsync(id);
-		return !result ? BadRequest() : Ok(result);
+		return !result ? this.BadRequest() : this.Ok(result);
 	}
 }

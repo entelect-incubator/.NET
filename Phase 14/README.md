@@ -8,28 +8,21 @@ Estimated time: 4–8 hours — Difficulty: ★★★★☆
 
 Prerequisites: Complete Phase 1-13, understand HTTP clients, dependency injection, and background services.
 
-> ⚠️ **CODE QUALITY NOTE**: DeliveryService and DeliveryWebhooksController currently use traditional `private readonly` constructor patterns. **Update to C# 12+ primary constructors** as per COPILOT-INSTRUCTIONS:
+> ✅ **CODE QUALITY NOTE**: DeliveryService and DeliveryWebhooksController use C# 12+ primary constructors with `[LoggerMessage]` source-generated static logging — allocation-free, high-performance log calls. Unit tests use **[Imposter](https://www.nuget.org/packages/Imposter)** (source-generator mock library) instead of Moq.
 > ```csharp
-> // ❌ BEFORE (traditional)
-> public class DeliveryService
-> {
->     private readonly HttpClient httpClient;
->     private readonly ILogger<DeliveryService> logger;
->     
->     public DeliveryService(HttpClient httpClient, ILogger<DeliveryService> logger)
->     {
->         this.httpClient = httpClient;
->         this.logger = logger;
->     }
-> }
-> 
-> // ✅ AFTER (primary constructor)
-> public class DeliveryService(
+> // ✅ Primary constructor + [LoggerMessage] static logging
+> public sealed partial class DeliveryService(
 >     HttpClient httpClient,
 >     ILogger<DeliveryService> logger) : IDeliveryService
 > {
+>     [LoggerMessage(Level = LogLevel.Information, Message = "Creating delivery for OrderId: {OrderId}")]
+>     private static partial void LogCreatingDelivery(ILogger logger, int orderId);
+>
+>     // Allocation-free call site — no string interpolation, no boxing
+>     // LogCreatingDelivery(logger, request.OrderId);
+> }
 > ```
-> See Phase 13 FinalSolution for additional examples of correct patterns.
+> See Phase 13 FinalSolution for additional examples of primary constructor patterns.
 
 ## Purpose
 
@@ -63,7 +56,7 @@ Learn how to:
 
 4. **Testing External Integrations**
    - Using mock delivery service in docker-compose
-   - Testing webhook handlers
+   - Testing webhook handlers with **[Imposter](https://www.nuget.org/packages/Imposter)** (source-generator mock library)
    - Simulating failures and retries
 
 5. **Production Readiness**
@@ -204,6 +197,31 @@ services.AddHttpClient<IDeliveryService, DeliveryService>()
     .AddPolicyHandler(GetCircuitBreakerPolicy());
 ```
 
+---
+
+Teaching Thread
+
+- From: Phase 13 integrated AI capabilities.
+- This phase: implement external API integration (webhooks, resilient calls, retry policies).
+- Next: Phase 15 covers CI/CD and container publishing.
+
+Libraries (why they matter)
+
+- Polly: resilience and retry policies — document why to choose it and example policies.
+- Typed HttpClient: demonstrate typed clients and testable integration layers.
+
+Clean Code & SOLID (teaching notes)
+
+- Keep external API adapters thin and testable; wrap retries at the adapter boundary and avoid leaking retries into business logic.
+
+MediatR policy
+
+- External integration should not rely on MediatR; if used, document the choice and where MediatR pipelines provide value.
+
+Notes
+
+- Add examples for webhook receivers and idempotency handling.
+
 ### 2. Webhook Handler Pattern
 
 ```csharp
@@ -263,7 +281,7 @@ See `/src` folder:
 - Complete working implementation
 - HTTP client with retry policies
 - Webhook receiver endpoint
-- Unit tests with mocked delivery service
+- Unit tests using **Imposter** source-generator mocks (no Moq)
 - Docker-compose with all services
 
 ## External Resources
@@ -309,13 +327,13 @@ See `/src` folder:
 **Build the solution:**
 
 ```bash
-dotnet build "Phase 14/src/02. FinalSolution/Pezza.sln" -c Release
+dotnet build "Phase 14/src/02. FinalSolution/Pezza.slnx" -c Release
 ```
 
 **Run tests:**
 
 ```bash
-dotnet test "Phase 14/src/02. FinalSolution/Pezza.sln" -c Release
+dotnet test "Phase 14/src/02. FinalSolution/Pezza.slnx" -c Release
 ```
 
 **Start services:**
@@ -350,6 +368,7 @@ curl http://localhost:8081/scalar/v1  # Interactive API docs
 This phase demonstrates:
 
 - **Primary Constructors** - Clean dependency injection
+- **`[LoggerMessage]` Static Logging** - Source-generated, allocation-free log methods
 - **Records for DTOs** - Immutable webhook payloads
 - **Async/Await** - Non-blocking API calls
 - **Dependency Injection** - Typed HttpClient pattern
@@ -357,5 +376,6 @@ This phase demonstrates:
 - **MediatR** - CQRS command handling
 - **Minimal APIs** (reference) - See Mock Delivery Service implementation
 - **Extension Methods** - Polly policy extensions
+- **Imposter** - Source-generator mocking for unit tests (`[assembly: GenerateImposter(typeof(...))]`)
 
 [Move to Phase 15](https://github.com/entelect-incubator/.NET/tree/master/Phase%2015)

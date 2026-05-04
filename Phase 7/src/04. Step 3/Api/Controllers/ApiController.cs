@@ -1,6 +1,5 @@
 namespace Api.Controllers;
 
-using Core;
 using Microsoft.AspNetCore.Mvc;
 
 /// <summary>
@@ -10,8 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 [Route("[controller]")]
 public abstract class ApiController(Dispatcher dispatcher) : ControllerBase
 {
-    /// <summary>
-    /// Gets the dispatcher for executing commands and queries.
-    /// </summary>
-    protected Dispatcher Dispatcher { get; } = dispatcher;
+	/// <summary>
+	/// Gets the dispatcher for executing commands and queries.
+	/// </summary>
+	protected Dispatcher Dispatcher { get; } = dispatcher;
 }

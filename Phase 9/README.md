@@ -107,11 +107,11 @@ app.Use(async (context, next) =>
 # check .NET version (should be 10.x)
 dotnet --version
 
-# build the Phase 8 solution
-dotnet build "./Phase 8/src/01. StartSolution/Pezza.sln"
+# build the Phase 9 final solution
+dotnet build "./Phase 9/src/02. FinalSolution/Pezza.slnx"
 
 # run tests (if present)
-dotnet test "./Phase 8/src/01. StartSolution/Pezza.sln"
+dotnet test "./Phase 9/src/02. FinalSolution/Pezza.slnx"
 ```
 
 ## Outcomes / Learning goals
@@ -124,5 +124,34 @@ dotnet test "./Phase 8/src/01. StartSolution/Pezza.sln"
 
 If you'd like, I can make a small, gated code change to the `Api` project's `Program.cs` to enable HTTPS/HSTS and add the secure-headers middleware behind an environment check — I will only do that if you ask me to create a PR.
 
-
 [Move to Phase 10](https://github.com/entelect-incubator/.NET/tree/master/Phase%2010)
+
+## Next Step
+
+Move to [Phase 10](https://github.com/entelect-incubator/.NET/tree/master/Phase%2010)
+
+---
+
+Teaching Thread
+
+- From: Phase 8 focused on API contracts and client generation.
+- This phase: build user interfaces (MVC, Razor, Blazor) and integrate with back-end APIs.
+- Next: Phase 10 moves to DB migrations and infra concerns.
+
+Libraries (why they matter)
+
+- Choose UI frameworks based on learning goals: Razor for server-side rendering, Blazor for C#-centric frontends.
+- Explain any library that simplifies integration (identity, auth clients).
+
+Clean Code & SOLID (teaching notes)
+
+- Keep presentation logic thin; controllers should orchestrate, views/components should be pure.
+- Reuse DTOs/contracts from API client generation to avoid mapping drift.
+
+MediatR policy
+
+- If you see MediatR in UI/back-end coupling, document why. Prefer custom dispatcher for server-side consistency unless MediatR provides clear benefit here.
+
+Notes
+
+- Ensure README links to demo pages and explains how the UI uses the generated client.

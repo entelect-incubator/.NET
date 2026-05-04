@@ -109,6 +109,32 @@ services.AddProblemDetails();
 - [ ] [Step 1 - Standards & Analyzers](Phase%205/src/02.%20Step%201)
 - [ ] [Step 2 - Centralized Error Handling](Phase%205/src/03.%20Step%202)
 
+---
+
+Teaching Thread
+
+- From: Phase 4 added validation and data handling.
+- This phase: enforce code standards, analyzers, and centralized error handling.
+- Next: Phase 6 will add background jobs and events.
+
+Libraries (why they matter)
+
+- StyleCop / Roslyn analyzers: enforce consistent code quality and automations for learning good habits.
+- Serilog (or similar): structured logging for observability.
+
+Clean Code & SOLID (teaching notes)
+
+- Use analyzers to enforce naming and layout; keep solutions consistent to reduce cognitive load.
+- Map `Result<T>` to ProblemDetails in a single place (exception handler) rather than ad-hoc responses.
+
+MediatR policy
+
+- Phase 5 expects the custom dispatcher to be used in production-like flows; do not introduce MediatR without documenting the reasons.
+
+Notes
+
+- Link to Clean Code guide and testing patterns: ../../Design-Patterns/08-Clean-Code-Principles/
+
 ## End Solution (what to verify)
 
 - **Why**: Demonstrates the completed, production-ready slice with analyzers fixed and global exception handling wired through the custom dispatcher (no LiteBus/MediatR).
@@ -292,3 +318,6 @@ Test your understanding with these questions:
 
 Move to Phase 6
 [Phase 6](https://github.com/entelect-incubator/.NET/tree/master/Phase%206)
+
+## Next Step
+Move to [Phase 6](https://github.com/entelect-incubator/.NET/tree/master/Phase%206)

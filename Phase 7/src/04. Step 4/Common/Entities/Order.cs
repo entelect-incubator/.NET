@@ -1,7 +1,5 @@
 namespace Common.Entities;
 
-using System.Collections.ObjectModel;
-
 public class Order
 {
 	public Order() => this.Pizzas = new HashSet<Pizza>();
@@ -16,7 +14,7 @@ public class Order
 
 	public required bool Completed { get; set; }
 
-////	public List<int> PizzaIds { get; set; } // List of Pizza IDs
+	////	public List<int> PizzaIds { get; set; } // List of Pizza IDs
 
 	public ICollection<Pizza> Pizzas { get; set; }
 }

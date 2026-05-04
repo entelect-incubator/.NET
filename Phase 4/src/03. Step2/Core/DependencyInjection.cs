@@ -2,7 +2,6 @@ namespace Core;
 
 using System.Reflection;
 using Core.Customer.Commands;
-using Dispatch;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 

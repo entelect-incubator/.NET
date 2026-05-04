@@ -2,9 +2,9 @@ name: .NET - Phase 4 - Step 1
 
 on:
   push:
-    branches: [master]
+    branches: [ master ]
   pull_request:
-    branches: [master]
+    branches: [ master ]
 
 jobs:
   build:
@@ -17,6 +17,7 @@ jobs:
         with:
           dotnet-version: 8.0.100-preview.6.23330.14
       - name: Install dependencies
-        run: dotnet restore "./Phase 4/src/02. Step1/Pezza.sln"
+        run: dotnet restore "./Phase 4/src/02. Step1/Pezza.slnx"
       - name: Build
-        run: dotnet build "./Phase 4/src/02. Step1/Pezza.sln" --configuration Release --no-restore
+        run: dotnet build "./Phase 4/src/02. Step1/Pezza.slnx" --configuration Release
+          --no-restore

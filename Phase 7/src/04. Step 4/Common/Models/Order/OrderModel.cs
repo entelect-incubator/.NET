@@ -1,8 +1,11 @@
 ﻿namespace Common.Models.Order;
 
+using Common.Models.Customer;
+using Common.Models.Pizza;
+
 public sealed class OrderModel
 {
-	public OrderModel() => this.Pizzas = new List<PizzaModel>();
+	public OrderModel() => this.Pizzas = [];
 
 	public int Id { get; set; }
 

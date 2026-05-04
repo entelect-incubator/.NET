@@ -6,3 +6,4 @@ global using DataAccess;
 global using Microsoft.EntityFrameworkCore;
 global using NUnit.Framework;
 global using Test.Setup;
+global using Utilities.Results;

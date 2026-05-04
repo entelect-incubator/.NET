@@ -1,6 +1,6 @@
 ﻿namespace Test.Core;
 
-using Common.Models;
+using Common.Models.Pizza;
 using global::Core.Pizza.Commands;
 using global::Core.Pizza.Queries;
 using Test.Setup.TestData.Pizza;

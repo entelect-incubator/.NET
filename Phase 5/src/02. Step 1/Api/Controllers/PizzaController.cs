@@ -30,7 +30,7 @@ public class PizzaController() : ApiController
 	public async Task<ActionResult> Search(SearchPizzaModel data)
 	{
 		var result = await this.Dispatcher.Query(
-		    new GetPizzasQuery()
+			new GetPizzasQuery()
 			{
 				Data = data
 			}, CancellationToken.None);

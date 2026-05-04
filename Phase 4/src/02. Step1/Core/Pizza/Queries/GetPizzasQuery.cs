@@ -1,5 +1,7 @@
 namespace Core.Pizza.Queries;
 
+using Common.Models.Pizza;
+
 public sealed class GetPizzasQuery : IQuery<Result<IEnumerable<PizzaModel>>>
 {
 }

@@ -1,5 +1,9 @@
 namespace Core.Pizza.Queries;
 
+using Common.Models.Pizza;
+using Core;
+using DataAccess.Filters;
+
 public sealed class GetPizzasQuery : IQuery<Result<IEnumerable<PizzaModel>>>
 {
 	public SearchPizzaModel Data { get; set; } = new();

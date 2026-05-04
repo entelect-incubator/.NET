@@ -1,5 +1,7 @@
 namespace Core.Customer.Queries;
 
+using Common.Models.Customer;
+
 public record GetCustomers() : IQuery<Result<IEnumerable<CustomerModel>>>
 {
 	public Task<Result<IEnumerable<CustomerModel>>> ExecuteAsync(Dispatcher dispatcher, CancellationToken ct = default)

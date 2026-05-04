@@ -1,11 +1,12 @@
 ﻿namespace Api.Controllers;
 
 using Common.Models.Order;
+using Core;
 using Core.Order.Commands;
 
 [ApiController]
 [Route("[controller]")]
-public class OrderController() : ApiController
+public class OrderController(Dispatcher dispatcher) : ApiController(dispatcher)
 {
 	/// <summary>
 	/// Order Pizza.
@@ -26,10 +27,10 @@ public class OrderController() : ApiController
 	[ProducesResponseType(400)]
 	public async Task<ActionResult<OrderModel>> Create([FromBody] OrderModel model)
 	{
-		var result = await this.Mediator.Send(new OrderCommand
+		var result = await this.Dispatcher.Send<OrderCommand, Result>(new OrderCommand
 		{
 			Data = model
-		});
+		}, CancellationToken.None);
 
 		return ResponseHelper.ResponseOutcome(result, this);
 	}

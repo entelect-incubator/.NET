@@ -22,13 +22,13 @@ public static class PizzaTestData
 		DateCreated = DateTime.Now
 	};
 
-	private static readonly List<string> pizzas = new()
-	{
+	private static readonly List<string> pizzas =
+	[
 		"Veggie Pizza",
 		"Pepperoni Pizza",
 		"Meat Pizza",
 		"Margherita Pizza",
 		"BBQ Chicken Pizza",
 		"Hawaiian Pizza"
-	};
+	];
 }

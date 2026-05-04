@@ -1,13 +1,9 @@
 ﻿namespace Test.Core;
 
+using Common.Models.Customer;
 using global::Core.Customer.Commands;
 using global::Core.Customer.Queries;
 using Test.Setup.TestData.Customer;
-using static global::Core.Customer.Commands.CreateCustomerCommand;
-using static global::Core.Customer.Commands.DeleteCustomerCommand;
-using static global::Core.Customer.Commands.UpdateCustomerCommand;
-using static global::Core.Customer.Queries.GetCustomerQuery;
-using static global::Core.Customer.Queries.GetCustomersQuery;
 
 [TestFixture]
 public class TestCustomerCore : QueryTestBase
@@ -49,7 +45,7 @@ public class TestCustomerCore : QueryTestBase
 				Id = this.model.Id
 			}, CancellationToken.None);
 
-		Assert.That(resultGet?.Data , Is.Not.Null);
+		Assert.That(resultGet?.Data, Is.Not.Null);
 	}
 
 	[Test]
@@ -58,11 +54,11 @@ public class TestCustomerCore : QueryTestBase
 		var sutGetAll = new GetCustomersQueryHandler(this.Context);
 		var resultGetAll = await sutGetAll.Handle(new GetCustomersQuery(), CancellationToken.None);
 
-		Assert.That(resultGetAll?.Data.Count , Is.EqualTo(1));
+		Assert.That(resultGetAll?.Data.Count, Is.EqualTo(1));
 	}
 
 	[Test]
-	public void SaveAsync() => Assert.That(this.model , Is.Not.Null);
+	public void SaveAsync() => Assert.That(this.model, Is.Not.Null);
 
 	[Test]
 	public async Task UpdateAsync()

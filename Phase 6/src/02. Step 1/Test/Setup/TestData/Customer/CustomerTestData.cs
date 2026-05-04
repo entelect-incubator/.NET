@@ -1,5 +1,7 @@
 ﻿namespace Test.Setup.TestData.Customer;
 
+using Common.Models.Customer;
+
 public static class CustomerTestData
 {
 	public static Faker faker = new("en_ZA");

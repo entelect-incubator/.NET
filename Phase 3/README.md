@@ -530,25 +530,34 @@ After completing Phase 3, you should understand:
 - Test handlers in isolation without controllers or HTTP
 - In-memory DbContext keeps tests fast and repeatable
 
-**Next**: Phase 4 adds validation behaviors, transaction handling, and demonstrates how to extend the dispatcher with decorators.
-
----
-
-## Next Phase
-
-Phase 4 will enhance the dispatcher by:
-
-- Adding more business logic (customer commands, order processing)
-- Introducing validation behaviors
-- Adding transaction handling
-- Showing how to extend the dispatcher with decorators
-
 ## Resources & Further Learning
 
 - [CQRS Pattern — Microsoft](https://docs.microsoft.com/azure/architecture/patterns/cqrs)
 - [Why MediatR Exists — Jimmy Bogard](https://jimmybogard.com/mediatr-hangs-dogfood/)
 - [Mediator Pattern — Design Patterns](https://refactoring.guru/design-patterns/mediator)
 - [Generic Constraints in C#](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/generics/constraints-on-type-parameters)
+
+## Teaching Thread
+
+- **From:** Phase 2 introduced explicit handler injection and handler interfaces.
+- **This phase:** build a minimal, type-safe Dispatcher to centralize routing and enable cross-cutting behaviors (logging, validation, transactions).
+- **Next:** Phase 4 adds validation behaviors, logging decorators and transaction handling; Phase 5 focuses on performance and production readiness.
+
+## Libraries (why they matter)
+
+- **Scrutor** — automatic assembly scanning and DI registration of handlers. Value: reduces boilerplate and teaches DI/discovery patterns.
+- **Entity Framework Core** — persistence; `EF.CompileAsyncQuery` demonstrates a measurable optimization for high-traffic queries.
+- **Result<T> pattern** — standardizes success/failure outcomes, simplifying testing and error handling.
+
+## Clean Code & SOLID (teaching notes)
+
+- **Single Responsibility**: keep handlers focused on business logic; move mapping and persistence to dedicated classes.
+- **Dependency Inversion**: prefer interfaces for handler dependencies to enable testing and decoupling.
+- **Open/Closed**: add new handlers without changing existing controllers — leverage dispatcher + DI registration.
+
+## MediatR policy
+
+- This incubator intentionally teaches a custom Dispatcher (`MediatorLite`) so learners see how dispatching works under the hood. Avoid introducing `MediatR` in Phase 3. If MediatR is used in later phases, add an explicit explanation in that phase's README describing why (for example: pipeline behaviors, notifications, or production-grade extension points).
 
 ## Troubleshooting
 
@@ -587,3 +596,19 @@ public sealed class CreateOrderCommandHandler(
 ```
 
 This is considered **orchestration** — use carefully to avoid making commands too interdependent.
+**Next**: Phase 4 adds validation behaviors, transaction handling, and demonstrates how to extend the dispatcher with decorators.
+
+---
+
+## Next Phase
+
+Phase 4 will enhance the dispatcher by:
+
+- Adding more business logic (customer commands, order processing)
+- Introducing validation behaviors
+- Adding transaction handling
+- Showing how to extend the dispatcher with decorators
+
+## Next Step
+
+Move to [Step 3 - API](https://github.com/entelect-incubator/.NET/tree/master/Phase%203/Step%203) to wire controllers to these handlers using dependency injection and the shared `ResponseHelper`.

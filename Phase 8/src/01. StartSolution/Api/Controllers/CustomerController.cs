@@ -1,9 +1,15 @@
 namespace Api.Controllers;
 
+using Common.Models.Customer;
+using Common.Models.Order;
+using Core;
 using Core.Customer.Commands;
 using Core.Customer.Queries;
+using Core.Order.Queries;
 
-public class CustomerController : ApiController
+[ApiController]
+[Route("[controller]")]
+public class CustomerController(Dispatcher dispatcher) : ApiController(dispatcher)
 {
 	/// <summary>
 	/// Get Customer by Id.
@@ -19,7 +25,25 @@ public class CustomerController : ApiController
 	[ProducesResponseType(typeof(ErrorResult), 404)]
 	public async Task<ActionResult> GetCustomer(int id)
 	{
-		var result = await this.QryMediator.SendAsync(new GetCustomerQuery { Id = id }, CancellationToken.None);
+		var result = await this.Dispatcher.Query<GetCustomerQuery, Result<CustomerModel>>(new GetCustomerQuery { Id = id }, CancellationToken.None);
+		return ResponseHelper.ResponseOutcome(result, this);
+	}
+
+	/// <summary>
+	/// Get Customer Orders by Id.
+	/// </summary>
+	/// <param name="id">int.</param>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	/// <response code="200">Get customer orders</response>
+	/// <response code="400">Error getting customer orders</response>
+	/// <response code="404">Customer orders not found</response>
+	[HttpGet("{id}/Orders")]
+	[ProducesResponseType(typeof(Result<IEnumerable<OrderModel>>), 200)]
+	[ProducesResponseType(typeof(ErrorResult), 400)]
+	[ProducesResponseType(typeof(ErrorResult), 404)]
+	public async Task<ActionResult> GetOrders(int id)
+	{
+		var result = await this.Dispatcher.Query<GetOrdersQuery, Result<IEnumerable<OrderModel>>>(new GetOrdersQuery { CustomerId = id }, CancellationToken.None);
 		return ResponseHelper.ResponseOutcome(result, this);
 	}
 
@@ -36,7 +60,7 @@ public class CustomerController : ApiController
 	[Route("Search")]
 	public async Task<ActionResult> Search(SearchCustomerModel data)
 	{
-		var result = await this.QryMediator.SendAsync(new GetCustomersQuery()
+		var result = await this.Dispatcher.Query<GetCustomersQuery, Result<IEnumerable<CustomerModel>>>(new GetCustomersQuery()
 		{
 			Data = data
 		}, CancellationToken.None);
@@ -48,7 +72,7 @@ public class CustomerController : ApiController
 	/// </summary>
 	/// <remarks>
 	/// Sample request:
-	///     POST api/Customer
+	///     POST /Customer
 	///     {
 	///       "name": "Person A",
 	///       "address": "1 Tree Street, Pretoria, Gauteng",
@@ -65,10 +89,10 @@ public class CustomerController : ApiController
 	[ProducesResponseType(typeof(ErrorResult), 400)]
 	public async Task<ActionResult<CustomerModel>> Create(CreateCustomerModel model)
 	{
-		var result = await this.CmdMediator.SendAsync(new CreateCustomerCommand
+		var result = await this.Dispatcher.Send<CreateCustomerCommand, Result<CustomerModel>>(new CreateCustomerCommand
 		{
 			Data = model
-		});
+		}, CancellationToken.None);
 
 		return ResponseHelper.ResponseOutcome(result, this);
 	}
@@ -78,7 +102,7 @@ public class CustomerController : ApiController
 	/// </summary>
 	/// <remarks>
 	/// Sample request:
-	///     PUT api/Customer
+	///     PUT /Customer
 	///     {
 	///       "id": 1,
 	///       "email": "person.a@gmail.com"
@@ -95,10 +119,10 @@ public class CustomerController : ApiController
 	[ProducesResponseType(typeof(Result), 404)]
 	public async Task<ActionResult> Update(UpdateCustomerModel model)
 	{
-		var result = await this.CmdMediator.SendAsync(new UpdateCustomerCommand
+		var result = await this.Dispatcher.Send<UpdateCustomerCommand, Result<CustomerModel>>(new UpdateCustomerCommand
 		{
 			Data = model
-		});
+		}, CancellationToken.None);
 
 		return ResponseHelper.ResponseOutcome(result, this);
 	}
@@ -115,7 +139,7 @@ public class CustomerController : ApiController
 	[ProducesResponseType(typeof(ErrorResult), 400)]
 	public async Task<ActionResult> Delete(int id)
 	{
-		var result = await this.CmdMediator.SendAsync(new DeleteCustomerCommand { Id = id });
+		var result = await this.Dispatcher.Send<DeleteCustomerCommand, Result>(new DeleteCustomerCommand { Id = id }, CancellationToken.None);
 		return ResponseHelper.ResponseOutcome(result, this);
 	}
 }

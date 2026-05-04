@@ -1,27 +1,21 @@
 <Solution>
-  <Folder Name="/00 UI/">
-    <Project Path="Pezza.BackEnd/Pezza.Portal.csproj" />
-  </Folder>
   <Folder Name="/01 Apis/">
-    <Project Path="Pezza.Api/Pezza.Api.csproj" />
+    <Project Path="Api/Api.csproj" />
+    <Project Path="AspireHost/AspireHost.csproj" />
   </Folder>
   <Folder Name="/02 Core/">
-    <Project Path="Pezza.Core/Pezza.Core.csproj" />
+    <Project Path="Core/Core.csproj" />
   </Folder>
   <Folder Name="/03 Database/">
-    <Project Path="Pezza.DataAccess/Pezza.DataAccess.csproj" />
-    <Project Path="DbUp.Migrations/DbUp.Migrations.csproj" />
+    <Project Path="DataAccess/DataAccess.csproj" />
   </Folder>
   <Folder Name="/04 Common/">
-    <Project Path="Pezza.Common/Pezza.Common.csproj" />
+    <Project Path="Common/Common.csproj" />
   </Folder>
   <Folder Name="/05 Tests/">
-    <Project Path="Pezza.Test/Pezza.Test.csproj" />
+    <Project Path="Test/Test.csproj" />
   </Folder>
-  <Folder Name="/06 Scheduler/">
-    <Project Path="Pezza.Scheduler/Pezza.Scheduler.csproj" />
-  </Folder>
-  <Folder Name="/07 AspireHost/">
-    <Project Path="AspireHost/AspireHost.csproj" />
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
   </Folder>
 </Solution>

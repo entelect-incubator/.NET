@@ -3,6 +3,7 @@
 using System.Text;
 using Common.Entities;
 using Common.Models.Order;
+using Core;
 using DataAccess;
 
 public class OrderEvent : INotification

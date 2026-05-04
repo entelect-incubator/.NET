@@ -5,7 +5,7 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS builder
 WORKDIR /build
 
 # Copy solution and project files
-COPY src/02.FinalSolution/ .
+COPY src/01.StartSolution/ .
 
 # Restore dependencies
 RUN dotnet restore

@@ -18,7 +18,7 @@ public sealed class GetPizzasQuery : IQuery<Result<IEnumerable<PizzaModel>>>
 			Task<IEnumerable<PizzaModel>> DataDelegate() => this.GetData();
 			var cachedData = await cache.GetOrAddAsync(Common.Data.CacheKey, DataDelegate, this.cacheExpiry);
 
-			if(cachedData != null)
+			if (cachedData != null)
 			{
 				var data = cachedData?
 					.FilterByName(entity.Name)

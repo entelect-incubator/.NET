@@ -1,5 +1,7 @@
 namespace Core.Customer.Queries;
 
+using Common.Models.Customer;
+
 public sealed class GetCustomerQuery : IQuery<Result<CustomerModel>>
 {
 	public int Id { get; set; }

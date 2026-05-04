@@ -30,8 +30,15 @@ public class ExceptionHandlerMiddleware
 			var errors = ((FluentValidation.ValidationException)exception).Errors;
 			if (errors.Any())
 			{
-				var failures = errors.Select(x => $"{x.PropertyName.Replace("Data.", string.Empty)}: {x.ErrorMessage.Replace("Data ", string.Empty)}").ToList();
-				var result = Result.Failure(failures);
+				var failures = errors.Select(x =>
+				{
+					return new
+					{
+						Property = x.PropertyName.Replace("Data.", string.Empty),
+						Error = x.ErrorMessage.Replace("Data ", string.Empty)
+					};
+				});
+				var result = Result.Failure(failures.ToList<object>());
 				var code = HttpStatusCode.BadRequest;
 				var resultJson = JsonSerializer.Serialize(result);
 

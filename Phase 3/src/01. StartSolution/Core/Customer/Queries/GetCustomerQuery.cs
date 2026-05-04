@@ -1,7 +1,7 @@
 namespace Core.Customer.Queries;
 
+using Common.Models.Customer;
 using Common.Models.Results;
-using Core.Pizza;
 
 public interface IGetCustomerQuery
 {

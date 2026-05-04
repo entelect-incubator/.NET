@@ -1,10 +1,8 @@
-global using System.Threading.Tasks;
+﻿global using System.Threading.Tasks;
 global using Api.Controllers;
 global using Api.Helpers;
 global using Common.Entities;
-global using Common.Models;
 global using Core;
 global using DataAccess;
-global using LiteBus.Commands.Abstractions;
-global using LiteBus.Queries.Abstractions;
 global using Microsoft.AspNetCore.Mvc;
+global using Utilities.Results;

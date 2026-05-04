@@ -1,5 +1,7 @@
 namespace Core.Customer.Commands;
 
+using Core;
+
 public sealed class DeleteCustomerCommand : ICommand<Result>
 {
 	public int? Id { get; set; }

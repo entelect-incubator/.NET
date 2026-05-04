@@ -1,7 +1,9 @@
 ﻿namespace Api.Controllers;
 
+using Common.Models.Pizza;
 using Core.Pizza.Commands;
 using Core.Pizza.Queries;
+using Helpers;
 
 [ApiController]
 [Route("[controller]")]

@@ -21,6 +21,7 @@
   - [ ] Phase 14: External API Integration
   - [ ] Phase 15: Container Registry Publishing
 - [ ] Complete architecture overview
+- [ ] Docs website overview
 - [ ] Recommended libraries
 
 ## What is it?
@@ -82,6 +83,28 @@ New to AI-assisted development? Learn how to work effectively with GitHub Copilo
 - Code review checklist
 
 Start with the Quick Reference, then dive into the Full Guide for complete context and patterns.
+
+## AI + Copilot Integration (Awesome-style)
+
+We integrate AI-assisted development following an "Awesome GitHub Copilot" approach so learners can use prompts, agents, and skills safely and effectively.
+
+- **Awesome Agents**: specialized assistants and MCP integrations that can run local tasks and help inspect code. See `./AGENTS.md` for examples and how to run a local MCP server.
+- **Awesome Prompts**: curated, task-specific prompts for refactors, tests, and documentation. See `./AI_PROMPTING_EXAMPLES.md` for ready-to-use prompts.
+- **Awesome Instructions**: coding standards, patterns, and guardrails for AI output. Read `./DEVELOP_WITH_AI.md` for rules and examples.
+- **Awesome Skills**: self-contained folders with instructions and resources (e.g., codegen, test scaffolding) that augment Copilot capabilities.
+- **Awesome Collections**: curated sets of prompts and instructions for common workflows (CI, DB migrations, CQRS refactors).
+
+Quick usage
+
+1. Read `Develop with AI — Full Guide` and `AI_QUICK_REFERENCE.md`.
+2. Run local tools (linters/tests) before accepting AI changes.
+3. Use the example prompts from `AI_PROMPTING_EXAMPLES.md` and adapt them for your phase.
+
+Links & examples:
+
+- [Awesome GitHub Copilot reference](https://github.com/github/awesome-copilot)
+- See `./AGENTS.md`, `./AI_PROMPTING_EXAMPLES.md`, and `./DEVELOP_WITH_AI.md` for practical workflows.
+
 
 ## Design Patterns
 
@@ -169,7 +192,7 @@ Enhance data handling with validation, filtering, searching, and pagination. Dee
 
 [Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%203)
 
-[![.NET - Phase 3 - Step 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase3-step2.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase3-step2.yml)
+[![.NET - Phase 3 - Final Solution](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase3-finalsolution.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase3-finalsolution.yml)
 
 ### Phase 4 - Coding Standards and Error Handling
 
@@ -182,7 +205,7 @@ Implement team coding standards and comprehensive error handling strategies.
 
 [Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%204)
 
-[![.NET - Phase 4 - Step 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase4-step2.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase4-step2.yml)
+[![.NET - Phase 4 - Final Solution](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase4-finalsolution.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase4-finalsolution.yml)
 
 ### Phase 5 - Performance Improvement
 
@@ -195,7 +218,7 @@ Optimize application performance with caching and compression strategies.
 
 [Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%205)
 
-[![.NET - Phase 5 - Step 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase5-step2.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase5-step2.yml)
+[![.NET - Phase 5 - Final Solution](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase5-finalsolution.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase5-finalsolution.yml)
 
 ### Phase 6 - Events and Background Jobs
 
@@ -208,7 +231,7 @@ Implement domain events, email notifications, and background job processing.
 
 [Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%206)
 
-[![.NET - Phase 6 - Step 3](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-step3.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-step3.yml)
+[![.NET - Phase 6 - Final Solution](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-finalsolution.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-finalsolution.yml)
 
 ### Phase 7 - Microservices
 
@@ -245,7 +268,7 @@ Build front-end clients with MVC, Razor, or Blazor for admin dashboard and custo
 
 [Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%209)
 
-[![.NET - Phase 9 - Step 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase9-step2.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase9-step2.yml)
+[![.NET - Phase 9 - Final Solution](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase9-finalsolution.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase9-finalsolution.yml)
 
 ### Phase 10 - Database Migrations
 
@@ -329,6 +352,10 @@ Containerize and publish the Pezza API to GitHub Container Registry using GitHub
 
 For a comprehensive overview of all phases and architecture evolution:
 - 📖 **[Architecture Complete](./ARCHITECTURE-COMPLETE.md)** - Full phase overview, technology stack evolution, and running instructions
+
+## Docs Website
+
+- 🌐 **[Open the docs website](./docs/index.html)** - Explore phases, learning objectives, outcomes, and build labels in one place
 
 ## Recommended Libraries
 

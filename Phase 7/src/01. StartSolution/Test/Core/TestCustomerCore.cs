@@ -2,8 +2,6 @@
 
 using global::Core.Customer.Commands;
 using global::Core.Customer.Queries;
-using Common.Models;
-using System.Linq;
 using Test.Setup.TestData.Customer;
 
 [TestFixture]
@@ -55,7 +53,7 @@ public class TestCustomerCore : QueryTestBase
 		var sutGetAll = new GetCustomersQueryHandler(this.Context);
 		var resultGetAll = await sutGetAll.Handle(new GetCustomersQuery(), CancellationToken.None);
 
-		Assert.That(resultGetAll?.Data?.Count(), Is.EqualTo(1));
+		Assert.That(resultGetAll?.Data.Count, Is.EqualTo(1));
 	}
 
 	[Test]

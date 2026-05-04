@@ -1,5 +1,7 @@
 namespace Core.Notify.Commands;
 
+using Core;
+
 public sealed class UpdateNotifyCommand : ICommand<Result>
 {
 	public int Id { get; set; }

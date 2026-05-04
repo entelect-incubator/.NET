@@ -1,6 +1,15 @@
-# 📚 Pezza Pizza System - Complete Documentation Index
+# Pezza Pizza System Documentation Index
 
-**Project Status**: ✅ **COMPLETE** | **Build Status**: ✅ **0 ERRORS** | **Date**: October 31, 2025
+Project status and build status vary by phase and branch. Use the live docs page for current learning validation.
+
+## Learning Validation Portal
+
+- Open [index.html](index.html) for:
+  - Role-based value and effort (junior, intermediate, expert)
+  - Time complexity focus and core concepts per phase
+  - Whole-incubator or jump-into-section navigation
+  - Evidence tracking (repo, build, run proof)
+  - Gated quiz validation with 100 percent pass requirement
 
 ---
 
@@ -24,7 +33,7 @@
 | Phase 3-4 | ✅      | Advanced Patterns           | See Phase3-4 folders |
 | Phase 5-8 | ✅      | **LiteBus 1.0.0 Migration** | See Phase5-8 folders |
 
-#### Modern Cloud-Native Phases (9-12) 📦 NEW
+#### Modern Cloud-Native and Integration Phases (9-15)
 
 | Phase        | Status | Technology             | Documentation                          | Quick Start                                                   |
 | ------------ | ------ | ---------------------- | -------------------------------------- | ------------------------------------------------------------- |

@@ -5,12 +5,7 @@ public class PizzaCore(DatabaseContext databaseContext) : IPizzaCore
 	public async Task<PizzaModel?> GetAsync(int id)
 	{
 		var entity = await databaseContext.Pizzas.FirstOrDefaultAsync(x => x.Id == id);
-		if(entity is null)
-		{
-			return null;
-		}
-
-		return entity.Map();
+		return entity is null ? null : entity.Map();
 	}
 
 	public async Task<IEnumerable<PizzaModel>?> GetAllAsync()
@@ -19,9 +14,9 @@ public class PizzaCore(DatabaseContext databaseContext) : IPizzaCore
 		return entities.Map();
 	}
 
-		public async Task<PizzaModel?> SaveAsync(PizzaModel pizza)
+	public async Task<PizzaModel?> SaveAsync(PizzaModel pizza)
 	{
-		if(pizza == null)
+		if (pizza == null)
 		{
 			return null;
 		}

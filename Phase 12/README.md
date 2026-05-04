@@ -85,6 +85,32 @@ cd "Phase 12/src/01. StartSolution"
 dotnet run --project DbUp.Migrations/DbUp.Migrations.csproj
 ```
 
+---
+
+Teaching Thread
+
+- From: Phase 11 prepared cloud-native concerns.
+- This phase: implement the custom Dispatcher/LiteBus migration and pipeline behaviors for cross-cutting concerns.
+- Next: Phase 13 adds MCP Server and AI integration.
+
+Libraries (why they matter)
+
+- LiteBus / custom dispatcher: purpose-built lightweight CQRS dispatcher used to explain mediator semantics without heavy framework complexity.
+- Scrutor: auto-registration of handlers for migration parity.
+
+Clean Code & SOLID (teaching notes)
+
+- Keep pipeline behaviors small and testable; prefer explicit decorators over magical global behaviors for teaching clarity.
+- Ensure exception handling is centralized and consistent.
+
+Dispatcher/LiteBus policy
+
+- Phase 12 is the canonical migration phase toward the custom dispatcher. If any legacy mediator implementation remains, mark it as legacy and add a migration task.
+
+Notes
+
+- Provide a migration checklist and scripts to replace legacy mediator using directives and package references safely.
+
 ### Option 2: Pass Connection String as Argument
 
 ```powershell
@@ -338,7 +364,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: '10.0.x'
       
       - name: Run Migrations
         run: |
@@ -478,3 +504,6 @@ var api = builder
 - [DbUp Advanced Scenarios](https://dbup.readthedocs.io/en/latest/more-info/advanced-scripts/)
 
 [Move to Phase 13](https://github.com/entelect-incubator/.NET/tree/master/Phase%2013)
+
+## Next Step
+Move to [Phase 13](https://github.com/entelect-incubator/.NET/tree/master/Phase%2013)

@@ -1,6 +1,8 @@
 namespace Core.Order.Queries;
 
 using Common.Models.Order;
+using Core;
+using DataAccess.Filters;
 
 public sealed class GetOrdersQuery : IQuery<Result<IEnumerable<OrderModel>>>
 {
