@@ -7,3 +7,4 @@ global using DataAccess;
 global using FluentValidation;
 global using LazyCache;
 global using Microsoft.EntityFrameworkCore;
+global using Utilities.Results;

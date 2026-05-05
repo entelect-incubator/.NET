@@ -29,7 +29,7 @@ public sealed class GetCustomersQueryHandler(DatabaseContext databaseContext) : 
 			.OrderBy(entity.OrderBy);
 
 		var count = await entities.CountAsync(cancellationToken);
-		var paged = await entities.ApplyPaging(entity.PagingArgs).ToListAsync(cancellationToken);
+		var paged = await Common.Extensions.Extensions.ApplyPaging(entities, entity.PagingArgs).ToListAsync(cancellationToken);
 
 		return Result<IEnumerable<CustomerModel>>.Success(paged.Map(), count);
 	}

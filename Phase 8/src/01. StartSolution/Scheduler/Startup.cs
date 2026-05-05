@@ -14,7 +14,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using Scheduler.Jobs;
 
 public class Startup
 {
@@ -64,7 +63,6 @@ public class Startup
 		});
 		services.AddResponseCompression();
 
-		services.AddScoped<IEmailJob, EmailJob>();
 	}
 
 	public void Configure(WebApplication app, IWebHostEnvironment env)
@@ -78,12 +76,6 @@ public class Startup
 		app.UseAuthorization();
 		app.UseResponseCompression();
 		app.UseHangfireDashboard();
-
-		var jobOptions = new RecurringJobOptions()
-		{
-			TimeZone = TimeZoneInfo.Local
-		};
-		RecurringJob.AddOrUpdate<IEmailJob>("SendAsync", x => x.SendAsync(default), "* * * * *");
 
 		app.Run();
 	}

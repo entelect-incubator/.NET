@@ -25,7 +25,9 @@ public class CustomerController(Dispatcher dispatcher) : ApiController(dispatche
 	[ProducesResponseType(typeof(ErrorResult), 404)]
 	public async Task<ActionResult> GetCustomer(int id)
 	{
-		var result = await this.Dispatcher.Query<GetCustomerQuery, Result<CustomerModel>>(new GetCustomerQuery { Id = id }, CancellationToken.None);
+		var result = await this.Dispatcher.Query<GetCustomerQuery, Result<CustomerModel>>(
+			new GetCustomerQuery { Id = id },
+			CancellationToken.None);
 		return ResponseHelper.ResponseOutcome(result, this);
 	}
 
@@ -43,7 +45,9 @@ public class CustomerController(Dispatcher dispatcher) : ApiController(dispatche
 	[ProducesResponseType(typeof(ErrorResult), 404)]
 	public async Task<ActionResult> GetOrders(int id)
 	{
-		var result = await this.Dispatcher.Query<GetOrdersQuery, Result<IEnumerable<OrderModel>>>(new GetOrdersQuery { CustomerId = id }, CancellationToken.None);
+		var result = await this.Dispatcher.Query<GetOrdersQuery, Result<IEnumerable<OrderModel>>>(
+			new GetOrdersQuery { CustomerId = id },
+			CancellationToken.None);
 		return ResponseHelper.ResponseOutcome(result, this);
 	}
 
@@ -60,10 +64,12 @@ public class CustomerController(Dispatcher dispatcher) : ApiController(dispatche
 	[Route("Search")]
 	public async Task<ActionResult> Search(SearchCustomerModel data)
 	{
-		var result = await this.Dispatcher.Query<GetCustomersQuery, Result<IEnumerable<CustomerModel>>>(new GetCustomersQuery()
-		{
-			Data = data
-		}, CancellationToken.None);
+		var result = await this.Dispatcher.Query<GetCustomersQuery, Result<IEnumerable<CustomerModel>>>(
+			new GetCustomersQuery()
+			{
+				Data = data
+			},
+			CancellationToken.None);
 		return ResponseHelper.ResponseOutcome(result, this);
 	}
 
@@ -89,10 +95,12 @@ public class CustomerController(Dispatcher dispatcher) : ApiController(dispatche
 	[ProducesResponseType(typeof(ErrorResult), 400)]
 	public async Task<ActionResult<CustomerModel>> Create(CreateCustomerModel model)
 	{
-		var result = await this.Dispatcher.Send<CreateCustomerCommand, Result<CustomerModel>>(new CreateCustomerCommand
-		{
-			Data = model
-		}, CancellationToken.None);
+		var result = await this.Dispatcher.Send<CreateCustomerCommand, Result<CustomerModel>>(
+			new CreateCustomerCommand
+			{
+				Data = model
+			},
+			CancellationToken.None);
 
 		return ResponseHelper.ResponseOutcome(result, this);
 	}
@@ -119,10 +127,12 @@ public class CustomerController(Dispatcher dispatcher) : ApiController(dispatche
 	[ProducesResponseType(typeof(Result), 404)]
 	public async Task<ActionResult> Update(UpdateCustomerModel model)
 	{
-		var result = await this.Dispatcher.Send<UpdateCustomerCommand, Result<CustomerModel>>(new UpdateCustomerCommand
-		{
-			Data = model
-		}, CancellationToken.None);
+		var result = await this.Dispatcher.Send<UpdateCustomerCommand, Result<CustomerModel>>(
+			new UpdateCustomerCommand
+			{
+				Data = model
+			},
+			CancellationToken.None);
 
 		return ResponseHelper.ResponseOutcome(result, this);
 	}

@@ -52,6 +52,7 @@ public class Startup
 			options.Providers.Add<GzipCompressionProvider>();
 		});
 		services.AddResponseCompression();
+
 		using (var serviceProvider = services.BuildServiceProvider())
 		{
 			var dbContext = serviceProvider.GetRequiredService<DatabaseContext>();

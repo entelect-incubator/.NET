@@ -4,8 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Common;
 using Common.Mappers;
+using Core;
 using Core.Email;
 using Core.Notify.Commands;
+using Core.Notify.Queries;
+using Utilities.Results;
 
 public interface IOrderCompleteJob
 {
@@ -16,7 +19,9 @@ public sealed class OrderCompleteJob(Dispatcher dispatcher) : IOrderCompleteJob
 {
 	public async Task SendNotificationAsync()
 	{
-		var notifiesResult = await dispatcher.Query(new GetNotifiesQuery());
+		var notifiesResult = await dispatcher.Query<GetNotifiesQuery, Result<IEnumerable<Common.Entities.Notify>>>(
+			new GetNotifiesQuery(),
+			CancellationToken.None);
 
 		if (notifiesResult.Succeeded && notifiesResult.Data?.Any() == true)
 		{
