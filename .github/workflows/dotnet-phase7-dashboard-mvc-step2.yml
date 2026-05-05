@@ -11,13 +11,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Setup .NET
-        uses: actions/setup-dotnet@v1
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 10.0.x
       - name: Install dependencies
-        run: dotnet restore "./Phase 7/Dashboard/MVC/src/02. Step 2/Pezza.slnx"
+        run: dotnet restore "./Phase 7/src/04. Step 3/Pezza.slnx"
       - name: Build
-        run: dotnet build "./Phase 7/Dashboard/MVC/src/02. Step 2/Pezza.slnx"
-          --configuration Release --no-restore
+        run: dotnet build "./Phase 7/src/04. Step 3/Pezza.slnx" --configuration Release
+          --no-restore

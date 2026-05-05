@@ -11,11 +11,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Setup .NET
-        uses: actions/setup-dotnet@v1
+        uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 8.0.100-preview.6.23330.14
+          dotnet-version: 10.0.x
       - name: Install dependencies
         run: dotnet restore "./Phase 4/src/02. Step1/Pezza.slnx"
       - name: Build
