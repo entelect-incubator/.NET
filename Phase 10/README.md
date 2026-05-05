@@ -147,7 +147,7 @@ Phase 10/
 │   │   ├── Pezza.Core/
 │   │   ├── Pezza.Common/
 │   │   ├── docker-compose.yml
-│   │   └── .NET.Pezza.sln
+│   │   └── .NET.Pezza.slnx
 │   └── ... (other solution items)
 └── README.md
 ```
@@ -322,10 +322,10 @@ app.Use(async (context, next) =>
 dotnet --version
 
 # build the Phase 8 solution
-dotnet build "./Phase 8/src/01. StartSolution/Pezza.sln"
+dotnet build "./Phase 8/src/01. StartSolution/Pezza.slnx"
 
 # run tests (if present)
-dotnet test "./Phase 8/src/01. StartSolution/Pezza.sln"
+dotnet test "./Phase 8/src/01. StartSolution/Pezza.slnx"
 ```
 
 ## Outcomes / Learning goals

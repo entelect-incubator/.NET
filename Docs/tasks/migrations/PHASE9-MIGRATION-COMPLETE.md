@@ -190,7 +190,7 @@ public class CreateCustomerCommandHandler(DatabaseContext databaseContext)
 ### 1. Verify Build ✅ READY
 ```powershell
 cd "d:\Dev\Incubator\.NET\Phase 9\API Solution"
-dotnet build Pezza.sln
+dotnet build Pezza.slnx
 ```
 
 ### 2. Fix Any Remaining Errors

@@ -42,13 +42,13 @@ Learn to enforce quality through tooling, handle errors gracefully, and return p
 1. Build the start solution:
 
 ```powershell
-dotnet build "Phase 5/src/01. StartSolution/Pezza.sln"
+dotnet build "Phase 5/src/01. StartSolution/Pezza.slnx"
 ```
 
 2. Run tests:
 
 ```powershell
-dotnet test "Phase 5/src/01. StartSolution/Pezza.sln"
+dotnet test "Phase 5/src/01. StartSolution/Pezza.slnx"
 ```
 
 ## Topics / learning outcomes

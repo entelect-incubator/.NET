@@ -35,10 +35,10 @@ Run these from the repository root (Windows PowerShell):
 dotnet --version
 
 # build the Phase 7 start solution (adjust path if you put the solution elsewhere)
-dotnet build "./Phase 7/src/01. StartSolution/Pezza.sln"
+dotnet build "./Phase 7/src/01. StartSolution/Pezza.slnx"
 
 # (optional) run the Api and generate the client using NSwag (if configured in msbuild target)
-dotnet build "./Phase 7/src/01. StartSolution/Pezza.sln" /t:Restore,Build
+dotnet build "./Phase 7/src/01. StartSolution/Pezza.slnx" /t:Restore,Build
 ```
 
 Note: if your local layout differs, search for the Phase 7 solution under `Phase 7/src` and build that solution instead.

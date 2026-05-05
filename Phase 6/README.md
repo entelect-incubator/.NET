@@ -41,13 +41,13 @@ Learn to reduce database load, improve response times, and handle cache invalida
 1. Build the start solution:
 
 ```powershell
-dotnet build "Phase 6/src/01. StartSolution/Pezza.sln"
+dotnet build "Phase 6/src/01. StartSolution/Pezza.slnx"
 ```
 
 2. Run tests:
 
 ```powershell
-dotnet test "Phase 6/src/01. StartSolution/Pezza.sln"
+dotnet test "Phase 6/src/01. StartSolution/Pezza.slnx"
 ```
 
 ## Topics / learning outcomes
@@ -203,7 +203,7 @@ public async Task<Result<PizzaModel>> Handle(
 
 - **Why**: Demonstrates optimized query performance with multi-level caching (in-memory + option for distributed) and bandwidth-efficient responses via compression; custom dispatcher routes cached queries seamlessly.
 - **What**: `IMemoryCache` in query handlers with TTL strategies; cache invalidation in command handlers via `cache.Remove()`; response compression middleware configured with Brotli/Gzip; controllers calling `Dispatcher.Send/Query`.
-- **How to run**: `dotnet build "Phase 6/src/04. EndSolution/Pezza.sln"` (verify it exists) then `dotnet test`.
+- **How to run**: `dotnet build "Phase 6/src/04. EndSolution/Pezza.slnx"` (verify it exists) then `dotnet test`.
 - **Learning check**: You should understand cache-aside pattern, TTL trade-offs (freshness vs. database load), when to cache (reads) vs. invalidate (writes), and how compression reduces bandwidth without changing API contract.
 
 ## What You Should Know By Now

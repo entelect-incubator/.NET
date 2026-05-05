@@ -49,7 +49,7 @@ var response = await next(cancellationToken);
 ### 3. Validation Commands Updated
 ```powershell
 # Before
-dotnet build "Phase 2/src/01. StartSolution/Pezza.sln"
+dotnet build "Phase 2/src/01. StartSolution/Pezza.slnx"
 
 # After
 dotnet build "Phase 2/src/01. StartSolution/Pezza.slnx"
@@ -100,7 +100,7 @@ var response = await next(cancellationToken); // ✅ Full cancellation support
 
 ### Solution Format
 
-**Before**: Pezza.sln (legacy text format)  
+**Before**: Pezza.slnx (legacy text format)  
 **After**: Pezza.slnx (modern format)
 
 **Benefits of .slnx**:

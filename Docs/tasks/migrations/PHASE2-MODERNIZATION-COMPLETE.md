@@ -76,8 +76,8 @@ Updated all build/test commands to use `.slnx` format:
 
 **Before**:
 ```powershell
-dotnet build "Phase 2/src/01. StartSolution/Pezza.sln"
-dotnet test "Phase 2/src/01. StartSolution/Pezza.sln"
+dotnet build "Phase 2/src/01. StartSolution/Pezza.slnx"
+dotnet test "Phase 2/src/01. StartSolution/Pezza.slnx"
 ```
 
 **After**:
@@ -185,7 +185,7 @@ public async Task<TResponse> Handle<TRequest, TResponse>(
 | **Result Initialization** | Property assignment  | `new()` expression         | Cleaner syntax            |
 | **Error Collections**     | `new List<string>()` | `[]`                       | Modern expressions        |
 | **PerformanceBehaviour**  | No cancellation      | `CancellationToken` passed | Full cancellation support |
-| **Build Command**         | Pezza.sln            | Pezza.slnx                 | Correct format            |
+| **Build Command**         | Pezza.slnx           | Pezza.slnx                 | Correct format            |
 
 ---
 

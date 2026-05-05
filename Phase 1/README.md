@@ -16,11 +16,11 @@ Validation
 
 - Build the phase solution (example):
 
-	dotnet build "Phase 1/src/01. StartSolution/Pezza.sln" -c Release
+	dotnet build "Phase 1/src/01. StartSolution/Pezza.slnx" -c Release
 
 - Run tests (if present):
 
-	dotnet test "Phase 1/src/01. StartSolution/Pezza.sln" -c Release
+	dotnet test "Phase 1/src/01. StartSolution/Pezza.slnx" -c Release
 
 Learning outcomes
 

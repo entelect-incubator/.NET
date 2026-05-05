@@ -42,13 +42,13 @@ Learn to layer validation behaviors onto handlers, implement complex queries wit
 1. Build the start solution:
 
 ```powershell
-dotnet build "Phase 4/src/01. StartSolution/Pezza.sln"
+dotnet build "Phase 4/src/01. StartSolution/Pezza.slnx"
 ```
 
 2. Run tests:
 
 ```powershell
-dotnet test "Phase 4/src/01. StartSolution/Pezza.sln"
+dotnet test "Phase 4/src/01. StartSolution/Pezza.slnx"
 ```
 
 ## Outcomes / learning objectives

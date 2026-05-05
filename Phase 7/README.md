@@ -49,8 +49,8 @@ A **complete event-driven order processing system** with event handlers and back
 ## How to validate this phase locally
 
 \\\powershell
-dotnet build "Phase 7/src/01. StartSolution/Pezza.sln"
-dotnet test "Phase 7/src/01. StartSolution/Pezza.sln"
+dotnet build "Phase 7/src/01. StartSolution/Pezza.slnx"
+dotnet test "Phase 7/src/01. StartSolution/Pezza.slnx"
 \\\
 
 ## Topics / learning outcomes

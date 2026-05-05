@@ -27,7 +27,7 @@ Phases 1-8 (Require Migration):
     ├── Pezza.Scheduler/
     ├── Pezza.BackEnd/
     ├── Pezza.Test/
-    └── Pezza.sln
+    └── Pezza.slnx
 ```
 
 ## Migration Strategy
