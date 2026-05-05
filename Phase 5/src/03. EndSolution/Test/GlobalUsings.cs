@@ -1,7 +1,7 @@
-﻿global using System.Threading;
-global using System.Threading.Tasks;
-global using Bogus;
+﻿global using Bogus;
+global using Common.Entities;
 global using Common.Models;
+global using Core;
 global using DataAccess;
 global using Microsoft.EntityFrameworkCore;
 global using NUnit.Framework;

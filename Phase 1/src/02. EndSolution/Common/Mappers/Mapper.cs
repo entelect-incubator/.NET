@@ -1,38 +1,15 @@
 ﻿namespace Common.Mappers;
 
-public static class Mapper
+[Mapper]
+public static partial class TodoMapper
 {
-	public static PizzaModel Map(this Pizza pizza)
-		=> new()
-		{
-			Id = pizza.Id,
-			Name = pizza.Name,
-			Description = pizza.Description,
-			Price = pizza.Price,
-			DateCreated = pizza.DateCreated
-		};
+	public static partial Todo Map(this TodoModel model);
 
-	public static Pizza Map(this PizzaModel pizza)
-	{
-		var entity = new Pizza
-		{
-			Id = pizza.Id,
-			Name = pizza.Name,
-			Description = pizza.Description,
-			DateCreated = pizza.DateCreated
-		};
+	public static partial TodoModel Map(this Todo entity);
 
-		if (pizza.Price.HasValue)
-		{
-			entity.Price = pizza.Price.Value;
-		}
-
-		return entity;
-	}
-
-	public static IEnumerable<PizzaModel> Map(this List<Pizza> pizzas)
+	public static IEnumerable<TodoModel> Map(this List<Todo> pizzas)
 		=> pizzas.Select(x => x.Map());
 
-	public static IEnumerable<Pizza> Map(this List<PizzaModel> pizzas)
+	public static IEnumerable<Todo> Map(this List<TodoModel> pizzas)
 		=> pizzas.Select(x => x.Map());
 }

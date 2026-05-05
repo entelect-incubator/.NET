@@ -1,12 +1,12 @@
 ﻿namespace Common.Extensions;
 
-public static class Extensions
+public static class PagingExtensions
 {
 	public static IQueryable<T> ApplyPaging<T>(this IQueryable<T> query, PagingArgs pagingArgs)
 	{
 		var myPagingArgs = pagingArgs;
 
-		if (pagingArgs == null)
+		if (pagingArgs is null)
 		{
 			myPagingArgs = PagingArgs.Default;
 		}

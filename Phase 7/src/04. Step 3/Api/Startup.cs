@@ -2,7 +2,7 @@ namespace Api;
 
 using System.Reflection;
 using System.Text.Json.Serialization;
-using Common.Behaviour;
+using Core.Behaviours;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.ResponseCompression;
@@ -11,17 +11,21 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Serialization;
 
-public class Startup
+public class Startup(IConfiguration configuration)
 {
-	public Startup(IConfiguration configuration) => this.ConfigRoot = configuration;
-
 	public IConfiguration ConfigRoot
 	{
 		get;
-	}
+	} = configuration;
 
 	public void ConfigureServices(IServiceCollection services)
 	{
+		services.AddResponseCompression(options =>
+		{
+			options.Providers.Add<BrotliCompressionProvider>();
+			options.Providers.Add<GzipCompressionProvider>();
+		});
+		services.AddResponseCompression();
 		services.AddControllers(options => options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true)
 			.AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()))
 			.AddNewtonsoftJson(x => x.SerializerSettings.ContractResolver = new DefaultContractResolver())
@@ -33,7 +37,7 @@ public class Startup
 		{
 			c.SwaggerDoc("v1", new OpenApiInfo
 			{
-				Title = "Pezza API",
+				Title = "EList API",
 				Version = "v1"
 			});
 
@@ -41,28 +45,22 @@ public class Startup
 			var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
 			c.IncludeXmlComments(xmlPath);
 		});
-		services.AddLazyCache();
-		services.AddDbContext<DatabaseContext>(options =>
-			options.UseInMemoryDatabase("PezzaDB"));
 
-		services.AddResponseCompression(options =>
-		{
-			options.Providers.Add<BrotliCompressionProvider>();
-			options.Providers.Add<GzipCompressionProvider>();
-		});
-		services.AddResponseCompression();
+		services.AddDbContext<DatabaseContext>(options =>
+			options.UseInMemoryDatabase(Guid.NewGuid().ToString())
+		);
 	}
 
 	public void Configure(WebApplication app, IWebHostEnvironment env)
 	{
+		app.UseMiddleware<UnhandledExceptionBehaviour>();
+		app.UseResponseCompression();
 		app.UseSwagger();
-		app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Pezza API V1"));
+		app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "EList API V1"));
 		app.UseHttpsRedirection();
-		app.UseMiddleware(typeof(ExceptionHandlerMiddleware));
 		app.UseRouting();
 		app.MapControllers();
 		app.UseAuthorization();
-		app.UseResponseCompression();
 		app.Run();
 	}
 }

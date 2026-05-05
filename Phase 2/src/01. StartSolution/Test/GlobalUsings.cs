@@ -1,4 +1,5 @@
 ﻿global using Bogus;
+global using Common.Entities;
 global using Common.Models;
 global using Core;
 global using DataAccess;

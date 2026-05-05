@@ -1,0 +1,52 @@
+﻿@using API.Client.Template
+
+@model List<TodoModel>
+@{
+    var sessionId = ViewBag.SessionId as string;
+}
+
+<div id="todoApp">
+    <!-- Section 1: Add TODO Item -->
+    <div id="form">
+        @using (Html.BeginForm("Add", "Home", FormMethod.Post))
+        {
+            @Html.TextBox("Task", null, new { @class = "todo-input", required = "required" })
+            <input type="hidden" name="SessionId" value="@sessionId" />
+            <button class="todo-btn" type="submit">Add</button>
+        }
+    </div>
+
+    <!-- Section 2: TODO List -->
+    <div id="todoListSection">
+        <ul class="todo-list">
+            @foreach (var item in Model)
+            {
+                <li class="todo">
+                    @if (item.IsCompleted.HasValue)
+                    {
+                        @if (item.IsCompleted.Value)
+                        {
+                            <strike>@Html.DisplayFor(modelItem => item.Task)</strike>
+                        }
+                        else
+                        {
+                            @Html.DisplayFor(modelItem => item.Task)
+                        }
+                    }
+                    else
+                    {
+                    @Html.DisplayFor(modelItem => item.Task)
+                    }
+                    <button class="btn-delete" onclick="location.href='@Url.Action("Delete", "Home", new { id = item.Id })'">Delete</button>
+                    @if (item.IsCompleted.HasValue)
+                    {
+                        @if (!item.IsCompleted.Value)
+                        {
+                            <button class="btn-complete" onclick="location.href='@Url.Action("MarkComplete", "Home", new { id = item.Id })'">Complete</button>
+                        }
+                    }
+                </li>
+            }
+        </ul>
+    </div>
+</div>

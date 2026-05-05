@@ -1,0 +1,279 @@
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body {
+	background-image: linear-gradient(100deg, #575656, #062e3f);
+	align-items: center;
+	display: flex;
+	flex-direction: column;
+	font-family: "Work Sans", sans-serif;
+	min-height: 100vh;
+	padding-top: 3%;
+}
+
+.default {
+	color: #111;
+	transition: 0.3s linear;
+	overflow: hidden;
+	z-index: 999;
+}
+
+#header {
+	align-items: center;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+	font-size: 1.3rem;
+	min-height: 25vh;
+	width: 100%;
+}
+
+.flexrow-container {
+	align-items: center;
+	align-self: flex-end;
+	display: flex;
+	justify-content: space-around;
+	margin-right: 3%;
+}
+
+#main-title {
+	font-size: 8rem;
+	line-height: 4rem;
+	color: #fff;
+}
+
+#title {
+	font-size: 2rem;
+	line-height: 4rem;
+	color: #fff;
+}
+
+form {
+	display: flex;
+	font-size: 3rem;
+	justify-content: center;
+	margin: 15px 0;
+	padding: 0.8rem;
+	width: 100%;
+}
+
+	form input {
+		padding: 10px;
+		font-size: 1.5rem;
+		border: none;
+		outline: none;
+		border-top-left-radius: 20px;
+		border-bottom-left-radius: 20px;
+		max-width: 500px;
+		padding: 15px 25px;
+		transition: background-color 200ms ease-in-out;
+		width: 100%;
+	}
+
+		form input:hover {
+			cursor: text;
+		}
+
+button {
+	border: none;
+	outline: none;
+	transition: box-shadow 200ms ease, background-color 200ms ease-in-out;
+}
+
+	button:hover {
+		cursor: pointer;
+	}
+
+form button {
+	padding: 10px;
+	font-size: 1.5rem;
+	border-top-right-radius: 15px;
+	border-bottom-right-radius: 15px;
+	min-width: 100px;
+}
+
+#myUnOrdList {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	max-width: 1200px;
+}
+
+.todo-list {
+	min-width: 25%;
+	list-style: none;
+}
+
+.todo {
+	margin: 1rem;
+	font-size: 1.5rem;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 0.25em 0.5em;
+	border-radius: 20px;
+	padding: 15px 25px;
+	transition: background-color 200ms ease-in-out;
+	background-color: rgb(252, 252, 252);
+}
+
+	.todo li {
+		padding: 7px;
+		font-size: 1.5rem;
+		flex: 1;
+		border-radius: 30px;
+		overflow-wrap: anywhere;
+	}
+
+.check-btn,
+.delete-btn {
+	font-size: 19px;
+	cursor: pointer;
+	width: 2em;
+	height: 2em;
+	border-radius: 80%;
+	margin: 0 5px;
+}
+
+.todo-item {
+	padding: 0rem 0.5rem;
+}
+
+.fa-trash,
+.fa-check {
+	pointer-events: none;
+}
+
+.completed {
+	transition: 0.2s;
+	text-decoration: line-through;
+	opacity: 0.5;
+}
+
+.fall {
+	transition: 0.5s;
+	transform: translateY(45rem) rotateZ(45deg);
+	opacity: 0;
+}
+
+input[type="checkbox"] {
+	scale: 200%;
+	margin-right: 25px;
+}
+
+.container {
+	position: relative;
+	width: 400px;
+	height: 400px;
+	z-index: 0;
+}
+
+.diamond {
+	position: absolute;
+	top: -200px;
+	left: 0;
+	right: 0;
+	margin: auto;
+	width: 60%;
+	height: 60%;
+	border: 2px solid rgba(87, 86, 86, 0.2); /* Subtle turquoise color with reduced opacity */
+	animation: expand 10s infinite ease-in-out;
+	transform: scale(0.9) rotate(15deg);
+}
+
+	.diamond:nth-child(2) {
+		width: 70%;
+		height: 70%;
+		animation-delay: 0.2s;
+	}
+
+	.diamond:nth-child(3) {
+		width: 80%;
+		height: 80%;
+		animation-delay: 0.4s;
+	}
+
+	.diamond:nth-child(4) {
+		width: 90%;
+		height: 90%;
+		animation-delay: 0.6s;
+	}
+
+.diamond-group {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+}
+
+	.diamond-group:nth-child(2) {
+		animation-delay: 0.5s;
+	}
+
+	.diamond-group:nth-child(3) {
+		animation-delay: 1s;
+	}
+
+	.diamond-group:nth-child(4) {
+		animation-delay: 1.5s;
+	}
+
+@keyframes expand {
+	0% {
+		transform: scale(0.9) rotate(15deg);
+		opacity: 0.5;
+	}
+
+	50% {
+		transform: scale(1) rotate(15deg);
+		opacity: 1;
+	}
+
+	100% {
+		transform: scale(0.9) rotate(15deg);
+		opacity: 0.5;
+	}
+}
+
+/* Responsive design */
+@media only screen and (max-width: 1000px) {
+	.flexrow-container {
+		align-self: unset;
+		margin-right: 0;
+	}
+}
+
+@media only screen and (max-width: 800px) {
+	#header {
+		font-size: 1.5rem;
+	}
+}
+
+@media only screen and (max-width: 400px) {
+	#header {
+		font-size: 1.5rem;
+	}
+}
+
+@media only screen and (max-width: 400px) {
+	form {
+		align-items: center;
+		flex-direction: column;
+	}
+
+		form input {
+			border-radius: 17px;
+		}
+
+		form button {
+			border-radius: 15px;
+			margin-top: 15px;
+			width: 50%;
+		}
+
+		form > button.light-button {
+			box-shadow: 0 0 5px lightgray;
+		}
+}
