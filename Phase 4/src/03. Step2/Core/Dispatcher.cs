@@ -59,11 +59,21 @@ public class Dispatcher(IServiceProvider provider)
 		return this.ExecutePipeline(command, () => handler.Handle(command, ct), ct);
 	}
 
+	public Task<TResult> Send<TResult>(ICommand<TResult> command, CancellationToken ct = default)
+	{
+		return this.Send<ICommand<TResult>, TResult>(command, ct);
+	}
+
 	public Task<TResult> Query<TQuery, TResult>(TQuery query, CancellationToken ct = default)
 		where TQuery : IQuery<TResult>
 	{
 		var handler = provider.GetRequiredService<IQueryHandler<TQuery, TResult>>();
 		return this.ExecutePipeline(query, () => handler.Handle(query, ct), ct);
+	}
+
+	public Task<TResult> Query<TResult>(IQuery<TResult> query, CancellationToken ct = default)
+	{
+		return this.Query<IQuery<TResult>, TResult>(query, ct);
 	}
 
 	public async Task Publish<TNotification>(TNotification notification, CancellationToken ct = default)

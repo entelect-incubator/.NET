@@ -1,9 +1,12 @@
 namespace Api.Controllers;
 
+using Api.Helpers;
 using Common.Models.Customer;
 using Core.Customer.Commands;
 using Core.Customer.Queries;
 
+[ApiController]
+[Route("[controller]")]
 public class CustomerController : ApiController
 {
 	/// <summary>

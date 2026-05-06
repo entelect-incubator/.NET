@@ -1,6 +1,6 @@
 ﻿namespace Api.Helpers;
 
-using Common.CQRS;
+using Core;
 
 public static class DispatcherExtensions
 {
