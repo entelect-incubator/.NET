@@ -1,6 +1,8 @@
-namespace Common.Entities;
+namespace Common.Models;
 
-public class Pizza
+using System;
+
+public sealed class PizzaModel
 {
 	public int Id { get; set; }
 

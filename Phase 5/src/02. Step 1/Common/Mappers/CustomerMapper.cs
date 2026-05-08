@@ -1,6 +1,6 @@
-﻿namespace Common.Mappers;
+namespace Common.Mappers;
 
-using Common.Models.Customer;
+using Common.Models;
 
 public static class CustomerMapper
 {
@@ -48,4 +48,3 @@ public static class CustomerMapper
 	public static IEnumerable<Customer> Map(this List<CustomerModel> models)
 		=> models.Select(x => x.Map());
 }
-

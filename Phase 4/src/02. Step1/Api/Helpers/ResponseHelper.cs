@@ -1,5 +1,6 @@
 ﻿namespace Api.Helpers;
 
+using Microsoft.AspNetCore.Mvc;
 using Utilities.Results;
 
 /// <summary>
@@ -12,7 +13,7 @@ public static class ResponseHelper
 	/// Converts a generic result to appropriate HTTP response.
 	/// Returns NotFound if data is null, BadRequest if failed, otherwise Ok.
 	/// </summary>
-	public static ActionResult ResponseOutcome<T>(Result<T> result, ApiController controller)
+	public static ActionResult ResponseOutcome<T>(Result<T> result, ControllerBase controller)
 		=> result.Data is null
 			? controller.NotFound(Result.Failure($"{typeof(T).Name.Replace("Model", string.Empty)} not found"))
 			: result.HasError
@@ -23,13 +24,13 @@ public static class ResponseHelper
 	/// Converts a list result to appropriate HTTP response.
 	/// Returns BadRequest if failed, otherwise Ok.
 	/// </summary>
-	public static ActionResult ResponseOutcome<T>(Result<List<T>> result, ApiController controller)
+	public static ActionResult ResponseOutcome<T>(Result<List<T>> result, ControllerBase controller)
 		=> result.HasError ? controller.BadRequest(result) : controller.Ok(result);
 
 	/// <summary>
 	/// Converts a non-generic result to appropriate HTTP response.
 	/// Returns BadRequest if failed, otherwise Ok.
 	/// </summary>
-	public static ActionResult ResponseOutcome(Result result, ApiController controller)
+	public static ActionResult ResponseOutcome(Result result, ControllerBase controller)
 		=> result.HasError ? controller.BadRequest(result) : controller.Ok(result);
 }

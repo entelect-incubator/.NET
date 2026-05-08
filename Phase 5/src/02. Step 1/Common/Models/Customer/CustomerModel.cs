@@ -1,6 +1,8 @@
-namespace Common.Entities;
+namespace Common.Models;
 
-public sealed class Customer
+using System;
+
+public sealed class CustomerModel
 {
 	public int Id { get; set; }
 

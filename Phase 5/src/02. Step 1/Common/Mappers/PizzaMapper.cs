@@ -1,6 +1,6 @@
-﻿namespace Common.Mappers;
+namespace Common.Mappers;
 
-using Common.Models.Pizza;
+using Common.Models;
 
 public static class PizzaMapper
 {
@@ -16,20 +16,14 @@ public static class PizzaMapper
 
 	public static Pizza Map(this PizzaModel model)
 	{
-		var entity = new Pizza
+		return new Pizza
 		{
 			Id = model.Id,
 			Name = model.Name,
 			Description = model.Description,
+			Price = model.Price,
 			DateCreated = model.DateCreated
 		};
-
-		if (model.Price.HasValue)
-		{
-			entity.Price = model.Price.Value;
-		}
-
-		return entity;
 	}
 
 	public static IEnumerable<PizzaModel> Map(this List<Pizza> entities)
@@ -38,4 +32,3 @@ public static class PizzaMapper
 	public static IEnumerable<Pizza> Map(this List<PizzaModel> models)
 		=> models.Select(x => x.Map());
 }
-

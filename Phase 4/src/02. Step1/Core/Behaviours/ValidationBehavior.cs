@@ -3,9 +3,9 @@
 using FluentValidation;
 
 public class ValidationBehavior<TRequest, TResponse>(IEnumerable<IValidator<TRequest>> validators)
-	: IPipelineBehavior<TRequest, TResponse> where TRequest : IRequest<TResponse>
+	: IPipelineBehavior<TRequest, TResponse>
 {
-	public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
+	public async Task<TResponse> Handle(TRequest request, Func<Task<TResponse>> next, CancellationToken cancellationToken)
 	{
 		if (validators.Any())
 		{
