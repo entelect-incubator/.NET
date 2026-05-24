@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="description" content="Role-based .NET Incubator roadmap with effort, complexity, evidence tracking, and 100 percent gated quiz validation." />
+		<title>.NET Incubator Learning Validation</title>
+		<link rel="stylesheet" href="assets/style.css" />
+	</head>
+	<body>
+		<nav class="navbar" aria-label="Main navigation">
+			<a class="brand" href="https://github.com/entelect-incubator/.NET" target="_blank" rel="noopener">.NET Incubator</a>
+			<ul class="links">
+				<li><a href="#paths">Paths</a></li>
+				<li><a href="#phases">Phases</a></li>
+				<li><a href="#validation">Validation</a></li>
+			</ul>
+		</nav>
+
+		<header class="hero">
+			<div class="hero-inner">
+				<p class="eyebrow">Entelect Incubator</p>
+				<h1>Learn by Phase, Prove by Evidence, Validate with 100 Percent</h1>
+				<p>Choose whole-incubator or jump-in learning, view value and effort by level, and complete strict quiz and build evidence checks per phase.</p>
+				<div class="toolbar">
+					<input id="search" type="search" placeholder="Search by phase, concept, or outcome" />
+					<select id="role-focus" aria-label="Role focus">
+						<option value="all">All roles</option>
+						<option value="junior">Junior</option>
+						<option value="intermediate">Intermediate</option>
+						<option value="expert">Expert</option>
+					</select>
+				</div>
+			</div>
+		</header>
+
+		<main class="main">
+			<section id="paths" class="panel">
+				<div class="section-head">
+					<h2>Whole Incubator or Jump Into a Section</h2>
+					<a class="repo-link" href="https://github.com/entelect-incubator/.NET" target="_blank" rel="noopener">Open Repository</a>
+				</div>
+				<div class="path-controls">
+					<label>
+						Path mode
+						<select id="path-mode">
+							<option value="whole">Whole incubator</option>
+							<option value="jump">Jump into section</option>
+						</select>
+					</label>
+					<label>
+						Jump section
+						<select id="jump-section">
+							<option value="all">All sections</option>
+							<option value="foundation">Foundation 1 to 4</option>
+							<option value="performance">Performance and events 5 to 6</option>
+							<option value="services">Services, security, UI 7 to 9</option>
+							<option value="cloud">Database and cloud 10 to 11</option>
+							<option value="advanced">Advanced integration 12 to 15</option>
+						</select>
+					</label>
+				</div>
+				<div class="role-grid">
+					<article class="role-card">
+						<h3>Junior Developer Value</h3>
+						<p>Guided implementation, confidence with architecture, and repeatable coding patterns.</p>
+					</article>
+					<article class="role-card">
+						<h3>Intermediate Developer Value</h3>
+						<p>Faster delivery, better trade-off decisions, and consistent engineering quality.</p>
+					</article>
+					<article class="role-card">
+						<h3>Expert Developer Value</h3>
+						<p>Production hardening, coaching leverage, and governance of standards and CI reliability.</p>
+					</article>
+				</div>
+			</section>
+
+			<section id="phases" class="panel">
+				<h2>Phase Value, Effort, Time Complexity, Concepts, and Evidence</h2>
+				<p class="muted">Each phase shows role-based effort and runtime complexity focus. Validation requires evidence plus quiz score of 100 percent.</p>
+				<div id="phase-grid" class="phase-grid"></div>
+			</section>
+
+			<section id="validation" class="panel validation-panel">
+				<h2>Completion Validation</h2>
+				<div id="validation-summary" class="status"></div>
+				<div class="validation-grid">
+					<div class="evidence-box">
+						<h3>Evidence Requirements</h3>
+						<ol>
+							<li>Create or fork a repository for your phase implementation.</li>
+							<li>Provide build evidence from local command or CI build label.</li>
+							<li>Provide run or feature demonstration evidence.</li>
+							<li>Pass phase quiz at 100 percent.</li>
+						</ol>
+					</div>
+					<div class="quiz-box">
+						<h3>Gated Quiz</h3>
+						<div class="quiz-controls">
+							<label>
+								Quiz mode
+								<select id="quiz-mode">
+									<option value="phase">Single phase</option>
+									<option value="whole">Whole incubator</option>
+								</select>
+							</label>
+							<label>
+								Phase
+								<select id="quiz-phase"></select>
+							</label>
+							<button id="start-quiz" type="button">Start Quiz</button>
+						</div>
+						<div id="quiz-area" class="quiz-area"></div>
+						<div class="quiz-actions">
+							<button id="submit-quiz" type="button" disabled>Submit Answers</button>
+							<div id="quiz-result" class="status"></div>
+						</div>
+					</div>
+				</div>
+			</section>
+		</main>
+
+		<script src="assets/main.js"></script>
+	</body>
+</html>

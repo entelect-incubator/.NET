@@ -6,28 +6,29 @@
 
 ## What you will be learning?
 
--   [ ] What is it?
--   [ ] Why should I learn about it?
--   [ ] Official documentation
--   [ ] Prerequirements?
--   [ ] Building the E List Solution
-    -   [ ] Basic TODO app
-    -   [ ] Handling Background Jobs
-    -   [ ] Creating an API
-        -   [ ] RESTful - Web API
-    -   [ ] Schedule Background Jobs
-        -   [ ] Hangfire
-    -   [ ] Building a Front-End to consume your API
-        -   [ ] MVC
--   [ ] Security
--   [ ] Microservices
--   [ ] Recommended libraries
+- [ ] What is .NET?
+- [ ] Why should I learn about it?
+- [ ] Official documentation
+- [ ] Prerequisites
+- [ ] Develop with AI
+- [ ] Building the Pezza Digital Solutions
+  - [ ] Phase 1-4: Foundation & Best Practices
+  - [ ] Phase 5-6: Performance & Events
+  - [ ] Phase 7-9: Microservices, Security & UI
+  - [ ] Phase 10-11: Database Migrations & Cloud-Native Orchestration
+  - [ ] Phase 12: LiteBus CQRS Migration
+  - [ ] Phase 13: AI Integration with MCP Server
+  - [ ] Phase 14: External API Integration
+  - [ ] Phase 15: Container Registry Publishing
+- [ ] Complete architecture overview
+- [ ] Docs website overview
+- [ ] Recommended libraries
 
 ## What is it?
 
 .NET is a powerful, versatile developer platform that enables the creation of a wide range of applications. It is a free, cross-platform, open-source framework that can be used to build web, mobile, desktop, gaming, and IoT applications. One of the best ways to get started with .NET is through the .NET Incubator, which is designed to provide hands-on experience and real-world application development skills to aspiring developers. This training course covers the essential concepts of .NET programming, including C# language syntax, debugging techniques, and the use of .NET Core libraries. With the .NET Incubator training course, you can become proficient in creating high-quality, scalable applications using the .NET platform.
 
--   [ ] What is .NET? - [Read more...](https://github.com/entelect-incubator/.Net/tree/master/Fundamentals)
+- [ ] What is .NET? - [Read more...](https://github.com/entelect-incubator/.Net/tree/master/Fundamentals)
 
 ## Why should I learn about it?
 
@@ -57,51 +58,108 @@ Overall, developers love .NET because it is a powerful, flexible, and easy-to-us
 
 Links to the official documentation:
 
--   [Fundamentals overview](https://learn.microsoft.com/en-us/aspnet/core/fundamentals)
--   [Learn C#](https://dotnet.microsoft.com/en-us/learn/csharp)
--   [.NET documentation](https://docs.microsoft.com/en-us/dotnet/) - Learn to use .NET to create applications on any platform using C#, F#, and Visual Basic. Browse API reference, sample code, tutorials, and more..
--   [Microsoft learn for .NET](https://docs.microsoft.com/en-us/learn/dotnet/) - Learn how to build apps across multiple platforms with programming languages like C#, F#, and Visual Basic. Supported on Windows, Linux, and macOS, get started developing your next project with .NET today.
--   [.NET foundation](https://dotnetfoundation.org/) - The .NET Foundation is an independent, non-profit organization established to support an innovative, commercially friendly, open-source ecosystem around the .NET platform.
--   [.NET Youtube](https://www.youtube.com/dotnet)
+- [Fundamentals overview](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/?view=aspnetcore-6.0&tabs=windows)
+- [Learn C#](https://dotnet.microsoft.com/en-us/learn/csharp)
+- [.NET documentation](https://docs.microsoft.com/en-us/dotnet/) - Learn to use .NET to create applications on any platform using C#, F#, and Visual Basic. Browse API reference, sample code, tutorials, and more..
+- [Microsoft learn for .NET](https://docs.microsoft.com/en-us/learn/dotnet/) - Learn how to build apps across multiple platforms with programming languages like C#, F#, and Visual Basic. Supported on Windows, Linux, and macOS, get started developing your next project with .NET today.
+- [.NET foundation](https://dotnetfoundation.org/) - The .NET Foundation is an independent, non-profit organization established to support an innovative, commercially friendly, open-source ecosystem around the .NET platform.
+- [.NET Youtube](https://www.youtube.com/dotnet)
 
-## Prerequirements?
+## Develop with AI
 
--   [ ] .NET Prerequirements - [Read more...](https://github.com/entelect-incubator/.NET/blob/master/Prerequirements.md)
--   [ ] Setup [Read more...](https://github.com/entelect-incubator/.NET/blob/master/Setup.md)
+New to AI-assisted development? Learn how to work effectively with GitHub Copilot, ChatGPT, and other AI tools while maintaining clean architecture and coding standards.
 
-# E List Solution
+- 📚 **[Develop with AI — Full Guide](./DEVELOP_WITH_AI.md)** - Comprehensive guide covering architecture, design patterns, naming conventions, async patterns, and DRY principles
+- ⚡ **[Quick Reference](./AI_QUICK_REFERENCE.md)** - One-page cheat sheet with essential patterns, naming rules, and anti-patterns
+- 💡 **[Prompting Examples](./AI_PROMPTING_EXAMPLES.md)** - 10+ real-world scenarios with copy-paste-ready AI prompts for common tasks
 
-In this section, we will begin developing projects to manage the new E List Solution.
+**Key Topics:**
+- Clean architecture and CQRS patterns
+- Primary constructors and property naming (no underscores)
+- Result<T> pattern for consistent error handling
+- DRY principles and extension methods
+- Custom Dispatcher pattern for command/query separation
+- Async/await best practices
+- Code review checklist
+
+Start with the Quick Reference, then dive into the Full Guide for complete context and patterns.
+
+## AI + Copilot Integration (Awesome-style)
+
+We integrate AI-assisted development following an "Awesome GitHub Copilot" approach so learners can use prompts, agents, and skills safely and effectively.
+
+- **Awesome Agents**: specialized assistants and MCP integrations that can run local tasks and help inspect code. See `./AGENTS.md` for examples and how to run a local MCP server.
+- **Awesome Prompts**: curated, task-specific prompts for refactors, tests, and documentation. See `./AI_PROMPTING_EXAMPLES.md` for ready-to-use prompts.
+- **Awesome Instructions**: coding standards, patterns, and guardrails for AI output. Read `./DEVELOP_WITH_AI.md` for rules and examples.
+- **Awesome Skills**: self-contained folders with instructions and resources (e.g., codegen, test scaffolding) that augment Copilot capabilities.
+- **Awesome Collections**: curated sets of prompts and instructions for common workflows (CI, DB migrations, CQRS refactors).
+
+Quick usage
+
+1. Read `Develop with AI — Full Guide` and `AI_QUICK_REFERENCE.md`.
+2. Run local tools (linters/tests) before accepting AI changes.
+3. Use the example prompts from `AI_PROMPTING_EXAMPLES.md` and adapt them for your phase.
+
+Links & examples:
+
+- [Awesome GitHub Copilot reference](https://github.com/github/awesome-copilot)
+- See `./AGENTS.md`, `./AI_PROMPTING_EXAMPLES.md`, and `./DEVELOP_WITH_AI.md` for practical workflows.
+
+
+## Design Patterns
+
+Learn essential design patterns and architectural principles used throughout this incubator:
+
+- 🎯 **[Design Patterns Hub](../Design-Patterns/README.md)** - Comprehensive guide to SOLID principles, Result pattern, CQRS, Dispatcher/Mediator, Repository pattern, and more
+- 📖 **[Pattern Cheat Sheets](../Design-Patterns/Cheat-Sheets/)** - Quick reference guides
+- 🏗️ **[Project Templates](../Design-Patterns/Project-Templates/)** - Ready-to-use starter templates
+
+**Core Patterns Covered:**
+- SOLID Principles
+- Result Pattern for error handling
+- CQRS (Command Query Responsibility Segregation)
+- Dispatcher/Mediator for decoupling
+- Repository Pattern for data access
+- Dependency Injection
+- Feature-based architecture
+- Clean Code principles
+- Testing patterns
+
+## Prerequisites
+
+- [ ] .NET Prerequisites - [Read more...](https://github.com/entelect-incubator/.NET/blob/master/Prerequisites.md)
+- [ ] Setup [Read more...](https://github.com/entelect-incubator/.NET/blob/master/Setup.md)
+
+# Pezza Digital Solutions
+
+In this section, we will start building projects to allow Pezza to manage their pizzas and allow customers to order their favourite pizza online.
 
 ## Intro
 
-The Entelectuals family, known for their focus on organization and efficiency, has launched a comprehensive training initiative alongside their venture into the digital world. This program is open to all family members who wish to contribute to the success of the family’s new project.
+Restaurant staff should be able to manage their different pizzas through a web application. Customers should be able to order a pizza online, this order should be visible to their restaurant. The customer should also be notified that their pizza is on its way. We will start solving these business requirements by doing the following:
 
-In the field of software engineering, a solid grasp of fundamental principles is crucial. To that end, the training program covers a wide range of topics, from core concepts to advanced techniques. It is designed to address real-world challenges faced by developers and to provide strategies for overcoming recurring issues, while promoting best practices across all teams.
-
-To address the business requirements, we will begin by implementing the following:
-
--   [ ] Expose your TODO items through a .NET Web API, which will be consumed by the front-end application. This API will manage a "tasks" entity.
--   [ ] Create a simple front-end system using .NET MVC to allow users to manage their TODO list.
--   [ ] Enable email notifications when a task is overdue.
+- [ ] Expose your Pizza Management through an API using .NET Web API that will be consumed by the front-end application. It will consist of a customer and a pizza entity.
+- [ ] Create a simple ordering system in .NET MVC to allow customers to order pizzas.
+- [ ] Allow for customer notifications to be sent out via email.
 
 ```mermaid
 flowchart TD;
-    A[Client] -->|Add Task| B(E List Website);
-    B --> C[E List Web API];
+    A[Customer] -->|Order Pizza| B(Pezza Website - Web + Admin);
+    B --> C[Pezza Web API];
     C -->|Email Notification| D[Notification Console];
-    C -->|DB| E[E List DB - MSSQL];
+    C -->|DB| E[Pezza DB - SQL];
 ```
 
 ## Learning Outcomes
 
-### Phase 1 - Getting started
+### Phase 1 - Getting Started
 
-We will be starting with how to make a basic project and refactoring it into a solution following the single responsibility principle and how to set up a basic clean code architecture / layered architecture. This setup format will be used throughout the incubator.
+Learn the fundamentals of .NET project structure and clean architecture. Refactor a basic project into a layered solution following single responsibility principles.
 
-Overview
-
--   [ ] [Data Transfer Objects (DTOs)](https://docs.microsoft.com/en-us/aspnet/web-api/overview/data/using-web-api-with-entity-framework/part-5)
+**Topics:**
+- [ ] [Data Transfer Objects (DTOs)](https://docs.microsoft.com/en-us/aspnet/web-api/overview/data/using-web-api-with-entity-framework/part-5)
+- [ ] Clean architecture / layered architecture
+- [ ] Project structure and organization
 
 [Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%201)
 
@@ -109,168 +167,196 @@ Overview
 
 ### Phase 2 - Scaffolding
 
-In Phase 2, we will expand the foundational system to support operations for all entities. To improve scalability and maintainability, we will adopt the CQRS (Command Query Responsibility Segregation) pattern. Additionally, we will integrate the MediatR NuGet Package to simplify and decouple command and query responsibilities, allowing for better separation of concerns and more efficient processing across the system.
+Extend the foundation to all entities with full CRUD operations. Introduction to CQRS pattern and MediatR.
 
-Overview
+**Topics:**
+- [ ] CQRS Pattern
+- [ ] MediatR NuGet Package
+- [ ] Complete CRUD operations
 
 [Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%202)
 
 [![.NET - Phase 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase2-finalsolution.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase2-finalsolution.yml)
 
-### Phase 3 - Data Validation and Data Pagination
+### Phase 3 - Data Validation and Pagination
 
-With Phase 2 successfully deployed, we are now ready to introduce several enhancements. In this phase, we will focus on improving the overall usability of the system by implementing advanced search and filtering capabilities.
+Enhance data handling with validation, filtering, searching, and pagination. Deep dive into Entity Framework Core.
 
-Overview
-
--   [ ] [Getting Started with Entity Framework Core](https://www.youtube.com/watch?v=SryQxUeChMc&ab_channel=dotnet)
-
-Improve how data is displayed and validated
-
--   [ ] Fluent Validation
--   [ ] Filtering
--   [ ] Searching
--   [ ] Pagination
--   [ ] Entity Framework Core
-    -   [ ] Migrations
-    -   [ ] Change Tracker API
-    -   [ ] Lazy Loading, Eager Loading, Explicit Loading
-    -   [ ] TPH, TPC, TPT
+**Topics:**
+- [ ] [Getting Started with Entity Framework Core](https://www.youtube.com/watch?v=SryQxUeChMc&ab_channel=dotnet)
+- [ ] Fluent Validation
+- [ ] Filtering and Searching
+- [ ] Pagination
+- [ ] EF Core: Migrations, Change Tracker, Loading Strategies
+- [ ] TPH, TPC, TPT inheritance patterns
 
 [Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%203)
 
-[![.NET - Phase 3 - Step 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase3-step2.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase3-step2.yml)
+[![.NET - Phase 3 - Final Solution](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase3-finalsolution.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase3-finalsolution.yml)
 
 ### Phase 4 - Coding Standards and Error Handling
 
-In Phase 4, we will focus on ensuring code quality by enforcing basic coding standards across the team. Adhering to these standards helps maintain consistency, readability, and long-term maintainability. Additionally, we will implement robust error handling throughout the system to improve reliability and make debugging easier.
+Implement team coding standards and comprehensive error handling strategies.
 
-Overview
-
--   [ ] [Error Handling](https://web.microsoftstream.com/video/5fcd4c8a-4e7b-41ac-9836-d1366da97c82?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
-
--   [ ] Coding Standards
+**Topics:**
+- [ ] [Error Handling](https://web.microsoftstream.com/video/5fcd4c8a-4e7b-41ac-9836-d1366da97c82?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
+- [ ] Coding standards enforcement
+- [ ] Exception handling patterns
 
 [Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%204)
 
-[![.NET - Phase 4 - Step 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase4-step2.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase4-step2.yml)
+[![.NET - Phase 4 - Final Solution](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase4-finalsolution.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase4-finalsolution.yml)
 
 ### Phase 5 - Performance Improvement
 
-In Phase 5, we will enhance system performance by introducing caching and response compression. Caching will be implemented for scenarios where data retrieval involves content that does not change frequently, reducing redundant operations and improving load times. Additionally, response compression will be added to increase app responsiveness by reducing the size of data transferred between the server and clients that support it.
+Optimize application performance with caching and compression strategies.
 
--   [ ] [Performance and Memory Management](https://web.microsoftstream.com/video/64098be8-6979-4c10-85f4-efa91d0cb1f1?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
-
-Increasing Performance
-
--   [ ] Caching
--   [ ] Compression
+**Topics:**
+- [ ] [Performance and Memory Management](https://web.microsoftstream.com/video/64098be8-6979-4c10-85f4-efa91d0cb1f1?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
+- [ ] Response caching
+- [ ] Compression middleware
 
 [Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%205)
 
-[![.NET - Phase 5 - Step 2](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase5-step2.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase5-step2.yml)
+[![.NET - Phase 5 - Final Solution](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase5-finalsolution.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase5-finalsolution.yml)
 
-### Phase 6 - Events
+### Phase 6 - Events and Background Jobs
 
-In Phase 6, we will implement an email notification system to alert users when they are late in completing a task on their TODO list. This feature ensures that users are promptly informed about overdue tasks, helping them stay on top of their responsibilities.
+Implement domain events, email notifications, and background job processing.
 
-Increasing Performance
-
--   [ ] Domain Events
--   [ ] Simple Email Notification
--   [ ] Schedule Background Jobs
-    -   [ ] Hangfire
+**Topics:**
+- [ ] Domain Events pattern
+- [ ] Email notification system
+- [ ] Background job scheduling with Hangfire
 
 [Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%206)
 
-[![.NET - Phase 6 - Step 3](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-step3.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-step3.yml)
+[![.NET - Phase 6 - Final Solution](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-finalsolution.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase6-finalsolution.yml)
 
 ### Phase 7 - Microservices
 
--   [ ] [Overview](https://learn.microsoft.com/en-us/aspnet/core/tutorials/getting-started-with-nswag?view=aspnetcore-7.0&tabs=visual-studio)
+Build API clients and understand microservices architecture patterns.
 
-In Phase 7, we will integrate an API client, a set of tools and protocols that help streamline the development of web applications. By using an API client, we can avoid reinventing the wheel for common operations, significantly speeding up the development process and improving efficiency.
-
--   [ ] Intro
--   [ ] API Client
+**Topics:**
+- [ ] [NSwag Overview](https://learn.microsoft.com/en-us/aspnet/core/tutorials/getting-started-with-nswag?view=aspnetcore-7.0&tabs=visual-studio)
+- [ ] API client generation
+- [ ] Service-to-service communication
 
 [Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%207)
 
-### Phase 8 - User Interface
+### Phase 8 - Security
 
-In Phase 8, we will develop a simple website using the MVC (Model-View-Controller) pattern. This site will interact with the API built in the previous phases to manage TODO items. By leveraging MVC, we can separate concerns effectively, providing a clean structure for the application while allowing users to interact with their tasks seamlessly.
+Secure your application with authentication, authorization, and security best practices.
 
-Overview
-
--   [ ] [MVC Part 1](https://web.microsoftstream.com/video/61e64cfa-c3ba-45c3-9811-e5bc25968a2a?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
--   [ ] [MVC Part 2](https://web.microsoftstream.com/video/315b2034-0aa5-43ee-b030-562f4a597cfd?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
-
-We will be building a basic E List website for clients. To help us do this you can use [E List Theme Template](https://github.com/entelect-incubator/Theme).
-
-[Documentation](https://web.microsoftstream.com/video/315b2034-0aa5-43ee-b030-562f4a597cfd?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
-
-E List Website
+**Topics:**
+- [ ] JWT Authentication
+- [ ] OAuth2 integration
+- [ ] Antiforgery tokens
+- [ ] HTTPS & HSTS
+- [ ] Secrets management
 
 [Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%208)
 
-### Phase 9 - Security Coming Soon
+### Phase 9 - User Interface
 
-With improved performance and a growing customer base, it’s crucial to secure the website to protect sensitive data and ensure user privacy. In Phase 9, we will implement key security measures, such as data encryption, secure authentication, and protection against common vulnerabilities, ensuring the system is robust and safeguarded against potential threats.
+Build front-end clients with MVC, Razor, or Blazor for admin dashboard and customer website.
 
-Overview
+**Topics:**
+- [ ] Admin Dashboard (Portal)
+- [ ] Customer Website
+- [ ] Server-side rendering
 
--   [ ] [Security](https://web.microsoftstream.com/video/2a2b5226-34cb-49ac-b8fe-880cb9ac893c?channelId=fe5bc582-9acb-4952-9b71-b29aab0bc9e9)
+[Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%209)
 
-### Recommended libraries
+[![.NET - Phase 9 - Final Solution](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase9-finalsolution.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase9-finalsolution.yml)
 
-#### Nuget libraries
+### Phase 10 - Database Migrations
 
-##### Mapperly
+Implement automated database migrations using DbUp for version-controlled schema management.
 
--   **Mapperly**: is a .NET source generator for generating object mappings.
+**Topics:**
+- [ ] DbUp migration framework
+- [ ] Version tracking
+- [ ] Idempotent migrations
+- [ ] CI/CD integration
 
-    Because Mapperly creates the mapping code at build time, there is minimal overhead at runtime. Even better, the generated code is perfectly readable, allowing you to verify the generated mapping code easily.
+[Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%2010)
 
-##### RestSharp
+### Phase 11 - Cloud-Native Orchestration
 
--   **RestSharp**: REST stands for Representational State Transfer. RestSharp is the most popular HTTP client library for .NET. Using this library, C# developers can easily call remote resources over HTTP. It handles serializing the request body to JSON or XML and deserializing responses.
+Combine .NET Aspire orchestration with DbUp migrations for production-ready microservices.
 
-##### Json.NET
+**Topics:**
+- [ ] .NET Aspire 8.0 service orchestration
+- [ ] Service discovery and health checks
+- [ ] OpenTelemetry observability
+- [ ] Docker containerization
 
--   **Json.NET**: Json.NET is a free and open-source library in .NET with over 1 billion NuGet downloads. Key features include:
+[Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%2011)
 
-##### Serilog
+### Phase 12 - Custom Dispatcher Pattern
 
--   **Serilog**: Serilog message templates are a simple DSL extending .NET format strings. Parameters can be named, and their values are serialized as properties on the event for incredible searching and sorting flexibility.
+Implement a custom CQRS dispatcher from scratch for complete control over command/query separation and pipeline behaviors.
 
-##### MediatR
+**Topics:**
+- [ ] Custom Dispatcher implementation (based on [stianleroux/Dispatch](https://github.com/stianleroux/Dispatch))
+- [ ] ICommand<TResult> and IQuery<TResult> interfaces
+- [ ] Pipeline behaviors for cross-cutting concerns
+- [ ] Scrutor for automatic handler registration
+- [ ] Exception handling and actions
+- [ ] Notification pattern for domain events
+- [ ] Clean separation of commands and queries
 
--   **MediatR**: A simple mediator implementation in .NET for in-process messaging with no dependencies.
+[Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%2012)
 
-##### NUnit
+### Phase 13 - MCP Server & AI Integration
 
--   **NUnit**: Testing plays a major role in software development to ensure the correctness of the code.
+Build a Model Context Protocol (MCP) server enabling AI assistants to interact with your application through natural language.
 
-##### NSubstitute
+**Topics:**
+- [ ] Model Context Protocol (MCP)
+- [ ] STDIO-based communication
+- [ ] JSON-RPC message handling
+- [ ] AI tool integration (Claude, ChatGPT)
+- [ ] 18 domain-specific tools for pizza management
 
--   **NSubstitute**: Designed as a friendly substitute for .NET mocking libraries.
+[Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%2013)
 
-##### Entity Framework Core
+### Phase 14 - External API Integration
 
--   **Entity Framework Core**: EF Core is a lightweight, extensible, open-source, and cross-platform version of the popular Entity Framework data access technology.
+Learn to integrate with external APIs using the Pezza Mock Delivery Service, implementing webhooks, retry logic, and resilient patterns.
 
-##### FluentValidation
+**Topics:**
+- [ ] HttpClient patterns with typed clients
+- [ ] Webhook receivers
+- [ ] Retry policies with Polly
+- [ ] Event-driven integration
+- [ ] Multi-service docker-compose
 
--   **FluentValidation**: A .NET library for building strongly typed validation rules. It uses a Fluent interface and lambda expressions to define validation rules, maintaining clean domain code and integrating validation logic.
+[Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%2014)
 
-##### FluentEmail
+### Phase 15 - GitHub Container Registry Publishing
 
--   **FluentEmail**: An open-source .NET library that integrates email-sending functionality into your .NET application in 10 minutes. It supports Razor for designing email templates and can send emails using SendGrid, MailGun, SMTP, and more.
+Containerize and publish the Pezza API to GitHub Container Registry using GitHub Actions CI/CD.
 
-##### Hangfire
+**Topics:**
+- [ ] Docker multi-stage builds
+- [ ] GitHub Actions workflows
+- [ ] GitHub Container Registry (GHCR)
+- [ ] Image versioning strategies
+- [ ] Frontend consumption patterns
 
--   **Hangfire**: An open-source framework for creating, processing, and managing background work. It allows background jobs to run within the main process of your application without needing a dedicated service.
+[Click here to get started](https://github.com/entelect-incubator/.NET/tree/master/Phase%2015)
 
-##### QuestPdf (License)
+## Complete Architecture Guide
 
--   **QuestPDF**: A modern open-source .NET library for PDF document generation, featuring a comprehensive layout engine powered by a concise and discoverable C# Fluent API.
+For a comprehensive overview of all phases and architecture evolution:
+- 📖 **[Architecture Complete](./ARCHITECTURE-COMPLETE.md)** - Full phase overview, technology stack evolution, and running instructions
+
+## Docs Website
+
+- 🌐 **[Open the docs website](./docs/index.html)** - Explore phases, learning objectives, outcomes, and build labels in one place
+
+## Recommended Libraries
+
+- [ ] NuGet libraries and tools used across all phases

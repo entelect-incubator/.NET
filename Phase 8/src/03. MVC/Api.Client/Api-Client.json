@@ -1,0 +1,446 @@
+{
+  "x-generator": "NSwag v14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))",
+  "swagger": "2.0",
+  "info": {
+    "title": "Pezza Api",
+    "version": "V1"
+  },
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/Todos/Search": {
+      "post": {
+        "tags": [
+          "Todos"
+        ],
+        "summary": "Get all Todos.",
+        "operationId": "Todos_Search",
+        "consumes": [
+          "application/json-patch+json",
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "parameters": [
+          {
+            "name": "model",
+            "in": "body",
+            "required": true,
+            "description": "Todo Search Model",
+            "schema": {
+              "$ref": "#/definitions/SearchTodoModel"
+            },
+            "x-nullable": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "x-nullable": false,
+            "description": "ActionResult",
+            "schema": {
+              "$ref": "#/definitions/ResultOfIEnumerableOfTodoModel"
+            }
+          },
+          "400": {
+            "x-nullable": false,
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/ErrorResult"
+            }
+          }
+        }
+      }
+    },
+    "/Todos": {
+      "post": {
+        "tags": [
+          "Todos"
+        ],
+        "summary": "Create a task.",
+        "description": "Sample request:\n            \n    POST api/Todo\n    {\n      \"task\": \"New task\",\n    }",
+        "operationId": "Todos_Add",
+        "consumes": [
+          "application/json-patch+json",
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "parameters": [
+          {
+            "name": "model",
+            "in": "body",
+            "required": true,
+            "description": "Create Todo Model",
+            "schema": {
+              "$ref": "#/definitions/CreateTodoModel"
+            },
+            "x-nullable": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "x-nullable": false,
+            "description": "ActionResult",
+            "schema": {
+              "$ref": "#/definitions/ResultOfTodoModel"
+            }
+          },
+          "400": {
+            "x-nullable": false,
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/ErrorResult"
+            }
+          }
+        }
+      }
+    },
+    "/Todos/Complete": {
+      "post": {
+        "tags": [
+          "Todos"
+        ],
+        "summary": "Complete a task.",
+        "description": "Sample request:\n            \n    PUT api/Todo/Complete\n    {\n      \"id\": \"1\"\n    }",
+        "operationId": "Todos_Complete",
+        "consumes": [
+          "application/json-patch+json",
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "body",
+            "required": true,
+            "description": "Task id",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-nullable": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "x-nullable": false,
+            "description": "ActionResult",
+            "schema": {
+              "$ref": "#/definitions/ResultOfTodoModel"
+            }
+          },
+          "400": {
+            "x-nullable": false,
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/ErrorResult"
+            }
+          }
+        }
+      }
+    },
+    "/Todos/{id}": {
+      "put": {
+        "tags": [
+          "Todos"
+        ],
+        "summary": "Update Todo.",
+        "description": "Sample request:\n            \n    PUT api/Todo/1\n    {\n      \"Task\": \"New task\"\n    }",
+        "operationId": "Todos_Update",
+        "consumes": [
+          "application/json-patch+json",
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Todo id",
+            "format": "int32",
+            "x-nullable": false
+          },
+          {
+            "name": "model",
+            "in": "body",
+            "required": true,
+            "description": "Update Todo Model",
+            "schema": {
+              "$ref": "#/definitions/UpdateTodoModel"
+            },
+            "x-nullable": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "x-nullable": false,
+            "description": "ActionResult",
+            "schema": {
+              "$ref": "#/definitions/Result"
+            }
+          },
+          "400": {
+            "x-nullable": false,
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/ErrorResult"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Todos"
+        ],
+        "summary": "Delete a task by Id.",
+        "operationId": "Todos_Delete",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Task Id",
+            "format": "int32",
+            "x-nullable": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "x-nullable": false,
+            "description": "ActionResult",
+            "schema": {
+              "$ref": "#/definitions/Result"
+            }
+          },
+          "400": {
+            "x-nullable": false,
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/ErrorResult"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ResultOfIEnumerableOfTodoModel": {
+      "type": "object",
+      "required": [
+        "Succeeded"
+      ],
+      "properties": {
+        "Succeeded": {
+          "type": "boolean"
+        },
+        "Data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TodoModel"
+          }
+        },
+        "Count": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "Errors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "TodoModel": {
+      "type": "object",
+      "required": [
+        "Id",
+        "Task",
+        "IsCompleted",
+        "SessionId"
+      ],
+      "properties": {
+        "Id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "Task": {
+          "type": "string"
+        },
+        "IsCompleted": {
+          "type": "boolean"
+        },
+        "DateCreated": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "SessionId": {
+          "type": "string",
+          "format": "guid"
+        }
+      }
+    },
+    "ErrorResult": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/Result"
+        },
+        {
+          "type": "object",
+          "required": [
+            "Succeeded"
+          ],
+          "properties": {
+            "Succeeded": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        }
+      ]
+    },
+    "Result": {
+      "type": "object",
+      "required": [
+        "Succeeded"
+      ],
+      "properties": {
+        "Succeeded": {
+          "type": "boolean"
+        },
+        "Errors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "SearchTodoModel": {
+      "type": "object",
+      "required": [
+        "PagingArgs"
+      ],
+      "properties": {
+        "Task": {
+          "type": "string"
+        },
+        "IsCompleted": {
+          "type": "boolean"
+        },
+        "DateCreated": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "Year": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "Month": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "Day": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "SessionId": {
+          "type": "string",
+          "format": "guid"
+        },
+        "OrderBy": {
+          "type": "string"
+        },
+        "PagingArgs": {
+          "$ref": "#/definitions/PagingArgs"
+        }
+      }
+    },
+    "PagingArgs": {
+      "type": "object",
+      "required": [
+        "Offset",
+        "Limit",
+        "UsePaging"
+      ],
+      "properties": {
+        "Offset": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "Limit": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "UsePaging": {
+          "type": "boolean"
+        }
+      }
+    },
+    "ResultOfTodoModel": {
+      "type": "object",
+      "required": [
+        "Succeeded"
+      ],
+      "properties": {
+        "Succeeded": {
+          "type": "boolean"
+        },
+        "Data": {
+          "$ref": "#/definitions/TodoModel"
+        },
+        "Count": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "Errors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "CreateTodoModel": {
+      "type": "object",
+      "required": [
+        "Task",
+        "IsCompleted",
+        "SessionId"
+      ],
+      "properties": {
+        "Task": {
+          "type": "string"
+        },
+        "IsCompleted": {
+          "type": "boolean"
+        },
+        "SessionId": {
+          "type": "string",
+          "format": "guid"
+        }
+      }
+    },
+    "UpdateTodoModel": {
+      "type": "object",
+      "properties": {
+        "Task": {
+          "type": "string"
+        },
+        "IsCompleted": {
+          "type": "boolean"
+        },
+        "SessionId": {
+          "type": "string",
+          "format": "guid"
+        }
+      }
+    }
+  }
+}

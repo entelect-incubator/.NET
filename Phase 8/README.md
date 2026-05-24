@@ -1,105 +1,168 @@
-<img align="left" width="116" height="116" src="./Assets/logo.png" />
+# &nbsp;**Pezza - Phase 8 — OpenAPI & NSwag Client** [![.NET - Phase 8](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase8-finalsolution.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase8-finalsolution.yml)
 
-# &nbsp;**E List - Phase 8** [![.NET - Phase 8 - Start Solution](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase8-startsolution.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase8-startsolution.yml)
+![Pezza logo](./pezza-logo.png "Pezza logo")
 
-<br/><br/>
+## Quick facts
 
-# **Frontend**
+- Estimated time: 3 - 6 hours (assumes familiarity with ASP.NET Core and basic OpenAPI concepts)
+- Difficulty: Intermediate ▮▮▮▯▯ (3/5)
+- Target SDK: .NET 10 (net10)
+- Audience: Developers moving from Java/other platforms to C# who are comfortable with HTTP APIs and want to learn API client generation and OpenAPI tooling
 
-In Phase 8, we will implement the front-end of the TODO application using both MVC and Blazor frameworks.
+## Goal
 
-## **Setup**
+This phase shows how to generate an Api.Client from the running Api using NSwag and OpenAPI. You'll add an NSwag configuration, generate a client (C#) and make the client part of a small Console/Api.Client project. The produced client can be used by front-ends or other services and can also be used as input to other code generators (Angular / React) if needed.
 
--   [ ] Use the Final Solution from Phase 7 to get started or use Phase8\01. StartSolution
--   [ ] Use this template as a starter theme to streamline development, ensuring consistency and efficiency across multiple applications within the incubator's ecosystem. [E List Theme Template](https://github.com/entelect-incubator/Theme)
--   [ ] To allow calls from your Web.API you need to add CORS in your starup.cs
+## Prerequisites
 
-[About CORS](https://www.youtube.com/watch?v=UjozQOaGt1k)
+- Completed Phase 7 (API running locally)
+- .NET SDK 10 installed
+- Basic understanding of OpenAPI/Swagger and HTTP APIs
 
-public void ConfigureServices(IServiceCollection services)
+## What you'll do (high level)
 
-```cs
-services.AddCors(options =>
+1. Add an Api.Client console/project to host the generated client.
+2. Add an `Api.nswag` file to describe how to generate OpenAPI and the client.
+3. Wire NSwag (MSBuild / CLI) into the Api.Client build or run it manually.
+4. Inspect the generated client and run a sample call.
+
+## Validate / Quick commands
+
+Run these from the repository root (Windows PowerShell):
+
+```powershell
+# check .NET version (should be 10.x)
+dotnet --version
+
+# build the Phase 7 start solution (adjust path if you put the solution elsewhere)
+dotnet build "./Phase 7/src/01. StartSolution/Pezza.slnx"
+
+# (optional) run the Api and generate the client using NSwag (if configured in msbuild target)
+dotnet build "./Phase 7/src/01. StartSolution/Pezza.slnx" /t:Restore,Build
+```
+
+Note: if your local layout differs, search for the Phase 7 solution under `Phase 7/src` and build that solution instead.
+
+## Outcomes / Learning goals
+
+- Understand how NSwag can produce an OpenAPI document from an ASP.NET Core Api and generate C# clients.
+- Learn how to include API client generation in your build pipeline (MSBuild target) and the trade-offs (auto-generated code, dependency management).
+- Be able to generate clients for other platforms using the OpenAPI JSON output.
+
+---
+
+### Microservices & NSwag
+
+Microservices are a common architectural pattern for decoupling and scaling responsibilities. In the .NET world, NSwag and NSwag.AspNetCore are convenient tools to extract OpenAPI specs from an ASP.NET Core Api and generate strongly-typed clients for C# (and other languages) so consumers can call the Api easily.
+
+This phase walks you through creating an `Api.Client` that consumes the Api's OpenAPI document and produces a reusable client. You can then use the generated client from console apps, worker services, or UI projects.
+
+## Setup
+
+Create a new Console Application `Api.Client` and add the following files and packages where appropriate.
+
+![Api client sample output](./Assets/2023-07-23-21-53-22.png "Generated client sample")
+
+### NuGet packages (suggested)
+
+- NSwag.MSBuild (Api.Client) — to run generation as part of MSBuild
+- Newtonsoft.Json (Api.Client) — for JSON handling in generated clients (optional)
+- NSwag.AspNetCore (Api) — to expose OpenAPI from the Api project
+
+### Add `Api.nswag`
+
+Create an `Api.nswag` file in the `Api.Client` project (or repo root) with the generator and document settings. Example (trimmed for brevity):
+
+```json
 {
-    options.AddPolicy(
-        "CorsPolicy",
-        builder => builder.AllowAnyOrigin()
-            .AllowAnyMethod()
-            .AllowAnyHeader());
+  "runtime": "Net70",
+  "documentGenerator": {
+    "aspNetCoreToOpenApi": {
+      "project": "../Api/Api.csproj",
+      "output": "Api-Client.json",
+      "documentName": "v1"
+    }
+  },
+  "codeGenerators": {
+    "openApiToCSharpClient": {
+      "className": "{controller}Client",
+      "namespace": "API.Client.Template",
+      "output": "Api-Client.cs"
+    }
+  }
+}
+```
+
+You can copy the full options from the existing file in this README or adapt them to your needs.
+
+## Build target (MSBuild example)
+
+Add a target to `Api.Client.csproj` to run NSwag after build (example):
+
+```xml
+<Target Name="NSwag" AfterTargets="PostBuild" Condition=" '$(NO_RECURSE)' != 'true' ">
+  <Exec Command="$(NSwagExe_Net70) run Api.nswag /variables:Configuration=$(Configuration)" ContinueOnError="true" />
+</Target>
+```
+
+Adjust paths and settings to match your environment. If you prefer CLI, run `nswag run Api.nswag` manually.
+
+## API Startup changes (exposing OpenAPI)
+
+Replace or extend existing Swagger setup with NSwag in your `Startup`/`Program` file, for example:
+
+```csharp
+app.UseOpenApi();
+app.UseSwaggerUi3(c => c.AdditionalSettings.Add("displayRequestDuration", true));
+
+services.AddSwaggerDocument(config =>
+{
+    config.GenerateEnumMappingDescription = true;
+    config.PostProcess = document =>
+    {
+        document.Info.Version = "V1";
+        document.Info.Title = "Pezza Api";
+    };
 });
 ```
 
-public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+Finished client (example):
 
-```cs
-app.UseCors("CorsPolicy");
-```
+![Client example](./Assets/2023-07-23-22-13-30.png "Client example output")
 
-## **Different .NET Frontend Types**
+---
 
-How to choose?
+## Next
 
-Choose **Blazor** when you want a full-stack C# experience, value component-based UI, and require real-time interactivity. Go for **MVC** when you prefer a well-established architecture, need strong cross-browser compatibility and SEO, or want more flexibility in your front-end choices.
+When you're happy with the generated client, move to Phase 8 to create the UI that consumes the Api and/or the generated client.
 
-Remember that each project is unique, so assessing your project's specific needs, your team's expertise, and the long-term goals of the application will guide your decision towards **Blazor**, **MVC**, or other suitable options.
+[Move to Phase 9](https://github.com/entelect-incubator/.NET/tree/master/Phase%209)
 
-For mobile choose [.NET MAUI](https://learn.microsoft.com/en-us/dotnet/maui/what-is-maui)
+## Next Step
+Move to [Phase 9](https://github.com/entelect-incubator/.NET/tree/master/Phase%209)
 
-Different frontend technologies to choose from
+---
 
-### **Why choose MVC**
+Teaching Thread
 
-#### **Resources**
+- From: Phase 7 produced API clients and clarified service contracts.
+- This phase: focus on OpenAPI, NSwag and reliable client generation.
+- Next: Phase 9 shows UI integration and user-facing concerns.
 
--   [ ] [MVC recommended tutorials and articles](https://learn.microsoft.com/en-us/aspnet/mvc/overview/getting-started/mvc-learning-sequence)
+Libraries (why they matter)
 
-Sure, here's a blurb about why you might use the MVC (Model-View-Controller) architectural pattern in C#:
+- NSwag / Swashbuckle: generate OpenAPI documents and language-specific clients — teaches contract-driven development.
+- Newtonsoft.Json vs System.Text.Json: explain choices and serialization trade-offs for generated clients.
 
-"The MVC (Model-View-Controller) architectural pattern is a powerful framework for structuring and organizing C# applications, particularly those with complex user interfaces and business logic. MVC promotes a clear separation of concerns, allowing developers to divide their code into three distinct components:
+Clean Code & SOLID (teaching notes)
 
-1. **Model:** The Model represents the application's data and business logic. It encapsulates the data manipulation, validation, and interactions with the database or external services. By isolating these concerns, changes to the data or logic don't necessarily affect the other parts of the application.
+- Treat generated client code as a separate artifact—do not hand-edit generated files; layer wrappers if you need to adapt behavior.
+- Keep API contracts stable and version them when breaking changes are introduced.
 
-2. **View:** The View is responsible for displaying the data to the user. It represents the user interface elements and their arrangement. Separating the View from the Model allows for flexible user interface designs and makes it easier to update the UI without altering the underlying logic.
+MediatR policy
 
-3. **Controller:** The Controller acts as an intermediary between the Model and the View. It handles user inputs, processes requests, and orchestrates the communication between the Model and the View. This separation ensures that the user interactions don't directly impact the data or UI rendering, enhancing maintainability and testability.
+- NSwag and OpenAPI are orthogonal to dispatcher choices; do not introduce MediatR solely for client generation.
 
-By adopting the MVC pattern in C#, developers can achieve a modular, organized, and maintainable codebase. This separation of concerns enhances collaboration among development teams, as different team members can work on different components without stepping on each other's toes. Additionally, MVC simplifies testing, as each component can be tested independently, leading to higher code quality and more efficient bug fixes. Overall, utilizing MVC in C# projects offers a robust foundation for creating scalable and adaptable applications."
+Notes
 
-#### **Practical**
-
--   [ ] [E List Todo using MVC](https://github.com/entelect-incubator/.NET/tree/master/Phase%208/MVC)
-
-## Why Choose Blazor
-
-#### **Resources**
-
--   [ ] [ASP.NET Core Blazor](https://learn.microsoft.com/en-us/aspnet/core/blazor/?view=aspnetcore-7.0)
-
-Blazor is a modern web framework developed by Microsoft that offers several compelling advantages for web application development:
-
-1. **Single Language Stack:** With Blazor, you can build interactive web applications using C# and .NET instead of having to learn and use JavaScript.
-
-2. **Code Reusability:** Blazor promotes code reusability between client-side and server-side components, leading to faster development and easier maintenance.
-
-3. **Type Safety:** The statically typed nature of C# helps catch errors at compile-time, improving the robustness of applications.
-
-4. **Full Integration with .NET Ecosystem:** Blazor seamlessly integrates with the broader .NET ecosystem, enabling developers to leverage existing knowledge and tools.
-
-5. **Component-Based Architecture:** Following a component-based architecture akin to React or Angular, Blazor simplifies the creation and management of complex UI elements.
-
-6. **Rapid Development:** Blazor's declarative syntax and component-based approach accelerate development by abstracting away low-level tasks.
-
-7. **Real-time Interactivity:** Blazor supports real-time communication via SignalR, facilitating the creation of dynamic applications that update in response to data changes.
-
-8. **Client-Side or Server-Side Rendering:** Blazor offers both client-side and server-side rendering options, accommodating various performance and SEO needs.
-
-9. **Familiar Tooling:** If you're familiar with Visual Studio and other .NET tools, you'll find Blazor's toolset comfortable to work with.
-
-10. **Strong Community and Support:** The growing Blazor community provides resources, tutorials, and community-driven libraries for assistance.
-
-Ultimately, your choice to adopt Blazor should align with your project's needs, your team's skills, and your personal preferences. If you're already well-versed in C# and .NET and wish to build dynamic web applications with a consistent technology stack, Blazor could be an excellent fit.
-
-#### **Practical**
-
--   [ ] [MVC](https://github.com/entelect-incubator/.NET/tree/master/Phase%208/MVC)
--   [ ] [Blazor]() Coming Soon!
+- Add quick commands to regenerate clients in CI and document expected output locations.

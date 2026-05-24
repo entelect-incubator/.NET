@@ -1,0 +1,10 @@
+﻿  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Common -> C:\Dev\Incubator\.NET\Phase 8\src\03. MVC\Common\bin\Debug\net10.0\Common.dll
+  DataAccess -> C:\Dev\Incubator\.NET\Phase 8\src\03. MVC\DataAccess\bin\Debug\net10.0\DataAccess.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:02.18

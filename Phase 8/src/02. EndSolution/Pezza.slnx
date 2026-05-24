@@ -1,0 +1,24 @@
+<Solution>
+  <Folder Name="/01 Apis/">
+    <Project Path="Api.Client/Api.Client.csproj" />
+    <Project Path="Api/Api.csproj" />
+    <Project Path="Scheduler/Scheduler.csproj" />
+  </Folder>
+  <Folder Name="/02 Core/">
+    <Project Path="Core/Core.csproj" />
+  </Folder>
+  <Folder Name="/03 Database/">
+    <Project Path="DataAccess/DataAccess.csproj" />
+  </Folder>
+  <Folder Name="/04 Common/">
+    <Project Path="Common/Common.csproj" />
+    <Project Path="Utilities/Utilities.csproj" />
+  </Folder>
+  <Folder Name="/05 Tests/">
+    <Project Path="Test/Test.csproj" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path="StyleCopRuleSet.ruleset" />
+  </Folder>
+</Solution>

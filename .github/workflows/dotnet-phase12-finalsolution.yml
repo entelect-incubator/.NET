@@ -1,0 +1,29 @@
+name: .NET - Phase 12 - Final Solution
+
+on:
+    push:
+        branches: [ main, master ]
+        paths:
+            - "Phase 12/**"
+            - ".github/workflows/dotnet-phase12-finalsolution.yml"
+    pull_request:
+        branches: [ main, master ]
+        paths:
+            - "Phase 12/**"
+            - ".github/workflows/dotnet-phase12-finalsolution.yml"
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v4
+            - name: Setup .NET
+              uses: actions/setup-dotnet@v4
+              with:
+                  dotnet-version: 10.0.x
+            - name: Install dependencies
+              run: dotnet restore "./Phase 12/src/02. FinalSolution/Pezza.slnx"
+            - name: Build
+              run: dotnet build "./Phase 12/src/02. FinalSolution/Pezza.slnx" --configuration
+                  Release --no-restore

@@ -1,0 +1,37 @@
+﻿namespace Common.Mappers;
+
+using Common.Models;
+
+public static class PizzaMapper
+{
+	public static PizzaModel Map(this Pizza entity)
+		=> new()
+		{
+			Id = entity.Id,
+			Name = entity.Name,
+			Description = entity.Description,
+			Price = entity.Price,
+			DateCreated = entity.DateCreated
+		};
+
+	public static Pizza Map(this PizzaModel model)
+	{
+		var entity = new Pizza
+		{
+			Id = model.Id,
+			Name = model.Name,
+			Description = model.Description,
+			Price = model.Price,
+			DateCreated = model.DateCreated
+		};
+
+		return entity;
+	}
+
+	public static IEnumerable<PizzaModel> Map(this List<Pizza> entities)
+		=> entities.Select(x => x.Map());
+
+	public static IEnumerable<Pizza> Map(this List<PizzaModel> models)
+		=> models.Select(x => x.Map());
+}
+

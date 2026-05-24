@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>FluentValidation.DependencyInjectionExtensions</name>
+    </assembly>
+    <members>
+        <member name="M:FluentValidation.ServiceCollectionExtensions.AddValidatorsFromAssemblies(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Collections.Generic.IEnumerable{System.Reflection.Assembly},Microsoft.Extensions.DependencyInjection.ServiceLifetime,System.Func{FluentValidation.AssemblyScanner.AssemblyScanResult,System.Boolean},System.Boolean)">
+            <summary>
+            Adds all validators in specified assemblies
+            </summary>
+            <param name="services">The collection of services</param>
+            <param name="assemblies">The assemblies to scan</param>
+            <param name="lifetime">The lifetime of the validators. The default is scoped (per-request in web applications)</param>
+            <param name="filter">Optional filter that allows certain types to be skipped from registration.</param>
+            <param name="includeInternalTypes">Include internal validators. The default is false.</param>
+            <returns></returns>
+        </member>
+        <member name="M:FluentValidation.ServiceCollectionExtensions.AddValidatorsFromAssembly(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Reflection.Assembly,Microsoft.Extensions.DependencyInjection.ServiceLifetime,System.Func{FluentValidation.AssemblyScanner.AssemblyScanResult,System.Boolean},System.Boolean)">
+            <summary>
+            Adds all validators in specified assembly
+            </summary>
+            <param name="services">The collection of services</param>
+            <param name="assembly">The assembly to scan</param>
+            <param name="lifetime">The lifetime of the validators. The default is scoped (per-request in web application)</param>
+            <param name="filter">Optional filter that allows certain types to be skipped from registration.</param>
+            <param name="includeInternalTypes">Include internal validators. The default is false.</param>
+            <returns></returns>
+        </member>
+        <member name="M:FluentValidation.ServiceCollectionExtensions.AddValidatorsFromAssemblyContaining(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Type,Microsoft.Extensions.DependencyInjection.ServiceLifetime,System.Func{FluentValidation.AssemblyScanner.AssemblyScanResult,System.Boolean},System.Boolean)">
+            <summary>
+            Adds all validators in the assembly of the specified type
+            </summary>
+            <param name="services">The collection of services</param>
+            <param name="type">The type whose assembly to scan</param>
+            <param name="lifetime">The lifetime of the validators. The default is scoped (per-request in web applications)</param>
+            <param name="filter">Optional filter that allows certain types to be skipped from registration.</param>
+            <param name="includeInternalTypes">Include internal validators. The default is false.</param>
+            <returns></returns>
+        </member>
+        <member name="M:FluentValidation.ServiceCollectionExtensions.AddValidatorsFromAssemblyContaining``1(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.DependencyInjection.ServiceLifetime,System.Func{FluentValidation.AssemblyScanner.AssemblyScanResult,System.Boolean},System.Boolean)">
+            <summary>
+            Adds all validators in the assembly of the type specified by the generic parameter
+            </summary>
+            <param name="services">The collection of services</param>
+            <param name="lifetime">The lifetime of the validators. The default is scoped (per-request in web applications)</param>
+            <param name="filter">Optional filter that allows certain types to be skipped from registration.</param>
+            <param name="includeInternalTypes">Include internal validators. The default is false.</param>
+            <returns></returns>
+        </member>
+        <member name="M:FluentValidation.ServiceCollectionExtensions.AddScanResult(Microsoft.Extensions.DependencyInjection.IServiceCollection,FluentValidation.AssemblyScanner.AssemblyScanResult,Microsoft.Extensions.DependencyInjection.ServiceLifetime,System.Func{FluentValidation.AssemblyScanner.AssemblyScanResult,System.Boolean})">
+            <summary>
+            Helper method to register a validator from an AssemblyScanner result
+            </summary>
+            <param name="services">The collection of services</param>
+            <param name="scanResult">The scan result</param>
+            <param name="lifetime">The lifetime of the validators. The default is scoped (per-request in web applications)</param>
+            <param name="filter">Optional filter that allows certain types to be skipped from registration.</param>
+            <returns></returns>
+        </member>
+        <member name="T:FluentValidation.ServiceProviderValidatorFactory">
+            <summary>
+            Validator factory implementation that uses the asp.net service provider to construct validators.
+            </summary>
+        </member>
+    </members>
+</doc>

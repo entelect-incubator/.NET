@@ -1,0 +1,103 @@
+[
+	{
+		"category": "GlobalUsings",
+		"description": "Replace MediatR global using with LiteBus",
+		"oldString": "global using MediatR;",
+		"newString": "global using LiteBus.Commands.Abstractions;\nglobal using LiteBus.Queries.Abstractions;",
+		"filePatterns": ["GlobalUsings.cs"],
+		"priority": 1
+	},
+	{
+		"category": "DependencyInjection",
+		"description": "Replace AddMediatR with AddLiteBus",
+		"oldString": "services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<",
+		"newString": "services.AddLiteBus(cfg => cfg.RegisterServicesFromAssemblyContaining<",
+		"filePatterns": ["DependencyInjection.cs"],
+		"priority": 2
+	},
+	{
+		"category": "DependencyInjection",
+		"description": "Remove IPipelineBehavior registrations (LiteBus doesn't use them)",
+		"oldString": "services.AddTransient(typeof(IPipelineBehavior<,>), typeof(",
+		"newString": "// Removed: IPipelineBehavior (LiteBus pattern differs)",
+		"filePatterns": ["DependencyInjection.cs"],
+		"priority": 3,
+		"optional": true
+	},
+	{
+		"category": "ApiController",
+		"description": "Replace using MediatR in ApiController",
+		"oldString": "using MediatR;",
+		"newString": "using LiteBus.Commands.Abstractions;\nusing LiteBus.Queries.Abstractions;",
+		"filePatterns": ["ApiController.cs"],
+		"priority": 4
+	},
+	{
+		"category": "ApiController",
+		"description": "Replace IMediator field with separated mediators",
+		"oldString": "private IMediator mediator;",
+		"newString": "private ICommandMediator commandMediator;\n    private IQueryMediator queryMediator;",
+		"filePatterns": ["ApiController.cs"],
+		"priority": 5
+	},
+	{
+		"category": "ApiController",
+		"description": "Replace Mediator property with separated properties",
+		"oldString": "protected IMediator Mediator => this.mediator ??= this.HttpContext.RequestServices.GetService<IMediator>();",
+		"newString": "protected ICommandMediator CommandMediator => this.commandMediator ??= this.HttpContext.RequestServices.GetService<ICommandMediator>();\n\n    protected IQueryMediator QueryMediator => this.queryMediator ??= this.HttpContext.RequestServices.GetService<IQueryMediator>();",
+		"filePatterns": ["ApiController.cs"],
+		"priority": 6
+	},
+	{
+		"category": "Commands",
+		"description": "Convert IRequest<T> to ICommand<T> for commands",
+		"pattern": "public class (\\w+Command)\\s*:\\s*IRequest<",
+		"replacement": "public class $1 : ICommand<",
+		"filePatterns": ["*Command.cs"],
+		"priority": 7,
+		"isRegex": true
+	},
+	{
+		"category": "Handlers",
+		"description": "Convert IRequestHandler<TReq, TRes> to ICommandHandler<TCmd, TRes>",
+		"pattern": "IRequestHandler<(\\w+Command),\\s*(\\w+)>",
+		"replacement": "ICommandHandler<$1, $2>",
+		"filePatterns": ["*CommandHandler.cs"],
+		"priority": 8,
+		"isRegex": true
+	},
+	{
+		"category": "Queries",
+		"description": "Convert IRequest<T> to IQuery<T> for queries",
+		"pattern": "public class (\\w+Query)\\s*:\\s*IRequest<",
+		"replacement": "public class $1 : IQuery<",
+		"filePatterns": ["*Query.cs"],
+		"priority": 9,
+		"isRegex": true
+	},
+	{
+		"category": "QueryHandlers",
+		"description": "Convert IRequestHandler to IQueryHandler for queries",
+		"pattern": "IRequestHandler<(\\w+Query),\\s*(\\w+)>",
+		"replacement": "IQueryHandler<$1, $2>",
+		"filePatterns": ["*QueryHandler.cs"],
+		"priority": 10,
+		"isRegex": true
+	},
+	{
+		"category": "PackageReferences",
+		"description": "Comment out MediatR package reference",
+		"oldString": "<PackageReference Include=\"MediatR\" Version=\"",
+		"newString": "<!-- MediatR removed (migrated to LiteBus) -->\n\t<!-- <PackageReference Include=\"MediatR\" Version=\"",
+		"filePatterns": ["*.csproj"],
+		"priority": 11
+	},
+	{
+		"category": "PackageReferences",
+		"description": "Ensure LiteBus packages are present",
+		"searchString": "<PackageReference Include=\"LiteBus\"",
+		"filePatterns": ["*.csproj"],
+		"priority": 12,
+		"verifyOnly": true
+	}
+]

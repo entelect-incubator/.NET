@@ -1,203 +1,124 @@
-<img align="left" width="116" height="116" src="./Assets/logo.png" />
+﻿# &nbsp;**Pezza - Phase 7  Events & Background Tasks** [![.NET - Phase 7 - Final Solution](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase7-finalsolution.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase7-finalsolution.yml)
 
-# &nbsp;**E List - Phase 7** [![.NET - Phase 7 - Start Solution](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase7-startsolution.yml/badge.svg)](https://github.com/entelect-incubator/.NET/actions/workflows/dotnet-phase7-startsolution.yml)
+![Pezza logo](./Assets/pezza-logo.png)
 
-<br/><br/>
+## Quick facts
 
-### **Microservices**
+- .NET SDK required: 10 (net10)
+- Estimated time: 6 - 10 hours
+- Difficulty:  (advanced)
+- Audience: developers who completed Phase 6; ready to implement event-driven architecture and background processing
+- **Building on**: Phase 6's caching and optimization patterns
+- **New Concepts**: Domain events, event handlers, background job scheduling with Hangfire
 
-Microservices have become a popular architectural pattern in modern software development, providing a scalable and flexible approach to building applications. In the context of C# development, NSwag.AspNetCore is a powerful tool that facilitates the implementation of microservices. NSwag.AspNetCore is a library that seamlessly integrates with ASP.NET Core applications, enabling developers to generate OpenAPI specifications and client code effortlessly. This combination of microservices and NSwag.AspNetCore empowers teams to build robust, decoupled, and easily maintainable systems, fostering agility and innovation in the development process. In this brief introduction, we will explore the fundamentals of microservices and how NSwag.AspNetCore can enhance the implementation of these services in C# applications.
+## Why Phase 7? Event-Driven Architecture
 
-In this tutorial, we will learn how to create an Api.Client that simplifies the integration process for any API, making it easy to be consumed by various applications. Additionally, we will explore how to leverage the JSON file and OpenAPI Generator CLI to generate a wide range of libraries, such as Angular or React, further enhancing the versatility and usability of our API integration solution. Let's dive in and discover the power of these tools in streamlining the development and consumption of APIs across different platforms.
+In previous phases, commands executed synchronously and returned results immediately. But in production systems:
 
-## **Setup**
+- **Tight Coupling**: Handlers directly call multiple services (email, notifications, exports), blocking responses
+- **Scalability Issues**: Long-running work (sending emails, generating reports) slows down API responses
+- **Retry Challenges**: If email fails, the entire operation fails; no built-in retry logic
+- **Separation of Concerns**: Business logic (order creation) mixes with side effects (notifications)
 
-Create a new Class Application Api.Client
+**Solution**: Decouple commands from their side effects using **domain events** and **background jobs**:
 
-![](./Assets/2023-07-23-21-53-22.png)
+- Commands publish events after success, then return immediately
+- Event handlers react asynchronously without blocking the user
+- Background jobs (Hangfire) handle retries, scheduling, and reliability
+- Result: Faster APIs, loosely-coupled features, production-ready error handling
 
-### **Nuget Packages**
+## What We're Building
 
--   [ ] NSwag.MSBuild - Api.Client
--   [ ] Newtonsoft.Json - Api.Client
--   [ ] NSwag.AspNetCore - Api
+A **complete event-driven order processing system** with event handlers and background jobs.
 
-### **Nswag file**
+## Design Patterns Used in This Phase
 
-Add Api.nswag
+- **[CQRS Pattern](https://github.com/entelect-incubator/Design-Patterns/tree/main/CQRS)**  Commands publish domain events
+- **[Dispatcher/Mediator Pattern](https://github.com/entelect-incubator/Design-Patterns/tree/main/Dispatcher-Mediator)**  Custom dispatcher with Publish() method
+- **[Publisher-Subscriber Pattern](https://learn.microsoft.com/en-us/dotnet/architecture/dapr-for-net-developers/pub-sub)**  Event handlers react to events
+- **[Result Pattern](https://github.com/entelect-incubator/Design-Patterns/tree/main/Result-Pattern)**  Background jobs use Result<T> for idempotent retries
+- **[Idempotent Operations](https://stackoverflow.com/questions/1077412/what-is-an-idempotent-operation)**  Jobs safe to retry
 
-You will see this still can only use the latest LTS version
+## Prerequisites
 
-```json
-{
-	"runtime": "Net80",
-	"defaultVariables": null,
-	"documentGenerator": {
-		"aspNetCoreToOpenApi": {
-			"project": "../Api/Api.csproj",
-			"msBuildProjectExtensionsPath": null,
-			"configuration": null,
-			"runtime": null,
-			"targetFramework": null,
-			"noBuild": false,
-			"verbose": true,
-			"workingDirectory": null,
-			"requireParametersWithoutDefault": false,
-			"apiGroupNames": null,
-			"defaultPropertyNameHandling": "Default",
-			"defaultReferenceTypeNullHandling": "Null",
-			"defaultDictionaryValueReferenceTypeNullHandling": "NotNull",
-			"defaultResponseReferenceTypeNullHandling": "NotNull",
-			"defaultEnumHandling": "Integer",
-			"flattenInheritanceHierarchy": false,
-			"generateKnownTypes": true,
-			"generateEnumMappingDescription": true,
-			"generateXmlObjects": false,
-			"generateAbstractProperties": false,
-			"generateAbstractSchemas": true,
-			"ignoreObsoleteProperties": false,
-			"allowReferencesWithProperties": false,
-			"excludedTypeNames": [],
-			"serviceHost": null,
-			"serviceBasePath": null,
-			"serviceSchemes": [],
-			"infoTitle": "My Title",
-			"infoDescription": null,
-			"infoVersion": "1.0.0",
-			"documentTemplate": null,
-			"documentProcessorTypes": [],
-			"operationProcessorTypes": [],
-			"typeNameGeneratorType": null,
-			"schemaNameGeneratorType": null,
-			"contractResolverType": null,
-			"serializerSettingsType": null,
-			"useDocumentProvider": true,
-			"documentName": "v1",
-			"aspNetCoreEnvironment": null,
-			"createWebHostBuilderMethod": null,
-			"startupType": null,
-			"allowNullableBodyParameters": true,
-			"output": "Api-Client.json",
-			"outputType": "Swagger2",
-			"assemblyPaths": [],
-			"assemblyConfig": null,
-			"referencePaths": [],
-			"useNuGetCache": true
-		}
-	},
-	"codeGenerators": {
-		"openApiToCSharpClient": {
-			"clientBaseClass": null,
-			"configurationClass": null,
-			"generateClientClasses": true,
-			"generateClientInterfaces": true,
-			"injectHttpClient": true,
-			"disposeHttpClient": true,
-			"protectedMethods": [],
-			"generateExceptionClasses": true,
-			"exceptionClass": "ApiException",
-			"wrapDtoExceptions": true,
-			"useHttpClientCreationMethod": false,
-			"httpClientType": "System.Net.Http.HttpClient",
-			"useHttpRequestMessageCreationMethod": false,
-			"useBaseUrl": true,
-			"generateBaseUrlProperty": true,
-			"generateSyncMethods": true,
-			"exposeJsonSerializerSettings": false,
-			"clientClassAccessModifier": "public",
-			"typeAccessModifier": "public",
-			"generateContractsOutput": false,
-			"contractsNamespace": null,
-			"contractsOutputFilePath": null,
-			"parameterDateTimeFormat": "s",
-			"parameterDateFormat": "yyyy-MM-dd",
-			"generateUpdateJsonSerializerSettingsMethod": true,
-			"serializeTypeInformation": false,
-			"queryNullValue": "",
-			"className": "{controller}Client",
-			"operationGenerationMode": "MultipleClientsFromOperationId",
-			"additionalNamespaceUsages": [],
-			"additionalContractNamespaceUsages": [],
-			"generateOptionalParameters": true,
-			"generateJsonMethods": false,
-			"enforceFlagEnums": false,
-			"parameterArrayType": "System.Collections.Generic.IEnumerable",
-			"parameterDictionaryType": "System.Collections.Generic.Dictionary",
-			"responseArrayType": "System.Collections.Generic.List",
-			"responseDictionaryType": "System.Collections.Generic.Dictionary",
-			"wrapResponses": false,
-			"wrapResponseMethods": [],
-			"generateResponseClasses": true,
-			"responseClass": "SwaggerResponse",
-			"namespace": "API.Client.Template",
-			"requiredPropertiesMustBeDefined": true,
-			"dateType": "System.DateTimeOffset",
-			"jsonConverters": null,
-			"anyType": "object",
-			"dateTimeType": "System.DateTimeOffset",
-			"timeType": "System.TimeSpan",
-			"timeSpanType": "System.TimeSpan",
-			"arrayType": "System.Collections.Generic.List",
-			"arrayInstanceType": "System.Collections.Generic.List",
-			"dictionaryType": "System.Collections.Generic.Dictionary",
-			"dictionaryInstanceType": "System.Collections.Generic.Dictionary",
-			"arrayBaseType": "System.Collections.Generic.List",
-			"dictionaryBaseType": "System.Collections.Generic.Dictionary",
-			"classStyle": "Poco",
-			"generateDefaultValues": true,
-			"generateDataAnnotations": true,
-			"excludedTypeNames": [],
-			"excludedParameterNames": [],
-			"handleReferences": false,
-			"generateImmutableArrayProperties": false,
-			"generateImmutableDictionaryProperties": false,
-			"jsonSerializerSettingsTransformationMethod": null,
-			"inlineNamedArrays": false,
-			"inlineNamedDictionaries": false,
-			"inlineNamedTuples": true,
-			"inlineNamedAny": false,
-			"generateDtoTypes": true,
-			"generateOptionalPropertiesAsNullable": true,
-			"templateDirectory": null,
-			"typeNameGeneratorType": null,
-			"propertyNameGeneratorType": null,
-			"enumNameGeneratorType": null,
-			"serviceHost": null,
-			"serviceSchemes": null,
-			"output": "Api-Client.cs"
-		}
-	}
-}
-```
+- Completed Phase 6
+- .NET 10 SDK installed
+- Understanding of event-driven patterns
+- Familiarity with Hangfire
 
-### **Build Target**
+## How to validate this phase locally
 
-Add Target to Api.Client csproj
+\\\powershell
+dotnet build "Phase 7/src/01. StartSolution/Pezza.slnx"
+dotnet test "Phase 7/src/01. StartSolution/Pezza.slnx"
+\\\
 
-```xml
-<Target Name="NSwag" AfterTargets="PostBuildEvent" Condition=" '$(NO_RECURSE)' != 'true' ">
-    <Exec ConsoleToMSBuild="true" ContinueOnError="true" WorkingDirectory="$(ProjectDir)" EnvironmentVariables="NO_RECURSE=true" Command="$(NSwagExe_Net80) run Api.nswag /variables:Configuration=Release">
-        <Output TaskParameter="ExitCode" PropertyName="NSwagExitCode" />
-        <Output TaskParameter="ConsoleOutput" PropertyName="NSwagOutput" />
-    </Exec>
+## Topics / learning outcomes
 
-    <Message Text="$(NSwagOutput)" Condition="'$(NSwagExitCode)' == '0'" Importance="low" />
-    <Error Text="$(NSwagOutput)" Condition="'$(NSwagExitCode)' != '0'" />
-</Target>
-```
+- Implement domain events that commands publish via Dispatcher.Publish()
+- Create event handlers (INotificationHandler<>) that react asynchronously
+- Understand Publisher-Subscriber pattern and decoupling
+- Use Hangfire for reliable background jobs with automatic retries
+- Design idempotent event handlers for safe retries
+- Build complete event-driven order processing workflow
 
-Add to Startup.cs
+## Knowledge Check: Event-Driven Architecture
 
-```cs
-services.AddOpenApiDocument();
-```
+1. **What happens when a command handler publishes a domain event?**
+   - **Answer**: The handler calls \dispatcher.Publish(event, ct)\, which returns immediately. The Dispatcher executes all registered event handlers asynchronously in parallel without blocking the command's response.
 
-Finished Client will look like this
+2. **How does Publisher-Subscriber pattern benefit Phase 7?**
+   - **Answer**: Commands focus on core business logic. Side effects (email, inventory, logging) separate into independent handlers. If one fails, others still execute. Handlers can be added/removed without changing commands.
 
-![](./Assets/2023-07-23-22-13-30.png)
+3. **Why are Hangfire jobs idempotent?**
+   - **Answer**: On failure, Hangfire automatically retries. Without idempotency, retrying creates duplicates (email twice, deduct stock twice). With checks like \if (order.ConfirmationSentAt != null) return;\, retries are safe.
 
-Using OpenAPI Generator CLI, you can generate client SDKs for various platforms, including Angular, React, Java, and more using the Api-Client.json. - [Open API Generator](https://github.com/OpenAPITools/openapi-generator)
+4. **What's the difference between \dispatcher.Send()\ and \dispatcher.Publish()\?**
+   - **Answer**: \Send()\ executes a single command handler synchronously and blocks. \Publish()\ executes all event handlers asynchronously in parallel without blocking. Send is request-response; Publish is fire-and-forget.
 
-## **Phase 8 - Create UI's**
+5. **How does the Dispatcher register event handlers?**
+   - **Answer**: In DependencyInjection.cs, Scrutor scans for types assignable to \INotificationHandler<>\ and registers them as scoped. When \Publish()\ is called, the Dispatcher retrieves handlers via \_serviceProvider.GetServices<INotificationHandler<TEvent>>()\.
 
-Move to Phase 7 [Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%207)
+6. **When should you use domain events instead of calling methods directly?**
+   - **Answer**: Use events for optional side effects (email, logging, notifications). Use direct calls for required operations (validate, deduct stock immediately). Phase 7 decouples optional work into events.
+
+## Steps
+
+- [ ] [Step 1 - Email Service & Hangfire Setup](./Step%201)
+- [ ] [Step 2 - Domain Events & Notifications](./Step%202)
+- [ ] [Step 3 - Background Job Scheduling](./Step%203)
+- [ ] [Step 4 - Order Processing Workflow](./Step%204)
+
+---
+
+**Phase 7 Complete**: You now have an event-driven, production-ready order processing system with reliable background jobs!
+
+[Move to Phase 8](https://github.com/entelect-incubator/.NET/tree/master/Phase%208)
+ 
+## Next Step
+Move to [Phase 8](https://github.com/entelect-incubator/.NET/tree/master/Phase%208)
+---
+
+Teaching Thread
+
+- From: Phase 6 introduced background jobs and events.
+- This phase: show microservices patterns, client generation, and service contracts.
+- Next: Phase 8/9 cover security and UI consumption scenarios.
+
+Libraries (why they matter)
+
+- NSwag/OpenAPI tools: generate clients and demonstrate contract-first design benefits.
+- Typed HttpClient patterns for resilience and testability.
+
+Clean Code & SOLID (teaching notes)
+
+- Keep service boundaries explicit and document API contracts.
+- Ensure client generation is reproducible and part of CI (versioned OpenAPI schema).
+
+MediatR policy
+
+- Microservice integration can use a mediator on the consumer side; prefer documenting if MediatR is selected and why.
+
+Notes
+
+- Link to OpenAPI and client-generation patterns: ../../Design-Patterns/04-Dispatcher-Mediator/

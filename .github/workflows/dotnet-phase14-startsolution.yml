@@ -1,0 +1,29 @@
+name: .NET - Phase 14 - Start Solution
+
+on:
+    push:
+        branches: [ main, master ]
+        paths:
+            - "Phase 14/**"
+            - ".github/workflows/dotnet-phase14-startsolution.yml"
+    pull_request:
+        branches: [ main, master ]
+        paths:
+            - "Phase 14/**"
+            - ".github/workflows/dotnet-phase14-startsolution.yml"
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v4
+            - name: Setup .NET
+              uses: actions/setup-dotnet@v4
+              with:
+                  dotnet-version: 10.0.x
+            - name: Install dependencies
+              run: dotnet restore "./Phase 14/src/01. StartSolution/Pezza.slnx"
+            - name: Build
+              run: dotnet build "./Phase 14/src/01. StartSolution/Pezza.slnx" --configuration
+                  Release --no-restore

@@ -1,0 +1,22 @@
+namespace Core.Customer.Commands;
+
+public sealed class UpdatePizzaCommandValidator : AbstractValidator<UpdatePizzaCommand>
+{
+	public UpdatePizzaCommandValidator()
+	{
+		this.RuleFor(r => r.Data)
+			.NotNull();
+
+		this.RuleFor(r => r.Id)
+			.NotEmpty();
+
+		this.RuleFor(r => r.Data.Name)
+			.MaximumLength(100);
+
+		this.RuleFor(r => r.Data.Description)
+			.MaximumLength(500);
+
+		this.RuleFor(r => r.Data.Price)
+			.PrecisionScale(4, 2, false);
+	}
+}

@@ -2,37 +2,37 @@ namespace Api;
 
 using System.Reflection;
 using System.Text.Json.Serialization;
-using Core.Behaviours;
+using Api.Handlers;
+using Core;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using Newtonsoft.Json.Serialization;
 
 public class Startup(IConfiguration configuration)
 {
-	public IConfiguration ConfigRoot
-	{
-		get;
-	} = configuration;
-
 	public void ConfigureServices(IServiceCollection services)
 	{
-		DependencyInjection.AddApplication(services);
 		services.AddControllers(options => options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true)
 			.AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()))
 			.AddNewtonsoftJson(x => x.SerializerSettings.ContractResolver = new DefaultContractResolver())
 			.AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
+		// Application services
+		services.AddApplication();
+
+		// Register exception handler
+		services.AddExceptionHandler<GlobalExceptionHandler>();
+		services.AddProblemDetails();
 
 		services.AddSwaggerGen(c =>
 		{
 			c.SwaggerDoc("v1", new OpenApiInfo
 			{
-				Title = "EList API",
+				Title = "Pezza API",
 				Version = "v1"
 			});
 
@@ -48,12 +48,13 @@ public class Startup(IConfiguration configuration)
 
 	public void Configure(WebApplication app, IWebHostEnvironment env)
 	{
-		app.UseMiddleware<UnhandledExceptionBehaviour>();
+		app.UseExceptionHandler();
+
 		app.UseSwagger();
-		app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "EList API V1"));
+		app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Pezza API V1"));
 		app.UseHttpsRedirection();
 		app.UseRouting();
-		app.UseEndpoints(endpoints => endpoints.MapControllers());
+		app.MapControllers();
 		app.UseAuthorization();
 		app.Run();
 	}

@@ -1,22 +1,24 @@
 name: .NET - Phase 1
 
 on:
-    push:
-        branches: [master]
-    pull_request:
-        branches: [master]
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
 
 jobs:
-    build:
-        runs-on: ubuntu-latest
+  build:
 
-        steps:
-            - uses: actions/checkout@v2
-            - name: Setup .NET
-              uses: actions/setup-dotnet@v4
-              with:
-                  dotnet-version: 9.0.100-preview.7.24407.12
-            - name: Install dependencies
-              run: dotnet restore "./Phase 1/src/02. EndSolution/EList.sln"
-            - name: Build
-              run: dotnet build "./Phase 1/src/02. EndSolution/EList.sln" --configuration Release --no-restore
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - name: Install dependencies
+        run: dotnet restore "./Phase 1/src/02. EndSolution/Pezza.slnx"
+      - name: Build
+        run: dotnet build "./Phase 1/src/02. EndSolution/Pezza.slnx" --configuration
+          Release --no-restore

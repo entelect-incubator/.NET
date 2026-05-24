@@ -1,0 +1,13 @@
+global using Core.Customer.Commands;
+global using Core.Customer.Queries;
+global using Core.Notify.Commands;
+global using Core.Notify.Queries;
+global using Core.Order.Commands;
+global using Core.Order.Queries;
+global using Core.Product.Commands;
+global using Core.Product.Queries;
+global using Core.Restaurant.Commands;
+global using Core.Restaurant.Queries;
+global using Core.Stock.Commands;
+global using Core.Stock.Queries;
+global using MediatR;

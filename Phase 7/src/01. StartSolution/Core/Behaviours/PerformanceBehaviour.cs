@@ -2,12 +2,13 @@
 
 using System.Diagnostics;
 using Common;
+using Core;
 
 public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
 {
 	private readonly Stopwatch timer = new();
 
-	public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
+	public async Task<TResponse> Handle(TRequest request, Func<Task<TResponse>> next, CancellationToken cancellationToken)
 	{
 		this.timer.Restart();
 

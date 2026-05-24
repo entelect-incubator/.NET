@@ -1,0 +1,3660 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Bogus</name>
+    </assembly>
+    <members>
+        <member name="T:Bogus.IBinder">
+            <summary>
+            A binder is used in Faker[T] for extracting MemberInfo from T
+            that are candidates for property/field faking.
+            </summary>
+        </member>
+        <member name="M:Bogus.IBinder.GetMembers(System.Type)">
+            <summary>
+            Given T, the method must return a Dictionary[string,MemberInfo] where
+            string is the field/property name and MemberInfo is the reflected
+            member info of the field/property that will be used for invoking
+            and setting values. The returned Dictionary must encompass the full
+            set of viable properties/fields that can be faked on T.
+            </summary>
+            <returns>The full set of MemberInfos for injection.</returns>
+        </member>
+        <member name="T:Bogus.Binder">
+            <summary>
+            The default binder used in Faker[T] for extracting MemberInfo from T
+            that are candidates for property/field faking.
+            </summary>
+        </member>
+        <member name="F:Bogus.Binder.BindingFlags">
+            <summary>
+            The binding flags to use when reflecting over T.
+            </summary>
+        </member>
+        <member name="M:Bogus.Binder.#ctor">
+            <summary>
+            Construct a binder with default binding flags. Public/internal properties and public/internal fields.
+            </summary>
+        </member>
+        <member name="M:Bogus.Binder.#ctor(System.Reflection.BindingFlags)">
+            <summary>
+            Construct a binder with custom binding flags.
+            </summary>
+        </member>
+        <member name="M:Bogus.Binder.GetMembers(System.Type)">
+            <summary>
+            Given T, the method will return a Dictionary[string,MemberInfo] where
+            string is the field/property name and MemberInfo is the reflected
+            member info of the field/property that will be used for invocation 
+            and setting values. The returned Dictionary must encompass the full
+            set of viable properties/fields that can be faked on T.
+            </summary>
+            <returns>The full set of MemberInfos for injection.</returns>
+        </member>
+        <member name="T:Bogus.BogusException">
+            <summary>
+            General exception for Bogus.
+            </summary>
+        </member>
+        <member name="T:Bogus.Bson.BValue">
+            <summary>
+            Most, if not all of this BSON implementation was copied from https://github.com/kernys/Kernys.Bson.
+            Just polished it up a bit for Bogus in 2017/C# 7.1.
+            </summary>
+        </member>
+        <member name="T:Bogus.Chars">
+            <summary>
+            Static class for holding character string constants.
+            </summary>
+        </member>
+        <member name="F:Bogus.Chars.LowerCase">
+            <summary>
+            Lower case, a-z.
+            </summary>
+        </member>
+        <member name="F:Bogus.Chars.UpperCase">
+            <summary>
+            Upper case, A-Z.
+            </summary>
+        </member>
+        <member name="F:Bogus.Chars.Numbers">
+            <summary>
+            Numbers, 0-9.
+            </summary>
+        </member>
+        <member name="F:Bogus.Chars.HexLowerCase">
+            <summary>
+            Hexadecimal, 0-9 and a-f.
+            </summary>
+        </member>
+        <member name="F:Bogus.Chars.HexUpperCase">
+            <summary>
+            Hexadecimal, 0-9 and A-F.
+            </summary>
+        </member>
+        <member name="F:Bogus.Chars.AlphaNumericUpperCase">
+            <summary>
+            Alphanumeric upper case 0-9 and A-Z.
+            </summary>
+        </member>
+        <member name="F:Bogus.Chars.AlphaNumericLowerCase">
+            <summary>
+            Alphanumeric lower case 0-9 and a-z.
+            </summary>
+        </member>
+        <member name="T:Bogus.SafeUnicodeRanges">
+            <summary>
+            Contains information about contiguous blocks of unicode character ranges.
+            </summary>
+        </member>
+        <member name="F:Bogus.SafeUnicodeRanges.Basic">
+            <summary>
+            Contiguous blocks of unicode scalars that are not surrogates and where
+            char.IsLetterOrDigit is true.
+            </summary>
+        </member>
+        <member name="F:Bogus.SafeUnicodeRanges.SurrogatePairs">
+            <summary>
+            Contiguous blocks of unicode surrogate pairs and where
+            char.IsLetterOrDigit is true.
+            </summary>
+        </member>
+        <member name="T:Bogus.Database">
+            <summary>
+            The main database object that can access locale data.
+            </summary>
+        </member>
+        <member name="F:Bogus.Database.Data">
+            <summary>
+            The root of all locales in a single BObject.
+            </summary>
+        </member>
+        <member name="M:Bogus.Database.GetAllLocales">
+            <summary>
+            Returns all locales available inside Bogus' assembly manifest.
+            </summary>
+        </member>
+        <member name="M:Bogus.Database.LocaleResourceExists(System.String)">
+            <summary>
+            Checks if a locale exists in Bogus.
+            </summary>
+        </member>
+        <member name="F:Bogus.Database.ResourceNameFormat">
+            <summary>
+            Format of locale resource names.
+            </summary>
+        </member>
+        <member name="M:Bogus.Database.Initialize">
+            <summary>
+            Initializes the default locale database.
+            </summary>
+        </member>
+        <member name="M:Bogus.Database.GetLocale(System.String)">
+            <summary>
+            Gets a locale from the locale lookup cache, if the locale doesn't exist in the lookup cache,
+            the locale is read from the assembly manifest and added to the locale lookup cache.
+            </summary>
+        </member>
+        <member name="M:Bogus.Database.ResetLocale(System.String)">
+            <summary>
+            Reset, reload, and reinitialize the locale from Bogus' assembly resource.
+            Any patches or modifications to the specified locale are destroyed.
+            </summary>
+        </member>
+        <member name="M:Bogus.Database.HasKey(System.String,System.String,System.String,System.String)">
+            <summary>
+            Determines if a key exists in the locale.
+            </summary>
+        </member>
+        <member name="M:Bogus.Database.Get(System.String,System.String,System.String,System.String)">
+            <summary>
+            Returns the JToken of the locale category path. If the key does not exist, then the locale fallback is used.
+            </summary>
+        </member>
+        <member name="T:Bogus.DataCategoryAttribute">
+            <summary>
+            DataCategory is used when resolving the final category name inside the locale.
+            For example, a 'phone_numbers' is the data set name in a locale, but the 
+            C# style DataSet is PhoneNumbers; When a dataset is marked with DataCategory,
+            you can specify that category name manually. If no data category is specified,
+            then the C# class name is used.
+            </summary>
+        </member>
+        <member name="P:Bogus.DataCategoryAttribute.Name">
+            <summary>
+            The category name.
+            </summary>
+        </member>
+        <member name="M:Bogus.DataCategoryAttribute.#ctor(System.String)">
+            <summary>
+            Creates a data category attribute with a specified category name.
+            </summary>
+        </member>
+        <member name="T:Bogus.DataSet">
+            <summary>
+            Data set methods that access the BSON database of locales.
+            </summary>
+        </member>
+        <member name="M:Bogus.DataSet.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Bogus.DataSet"/> class.
+            </summary>
+            <param name="locale">The locale wanting to be set. Default is "en" for English.</param>
+            <exception cref="T:Bogus.BogusException">
+            When the given <paramref name="locale"/> isn't found.
+            </exception>
+        </member>
+        <member name="P:Bogus.DataSet.Category">
+            <summary>
+            Gets or sets the category name inside the locale.
+            </summary>
+        </member>
+        <member name="P:Bogus.DataSet.Locale">
+            <summary>
+            Gets or sets the current locale of the data set.
+            </summary>
+        </member>
+        <member name="F:Bogus.DataSet.Notifier">
+            <summary>
+            See <see cref="T:Bogus.SeedNotifier"/>.
+            </summary>
+        </member>
+        <member name="P:Bogus.DataSet.Random">
+            <summary>
+            Gets or sets the <see cref="T:Bogus.Randomizer"/> used to generate values.
+            </summary>
+        </member>
+        <member name="M:Bogus.DataSet.ResolveCategory(System.Type)">
+            <summary>
+            Resolves the 'category' type of a dataset type; respects the 'DataCategory' attribute.
+            </summary>
+            <param name="type">The type wanting to get the category from.</param>
+            <returns>The name of the category.</returns>
+        </member>
+        <member name="M:Bogus.DataSet.Get(System.String)">
+            <summary>
+            Returns a BSON value given a JSON path into the data set. Only simple "." dotted JSON paths are supported.
+            </summary>
+            <param name="path">path/key in the category</param>
+            <returns>A BSON value for the given JSON path.</returns>
+        </member>
+        <member name="M:Bogus.DataSet.Get(System.String,System.String)">
+            <summary>
+            Returns a BSON value given a JSON path into the data set. Only simple "." dotted JSON paths are supported.
+            </summary>
+            <param name="category">Overrides the category name on the dataset.</param>
+            <param name="path">path/key in the category.</param>
+            <returns>A BSON value for the given JSON path.</returns>
+        </member>
+        <member name="M:Bogus.DataSet.HasKey(System.String,System.Boolean)">
+            <summary>
+            Determines if a key exists in the locale.
+            </summary>
+            <returns>A boolean to indicate if the locale exists.</returns>
+        </member>
+        <member name="M:Bogus.DataSet.GetArray(System.String)">
+            <summary>
+            Returns a BSON array given a JSON path into the data set. Only simple "." dotted JSON paths are supported.
+            </summary>
+            <param name="path">key in the category.</param>
+            <returns>A BSON value for the given JSON path.</returns>
+        </member>
+        <member name="M:Bogus.DataSet.GetObject(System.String)">
+            <summary>
+            Returns a BSON object given a JSON path into the data set. Only simple "." dotted JSON paths are supported.
+            </summary>
+            <param name="path">path/key in the category</param>
+            <returns>A BSON value for the given JSON path.</returns>
+        </member>
+        <member name="M:Bogus.DataSet.GetRandomArrayItem(System.String,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Picks a random string inside a BSON array. Only simple "." dotted JSON paths are supported.
+            </summary>
+            <param name="path">key in the category</param>
+            <param name="min">The minimum value.</param>
+            <param name="max">The maximum value.</param>
+            <returns>A random item from the BSON array.</returns>
+        </member>
+        <member name="M:Bogus.DataSet.GetRandomBObject(System.String)">
+            <summary>
+            Picks a random BObject inside an array. Only simple "." dotted JSON paths are supported.
+            </summary>
+            <param name="path">key in the category</param>
+            <returns>A random BObject based on the given path.</returns>
+        </member>
+        <member name="M:Bogus.DataSet.GetFormattedValue(System.String)">
+            <summary>
+            Picks a random string inside a BSON array, then formats it. Only simple "." dotted JSON paths are supported.
+            </summary>
+            <param name="path">key in the category</param>
+            <returns>A random formatted value.</returns>
+        </member>
+        <member name="M:Bogus.DataSet.ParseTokens(System.String)">
+            <summary>
+            Recursive parse the tokens in the string.
+            </summary>
+            <param name="value">The value.</param>
+            <returns>The parsed token.</returns>
+        </member>
+        <member name="T:Bogus.DataSets.Address">
+            <summary>
+            Methods for generating an address.
+            </summary>
+        </member>
+        <member name="F:Bogus.DataSets.Address.Name">
+            <summary>
+            The source to pull names from.
+            </summary>
+        </member>
+        <member name="M:Bogus.DataSets.Address.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Bogus.DataSets.Address"/> class.
+            </summary>
+            <param name="locale">The locale used to generate the data.</param>
+        </member>
+        <member name="M:Bogus.DataSets.Address.ZipCode(System.String)">
+            <summary>
+            Get a zipcode.
+            </summary>
+            <param name="format">
+            If a format is provided it will fill the format with letters and numbers.
+            Example "???? ##" can become "QYTE 78".
+            </param>
+            <returns>A random zipcode.</returns>
+        </member>
+        <member name="M:Bogus.DataSets.Address.City">
+            <summary>
+            Get a city name.
+            </summary>
+            <returns>A random city name.</returns>
+        </member>
+        <member name="M:Bogus.DataSets.Address.StreetAddress(System.Boolean)">
+            <summary>
+            Get a street address.
+            </summary>
+            <param name="useFullAddress">If true, the returned value will also include a <see cref="M:Bogus.DataSets.Address.SecondaryAddress"/>.</param>
+            <returns>A random street address.</returns>
+        </member>
+        <member name="M:Bogus.DataSets.Address.CityPrefix">
+            <summary>
+            Get a city prefix.
+            </summary>
+            <returns>A random city prefix.</returns>
+        </member>
+        <member name="M:Bogus.DataSets.Address.CitySuffix">
+            <summary>
+            Get a city suffix.
+            </summary>
+            <returns>A random city suffix.</returns>
+        </member>
+        <member name="M:Bogus.DataSets.Address.StreetName">
+            <summary>
+            Get a street name.
+            </summary>
+            <returns>A random street name.</returns>
+        </member>
+        <member name="M:Bogus.DataSets.Address.BuildingNumber">
+            <summary>
+            Get a building number.
+            </summary>
+            <returns>A random building number.</returns>
+        </member>
+        <member name="M:Bogus.DataSets.Address.StreetSuffix">
+            <summary>
+            Get a street suffix.
+            </summary>
+            <returns>A random street suffix.</returns>
+        </member>
+        <member name="M:Bogus.DataSets.Address.SecondaryAddress">
+            <summary>
+            Get a secondary address like 'Apt. 2' or 'Suite 321'.
+            </summary>
+            <returns>A random secondary address.</returns>
+        </member>
+        <member name="M:Bogus.DataSets.Address.County">
+            <summary>
+            Get a county.
+            </summary>
+            <returns>A random county.</returns>
+        </member>
+        <member name="M:Bogus.DataSets.Address.Country">
+            <summary>
+            Get a country.
+            </summary>
+            <returns>A random country.</returns>
+        </member>
+        <member name="M:Bogus.DataSets.Address.FullAddress">
+            <summary>
+            Get a full address like Street, City, Country.
+            </summary>
+            <returns>A random full address.</returns>
+        </member>
+        <member name="M:Bogus.DataSets.Address.CountryCode(Bogus.DataSets.Iso3166Format)">
+            <summary>
+            Get a random ISO 3166-1 country code.
+            </summary>
+            <param name="format">The format the country code should be in.</param>
+            <returns>A random country code.</returns>
+        </member>
+        <member name="M:Bogus.DataSets.Address.State">
+            <summary>
+            Get a random state state.
+            </summary>
+            <returns>A random state.</returns>
+        </member>
+        <member name="M:Bogus.DataSets.Address.StateAbbr">
+            <summary>
+            Get a state abbreviation.
+            </summary>
+            <returns>An abbreviation for a random state.</returns>
+        </member>
+        <member name="M:Bogus.DataSets.Address.Latitude(System.Double,System.Double)">
+            <summary>
+            Get a Latitude.
+            </summary>
+            <param name="min">The minimum value.</param>
+            <param name="max">The maximum value.</param>
+            <returns>A random latitude value.</returns>
+        </member>
+        <member name="M:Bogus.DataSets.Address.Longitude(System.Double,System.Double)">
+            <summary>
+            Get a Longitude.
+            </summary>
+            <param name="min">The minimum value.</param>
+            <param name="max">The maximum value.</param>
+            <returns>A random longitude value.</returns>
+        </member>
+        <member name="M:Bogus.DataSets.Address.Direction(System.Boolean)">
+            <summary>
+            Generates a cardinal or ordinal direction. IE: Northwest, South, SW, E.
+            </summary>
+            <param name="useAbbreviation">When true, directions such as Northwest turn into NW.</param>
+            <returns>A random cardinal or ordinal direction.</returns>
+        </member>
+        <member name="M:Bogus.DataSets.Address.CardinalDirection(System.Boolean)">
+            <summary>
+            Generates a cardinal direction. IE: North, South, E, W.
+            </summary>
+            <param name="useAbbreviation">When true, directions such as West turn into W.</param>
+            <returns>A random cardinal direction</returns>
+        </member>
+        <member name="M:Bogus.DataSets.Address.OrdinalDirection(System.Boolean)">
+            <summary>
+            Generates an ordinal direction. IE: Northwest, Southeast, SW, NE.
+            </summary>
+            <param name="useAbbreviation">When true, directions such as Northwest turn into NW.</param>
+            <returns>A random ordinal direction.</returns>
+        </member>
+        <member name="T:Bogus.DataSets.Iso3166Format">
+            <summary>
+            Defines format for ISO 3166-1 country codes.
+            </summary>
+        </member>
+        <member name="F:Bogus.DataSets.Iso3166Format.Alpha2">
+            <summary>
+            Two character ISO 3166-1 format.
+            </summary>
+        </member>
+        <member name="F:Bogus.DataSets.Iso3166Format.Alpha3">
+            <summary>
+            Three character ISO 3166-1 format.
+            </summary>
+        </member>
+        <member name="T:Bogus.DataSets.ColorFormat">
+            <summary>
+            Type of color format
+            </summary>
+        </member>
+        <member name="F:Bogus.DataSets.ColorFormat.Hex">
+            <summary>
+            Hexadecimal format: #4d0e68
+            </summary>
+        </member>
+        <member name="F:Bogus.DataSets.ColorFormat.Rgb">
+            <summary>
+            CSS format: rgb(77,14,104)
+            </summary>
+        </member>
+        <member name="F:Bogus.DataSets.ColorFormat.Delimited">
+            <summary>
+            Delimited R,G,B: 77,14,104
+            </summary>
+        </member>
+        <member name="T:Bogus.DataSets.Commerce">
+            <summary>
+            Methods relating to commerce.
+            </summary>
+        </member>
+        <member name="M:Bogus.DataSets.Commerce.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Bogus.DataSets.Commerce"/> class.
+            </summary>
+            <param name="locale">The locale used to generate the values.</param>
+        </member>
+        <member name="M:Bogus.DataSets.Commerce.Department(System.Int32,System.Boolean)">
+            <summary>
+            Get a random commerce department.
+            </summary>
+            <param name="max">The maximum amount of departments</param>
+            <param name="returnMax">If true the method returns the max amount of values, otherwise the number of categories returned is between 1 and max.</param>
+            <returns>A random commerce department.</returns>
+        </member>
+        <member name="M:Bogus.DataSets.Commerce.Price(System.Decimal,System.Decimal,System.Int32,System.String)">
+            <summary>
+            Get a random product price.
+            </summary>
+            <param name="min">The minimum price.</param>
+            <param name="max">The maximum price.</param>
+            <param name="decimals">How many decimals the number may include.</param>
+            <param name="symbol">The symbol in front of the price.</param>
+            <returns>A randomly generated price.</returns>
+        </member>
+        <member name="M:Bogus.DataSets.Commerce.Categories(System.Int32)">
+            <summary>
+            Get random product categories.
+            </summary>
+            <param name="num">The amount of categories to be generated.</param>
+            <returns>A collection of random product categories.</returns>
+        </member>
+        <member name="M:Bogus.DataSets.Commerce.ProductName">
+            <summary>
+            Get a random product name.
+            </summary>
+            <returns>A random product name.</returns>
+        </member>
+        <member name="M:Bogus.DataSets.Commerce.Color">
+            <summary>
+            Get a random color.
+            </summary>
+            <returns>A random color.</returns>
+        </member>
+        <member name="M:Bogus.DataSets.Commerce.Product">
+            <summary>
+            Get a random product.
+            </summary>
+            <returns>A random product.</returns>
+        </member>
+        <member name="M:Bogus.DataSets.Commerce.ProductAdjective">
+            <summary>
+            Random product adjective.
+            </summary>
+            <returns>A random product adjective.</returns>
+        </member>
+        <member name="M:Bogus.DataSets.Commerce.ProductMaterial">
+            <summary>
+            Random product material.
+            </summary>
+            <returns>A random product material.</returns>
+        </member>
+        <member name="M:Bogus.DataSets.Commerce.ProductDescription">
+            <summary>
+            Random product description.
+            </summary>
+            <returns>A random product description.</returns>
+        </member>
+        <member name="F:Bogus.DataSets.Commerce.Ean8Weights">
+            <summary>
+            EAN-8 checksum weights.
+            </summary>
+        </member>
+        <member name="M:Bogus.DataSets.Commerce.Ean8">
+            <summary>
+            Get a random EAN-8 barcode number.
+            </summary>
+            <returns>A random EAN-8 barcode number.</returns>
+        </member>
+        <member name="F:Bogus.DataSets.Commerce.Ean13Weights">
+            <summary>
+            EAN-18 checksum weights.
+            </summary>
+        </member>
+        <member name="M:Bogus.DataSets.Commerce.Ean13">
+            <summary>
+            Get a random EAN-13 barcode number.
+            </summary>
+            <returns>A random EAN-13 barcode number.</returns>
+        </member>
+        <member name="T:Bogus.DataSets.Company">
+            <summary>
+            Generates a random company name and phrases
+            </summary>
+        </member>
+        <member name="F:Bogus.DataSets.Company.Name">
+            <summary>
+            The source to pull names from.
+            </summary>
+        </member>
+        <member name="M:Bogus.DataSets.Company.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Bogus.DataSets.Company"/> class.
+            </summary>
+            <param name="locale">The locale used to generate the values.</param>
+        </member>
+        <member name="M:Bogus.DataSets.Company.CompanySuffix">
+            <summary>
+            Get a company suffix. "Inc" and "LLC" etc.
+            </summary>
+            <returns>A random company suffix.</returns>
+        </member>
+        <member name="M:Bogus.DataSets.Company.CompanyName(System.Nullable{System.Int32})">
+            <summary>
+            Get a company name.
+            </summary>
+            <param name="formatIndex">0: name + suffix, 1: name-name, 2: name, name and name."</param>
+            <returns>A random company name.</returns>
+        </member>
+        <member name="M:Bogus.DataSets.Company.CompanyName(System.String)">
+            <summary>
+            Get a company name. The format can use any name.* and company.* methods.
+            </summary>
+            <param name="format">Example: "{{name.lastName}} {{company.companySuffix}}"</param>
+            <returns>A random company name in the given format.</returns>
+        </member>
+        <member name="M:Bogus.DataSets.Company.CatchPhrase">
+            <summary>
+            Get a company catch phrase.
+            </summary>
+            <returns>A random company catch phrase.</returns>
+        </member>
+        <member name="M:Bogus.DataSets.Company.Bs">
+            <summary>
+            Get a company BS phrase.
+            </summary>
+            <returns>A random company BS phrase.</returns>
+        </member>
+        <member name="T:Bogus.DataSets.Database">
+            <summary>
+            Generates some random database stuff.
+            </summary>
+        </member>
+        <member name="M:Bogus.DataSets.Database.Column">
+            <summary>
+            Generates a column name.
+            </summary>
+            <returns>A random column name.</returns>
+        </member>
+        <member name="M:Bogus.DataSets.Database.Type">
+            <summary>
+            Generates a column type.
+            </summary>
+            <returns>A random column type.</returns>
+        </member>
+        <member name="M:Bogus.DataSets.Database.Collation">
+            <summary>
+            Generates a collation.
+            </summary>
+            <returns>A random collation.</returns>
+        </member>
+        <member name="M:Bogus.DataSets.Database.Engine">
+            <summary>
+            Generates a storage engine.
+            </summary>
+            <returns>A random storage engine.</returns>
+        </member>
+        <member name="T:Bogus.DataSets.Date">
+            <summary>
+            Methods for generating dates
+            </summary>
+        </member>
+        <member name="F:Bogus.DataSets.Date.SystemClock">
+            <summary>
+            Sets the system clock time Bogus uses for date calculations.
+            This value is normally <seealso cref="P:System.DateTime.Now"/>. If deterministic times are desired,
+            set the <seealso cref="F:Bogus.DataSets.Date.SystemClock"/> to a single instance in time.
+            IE: () => new DateTime(2018, 4, 23);
+            Setting this static value will effect and apply to all Faker[T], Faker,
+            and new Date() datasets instances.
+            </summary>
+        </member>
+        <member name="F:Bogus.DataSets.Date.LocalSystemClock">
+            <summary>
+            Sets the system clock time Bogus uses for date calculations.
+            This value is normally <seealso cref="P:System.DateTime.Now"/>. If deterministic times are desired,
+            set the <seealso cref="F:Bogus.DataSets.Date.LocalSystemClock"/> to a single instance in time.
+            IE: () => new DateTime(2018, 4, 23);
+            Setting this value will only effect and only apply to this single Date instance.
+            </summary>
+            <example>() => new DateTime(2018, 4, 23)</example>
+        </member>
+        <member name="M:Bogus.DataSets.Date.#ctor(System.String)">
+            <summary>
+            Create a Date dataset
+            </summary>
+        </member>
+        <member name="M:Bogus.DataSets.Date.Past(System.Int32,System.Nullable{System.DateTime})">
+            <summary>
+            Get a <see cref="T:System.DateTime"/> in the past between <paramref name="refDate"/> and <paramref name="yearsToGoBack"/>.
+            </summary>
+            <param name="yearsToGoBack">Years to go back from <paramref name="refDate"/>. Default is 1 year.</param>
+            <param name="refDate">The date to start calculations. Default is <see cref="P:System.DateTime.Now"/>.</param>
+        </member>
+        <member name="M:Bogus.DataSets.Date.PastOffset(System.Int32,System.Nullable{System.DateTimeOffset})">
+            <summary>
+            Get a <see cref="T:System.DateTimeOffset"/> in the past between <paramref name="refDate"/> and <paramref name="yearsToGoBack"/>.
+            </summary>
+            <param name="yearsToGoBack">Years to go back from <paramref name="refDate"/>. Default is 1 year.</param>
+            <param name="refDate">The date to start calculations. Default is <see cref="P:System.DateTimeOffset.Now"/>.</param>
+        </member>
+        <member name="M:Bogus.DataSets.Date.RandomTimeSpanFromTicks(System.Int64)">
+            <summary>
+            Gets an random timespan from ticks.
+            </summary>
+        </member>
+        <member name="M:Bogus.DataSets.Date.Soon(System.Int32,System.Nullable{System.DateTime})">
+            <summary>
+            Get a <see cref="T:System.DateTime"/> that will happen soon.
+            </summary>
+            <param name="days">A date no more than <paramref name="days"/> ahead.</param>
+            <param name="refDate">The date to start calculations. Default is <see cref="P:System.DateTimeOffset.Now"/>.</param>
+        </member>
+        <member name="M:Bogus.DataSets.Date.SoonOffset(System.Int32,System.Nullable{System.DateTimeOffset})">
+            <summary>
+            Get a <see cref="T:System.DateTimeOffset"/> that will happen soon.
+            </summary>
+            <param name="days">A date no more than <paramref name="days"/> ahead.</param>
+            <param name="refDate">The date to start calculations. Default is <see cref="P:System.DateTimeOffset.Now"/>.</param>
+        </member>
+        <member name="M:Bogus.DataSets.Date.Future(System.Int32,System.Nullable{System.DateTime})">
+            <summary>
+            Get a <see cref="T:System.DateTime"/> in the future between <paramref name="refDate"/> and <paramref name="yearsToGoForward"/>.
+            </summary>
+            <param name="yearsToGoForward">Years to go forward from <paramref name="refDate"/>. Default is 1 year.</param>
+            <param name="refDate">The date to start calculations. Default is <see cref="P:System.DateTime.Now"/>.</param>
+        </member>
+        <member name="M:Bogus.DataSets.Date.FutureOffset(System.Int32,System.Nullable{System.DateTimeOffset})">
+            <summary>
+            Get a <see cref="T:System.DateTimeOffset"/> in the future between <paramref name="refDate"/> and <paramref name="yearsToGoForward"/>.
+            </summary>
+            <param name="yearsToGoForward">Years to go forward from <paramref name="refDate"/>. Default is 1 year.</param>
+            <param name="refDate">The date to start calculations. Default is <see cref="P:System.DateTimeOffset.Now"/>.</param>
+        </member>
+        <member name="M:Bogus.DataSets.Date.Between(System.DateTime,System.DateTime)">
+            <summary>
+            Get a random <see cref="T:System.DateTime"/> between <paramref name="start"/> and <paramref name="end"/>.
+            </summary>
+            <param name="start">Start time - The returned <seealso cref="T:System.DateTimeKind"/> is used from this parameter.</param>
+            <param name="end">End time</param>
+        </member>
+        <member name="M:Bogus.DataSets.Date.BetweenOffset(System.DateTimeOffset,System.DateTimeOffset)">
+            <summary>
+            Get a random <see cref="T:System.DateTimeOffset"/> between <paramref name="start"/> and <paramref name="end"/>.
+            </summary>
+            <param name="start">Start time - The returned <seealso cref="T:System.DateTimeOffset"/> offset value is used from this parameter</param>
+            <param name="end">End time</param>
+        </member>
+        <member name="M:Bogus.DataSets.Date.Recent(System.Int32,System.Nullable{System.DateTime})">
+            <summary>
+            Get a random <see cref="T:System.DateTime"/> within the last few days.
+            </summary>
+            <param name="days">Number of days to go back.</param>
+            <param name="refDate">The date to start calculations. Default is <see cref="P:System.DateTime.Now"/>.</param>
+        </member>
+        <member name="M:Bogus.DataSets.Date.RecentOffset(System.Int32,System.Nullable{System.DateTimeOffset})">
+            <summary>
+            Get a random <see cref="T:System.DateTimeOffset"/> within the last few days.
+            </summary>
+            <param name="days">Number of days to go back.</param>
+            <param name="refDate">The date to start calculations. Default is <see cref="P:System.DateTimeOffset.Now"/>.</param>
+        </member>
+        <member name="M:Bogus.DataSets.Date.Timespan(System.Nullable{System.TimeSpan})">
+            <summary>
+            Get a random <see cref="T:System.TimeSpan"/>.
+            </summary>
+            <param name="maxSpan">Maximum of time to span. Default 1 week/7 days.</param>
+        </member>
+        <member name="M:Bogus.DataSets.Date.Month(System.Boolean,System.Boolean)">
+            <summary>
+            Get a random month.
+            </summary>
+        </member>
+        <member name="M:Bogus.DataSets.Date.Weekday(System.Boolean,System.Boolean)">
+            <summary>
+            Get a random weekday.
+            </summary>
+        </member>
+        <member name="M:Bogus.DataSets.Date.TimeZoneString">
+            <summary>
+            Get a timezone string. Eg: America/Los_Angeles
+            </summary>
+        </member>
+        <member name="T:Bogus.DataSets.Currency">
+            <summary>
+            Represents a currency
+            </summary>
+        </member>
+        <member name="P:Bogus.DataSets.Currency.Description">
+            <summary>
+            The long for description of the currency. IE: "US Dollar"
+            </summary>
+        </member>
+        <member name="P:Bogus.DataSets.Currency.Code">
+            <summary>
+            The currency code. IE: USD.
+            </summary>
+        </member>
+        <member name="P:Bogus.DataSets.Currency.Symbol">
+            <summary>
+            The currency symbol. IE: $
+            </summary>
+        </member>
+        <member name="T:Bogus.DataSets.CardType">
+            <summary>
+            Represents an enumeration of all the supported card types.
+            </summary>
+        </member>
+        <member name="F:Bogus.DataSets.CardType.All">
+            <summary>
+            List of all card types.
+            </summary>
+        </member>
+        <member name="F:Bogus.DataSets.CardType.Visa">
+            <summary>
+            Visa card number
+            </summary>
+        </member>
+        <member name="F:Bogus.DataSets.CardType.Mastercard">
+            <summary>
+            Mastercard card number
+            </summary>
+        </member>
+        <member name="F:Bogus.DataSets.CardType.Discover">
+            <summary>
+            Discover card number
+            </summary>
+        </member>
+        <member name="F:Bogus.DataSets.CardType.AmericanExpress">
+            <summary>
+            American Express card number
+            </summary>
+        </member>
+        <member name="F:Bogus.DataSets.CardType.DinersClub">
+            <summary>
+            Diners Club card number
+            </summary>
+        </member>
+        <member name="F:Bogus.DataSets.CardType.Jcb">
+            <summary>
+            JCB card number
+            </summary>
+        </member>
+        <member name="F:Bogus.DataSets.CardType.Switch">
+            <summary>
+            Switch card number
+            </summary>
+        </member>
+        <member name="F:Bogus.DataSets.CardType.Solo">
+            <summary>
+            Solo card number
+            </summary>
+        </member>
+        <member name="F:Bogus.DataSets.CardType.Maestro">
+            <summary>
+            Maestro card number
+            </summary>
+        </member>
+        <member name="F:Bogus.DataSets.CardType.Laser">
+            <summary>
+            Laser card number
+            </summary>
+        </member>
+        <member name="F:Bogus.DataSets.CardType.Instapayment">
+            <summary>
+            Instapayment card number
+            </summary>
+        </member>
+        <member name="T:Bogus.DataSets.Finance">
+            <summary>
+            Provides financial randomness.
+            </summary>
+        </member>
+        <member name="M:Bogus.DataSets.Finance.Account(System.Int32)">
+            <summary>
+            Get an account number. Default length is 8 digits.
+            </summary>
+            <param name="length">The length of the account number.</param>
+        </member>
+        <member name="M:Bogus.DataSets.Finance.AccountName">
+            <summary>
+            Get an account name. Like "savings", "checking", "Home Loan" etc..
+            </summary>
+        </member>
+        <member name="M:Bogus.DataSets.Finance.Amount(System.Decimal,System.Decimal,System.Int32)">
+            <summary>
+            Get a random amount. Default 0 - 1000.
+            </summary>
+            <param name="min">Min value. Default 0.</param>
+            <param name="max">Max value. Default 1000.</param>
+            <param name="decimals">Decimal places. Default 2.</param>
+        </member>
+        <member name="M:Bogus.DataSets.Finance.TransactionType">
+            <summary>
+            Get a transaction type: "deposit", "withdrawal", "payment", or "invoice".
+            </summary>
+        </member>
+        <member name="M:Bogus.DataSets.Finance.Currency(System.Boolean)">
+            <summary>
+            Get a random currency.
+            </summary>
+        </member>
+        <member name="M:Bogus.DataSets.Finance.CreditCardNumber(Bogus.DataSets.CardType)">
+            <summary>
+            Generate a random credit card number with valid Luhn checksum.
+            </summary>
+            <param name="provider">The type of credit card to generate (ie: American Express, Discover, etc.). Passing null, a random card provider will be chosen.</param>
+        </member>
+        <member name="M:Bogus.DataSets.Finance.CreditCardCvv">
+            <summary>
+            Generate a credit card CVV.
+            </summary>
+        </member>
+        <member name="M:Bogus.DataSets.Finance.BitcoinAddress">
+            <summary>
+            Generates a random Bitcoin address.
+            </summary>
+        </member>
+        <member name="M:Bogus.DataSets.Finance.EthereumAddress">
+            <summary>
+            Generate a random Ethereum address.
+            </summary>
+        </member>
+        <member name="M:Bogus.DataSets.Finance.LitecoinAddress">
+            <summary>
+            Generate a random Litecoin address.
+            </summary>
+        </member>
+        <member name="M:Bogus.DataSets.Finance.RoutingNumber">
+            <summary>
+            Generates an ABA routing number with valid check digit.
+            </summary>
+        </member>
+        <member name="M:Bogus.DataSets.Finance.Bic">
+            <summary>
+            Generates Bank Identifier Code (BIC) code.
+            </summary>
+        </member>
+        <member name="M:Bogus.DataSets.Finance.Iban(System.Boolean,System.String)">
+            <summary>
+            Generates an International Bank Account Number (IBAN).
+            </summary>
+            <param name="formatted">Formatted IBAN containing spaces.</param>
+            <param name="countryCode">A two letter ISO3166 country code. Throws an exception if the country code is not found or is an invalid length.</param>
+            <exception cref="T:System.Collections.Generic.KeyNotFoundException">An exception is thrown if the ISO3166 country code is not found.</exception>
+        </member>
+        <member name="T:Bogus.DataSets.Hacker">
+            <summary>
+            Hackerish words
+            </summary>
+        </member>
+        <member name="M:Bogus.DataSets.Hacker.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Bogus.DataSets.Hacker"/> class.
+            </summary>
+            <param name="locale">The locale that will be used to generate values.</param>
+        </member>
+        <member name="M:Bogus.DataSets.Hacker.Abbreviation">
+            <summary>
+            Returns an abbreviation.
+            </summary>
+            <returns>A random abbreviation.</returns>
+        </member>
+        <member name="M:Bogus.DataSets.Hacker.Adjective">
+            <summary>
+            Returns a adjective.
+            </summary>
+            <returns>A random adjective.</returns>
+        </member>
+        <member name="M:Bogus.DataSets.Hacker.Noun">
+            <summary>
+            Returns a noun.
+            </summary>
+            <returns>A random noun.</returns>
+        </member>
+        <member name="M:Bogus.DataSets.Hacker.Verb">
+            <summary>
+            Returns a verb.
+            </summary>
+            <returns>A random verb.</returns>
+        </member>
+        <member name="M:Bogus.DataSets.Hacker.IngVerb">
+            <summary>
+            Returns a verb ending with -ing.
+            </summary>
+            <returns>A random -ing verb.</returns>
+        </member>
+        <member name="M:Bogus.DataSets.Hacker.Phrase">
+            <summary>
+            Returns a phrase.
+            </summary>
+            <returns>A random phrase.</returns>
+        </member>
+        <member name="T:Bogus.DataSets.Images">
+            <summary>
+            Generates images URLs.
+            </summary>
+        </member>
+        <member name="M:Bogus.DataSets.Images.#ctor(System.String)">
+            <summary>
+            Default constructor
+            </summary>
+        </member>
+        <member name="M:Bogus.DataSets.Images.DataUri(System.Int32,System.Int32,System.String)">
+            <summary>
+            Get a SVG data URI image with a specific width and height.
+            </summary>
+            <param name="width">Width of the image.</param>
+            <param name="height">Height of the image.</param>
+            <param name="htmlColor">An html color in named format 'grey', RGB format 'rgb(r,g,b)', or hex format '#888888'.</param>
+        </member>
+        <member name="M:Bogus.DataSets.Images.PlaceImgUrl(System.Int32,System.Int32,System.String,System.Nullable{Bogus.DataSets.PlaceImgFilter})">
+            <summary>
+            Get an image from the https://placeimg.com service.
+            </summary>
+            <param name="width">Width of the image.</param>
+            <param name="height">Height of the image.</param>
+            <param name="category">Category of the image. See <seealso cref="T:Bogus.DataSets.PlaceImgCategory"/> for string categories.</param>
+            <param name="filter">The filter to apply to the image. See <seealso cref="T:Bogus.DataSets.PlaceImgFilter"/>.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bogus.DataSets.Images.PicsumUrl(System.Int32,System.Int32,System.Boolean,System.Boolean,System.Nullable{System.Int32})">
+            <summary>
+            Get an image from the https://picsum.photos service.
+            </summary>
+            <param name="width">Width of the image.</param>
+            <param name="height">Height of the image.</param>
+            <param name="grayscale">Grayscale (no color) image.</param>
+            <param name="blur">Blurry image.</param>
+            <param name="imageId">Optional Image ID found here https://picsum.photos/images</param>
+        </member>
+        <member name="M:Bogus.DataSets.Images.PlaceholderUrl(System.Int32,System.Int32,System.String,System.String,System.String,System.String)">
+            <summary>
+            Get an image from https://placehold.co service.
+            </summary>
+            <param name="width">Width of the image.</param>
+            <param name="height">Height of the image.</param>
+            <param name="text"></param>
+            <param name="format">Image format. Supported values: 'jpg', 'jpeg', 'png', 'gif', 'webp'.</param>
+            <param name="backColor">HTML color code for the background color.</param>
+            <param name="textColor">HTML color code for the foreground (text) color.</param>
+        </member>
+        <member name="M:Bogus.DataSets.Images.LoremFlickrUrl(System.Int32,System.Int32,System.String,System.Boolean,System.Boolean,System.Nullable{System.Int32})">
+            <summary>
+            Get an image from https://loremflickr.com service.
+            </summary>
+            <param name="keywords">Space or comma delimited list of keywords you want the picture to contain. IE: "cat, dog" for images with cats and dogs.</param>
+            <param name="width">The image width.</param>
+            <param name="height">The image height.</param>
+            <param name="grascale">Grayscale the image.</param>
+            <param name="matchAllKeywords">True tries to match an image with all specified keywords. False tries to match an image with any specified keyword.</param>
+            <param name="lockId">Deterministic image id. By default, this method generates URLs with image lock ids.
+            So, if a random seed is set, repeat runs of this method will generate the same lock id sequence
+            for images. If you want explicit control over the lock id, you can pass it as a parameter here.
+            Additionally, if you don't want any lock ids, pass -1 for this parameter this method will generate
+            a URL that will result in a new random image every time the HTTP URL is hit.
+            </param>
+        </member>
+        <member name="T:Bogus.DataSets.Internet">
+            <summary>
+            Random Internet things like email addresses
+            </summary>
+        </member>
+        <member name="F:Bogus.DataSets.Internet.Name">
+            <summary>
+            The source to pull names from.
+            </summary>
+        </member>
+        <member name="M:Bogus.DataSets.Internet.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Bogus.DataSets.Internet"/> class.
+            </summary>
+            <param name="locale">The locale used to generate values.</param>
+        </member>
+        <member name="M:Bogus.DataSets.Internet.Avatar(System.String)">
+            <summary>
+            Generates a legit Internet URL avatar from twitter accounts.
+            </summary>
+            <param name="ipfsGatewayRootUrl">A root IPFS Gateway URL. Default is 'https://ipfs.io'.
+            Other examples include passing 'https://gateway.pinata.cloud' or 'https://dweb.link', or any other public IPFS gateway found here:
+            https://ipfs.github.io/public-gateway-checker/. This parameter is used in case the default public IPFS gateway used
+            in Bogus (https://ipfs.io) goes down or an alternative IPFS public or private gateway is needed.</param>
+            <returns>A string containing a URL avatar from twitter accounts. This URL parameter should not contain any trailing '/'.</returns>
+        </member>
+        <member name="M:Bogus.DataSets.Internet.Email(System.String,System.String,System.String,System.String)">
+            <summary>
+            Generates an email address.
+            </summary>
+            <param name="firstName">Always use this first name.</param>
+            <param name="lastName">Sometimes used depending on randomness. See 'UserName'.</param>
+            <param name="provider">Always use the provider.</param>
+            <param name="uniqueSuffix">This parameter is appended to
+            the email account just before the @ symbol. This is useful for situations
+            where you might have a unique email constraint in your database or application.
+            Passing var f = new Faker(); f.UniqueIndex is a good choice. Or you can supply
+            your own unique changing suffix too like Guid.NewGuid; just be sure to change the
+            <paramref name="uniqueSuffix"/> value each time before calling this method
+            to ensure that email accounts that are generated are totally unique.</param>
+            <returns>An email address</returns>
+        </member>
+        <member name="M:Bogus.DataSets.Internet.ExampleEmail(System.String,System.String)">
+            <summary>
+            Generates an example email with @example.com.
+            </summary>
+            <param name="firstName">Optional: first name of the user.</param>
+            <param name="lastName">Optional: last name of the user.</param>
+            <returns>An example email ending with @example.com.</returns>
+        </member>
+        <member name="M:Bogus.DataSets.Internet.UserName(System.String,System.String)">
+            <summary>
+            Generates user names.
+            </summary>
+            <param name="firstName">First name is always part of the returned user name.</param>
+            <param name="lastName">Last name may or may not be used.</param>
+            <returns>A random user name.</returns>
+        </member>
+        <member name="M:Bogus.DataSets.Internet.UserNameUnicode(System.String,System.String)">
+            <summary>
+            Generates a user name preserving Unicode characters.
+            </summary>
+            <param name="firstName">First name is always part of the returned user name.</param>
+            <param name="lastName">Last name may or may not be used.</param>
+        </member>
+        <member name="M:Bogus.DataSets.Internet.DomainName">
+            <summary>
+            Generates a random domain name.
+            </summary>
+            <returns>A random domain name.</returns>
+        </member>
+        <member name="M:Bogus.DataSets.Internet.DomainWord">
+            <summary>
+            Generates a domain word used for domain names.
+            </summary>
+            <returns>A random domain word.</returns>
+        </member>
+        <member name="M:Bogus.DataSets.Internet.DomainSuffix">
+            <summary>
+            Generates a domain name suffix like .com, .net, .org
+            </summary>
+            <returns>A random domain suffix.</returns>
+        </member>
+        <member name="M:Bogus.DataSets.Internet.Ip">
+            <summary>
+            Gets a random IPv4 address string.
+            </summary>
+            <returns>A random IPv4 address.</returns>
+        </member>
+        <member name="M:Bogus.DataSets.Internet.Port">
+            <summary>
+            Generates a random port number.
+            </summary>
+            <returns>A random port number</returns>
+        </member>
+        <member name="M:Bogus.DataSets.Internet.IpAddress">
+            <summary>
+            Gets a random IPv4 IPAddress type.
+            </summary>
+        </member>
+        <member name="M:Bogus.DataSets.Internet.IpEndPoint">
+            <summary>
+            Gets a random IPv4 IPEndPoint.
+            </summary>
+            <returns>A random IPv4 IPEndPoint.</returns>
+        </member>
+        <member name="M:Bogus.DataSets.Internet.Ipv6">
+            <summary>
+            Generates a random IPv6 address string.
+            </summary>
+            <returns>A random IPv6 address.</returns>
+        </member>
+        <member name="M:Bogus.DataSets.Internet.Ipv6Address">
+            <summary>
+            Generate a random IPv6 IPAddress type.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bogus.DataSets.Internet.Ipv6EndPoint">
+            <summary>
+            Gets a random IPv6 IPEndPoint.
+            </summary>
+            <returns>A random IPv6 IPEndPoint.</returns>
+        </member>
+        <member name="M:Bogus.DataSets.Internet.UserAgent">
+            <summary>
+            Generates a random user agent.
+            </summary>
+            <returns>A random user agent.</returns>
+        </member>
+        <member name="M:Bogus.DataSets.Internet.Mac(System.String)">
+            <summary>
+            Gets a random mac address.
+            </summary>
+            <param name="separator">The string the mac address should be separated with.</param>
+            <returns>A random mac address.</returns>
+        </member>
+        <member name="M:Bogus.DataSets.Internet.Password(System.Int32,System.Boolean,System.String,System.String)">
+            <summary>
+            Generates a random password.
+            </summary>
+            <param name="length">Length of the password.</param>
+            <param name="memorable">A memorable password (ie: all lower case).</param>
+            <param name="regexPattern">Regex pattern that the password should follow.</param>
+            <param name="prefix">Password prefix.</param>
+            <returns>A random password.</returns>
+        </member>
+        <member name="M:Bogus.DataSets.Internet.Color(System.Byte,System.Byte,System.Byte,System.Boolean,Bogus.DataSets.ColorFormat)">
+            <summary>
+            Gets a random aesthetically pleasing color near the base RGB. See [here](http://stackoverflow.com/questions/43044/algorithm-to-randomly-generate-an-aesthetically-pleasing-color-palette).
+            </summary>
+            <param name="baseRed">Red base color</param>
+            <param name="baseGreen">Green base color</param>
+            <param name="baseBlue">Blue base color</param>
+            <param name="grayscale">Output a gray scale color</param>
+            <param name="format">The color format</param>
+            <returns>A random color.</returns>
+        </member>
+        <member name="M:Bogus.DataSets.Internet.Protocol">
+            <summary>
+            Returns a random protocol. HTTP or HTTPS.
+            </summary>
+            <returns>A random protocol.</returns>
+        </member>
+        <member name="M:Bogus.DataSets.Internet.Url">
+            <summary>
+            Generates a random URL.
+            </summary>
+            <returns>A random URL.</returns>
+        </member>
+        <member name="M:Bogus.DataSets.Internet.UrlWithPath(System.String,System.String,System.String)">
+            <summary>
+            Get an absolute URL with random path.
+            </summary>
+            <param name="protocol">Protocol part of the URL, random if null</param>
+            <param name="domain">Domain part of the URL, random if null</param>
+            <param name="fileExt">The file extension to use in the path, directory if null</param>
+            <returns>An URL with a random path.</returns>
+        </member>
+        <member name="M:Bogus.DataSets.Internet.UrlRootedPath(System.String)">
+            <summary>
+            Get a rooted URL path like: /foo/bar. Optionally with file extension.
+            </summary>
+            <param name="fileExt">Optional: The file extension to use. If <paramref name="fileExt"/> is null, then a rooted URL directory is returned.</param>
+            <returns>Returns a rooted URL path like: /foo/bar; optionally with a file extension.</returns>
+        </member>
+        <member name="T:Bogus.DataSets.Lorem">
+            <summary>
+            Generates plain old boring text.
+            </summary>
+        </member>
+        <member name="M:Bogus.DataSets.Lorem.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Bogus.DataSets.Lorem"/> class.
+            </summary>
+            <param name="locale">The locale used to generate random values.</param>
+        </member>
+        <member name="M:Bogus.DataSets.Lorem.Word">
+            <summary>
+            Get a random lorem word.
+            </summary>
+        </member>
+        <member name="M:Bogus.DataSets.Lorem.Words(System.Int32)">
+            <summary>
+            Get an array of random lorem words.
+            </summary>
+            <param name="num">The number of random lorem words to return.</param>
+        </member>
+        <member name="M:Bogus.DataSets.Lorem.Letter(System.Int32)">
+            <summary>
+            Get a character letter.
+            </summary>
+            <param name="num">The number of characters to return.</param>
+        </member>
+        <member name="M:Bogus.DataSets.Lorem.Sentence(System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Get a random sentence of specific number of words. 
+            </summary>
+            <param name="wordCount">Get a sentence with wordCount words. Defaults between 3 and 10.</param>
+            <param name="range">Add anywhere between 0 to 'range' additional words to wordCount. Default is 0.</param>
+        </member>
+        <member name="M:Bogus.DataSets.Lorem.Sentences(System.Nullable{System.Int32},System.String)">
+            <summary>
+            Get some sentences.
+            </summary>
+            <param name="sentenceCount">The number of sentences.</param>
+            <param name="separator">The string to separate sentences.</param>
+        </member>
+        <member name="M:Bogus.DataSets.Lorem.Paragraph(System.Int32)">
+            <summary>
+            Get a paragraph.
+            </summary>
+            <param name="min">The minimum number of sentences in the paragraph.
+            The final number of sentences returned in the paragraph is bound between [min, min + 3], inclusive.
+            If you want an exact number of sentences, use the <seealso cref="M:Bogus.DataSets.Lorem.Sentences(System.Nullable{System.Int32},System.String)"/> method.</param>
+        </member>
+        <member name="M:Bogus.DataSets.Lorem.Paragraphs(System.Int32,System.String)">
+            <summary>
+            Get a specified number of paragraphs.
+            </summary>
+            <param name="count">Number of paragraphs.</param>
+            <param name="separator">The string to separate paragraphs.</param>
+        </member>
+        <member name="M:Bogus.DataSets.Lorem.Paragraphs(System.Int32,System.Int32,System.String)">
+            <summary>
+            Get a random number of paragraphs between <paramref name="min"/> and <paramref name="max"/>.
+            </summary>
+            <param name="min">Minimum number of paragraphs.</param>
+            <param name="max">Maximum number of paragraphs.</param>
+            <param name="separator">The string to separate the paragraphs.</param>
+        </member>
+        <member name="M:Bogus.DataSets.Lorem.Text">
+            <summary>
+            Get random text on a random lorem methods.
+            </summary>
+        </member>
+        <member name="M:Bogus.DataSets.Lorem.Lines(System.Nullable{System.Int32},System.String)">
+            <summary>
+            Get lines of lorem.
+            </summary>
+            <param name="lineCount">The amount of lines to generate. Defaults between 1 and 5.</param>
+            <param name="separator">The string to separate the lines.</param>
+        </member>
+        <member name="M:Bogus.DataSets.Lorem.Slug(System.Int32)">
+            <summary>
+            Slugify lorem words.
+            </summary>
+            <param name="wordcount">The amount of words to slugify.</param>
+        </member>
+        <member name="M:Bogus.DataSets.Music.Genre">
+            <summary>
+            Get a music genre
+            </summary>
+        </member>
+        <member name="T:Bogus.DataSets.Name">
+            <summary>
+            Methods for generating names
+            </summary>
+        </member>
+        <member name="M:Bogus.DataSets.Name.#ctor(System.String)">
+            <summary>
+            Default constructor
+            </summary>
+        </member>
+        <member name="P:Bogus.DataSets.Name.Item(System.String)">
+            <summary>
+            Switches locale
+            </summary>
+        </member>
+        <member name="M:Bogus.DataSets.Name.FirstName(System.Nullable{Bogus.DataSets.Name.Gender})">
+            <summary>
+            Get a first name. Getting a gender specific name is only supported on locales that support it.
+            </summary>
+            <param name="gender">For locale's that support Gender naming.</param>
+        </member>
+        <member name="M:Bogus.DataSets.Name.LastName(System.Nullable{Bogus.DataSets.Name.Gender})">
+            <summary>
+            Get a last name. Getting a gender specific name is only supported on locales that support it.
+            </summary>
+            <param name="gender">For locale's that support Gender naming.</param>
+        </member>
+        <member name="M:Bogus.DataSets.Name.FullName(System.Nullable{Bogus.DataSets.Name.Gender})">
+            <summary>
+            Get a full name, concatenation of calling FirstName and LastName.
+            </summary>
+            <param name="gender">Gender of the name if supported by the locale.</param>
+        </member>
+        <member name="M:Bogus.DataSets.Name.Prefix(System.Nullable{Bogus.DataSets.Name.Gender})">
+            <summary>
+            Gets a random prefix for a name.
+            </summary>
+        </member>
+        <member name="M:Bogus.DataSets.Name.Suffix">
+            <summary>
+            Gets a random suffix for a name.
+            </summary>
+        </member>
+        <member name="M:Bogus.DataSets.Name.FindName(System.String,System.String,System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{Bogus.DataSets.Name.Gender})">
+            <summary>
+            Gets a full name.
+            </summary>
+            <param name="firstName">Use this first name.</param>
+            <param name="lastName">use this last name.</param>
+            <param name="withPrefix">Add a prefix?</param>
+            <param name="withSuffix">Add a suffix?</param>
+        </member>
+        <member name="M:Bogus.DataSets.Name.JobTitle">
+            <summary>
+            Gets a random job title.
+            </summary>
+        </member>
+        <member name="M:Bogus.DataSets.Name.JobDescriptor">
+            <summary>
+            Get a job description.
+            </summary>
+        </member>
+        <member name="M:Bogus.DataSets.Name.JobArea">
+            <summary>
+            Get a job area expertise.
+            </summary>
+        </member>
+        <member name="M:Bogus.DataSets.Name.JobType">
+            <summary>
+            Get a type of job.
+            </summary>
+        </member>
+        <member name="T:Bogus.DataSets.PhoneNumbers">
+            <summary>
+            Generates phone numbers
+            </summary>
+        </member>
+        <member name="M:Bogus.DataSets.PhoneNumbers.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Bogus.DataSets.PhoneNumbers"/> class.
+            </summary>
+            <param name="locale">The locale used to generate values.</param>
+        </member>
+        <member name="M:Bogus.DataSets.PhoneNumbers.PhoneNumber(System.String)">
+            <summary>
+            Get a phone number.
+            </summary>
+            <param name="format">
+            Format of phone number in any format.
+            Replaces # characters with numbers. IE: '###-###-####' or '(###) ###-####'.
+            </param>
+            <returns>A random phone number.</returns>
+        </member>
+        <member name="M:Bogus.DataSets.PhoneNumbers.PhoneNumberFormat(System.Int32)">
+            <summary>
+            Gets a phone number based on the locale's phone_number.formats[] array index.
+            </summary>
+            <param name="phoneFormatsArrayIndex">The array index as defined in the locale's phone_number.formats[] array.</param>
+            <returns>A random phone number.</returns>
+        </member>
+        <member name="M:Bogus.DataSets.PhoneNumbers.PhoneFormat">
+            <summary>
+            Gets the format of a phone number.
+            </summary>
+            <returns>A random phone number format.</returns>
+        </member>
+        <member name="M:Bogus.DataSets.PhoneNumbers.ReplaceExclamChar(System.String)">
+            <summary>
+            Replaces special ! characters in phone number formats.
+            </summary>
+            <returns>The newly formed string.</returns>
+        </member>
+        <member name="T:Bogus.DataSets.Rant">
+            <summary>
+            Generates random user content.
+            </summary>
+        </member>
+        <member name="M:Bogus.DataSets.Rant.Review(System.String)">
+            <summary>
+            Generates a random user review.
+            </summary>
+            <param name="product">The name of the product.</param>
+            <returns>A user review as a string.</returns>
+        </member>
+        <member name="M:Bogus.DataSets.Rant.Reviews(System.String,System.Int32)">
+            <summary>
+            Generate an array of random reviews.
+            </summary>
+            <param name="product">The name of the product.</param>
+            <param name="lines">The number of reviews to be generated.</param>
+            <returns>A string array of user reviews.</returns>
+        </member>
+        <member name="T:Bogus.DataSets.System">
+            <summary>
+            Generates fake data for many computer systems properties
+            </summary>
+        </member>
+        <member name="M:Bogus.DataSets.System.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Bogus.DataSets.System"/> class.
+            </summary>
+            <param name="locale">The locale that will be used to generate values.</param>
+        </member>
+        <member name="M:Bogus.DataSets.System.FileName(System.String)">
+            <summary>
+            Get a random file name.
+            </summary>
+            <param name="ext">
+            The extension the file name will have.
+            If null is provided, a random extension will be picked.
+            </param>
+            <returns>
+            A random file name with the given <paramref name="ext"/>
+            or a random extension
+            </returns>
+        </member>
+        <member name="M:Bogus.DataSets.System.DirectoryPath">
+            <summary>
+            Get a random directory path (Unix).
+            </summary>
+            <returns>
+            A random Unix directory path.
+            </returns>
+        </member>
+        <member name="M:Bogus.DataSets.System.FilePath">
+            <summary>
+            Get a random file path (Unix).
+            </summary>
+            <returns>
+            A random Unix file path.
+            </returns>
+        </member>
+        <member name="M:Bogus.DataSets.System.CommonFileName(System.String)">
+            <summary>
+            Generates a random file name with a common file extension.
+            Extension can be overwritten with <paramref name="ext"/>.
+            </summary>
+            <param name="ext">
+            The extensions to be used for a file name.
+            </param>
+            <returns>
+            A random file name with a common extension or <paramref name="ext"/>.
+            </returns>
+        </member>
+        <member name="M:Bogus.DataSets.System.MimeType">
+            <summary>
+            Get a random mime type.
+            </summary>
+            <returns>
+            A random mime type.
+            </returns>
+        </member>
+        <member name="M:Bogus.DataSets.System.CommonFileType">
+            <summary>
+            Returns a commonly used file type.
+            </summary>
+            <returns>
+            A commonly used file type.
+            </returns>
+        </member>
+        <member name="M:Bogus.DataSets.System.CommonFileExt">
+            <summary>
+            Returns a commonly used file extension.
+            </summary>
+            <returns>
+            A commonly used file extension.
+            </returns>
+        </member>
+        <member name="M:Bogus.DataSets.System.FileType">
+            <summary>
+            Returns any file type available as mime-type.
+            </summary>
+            <returns>
+            Any file type available as mime-type.
+            </returns>
+        </member>
+        <member name="M:Bogus.DataSets.System.FileExt(System.String)">
+            <summary>
+            Gets a random extension for the given mime type.
+            </summary>
+            <returns>
+            A random extension for the given mime type.
+            </returns>
+        </member>
+        <member name="M:Bogus.DataSets.System.Semver">
+            <summary>
+            Get a random semver version string.
+            </summary>
+            <returns>
+            A random semver version string.
+            </returns>
+        </member>
+        <member name="M:Bogus.DataSets.System.Version">
+            <summary>
+            Get a random `System.Version`.
+            </summary>
+            <returns>
+            A random `System.Version`.
+            </returns>
+        </member>
+        <member name="M:Bogus.DataSets.System.Exception">
+            <summary>
+            Get a random `Exception` with a fake stack trace.
+            </summary>
+            <returns>
+            A random `Exception` with a fake stack trace.
+            </returns>
+        </member>
+        <member name="M:Bogus.DataSets.System.AndroidId">
+            <summary>
+            Get a random GCM registration ID.
+            </summary>
+            <returns>
+            A random GCM registration ID.
+            </returns>
+        </member>
+        <member name="M:Bogus.DataSets.System.ApplePushToken">
+            <summary>
+            Get a random Apple Push Token.
+            </summary>
+            <returns>
+            A random Apple Push Token.
+            </returns>
+        </member>
+        <member name="M:Bogus.DataSets.System.BlackBerryPin">
+            <summary>
+            Get a random BlackBerry Device PIN.
+            </summary>
+            <returns>
+            A random BlackBerry Device PIN.
+            </returns>
+        </member>
+        <member name="T:Bogus.DataSets.Vehicle">
+            <summary>
+            Methods for generating vehicle information
+            </summary>
+        </member>
+        <member name="M:Bogus.DataSets.Vehicle.Vin(System.Boolean)">
+            <summary>
+            Generate a vehicle identification number (VIN).
+            </summary>
+            <param name="strict">Limits the acceptable characters to alpha numeric uppercase except I, O and Q.</param>
+        </member>
+        <member name="M:Bogus.DataSets.Vehicle.Manufacturer">
+            <summary>
+            Get a vehicle manufacture name. IE: Toyota, Ford, Porsche.
+            </summary>
+        </member>
+        <member name="M:Bogus.DataSets.Vehicle.Model">
+            <summary>
+            Get a vehicle model. IE: Camry, Civic, Accord.
+            </summary>
+        </member>
+        <member name="M:Bogus.DataSets.Vehicle.Type">
+            <summary>
+            Get a vehicle type. IE: Minivan, SUV, Sedan.
+            </summary>
+        </member>
+        <member name="M:Bogus.DataSets.Vehicle.Fuel">
+            <summary>
+            Get a vehicle fuel type. IE: Electric, Gasoline, Diesel.
+            </summary>
+        </member>
+        <member name="M:Bogus.Distributions.Gaussian.ExtensionsForRandomizer.InverseNCD(System.Double)">
+            <summary>
+            This algorithm follows Peter J Acklam's Inverse Normal Cumulative Distribution function.
+            Reference: P.J. Acklam, "An algorithm for computing the inverse normal cumulative distribution function," 2010
+            </summary>
+            <returns>
+            A double between 0.0 and 1.0
+            </returns>
+        </member>
+        <member name="M:Bogus.Distributions.Gaussian.ExtensionsForRandomizer.GaussianDouble(Bogus.Randomizer,System.Double,System.Double)">
+            <summary>
+            Generate a random double, based on the specified normal distribution.
+            <example>
+            To create random values around an average height of 69.1
+            inches with a standard deviation of 2.9 inches away from the mean
+            <code>
+            GaussianDouble(69.1, 2.9)
+            </code>
+            </example>
+            </summary>
+            <param name="mean">Mean value of the normal distribution</param>
+            <param name="standardDeviation">Standard deviation of the normal distribution</param>
+        </member>
+        <member name="M:Bogus.Distributions.Gaussian.ExtensionsForRandomizer.GaussianInt(Bogus.Randomizer,System.Double,System.Double)">
+            <summary>
+            Generate a random int, based on the specified normal distribution.
+            <example>
+            To create random int values around an average age of 35 years, with
+            a standard deviation of 4 years away from the mean.
+            </example>
+            <code>
+            call GaussianInt(35, 4)
+            </code>
+            </summary>
+            <param name="mean">Mean average of the normal distribution</param>
+            <param name="standardDeviation">Standard deviation of the normal distribution</param>
+        </member>
+        <member name="M:Bogus.Distributions.Gaussian.ExtensionsForRandomizer.GaussianFloat(Bogus.Randomizer,System.Double,System.Double)">
+            <summary>
+            Generate a float decimal, based on the specified normal distribution.
+            <example>
+            To create random float values around an average height of 69.1
+            inches with a standard deviation of 2.9 inches away from the mean
+            <code>
+            GaussianFloat(69.1, 2.9)
+            </code>
+            </example>
+            </summary>
+            <param name="mean">Mean average of the normal distribution</param>
+            <param name="standardDeviation">Standard deviation of the normal distribution</param>
+        </member>
+        <member name="M:Bogus.Distributions.Gaussian.ExtensionsForRandomizer.GaussianDecimal(Bogus.Randomizer,System.Double,System.Double)">
+            <summary>
+            Generate a random decimal, based on the specified normal distribution.
+            <example>
+            To create random values around an average height of 69.1
+            inches with a standard deviation of 2.9 inches away from the mean
+            <code>
+            GaussianDecimal(69.1, 2.9)
+            </code>
+            </example>
+            </summary>
+            <param name="mean">Mean average of the normal distribution</param>
+            <param name="standardDeviation">Standard deviation of the normal distribution</param>
+        </member>
+        <member name="T:Bogus.Extensions.Belgium.ExtensionsForBelgium">
+            <summary>
+            API extensions specific for a geographical location.
+            </summary>
+        </member>
+        <member name="M:Bogus.Extensions.Belgium.ExtensionsForBelgium.NationalNumber(Bogus.Person,System.Boolean)">
+            <summary>
+            The national number is a unique identification number (11 digits) assigned to persons registered in Belgium.
+            Everyone with a Belgian identity document or a residence document has this number.
+            </summary>
+            <param name="includeFormatSymbols">Includes formatting symbols.</param>
+        </member>
+        <member name="T:Bogus.Extensions.Brazil.ExtensionsForBrazil">
+            <summary>
+            API extensions specific for a geographical location.
+            </summary>
+        </member>
+        <member name="M:Bogus.Extensions.Brazil.ExtensionsForBrazil.Cpf(Bogus.Person,System.Boolean)">
+            <summary>
+            Cadastro de Pessoas Físicas
+            </summary>
+            <param name="includeFormatSymbols">Includes formatting symbols.</param>
+        </member>
+        <member name="M:Bogus.Extensions.Brazil.ExtensionsForBrazil.Cnpj(Bogus.DataSets.Company,System.Boolean)">
+            <summary>
+            Cadastro Nacional da Pessoa Jurídica
+            </summary>
+            <param name="includeFormatSymbols">Includes formatting symbols.</param>
+        </member>
+        <member name="T:Bogus.Extensions.Canada.ExtensionsForCanada">
+            <summary>
+            API extensions specific for a geographical location.
+            </summary>
+        </member>
+        <member name="M:Bogus.Extensions.Canada.ExtensionsForCanada.Sin(Bogus.Person)">
+            <summary>
+            Social Insurance Number for Canada 
+            </summary>
+        </member>
+        <member name="T:Bogus.Extensions.Denmark.ExtensionsForDenmark">
+            <summary>
+            API extensions specific for a geographical location.
+            </summary>
+        </member>
+        <member name="M:Bogus.Extensions.Denmark.ExtensionsForDenmark.Cpr(Bogus.Person,System.Boolean,System.Boolean)">
+            <summary>
+            Danish Personal Identification number
+            </summary>
+            <param name="p">The holder.</param>
+            <param name="validChecksum">
+              Indicates whether the generated CPR number should have a valid checksum or not.
+            </param>
+        </member>
+        <member name="T:Bogus.Extensions.ExtensionsForCultureInfo">
+            <summary>
+            Extension methods over <seealso cref="T:System.Globalization.CultureInfo"/>.
+            </summary>
+        </member>
+        <member name="M:Bogus.Extensions.ExtensionsForCultureInfo.ToBogusLocale(System.Globalization.CultureInfo)">
+            <summary>
+            Helper extension that maps .NET <seealso cref="T:System.Globalization.CultureInfo"/> to Bogus locale codes like 'en_US`.
+            </summary>
+        </member>
+        <member name="M:Bogus.Extensions.ExtensionsForRandomizer.Decimal2(Bogus.Randomizer,System.Decimal,System.Decimal)">
+            <summary>
+            Get a random decimal, between 0.0 and 1.0.
+            </summary>
+            <param name="min">Minimum, default 0.0</param>
+            <param name="max">Maximum, default 1.0</param>
+        </member>
+        <member name="T:Bogus.Extensions.ExtensionsForString">
+            <summary>
+            General helper string extensions for working with fake data.
+            </summary>
+        </member>
+        <member name="M:Bogus.Extensions.ExtensionsForString.ClampLength(System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Char)">
+            <summary>
+            Clamps the length of a string filling between min and max characters.
+            If the string is below the minimum, the string is appended with paddingChar up to the minimum length.
+            If the string is over the maximum, the string is truncated at maximum characters; additionally, if the result string ends with
+            whitespace, it is replaced with a paddingChar characters.
+            </summary>
+        </member>
+        <member name="M:Bogus.Extensions.ExtensionsForString.RemoveDiacritics(System.String)">
+            <summary>
+            A string extension method that removes the diacritics character from the strings.
+            </summary>
+            <param name="this">The @this to act on.</param>
+            <returns>The string without diacritics character.</returns>
+        </member>
+        <member name="M:Bogus.Extensions.ExtensionsForString.Transliterate(System.String,System.String)">
+            <summary>
+            Transliterates Unicode characters to US-ASCII. For example, Russian cyrillic "Анна Фомина" becomes "Anna Fomina".
+            </summary>
+            <param name="this">The @this string to act on.</param>
+            <param name="lang">The language character set to use.</param>
+        </member>
+        <member name="T:Bogus.Extensions.Extras.CheckDigitExtension">
+            <summary>
+            Shamelessly copied (and modified) from here: 
+            https://stackoverflow.com/questions/21249670/implementing-luhn-algorithm-using-c-sharp
+            </summary>
+        </member>
+        <member name="M:Bogus.Extensions.Extras.CheckDigitExtension.CheckDigit(System.Collections.Generic.IList{System.Int32})">
+            <summary>
+            For a list of digits, compute the ending checkdigit 
+            </summary>
+            <param name="digits">The list of digits for which to compute the check digit</param>
+            <returns>the check digit</returns>
+        </member>
+        <member name="M:Bogus.Extensions.Extras.CheckDigitExtension.AppendCheckDigit(System.Collections.Generic.IList{System.Int32})">
+            <summary>
+            Return a list of digits including the checkdigit
+            </summary>
+            <param name="digits">The original list of digits</param>
+            <returns>the new list of digits including checkdigit</returns>
+        </member>
+        <member name="M:Bogus.Extensions.Extras.CheckDigitExtension.HasValidCheckDigit(System.Collections.Generic.IList{System.Int32})">
+            <summary>
+            Returns true when a list of digits has a valid checkdigit
+            </summary>
+            <param name="digits">The list of digits to check</param>
+            <returns>true/false depending on valid checkdigit</returns>
+        </member>
+        <member name="M:Bogus.Extensions.Extras.CheckDigitExtension.ToDigitList(System.String)">
+            <summary>
+            Internal conversion function to convert string into a list of ints
+            </summary>
+            <param name="digits">the original string</param>
+            <returns>the list of ints</returns>
+        </member>
+        <member name="M:Bogus.Extensions.Extras.CheckDigitExtension.CheckDigit(System.String)">
+            <summary>
+            For a string of digits, compute the ending checkdigit 
+            </summary>
+            <param name="digits">The string of digits for which to compute the check digit</param>
+            <returns>the check digit</returns>
+        </member>
+        <member name="M:Bogus.Extensions.Extras.CheckDigitExtension.AppendCheckDigit(System.String)">
+            <summary>
+            Return a string of digits including the checkdigit
+            </summary>
+            <param name="digits">The original string of digits</param>
+            <returns>the new string of digits including checkdigit</returns>
+        </member>
+        <member name="M:Bogus.Extensions.Extras.CheckDigitExtension.HasValidCheckDigit(System.String)">
+            <summary>
+            Returns true when a string of digits has a valid checkdigit
+            </summary>
+            <param name="digits">The string of digits to check</param>
+            <returns>true/false depending on valid checkdigit</returns>
+        </member>
+        <member name="M:Bogus.Extensions.Extras.FinanceExtensions.CreditCardNumberObfuscated(Bogus.DataSets.Finance,System.String)">
+            <summary>
+            Generate a PCI compliant obfuscated credit card number ****-****-****-1234.
+            </summary>
+            <param name="separator">The string value to separate the obfuscated credit card.</param>
+        </member>
+        <member name="M:Bogus.Extensions.Extras.FinanceExtensions.CreditCardNumberLastFourDigits(Bogus.DataSets.Finance)">
+            <summary>
+            Generates the last four digits for a credit card.
+            </summary>      
+        </member>
+        <member name="T:Bogus.Extensions.Finland.ExtensionsForFinland">
+            <summary>
+            API extensions specific for a geographical location.
+            </summary>
+        </member>
+        <member name="M:Bogus.Extensions.Finland.ExtensionsForFinland.Henkilotunnus(Bogus.Person)">
+            <summary>
+            Finnish Henkilötunnus
+            </summary>
+        </member>
+        <member name="T:Bogus.Extensions.Iran.ExtensionsForIran">
+            <summary>
+            API extensions specific for Iran.
+            </summary>
+        </member>
+        <member name="M:Bogus.Extensions.Iran.ExtensionsForIran.IranianNationalNumber(Bogus.Person)">
+            <summary>
+            Generates a fake Iranian National Number (کد ملی) with a valid checksum.
+            </summary>
+            <param name="p">The person for whom to generate the national number.</param>
+            <returns>A valid 10-digit Iranian national number as a string.</returns>
+        </member>
+        <member name="T:Bogus.Extensions.Italy.CodiceFiscaleGenerator">
+            <summary>
+            This class implements the principal routines of the Italian fiscal code,
+            used to unambiguously identify individuals residing in Italy.
+            See: https://en.wikipedia.org/wiki/Italian_fiscal_code_card
+            </summary>
+        </member>
+        <member name="F:Bogus.Extensions.Italy.CodiceFiscaleGenerator.evenMap">
+            <summary>
+            Map used by the algorithm for even characters
+            </summary>
+        </member>
+        <member name="F:Bogus.Extensions.Italy.CodiceFiscaleGenerator.monthChars">
+            <summary>
+            Array that maps months onto letters
+            </summary>
+        </member>
+        <member name="F:Bogus.Extensions.Italy.CodiceFiscaleGenerator.oddMap">
+            <summary>
+            Map used by the algorithm for odd characters
+            </summary>
+        </member>
+        <member name="M:Bogus.Extensions.Italy.CodiceFiscaleGenerator.Generate(System.String,System.String,System.DateTime,System.Boolean,System.Boolean)">
+            <summary>
+              Generates an Italian Fiscal Code
+            </summary>
+            <param name="lastName">Last name of the holder</param>
+            <param name="firstName">First name of the holder</param>
+            <param name="birthday">Birthday of the holder</param>
+            <param name="male">Indicates whether the holder is male</param>
+            <param name="validChecksum">
+              Indicates whether the generated Fiscal Code has a valid checksum or not
+            </param>
+            <returns>The generated Fiscal Code</returns>
+        </member>
+        <member name="M:Bogus.Extensions.Italy.CodiceFiscaleGenerator.ComputeChecksumCodiceFiscale(System.String,System.Boolean)">
+            <summary>
+            Checksum computation algorithm
+            </summary>
+            <param name="prefix">The code</param>
+            <param name="validChecksum">Indicates whether the computed checksum must be valid or not</param>
+        </member>
+        <member name="M:Bogus.Extensions.Italy.CodiceFiscaleGenerator.GetFiscalCodeSqueezedName(System.String,System.Boolean)">
+            <summary>
+              This method applies the rule giving the consonants and vowels extracted by the name,
+              according to the algorithm.
+            </summary>
+            <param name="name">The name to process</param>
+            <param name="isFirstName">true, in case of first names</param>
+            <returns>The squeezed name</returns>
+        </member>
+        <member name="M:Bogus.Extensions.Italy.CodiceFiscaleGenerator.IsVowel(System.Char)">
+            <summary>
+            Indicates whether a char is a vowel
+            </summary>
+            <param name="c">The char to test</param>
+            <returns>True if is is a vowel, false otherwise</returns>
+        </member>
+        <member name="T:Bogus.Extensions.Italy.ExtensionsForItaly">
+            <summary>
+            Italian class extensions
+            </summary>
+        </member>
+        <member name="M:Bogus.Extensions.Italy.ExtensionsForItaly.CodiceFiscale(Bogus.Person,System.Boolean)">
+            <summary>
+              Codice Fiscale
+            </summary>
+            <param name="p">The holder</param>
+            <param name="validChecksum">
+              Indicates whether the generated Fiscal Code has a valid checksum or not
+            </param>
+            <returns>The generated Fiscal Code</returns>
+        </member>
+        <member name="M:Bogus.Extensions.Italy.ExtensionsForItaly.CodiceFiscale(Bogus.DataSets.Finance,System.String,System.String,System.DateTime,System.Boolean,System.Boolean)">
+            <summary>
+              Codice Fiscale
+            </summary>
+            <param name="finance">An instance of the extended Finance class</param>
+            <param name="lastName">Last name of the holder</param>
+            <param name="firstName">First name of the holder</param>
+            <param name="birthday">Birthday of the holder</param>
+            <param name="isMale">Indicates whether the holder is male</param>
+            <param name="validChecksum">
+              Indicates whether the generated Fiscal Code has a valid checksum or not
+            </param>
+            <returns>The generated Fiscal Code</returns>
+        </member>
+        <member name="T:Bogus.Extensions.Norway.ExtensionsForNorway">
+            <summary>
+            API extensions specific for a geographical location.
+            </summary>
+        </member>
+        <member name="M:Bogus.Extensions.Norway.ExtensionsForNorway.Fodselsnummer(Bogus.Person)">
+            <summary>
+            Fødselsnummer - Norwegian national identity number
+            </summary>
+        </member>
+        <member name="T:Bogus.Extensions.Poland.ExtensionsForPoland">
+            <summary>
+            API extensions specific for a geographical location.
+            </summary>
+        </member>
+        <member name="M:Bogus.Extensions.Poland.ExtensionsForPoland.Pesel(Bogus.Person)">
+            <summary>
+            Number of Powszechny Elektroniczny System Ewidencji Ludności (PESEL)
+            </summary>
+            <param name="person">Person born between 1800 and 2300</param>
+        </member>
+        <member name="M:Bogus.Extensions.Poland.ExtensionsForPoland.Nip(Bogus.DataSets.Company)">
+            <summary>
+            Numer identyfikacji podatkowej (NIP)
+            </summary>
+            <remarks>
+            Consists only of digits
+            </remarks>
+        </member>
+        <member name="M:Bogus.Extensions.Poland.ExtensionsForPoland.Regon(Bogus.DataSets.Company,Bogus.Extensions.Poland.ExtensionsForPoland.RegonType)">
+            <summary>
+            Number of Rejestr Gospodarki Narodowej (REGON)
+            </summary>
+            <param name="type">9 or 14 digits REGON type</param>
+        </member>
+        <member name="T:Bogus.Extensions.Portugal.ExtensionsForPortugal">
+            <summary>
+            API extensions specific for Portugal.
+            </summary>
+        </member>
+        <member name="M:Bogus.Extensions.Portugal.ExtensionsForPortugal.Nif(Bogus.Person)">
+            <summary>
+            Número de Identificação Fiscal (NIF)
+            </summary>
+            <remarks>
+            Tax identification number. Also referred to as Taxpayer Number, identifies a tax entity that is a taxpayer in Portugal, whether a company or a natural person.
+            </remarks>
+            <param name="p">Object will receive the NIF value</param>
+        </member>
+        <member name="M:Bogus.Extensions.Portugal.ExtensionsForPortugal.Nipc(Bogus.DataSets.Company)">
+            <summary>
+            Número de Identificação de Pessoa Colectiva (NIPC)
+            </summary>
+            <remarks>
+            Tax identification number for companies. A Collective Identification Number is the most correct term to refer to a company's NIF. The first digit can be 5, 6 public collective, 8, irregular legal person or provisional number.
+            </remarks>
+            <param name="c">Object will receive the NIPC value</param>
+        </member>
+        <member name="M:Bogus.Extensions.Portugal.TaxNumberGenerator.Create(System.Int32[])">
+            <summary>
+            Rules for generate the last number for the combination
+            </summary>
+            <param name="arrNumber">The array number for calculate</param>
+        </member>
+        <member name="T:Bogus.Extensions.Romania.ExtensionsForRomania">
+            <summary>
+             API extensions specific for a geographical location.
+            </summary>
+        </member>
+        <member name="M:Bogus.Extensions.Romania.ExtensionsForRomania.Cnp(Bogus.Person)">
+            <summary>
+            Romanian Personal Identification number (CNP)
+            </summary>
+            <param name="p"></param>
+            <returns></returns>
+            <remarks>
+             https://ro.wikipedia.org/wiki/Cod_numeric_personal_(Rom%C3%A2nia)
+             '|S| |AA| |LL| |ZZ| |JJ| |ZZZ| |C|
+             '|_| |__| |__| |__| |__| |___| |_|
+             '  :     :      :      :     :       :    --> Cifra de control
+             '  :     :      :      :     :       --> Numarul de ordine atribuit persoanei
+             '  :     :      :      :     --> Codul judetului
+             '  :     :      :      --> Ziua nasterii
+             '  :     :      --> Luna nasterii
+             '  :     --> Anul nasterii
+             '  --> Cifra sexului (M/F) pentru:
+             '        1/2 - cetateni romani nascuti intre 1 ian 1900 si 31 dec 1999
+             '        3/4 - cetateni romani nascuti intre 1 ian 1800 si 31 dec 1899
+             '        5/6 - cetateni romani nascuti intre 1 ian 2000 si 31 dec 2099
+             '        7/8 - rezidenti
+             '       Persoanele de cetatenie straina se identifica cu cifra "9"
+            </remarks>
+        </member>
+        <member name="T:Bogus.Extensions.Sweden.ExtensionsForSweden">
+            <summary>
+            API extensions specific for a geographical location.
+            </summary>
+        </member>
+        <member name="M:Bogus.Extensions.Sweden.ExtensionsForSweden.Personnummer(Bogus.Person)">
+            <summary>
+            Swedish national identity number
+            </summary>
+        </member>
+        <member name="M:Bogus.Extensions.Sweden.ExtensionsForSweden.Samordningsnummer(Bogus.Person)">
+            <summary>
+            Swedish coordination number
+            </summary>
+            <remarks>
+            Coordination numbers enable Swedish public authorities and other organizations with a public function 
+            to identify people who are not currently – and have never been – registered at an address in Sweden.
+            </remarks>
+        </member>
+        <member name="T:Bogus.Extensions.UnitedKingdom.ExtensionsForGreatBritainRegistrationPlate">
+            <summary>
+            API extensions specific for a geographical location.
+            </summary>
+        </member>
+        <member name="M:Bogus.Extensions.UnitedKingdom.ExtensionsForGreatBritainRegistrationPlate.GbRegistrationPlate(Bogus.DataSets.Vehicle,System.DateTime,System.DateTime)">
+            <summary>
+            GB Vehicle Registration Plate
+            </summary>
+            <param name="vehicle">Object to extend.</param>
+            <param name="dateFrom">The start of the range of registration dates.</param>
+            <param name="dateTo">The end of the range of registration dates.</param>
+            <returns>A string containing a GB registration plate.</returns>
+            <remarks>
+            This is based on the information in the Wikipedia article on
+            Vehicle registration plates of the United Kingdom.
+            https://en.wikipedia.org/wiki/Vehicle_registration_plates_of_the_United_Kingdom
+            At present this only handles registration plates in the current
+            scheme (September 2001 to February 2051).
+            </remarks>
+        </member>
+        <member name="T:Bogus.Extensions.UnitedKingdom.ExtensionsForUnitedKingdom">
+            <summary>
+            API extensions specific for a geographical location.
+            </summary>
+        </member>
+        <member name="M:Bogus.Extensions.UnitedKingdom.ExtensionsForUnitedKingdom.SortCode(Bogus.DataSets.Finance,System.Boolean)">
+            <summary>
+            Banking Sort Code
+            </summary>
+        </member>
+        <member name="M:Bogus.Extensions.UnitedKingdom.ExtensionsForUnitedKingdom.Nino(Bogus.DataSets.Finance,System.Boolean)">
+            <summary>
+            National Insurance Number
+            </summary>
+        </member>
+        <member name="M:Bogus.Extensions.UnitedKingdom.ExtensionsForUnitedKingdom.CountryOfUnitedKingdom(Bogus.DataSets.Address)">
+            <summary>
+            Country of the United Kingdom
+            </summary>
+        </member>
+        <member name="M:Bogus.Extensions.UnitedKingdom.ExtensionsForUnitedKingdom.VatNumber(Bogus.DataSets.Finance,Bogus.Extensions.UnitedKingdom.VatRegistrationNumberType,System.Boolean)">
+            <summary>
+            Generates a UK compatible VAT registration number.
+            </summary>
+            <param name="finance">A reference to <see cref="T:Bogus.DataSets.Finance"/>.</param>
+            <param name="registrationNumberType">The type of vat registration number to generate.</param>
+            <param name="includeSeparator">Indicates the resultant string should be spaced according to VAT registration formatting defaults.</param>
+            <returns>A string representation of a VAT registration number.</returns>
+            <exception cref="T:System.NotImplementedException">Exception thrown if the requested registration number is not supported.</exception>
+        </member>
+        <member name="T:Bogus.Extensions.UnitedKingdom.VatRegistrationNumberType">
+            <summary>
+            Enum for the different types of UK VAT registration numbers.
+            </summary>
+        </member>
+        <member name="F:Bogus.Extensions.UnitedKingdom.VatRegistrationNumberType.Standard">
+            <summary>
+            Standard company, for example GB### #### ##
+            </summary>
+        </member>
+        <member name="F:Bogus.Extensions.UnitedKingdom.VatRegistrationNumberType.BranchTrader">
+            <summary>
+            Branch trader, similar to <see cref="F:Bogus.Extensions.UnitedKingdom.VatRegistrationNumberType.Standard"/> with a 3 digit suffix. For example, GB### #### ## ###
+            </summary>
+        </member>
+        <member name="F:Bogus.Extensions.UnitedKingdom.VatRegistrationNumberType.GovernmentDepartment">
+            <summary>
+            Government department. for example GBGD###
+            </summary>
+        </member>
+        <member name="F:Bogus.Extensions.UnitedKingdom.VatRegistrationNumberType.HealthAuthority">
+            <summary>
+            Health authority, for example GBHA###
+            </summary>
+        </member>
+        <member name="T:Bogus.Extensions.UnitedStates.ExtensionsForUnitedStates">
+            <summary>
+            API extensions specific for a geographical location.
+            </summary>
+        </member>
+        <member name="M:Bogus.Extensions.UnitedStates.ExtensionsForUnitedStates.Ssn(Bogus.Person)">
+            <summary>
+            Social Security Number
+            </summary>
+        </member>
+        <member name="M:Bogus.Extensions.UnitedStates.ExtensionsForUnitedStates.Ein(Bogus.DataSets.Company)">
+            <summary>
+            Employer Identification Number
+            </summary>
+        </member>
+        <member name="T:Bogus.Faker">
+            <summary>
+            A hub of all the categories merged into a single class to ease fluent syntax API.
+            </summary>
+        </member>
+        <member name="F:Bogus.Faker.DefaultStrictMode">
+            <summary>
+            The default mode to use when generating objects. Strict mode ensures that all properties have rules.
+            </summary>
+        </member>
+        <member name="M:Bogus.Faker.#ctor(System.String)">
+            <summary>
+            Create a Faker with a specific locale.
+            </summary>
+        </member>
+        <member name="F:Bogus.Faker.Notifier">
+            <summary>
+            See <see cref="T:Bogus.SeedNotifier"/>
+            </summary>
+        </member>
+        <member name="P:Bogus.Faker.Random">
+            <summary>
+            Generate numbers, booleans, and decimals.
+            </summary>
+        </member>
+        <member name="M:Bogus.Faker.Parse(System.String)">
+            <summary>
+            Can parse a handle bar expression like "{{name.lastName}}, {{name.firstName}} {{name.suffix}}".
+            </summary>
+        </member>
+        <member name="P:Bogus.Faker.Person">
+            <summary>
+            A contextually relevant fields of a person.
+            </summary>
+        </member>
+        <member name="P:Bogus.Faker.DateTimeReference">
+            <summary>
+            The fixed point in time DateTime reference used for date and time calculations
+            with this Faker instance and the underlying .Date dataset. If this property is set to null,
+            then the .Date dataset's static system clock is usually used.
+            
+            Typically, this property is set when Faker[T].UseDateTimeReference() is called,
+            or is set manually when creating an instance of new Faker { DateTimeReference = new DateTime(year, month, day) }.
+            When this property is set, all date/time calculations from .Date will begin calculations from this fixed point in time for this Faker instance.
+            </summary>
+        </member>
+        <member name="P:Bogus.Faker.Hacker">
+            <summary>
+            Creates hacker gibberish.
+            </summary>
+        </member>
+        <member name="P:Bogus.Faker.Phone">
+            <summary>
+            Generate Phone Numbers
+            </summary>
+        </member>
+        <member name="P:Bogus.Faker.Name">
+            <summary>
+            Generate Names
+            </summary>
+        </member>
+        <member name="P:Bogus.Faker.Lorem">
+            <summary>
+            Generate Words
+            </summary>
+        </member>
+        <member name="P:Bogus.Faker.Image">
+            <summary>
+            Generate Image URL Links
+            </summary>
+        </member>
+        <member name="P:Bogus.Faker.Finance">
+            <summary>
+            Generate Finance Items
+            </summary>
+        </member>
+        <member name="P:Bogus.Faker.Address">
+            <summary>
+            Generate Addresses
+            </summary>
+        </member>
+        <member name="P:Bogus.Faker.Date">
+            <summary>
+            Generate Dates
+            </summary>
+        </member>
+        <member name="P:Bogus.Faker.Company">
+            <summary>
+            Generates company names, titles and BS.
+            </summary>
+        </member>
+        <member name="P:Bogus.Faker.Internet">
+            <summary>
+            Generate Internet stuff like Emails and UserNames.
+            </summary>
+        </member>
+        <member name="P:Bogus.Faker.Commerce">
+            <summary>
+            Generates data related to commerce
+            </summary>
+        </member>
+        <member name="P:Bogus.Faker.System">
+            <summary>
+            Generates fake data for many computer systems properties
+            </summary>
+        </member>
+        <member name="P:Bogus.Faker.Database">
+            <summary>
+            Generates fake database things.
+            </summary>
+        </member>
+        <member name="P:Bogus.Faker.Rant">
+            <summary>
+            Generates random user content.
+            </summary>
+        </member>
+        <member name="P:Bogus.Faker.Vehicle">
+            <summary>
+            Generates data related to vehicles.
+            </summary>
+        </member>
+        <member name="P:Bogus.Faker.Music">
+            <summary>
+            Generates data related to music.
+            </summary>
+        </member>
+        <member name="M:Bogus.Faker.PickRandom``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Helper method to pick a random element.
+            </summary>
+        </member>
+        <member name="M:Bogus.Faker.PickRandom``1(System.Collections.Generic.IList{``0})">
+            <summary>
+            Helper method to pick a random element.
+            </summary>
+        </member>
+        <member name="M:Bogus.Faker.PickRandom``1(System.Collections.Generic.ICollection{``0})">
+            <summary>
+            Helper method to pick a random element.
+            </summary>
+        </member>
+        <member name="M:Bogus.Faker.PickRandom``1(System.Collections.Generic.List{``0})">
+            <summary>
+            Helper method to pick a random element.
+            </summary>
+        </member>
+        <member name="M:Bogus.Faker.PickRandom``1(``0[])">
+            <summary>
+            Picks a random item of T specified in the parameter list.
+            </summary>
+        </member>
+        <member name="M:Bogus.Faker.PickRandomParam``1(``0[])">
+            <summary>
+            Picks a random item of T specified in the parameter list.
+            </summary>
+        </member>
+        <member name="M:Bogus.Faker.PickRandom``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
+            <summary>
+            Helper to pick random subset of elements out of the list.
+            </summary>
+            <param name="amountToPick">amount of elements to pick of the list.</param>
+            <exception cref="T:System.ArgumentException">if amountToPick is lower than zero.</exception>
+        </member>
+        <member name="M:Bogus.Faker.Make``1(System.Int32,System.Func{``0})">
+            <summary>
+            Helper method to call faker actions multiple times and return the result as IList of T
+            </summary>
+        </member>
+        <member name="M:Bogus.Faker.Make``1(System.Int32,System.Func{System.Int32,``0})">
+            <summary>
+            Helper method to call faker actions multiple times and return the result as IList of T.
+            This method passes in the current index of the generation.
+            </summary>
+        </member>
+        <member name="M:Bogus.Faker.MakeLazy``1(System.Int32,System.Func{``0})">
+            <summary>
+            Returns an IEnumerable[T] with LINQ deferred execution. Generated values
+            are not guaranteed to be repeatable until .ToList() is called.
+            </summary>
+        </member>
+        <member name="M:Bogus.Faker.MakeLazy``1(System.Int32,System.Func{System.Int32,``0})">
+            <summary>
+            Same as Make() except this method passes in the current index of the generation. Also,
+            returns an IEnumerable[T] with LINQ deferred execution. Generated values are not
+            guaranteed to be repeatable until .ToList() is called.
+            </summary>
+        </member>
+        <member name="M:Bogus.Faker.PickRandom``1">
+            <summary>
+            Picks a random Enum of T. Works only with Enums.
+            </summary>
+            <typeparam name="T">Must be an Enum</typeparam>
+        </member>
+        <member name="M:Bogus.Faker.PickRandomWithout``1(``0[])">
+            <summary>
+            Picks a random Enum of T, excluding those passed as parameters.
+            </summary>
+            <param name="exclude">The items in the Enum of T to exclude from selection.</param>
+        </member>
+        <member name="P:Bogus.Faker.Locale">
+            <summary>
+            The current locale for the dataset.
+            </summary>
+            <value>The locale.</value>
+        </member>
+        <member name="M:Bogus.Faker.NewContext">
+            <summary>
+            Triggers a new generation context
+            </summary>
+        </member>
+        <member name="P:Bogus.Faker.HasContext">
+            <summary>
+            Checks if the internal state is ready to be used by <seealso cref="T:Bogus.Faker`1"/>.
+            In other words, has NewContext ever been called since this object was created?
+            See Issue 143. https://github.com/bchavez/Bogus/issues/143
+            </summary>
+        </member>
+        <member name="F:Bogus.Faker.GlobalUniqueIndex">
+            <summary>
+            A global variable that is automatically incremented on every
+            new object created by Bogus. Useful for composing property values that require
+            uniqueness.
+            </summary>
+        </member>
+        <member name="P:Bogus.Faker.UniqueIndex">
+            <summary>
+            Alias for IndexGlobal.
+            </summary>
+        </member>
+        <member name="P:Bogus.Faker.IndexGlobal">
+            <summary>
+            A global static variable that is automatically incremented on every
+            new object created by Bogus across all Faker[T]s in the entire application.
+            Useful for composing property values that require uniqueness across
+            the entire application.
+            </summary>
+        </member>
+        <member name="F:Bogus.Faker.IndexFaker">
+            <summary>
+            A local variable that is automatically incremented on every
+            new object generated by the Faker[T] instance for lifetime of Faker[T].
+            </summary>
+        </member>
+        <member name="F:Bogus.Faker.IndexVariable">
+            <summary>
+            A local index variable that can be controlled inside rules with ++ and --.
+            This variable's lifetime exists for the lifetime of Faker[T].
+            </summary>
+        </member>
+        <member name="P:Bogus.Faker.Hashids">
+            <summary>
+            HashID generator with default (string.Empty) salt. See: https://github.com/ullmark/hashids.net
+            </summary>
+        </member>
+        <member name="T:Bogus.IFakerTInternal">
+            <summary>
+            Hidden API implemented explicitly on <see cref="T:Bogus.Faker`1"/>. When <see cref="T:Bogus.Faker`1"/> is casted explicitly to <see cref="T:Bogus.IFakerTInternal"/>,
+            the cast reveals some protected internal objects of <see cref="T:Bogus.Faker`1"/> without needing to derive
+            from <see cref="T:Bogus.Faker`1"/>. This is useful for extensions methods that need access internal variables of <see cref="T:Bogus.Faker`1"/> like <see cref="T:Bogus.Faker"/>, <see cref="T:Bogus.IBinder"/>, <see cref="P:Bogus.IFakerTInternal.LocalSeed"/>, and type of T.
+            </summary>
+        </member>
+        <member name="P:Bogus.IFakerTInternal.FakerHub">
+            <summary>
+            The internal FakerHub object that is used in f => f rules. Usually used to gain access to a source of randomness by extension methods.
+            </summary>
+        </member>
+        <member name="P:Bogus.IFakerTInternal.Binder">
+            <summary>
+            The field/property binder used by <see cref="T:Bogus.Faker`1"/>.
+            </summary>
+        </member>
+        <member name="P:Bogus.IFakerTInternal.LocalSeed">
+            <summary>
+            The local seed of <see cref="T:Bogus.Faker`1"/> if available. Null local seed means the Global <see cref="F:Bogus.Randomizer.Seed"/> property is being used.
+            </summary>
+        </member>
+        <member name="P:Bogus.IFakerTInternal.TypeOfT">
+            <summary>
+            The type of T in <see cref="T:Bogus.Faker`1"/>.
+            </summary>
+        </member>
+        <member name="T:Bogus.Faker`1">
+            <summary>
+            Generates fake objects of <typeparamref name="T"/>.
+            </summary>
+            <typeparam name="T">The object to fake.</typeparam>
+        </member>
+        <member name="M:Bogus.Faker`1.Clone">
+            <summary>
+            Clones the internal state of a <seealso cref="T:Bogus.Faker`1"/> into a new <seealso cref="T:Bogus.Faker`1"/> so that
+            both are isolated from each other. The clone will have internal state
+            reset as if <seealso cref="M:Bogus.Faker`1.Generate(System.String)"/> was never called.
+            </summary>
+        </member>
+        <member name="P:Bogus.Faker`1.Locale">
+            <summary>
+            The current locale.
+            </summary>
+        </member>
+        <member name="M:Bogus.Faker`1.#ctor">
+            <summary>
+            Creates a Faker with default 'en' locale.
+            </summary>
+        </member>
+        <member name="M:Bogus.Faker`1.#ctor(System.String)">
+            <summary>
+            Creates a Faker with a locale
+            </summary>
+        </member>
+        <member name="M:Bogus.Faker`1.#ctor(System.String,Bogus.IBinder)">
+            <summary>
+            Creates a Faker with a locale.
+            </summary>
+            <param name="locale">language</param>
+            <param name="binder">A binder that discovers properties or fields on T that are candidates for faking. Null uses the default Binder.</param>
+        </member>
+        <member name="M:Bogus.Faker`1.UseSeed(System.Int32)">
+            <summary>
+            Creates a seed locally scoped within this <seealso cref="T:Bogus.Faker`1"/> ignoring the globally scoped <seealso cref="F:Bogus.Randomizer.Seed"/>.
+            If this method is never called the global <seealso cref="F:Bogus.Randomizer.Seed"/> is used.
+            </summary>
+            <param name="seed">The seed value to use within this <seealso cref="T:Bogus.Faker`1"/> instance.</param>
+        </member>
+        <member name="M:Bogus.Faker`1.UseDateTimeReference(System.Nullable{System.DateTime})">
+            <summary>
+            Sets a local time reference for all DateTime calculations used by
+            this Faker[T] instance; unless refDate parameters are specified 
+            with the corresponding Date.Methods().
+            </summary>
+            <param name="refDate">The anchored DateTime reference to use.</param>
+        </member>
+        <member name="M:Bogus.Faker`1.CustomInstantiator(System.Func{Bogus.Faker,`0})">
+            <summary>
+            Instructs <seealso cref="T:Bogus.Faker`1"/> to use the factory method as a source
+            for new instances of <typeparamref name="T"/>.
+            </summary>
+        </member>
+        <member name="M:Bogus.Faker`1.RuleFor``1(System.Linq.Expressions.Expression{System.Func{`0,``0}},System.Func{Bogus.Faker,`0,``0})">
+            <summary>
+            Creates a rule for a compound property and providing access to the instance being generated.
+            </summary>
+        </member>
+        <member name="M:Bogus.Faker`1.RuleFor``1(System.Linq.Expressions.Expression{System.Func{`0,``0}},``0)">
+            <summary>
+            Creates a rule for a property.
+            </summary>
+        </member>
+        <member name="M:Bogus.Faker`1.RuleFor``1(System.Linq.Expressions.Expression{System.Func{`0,``0}},System.Func{``0})">
+            <summary>
+            Creates a rule for a property.
+            </summary>
+        </member>
+        <member name="M:Bogus.Faker`1.RuleFor``1(System.Linq.Expressions.Expression{System.Func{`0,``0}},System.Func{Bogus.Faker,``0})">
+            <summary>
+            Creates a rule for a property.
+            </summary>
+        </member>
+        <member name="M:Bogus.Faker`1.RuleFor``1(System.String,System.Func{Bogus.Faker,``0})">
+            <summary>
+            Create a rule for a hidden property or field.
+            Used in advanced scenarios to create rules for hidden properties or fields.
+            </summary>
+            <param name="propertyOrFieldName">The property name or field name of the member to create a rule for.</param>
+        </member>
+        <member name="M:Bogus.Faker`1.RuleFor``1(System.String,System.Func{Bogus.Faker,`0,``0})">
+            <summary>
+            Create a rule for a hidden property or field.
+            Used in advanced scenarios to create rules for hidden properties or fields.
+            </summary>
+            <param name="propertyOrFieldName">The property name or field name of the member to create a rule for.</param>
+        </member>
+        <member name="M:Bogus.Faker`1.Rules(System.Action{Bogus.Faker,`0})">
+            <summary>
+            Specify multiple rules inside an action without having to call
+            RuleFor multiple times. Note: <seealso cref="M:Bogus.Faker`1.StrictMode(System.Boolean)"/> must be false
+            since rules for properties and fields cannot be individually checked when
+            using this method.
+            </summary>
+        </member>
+        <member name="M:Bogus.Faker`1.RuleForType``1(System.Type,System.Func{Bogus.Faker,``0})">
+            <summary>
+            Creates one rule for all types of <typeparamref name="TType"/> on type <typeparamref name="T"/>.
+            In other words, if you have <typeparamref name="T"/> with many fields or properties of
+            type <seealso cref="T:System.Int32"/> this method allows you to specify a rule for all fields or
+            properties of type <seealso cref="T:System.Int32"/>.
+            </summary>
+        </member>
+        <member name="M:Bogus.Faker`1.GetFieldOrPropertyType(System.Reflection.MemberInfo)">
+            <summary>
+            Utility method to get the Type of a Property or Field
+            </summary>
+        </member>
+        <member name="M:Bogus.Faker`1.RuleSet(System.String,System.Action{Bogus.IRuleSet{`0}})">
+            <summary>
+            Defines a set of rules under a specific name. Useful for defining
+            rules for special cases. Note: The name `default` is the name of all rules that are
+            defined without an explicit rule set.
+            </summary>
+            <param name="ruleSetName">The rule set name.</param>
+            <param name="action">The set of rules to apply when this rules set is specified.</param>
+        </member>
+        <member name="M:Bogus.Faker`1.EnsureMemberExists(System.String,System.String)">
+            <summary>
+            Ensures a member exists provided by the IBinder.
+            </summary>
+        </member>
+        <member name="M:Bogus.Faker`1.Ignore(System.String)">
+            <summary>
+            Ignores a property or field when <seealso cref="M:Bogus.Faker`1.StrictMode(System.Boolean)"/> is enabled.
+            Used in advanced scenarios to ignore hidden properties or fields.
+            </summary>
+            <param name="propertyOrFieldName">The property name or field name of the member to create a rule for.</param>
+        </member>
+        <member name="M:Bogus.Faker`1.Ignore``1(System.Linq.Expressions.Expression{System.Func{`0,``0}})">
+            <summary>
+            Ignores a property or field when <seealso cref="M:Bogus.Faker`1.StrictMode(System.Boolean)"/> is enabled.
+            </summary>
+        </member>
+        <member name="M:Bogus.Faker`1.StrictMode(System.Boolean)">
+            <summary>
+            When set to true, ensures all properties and public fields of <typeparamref name="T"/> have rules
+            before an object of <typeparamref name="T"/> is populated or generated. Manual assertion
+            can be invoked using <seealso cref="M:Bogus.Faker`1.Validate(System.String)"/> and <seealso cref="M:Bogus.Faker`1.AssertConfigurationIsValid(System.String)"/>.
+            </summary>
+            <param name="ensureRulesForAllProperties">Overrides any global setting in <seealso cref="F:Bogus.Faker.DefaultStrictMode"/>.</param>
+        </member>
+        <member name="M:Bogus.Faker`1.FinishWith(System.Action{Bogus.Faker,`0})">
+            <summary>
+            A finalizing action rule applied to <typeparamref name="T"/> after all the rules
+            are executed.
+            </summary>
+        </member>
+        <member name="M:Bogus.Faker`1.ParseDirtyRulesSets(System.String)">
+            <summary>
+            Utility method to parse out rule sets form user input.
+            </summary>
+        </member>
+        <member name="M:Bogus.Faker`1.Generate(System.String)">
+            <summary>
+            Generates a fake object of <typeparamref name="T"/> using the specified rules in this
+            <seealso cref="T:Bogus.Faker`1"/>.
+            </summary>
+            <param name="ruleSets">A comma separated list of rule sets to execute.
+            Note: The name `default` is the name of all rules defined without an explicit rule set.
+            When a custom rule set name is provided in <paramref name="ruleSets"/> as parameter,
+            the `default` rules will not run. If you want rules without an explicit rule set to run
+            you'll need to include the `default` rule set name in the comma separated
+            list of rules to run. (ex: "ruleSetA, ruleSetB, default")
+            </param>
+        </member>
+        <member name="M:Bogus.Faker`1.Generate(System.Int32,System.String)">
+            <summary>
+            Generates a <seealso cref="T:System.Collections.Generic.List`1"/> fake objects of type <typeparamref name="T"/> using the specified rules in
+            this <seealso cref="T:Bogus.Faker`1"/>.
+            </summary>
+            <param name="count">The number of items to create in the <seealso cref="T:System.Collections.Generic.List`1"/>.</param>
+            <param name="ruleSets">A comma separated list of rule sets to execute.
+            Note: The name `default` is the name of all rules defined without an explicit rule set.
+            When a custom rule set name is provided in <paramref name="ruleSets"/> as parameter,
+            the `default` rules will not run. If you want rules without an explicit rule set to run
+            you'll need to include the `default` rule set name in the comma separated
+            list of rules to run. (ex: "ruleSetA, ruleSetB, default")
+            </param>
+        </member>
+        <member name="M:Bogus.Faker`1.GenerateLazy(System.Int32,System.String)">
+            <summary>
+            Returns an <seealso cref="T:System.Collections.Generic.IEnumerable`1"/> with LINQ deferred execution. Generated values
+            are not guaranteed to be repeatable until <seealso cref="M:System.Linq.Enumerable.ToList``1(System.Collections.Generic.IEnumerable{``0})"/> is called.
+            </summary>
+            <param name="count">The number of items to create in the <seealso cref="T:System.Collections.Generic.IEnumerable`1"/>.</param>
+            <param name="ruleSets">A comma separated list of rule sets to execute.
+            Note: The name `default` is the name of all rules defined without an explicit rule set.
+            When a custom rule set name is provided in <paramref name="ruleSets"/> as parameter,
+            the `default` rules will not run. If you want rules without an explicit rule set to run
+            you'll need to include the `default` rule set name in the comma separated
+            list of rules to run. (ex: "ruleSetA, ruleSetB, default")
+            </param>
+        </member>
+        <member name="M:Bogus.Faker`1.GenerateForever(System.String)">
+            <summary>
+            Returns an <see cref="T:System.Collections.Generic.IEnumerable`1"/> that can be used as an unlimited source
+            of <typeparamref name="T"/> when iterated over. Useful for generating unlimited
+            amounts of data in a memory efficient way. Generated values *should* be repeatable
+            for a given seed when starting with the first item in the sequence.
+            </summary>
+            <param name="ruleSets">A comma separated list of rule sets to execute.
+            Note: The name `default` is the name of all rules defined without an explicit rule set.
+            When a custom rule set name is provided in <paramref name="ruleSets"/> as parameter,
+            the `default` rules will not run. If you want rules without an explicit rule set to run
+            you'll need to include the `default` rule set name in the comma separated
+            list of rules to run. (ex: "ruleSetA, ruleSetB, default")
+            </param>
+        </member>
+        <member name="M:Bogus.Faker`1.Populate(`0,System.String)">
+            <summary>
+            Populates an instance of <typeparamref name="T"/> according to the rules
+            defined in this <seealso cref="T:Bogus.Faker`1"/>.
+            </summary>
+            <param name="instance">The instance of <typeparamref name="T"/> to populate.</param>
+            <param name="ruleSets">A comma separated list of rule sets to execute.
+            Note: The name `default` is the name of all rules defined without an explicit rule set.
+            When a custom rule set name is provided in <paramref name="ruleSets"/> as parameter,
+            the `default` rules will not run. If you want rules without an explicit rule set to run
+            you'll need to include the `default` rule set name in the comma separated
+            list of rules to run. (ex: "ruleSetA, ruleSetB, default")
+            </param>
+        </member>
+        <member name="M:Bogus.Faker`1.PopulateInternal(`0,System.String[])">
+            <summary>
+            Populates an instance of <typeparamref name="T"/> according to the rules
+            defined in this <seealso cref="T:Bogus.Faker`1"/>.
+            </summary>
+            <param name="instance">The instance of <typeparamref name="T"/> to populate.</param>
+            <param name="ruleSets">A comma separated list of rule sets to execute.
+            Note: The name `default` is the name of all rules defined without an explicit rule set.
+            When a custom rule set name is provided in <paramref name="ruleSets"/> as parameter,
+            the `default` rules will not run. If you want rules without an explicit rule set to run
+            you'll need to include the `default` rule set name in the comma separated
+            list of rules to run. (ex: "ruleSetA, ruleSetB, default")
+            </param>
+        </member>
+        <member name="M:Bogus.Faker`1.Validate(System.String)">
+            <summary>
+            When <seealso cref="M:Bogus.Faker`1.StrictMode(System.Boolean)"/> is enabled, checks if all properties or fields of <typeparamref name="T"/> have
+            rules defined. Returns true if all rules are defined, false otherwise.
+            The difference between <seealso cref="M:Bogus.Faker`1.Validate(System.String)"/> and <seealso cref="M:Bogus.Faker`1.AssertConfigurationIsValid(System.String)"/>
+            is that <seealso cref="M:Bogus.Faker`1.Validate(System.String)"/> will *not* throw <seealso cref="T:Bogus.ValidationException"/>
+            if some rules are missing when <seealso cref="M:Bogus.Faker`1.StrictMode(System.Boolean)"/> is enabled.
+            </summary>
+            <returns>True if validation passes, false otherwise.</returns>
+        </member>
+        <member name="M:Bogus.Faker`1.AssertConfigurationIsValid(System.String)">
+            <summary>
+            Asserts that all properties have rules. When <seealso cref="M:Bogus.Faker`1.StrictMode(System.Boolean)"/> is enabled, an exception will be raised
+            with complete list of missing rules. Useful in unit tests to catch missing rules at development
+            time. The difference between <seealso cref="M:Bogus.Faker`1.Validate(System.String)"/> and <seealso cref="M:Bogus.Faker`1.AssertConfigurationIsValid(System.String)"/>
+            is that <seealso cref="M:Bogus.Faker`1.AssertConfigurationIsValid(System.String)"/> will throw <seealso cref="T:Bogus.ValidationException"/>
+            if some rules are missing when <seealso cref="M:Bogus.Faker`1.StrictMode(System.Boolean)"/> is enabled. <seealso cref="M:Bogus.Faker`1.Validate(System.String)"/>
+            will not throw an exception and will return <seealso cref="T:System.Boolean"/> true or false accordingly if
+            rules are missing when <seealso cref="M:Bogus.Faker`1.StrictMode(System.Boolean)"/> is enabled.
+            </summary>
+            <exception cref="T:Bogus.ValidationException"/>
+        </member>
+        <member name="M:Bogus.Faker`1.MakeValidationException(Bogus.ValidationResult)">
+            <summary>
+            Composes a <see cref="T:Bogus.ValidationException"/> based on the failed validation
+            results that can be readily used to raise the exception.
+            </summary>
+        </member>
+        <member name="M:Bogus.Faker`1.op_Implicit(Bogus.Faker{`0})~`0">
+            <summary>
+            Provides implicit type conversion from <seealso cref="T:Bogus.Faker`1"/> to <typeparamref name="T"/>. IE: Order testOrder = faker;
+            </summary>
+        </member>
+        <member name="M:Bogus.Faker`1.RuleFor``1(System.Linq.Expressions.Expression{System.Func{`0,``0}})">
+            <summary>
+            Not Implemented: This method only exists as a work around for Visual Studio IntelliSense. See: https://github.com/bchavez/Bogus/issues/54
+            </summary>
+        </member>
+        <member name="T:Bogus.ExtensionsForFakerT">
+            <summary>
+            Extensions for <see cref="T:Bogus.Faker`1"/>.
+            </summary>
+        </member>
+        <member name="M:Bogus.ExtensionsForFakerT.GenerateBetween``1(Bogus.Faker{``0},System.Int32,System.Int32,System.String)">
+            <summary>
+            Generate multiple fake objects of T. The number of generated items is randomly chosen between <paramref name="min"/> and <paramref name="max"/> values.
+            The random number between <paramref name="min"/> and <paramref name="max"/> should be considered non-deterministic but technically depends on the parameters each time this method was called.
+            </summary>
+            <param name="faker">The <see cref="T:Bogus.Faker`1"/> to extend with this extension method.</param>
+            <param name="min">Minimum number of T objects to create. Inclusive.</param>
+            <param name="max">Maximum number of T objects to create. Inclusive.</param>
+        </member>
+        <member name="M:Bogus.ExtensionsForFakerT.OrNull``1(``0,Bogus.Faker@,System.Single)">
+            <summary>
+            Helpful extension for creating randomly null values for <seealso cref="T:Bogus.Faker`1"/>.RuleFor() rules.
+            Example: .RuleFor(x=>x.Prop, f=>f.Random.Word().OrNull(f))
+            </summary>
+            <typeparam name="T">Any reference type.</typeparam>
+            <param name="f">The Faker facade. This is usually the f from RuleFor(.., f => lambda).</param>
+            <param name="nullWeight">The probability of null occurring. Range [1.0f - 0.0f] (100% and 0%) respectively. For example, if 15% null is desired pass nullWeight = 0.15f.</param>
+        </member>
+        <member name="M:Bogus.ExtensionsForFakerT.OrNull``1(``0,Bogus.Faker,System.Single)">
+            <summary>
+            Helpful extension for creating randomly null values for <seealso cref="T:Bogus.Faker`1"/>.RuleFor() rules.
+            Example: .RuleFor(x=>x.Prop, f=>f.Random.Int().OrNull(f))
+            </summary>
+            <typeparam name="T">Any nullable type. ie: int?, Guid?, etc.</typeparam>
+            <param name="f">The Faker facade. This is usually the f from RuleFor(.., f => lambda).</param>
+            <param name="nullWeight">The probability of null occurring. Range [1.0f - 0.0f] (100% and 0%) respectively. For example, if 15% null is desired pass nullWeight = 0.15f.</param>
+        </member>
+        <member name="M:Bogus.ExtensionsForFakerT.OrDefault``1(``0,Bogus.Faker,System.Single,``0)">
+            <summary>
+            Helpful extension for creating randomly default(T) values for <seealso cref="T:Bogus.Faker`1"/>.RuleFor() rules.
+            Example: .RuleFor(x=>x.Prop, f=>f.Random.Word().OrDefault(f))
+            </summary>
+            <param name="f">The Faker facade. This is usually the f from f => lambda.</param>
+            <param name="defaultWeight">The probability of the default value occurring. Range [1.0f - 0.0f] (100% and 0%) respectively. For example, if 15% default(T) is desired pass defaultWeight = 0.15f.</param>
+            <param name="defaultValue">The default value to return.</param>
+        </member>
+        <member name="T:Bogus.Hashids">
+            <summary>
+            Generate YouTube-like hashes from one or many numbers. Use hashids when you do not want to expose your database ids to the user.
+            </summary>
+        </member>
+        <member name="M:Bogus.Hashids.#ctor">
+            <summary>
+            Instantiates a new Hashids with the default setup.
+            </summary>
+        </member>
+        <member name="M:Bogus.Hashids.#ctor(System.String,System.Int32,System.String,System.String)">
+            <summary>
+            Instantiates a new Hashids en/de-coder.
+            </summary>
+            <param name="salt"></param>
+            <param name="minHashLength"></param>
+            <param name="alphabet"></param>
+        </member>
+        <member name="M:Bogus.Hashids.Encode(System.Int32[])">
+            <summary>
+            Encodes the provided numbers into a hashed string
+            </summary>
+            <param name="numbers">the numbers to encode</param>
+            <returns>the hashed string</returns>
+        </member>
+        <member name="M:Bogus.Hashids.Encode(System.Collections.Generic.IEnumerable{System.Int32})">
+            <summary>
+            Encodes the provided numbers into a hashed string
+            </summary>
+            <param name="numbers">the numbers to encode</param>
+            <returns>the hashed string</returns>
+        </member>
+        <member name="M:Bogus.Hashids.Decode(System.String)">
+            <summary>
+            Decodes the provided hash into
+            </summary>
+            <param name="hash">the hash</param>
+            <exception cref="T:System.OverflowException">if the decoded number overflows integer</exception>
+            <returns>the numbers</returns>
+        </member>
+        <member name="M:Bogus.Hashids.EncodeHex(System.String)">
+            <summary>
+            Encodes the provided hex string to a hashids hash.
+            </summary>
+            <param name="hex"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Bogus.Hashids.DecodeHex(System.String)">
+            <summary>
+            Decodes the provided hash into a hex-string
+            </summary>
+            <param name="hash"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Bogus.Hashids.DecodeLong(System.String)">
+            <summary>
+            Decodes the provided hashed string into an array of longs 
+            </summary>
+            <param name="hash">the hashed string</param>
+            <returns>the numbers</returns>
+        </member>
+        <member name="M:Bogus.Hashids.EncodeLong(System.Int64[])">
+            <summary>
+            Encodes the provided longs to a hashed string
+            </summary>
+            <param name="numbers">the numbers</param>
+            <returns>the hashed string</returns>
+        </member>
+        <member name="M:Bogus.Hashids.EncodeLong(System.Collections.Generic.IEnumerable{System.Int64})">
+            <summary>
+            Encodes the provided longs to a hashed string
+            </summary>
+            <param name="numbers">the numbers</param>
+            <returns>the hashed string</returns>
+        </member>
+        <member name="M:Bogus.Hashids.Encrypt(System.Int32[])">
+            <summary>
+            Encodes the provided numbers into a string.
+            </summary>
+            <param name="numbers">the numbers</param>
+            <returns>the hash</returns>
+        </member>
+        <member name="M:Bogus.Hashids.EncryptHex(System.String)">
+            <summary>
+            Encrypts the provided hex string to a hashids hash.
+            </summary>
+            <param name="hex"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Bogus.Hashids.Decrypt(System.String)">
+            <summary>
+            Decodes the provided numbers into a array of numbers
+            </summary>
+            <param name="hash">hash</param>
+            <returns>array of numbers.</returns>
+        </member>
+        <member name="M:Bogus.Hashids.DecryptHex(System.String)">
+            <summary>
+            Decodes the provided hash to a hex-string
+            </summary>
+            <param name="hash"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Bogus.Hashids.GenerateHashFrom(System.Int64[])">
+            <summary>
+            Internal function that does the work of creating the hash
+            </summary>
+            <param name="numbers"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Bogus.IHashids">
+            <summary>
+            Describes a Hashids provider
+            </summary>
+        </member>
+        <member name="M:Bogus.IHashids.Decode(System.String)">
+            <summary>
+            Decodes the provided hashed string.
+            </summary>
+            <param name="hash">the hashed string</param>
+            <exception cref="T:System.OverflowException">if one or many of the numbers in the hash overflowing the integer storage</exception>
+            <returns>the numbers</returns>
+        </member>
+        <member name="M:Bogus.IHashids.DecodeLong(System.String)">
+            <summary>
+            Decodes the provided hashed string into longs
+            </summary>
+            <param name="hash">the hashed string</param>
+            <returns>the numbers</returns>
+        </member>
+        <member name="M:Bogus.IHashids.DecodeHex(System.String)">
+            <summary>
+            Decodes the provided hashed string into a hex string
+            </summary>
+            <param name="hash">the hashed string</param>
+            <returns>the hex string</returns>
+        </member>
+        <member name="M:Bogus.IHashids.Encode(System.Int32[])">
+            <summary>
+            Encodes the provided numbers into a hashed string
+            </summary>
+            <param name="numbers">the numbers</param>
+            <returns>the hashed string</returns>
+        </member>
+        <member name="M:Bogus.IHashids.Encode(System.Collections.Generic.IEnumerable{System.Int32})">
+            <summary>
+            Encodes the provided numbers into a hashed string
+            </summary>
+            <param name="numbers">the numbers</param>
+            <returns>the hashed string</returns>
+        </member>
+        <member name="M:Bogus.IHashids.EncodeLong(System.Int64[])">
+            <summary>
+            Encodes the provided numbers into a hashed string
+            </summary>
+            <param name="numbers">the numbers</param>
+            <returns>the hashed string</returns>
+        </member>
+        <member name="M:Bogus.IHashids.EncodeLong(System.Collections.Generic.IEnumerable{System.Int64})">
+            <summary>
+            Encodes the provided numbers into a hashed string
+            </summary>
+            <param name="numbers">the numbers</param>
+            <returns>the hashed string</returns>
+        </member>
+        <member name="M:Bogus.IHashids.EncodeHex(System.String)">
+            <summary>
+            Encodes the provided hex string
+            </summary>
+            <param name="hex">the hex string</param>
+            <returns>the hashed string</returns>
+        </member>
+        <member name="T:Bogus.ILocaleAware">
+            <summary>
+            Marker interface for datasets that are locale aware.
+            </summary>
+        </member>
+        <member name="P:Bogus.ILocaleAware.Locale">
+            <summary>
+            The current locale for the dataset.
+            </summary>
+        </member>
+        <member name="T:Bogus.IHasContext">
+            <summary>
+            Marker interface for objects that have a context storage property.
+            </summary>
+        </member>
+        <member name="T:Bogus.IRuleSet`1">
+            <summary>
+            An interface for defining a set of rules.
+            </summary>
+        </member>
+        <member name="M:Bogus.IRuleSet`1.CustomInstantiator(System.Func{Bogus.Faker,`0})">
+            <summary>
+            Uses the factory method to generate new instances.
+            </summary>
+        </member>
+        <member name="M:Bogus.IRuleSet`1.RuleFor``1(System.Linq.Expressions.Expression{System.Func{`0,``0}},System.Func{Bogus.Faker,`0,``0})">
+            <summary>
+            Creates a rule for a compound property and providing access to the instance being generated.
+            </summary>
+        </member>
+        <member name="M:Bogus.IRuleSet`1.RuleFor``1(System.Linq.Expressions.Expression{System.Func{`0,``0}},System.Func{Bogus.Faker,``0})">
+            <summary>
+            Creates a rule for a property.
+            </summary>
+        </member>
+        <member name="M:Bogus.IRuleSet`1.RuleFor``1(System.Linq.Expressions.Expression{System.Func{`0,``0}},System.Func{``0})">
+            <summary>
+            Creates a rule for a property.
+            </summary>
+        </member>
+        <member name="M:Bogus.IRuleSet`1.Ignore``1(System.Linq.Expressions.Expression{System.Func{`0,``0}})">
+            <summary>
+            Ignore a property or field when using StrictMode.
+            </summary>
+        </member>
+        <member name="M:Bogus.IRuleSet`1.StrictMode(System.Boolean)">
+            <summary>
+            Ensures all properties of T have rules.
+            </summary>
+            <param name="ensureRulesForAllProperties">Overrides any global setting in Faker.DefaultStrictMode</param>
+        </member>
+        <member name="M:Bogus.IRuleSet`1.FinishWith(System.Action{Bogus.Faker,`0})">
+            <summary>
+            Action is invoked after all the rules are applied.
+            </summary>
+        </member>
+        <member name="M:Bogus.IRuleSet`1.RuleFor``1(System.Linq.Expressions.Expression{System.Func{`0,``0}},``0)">
+            <summary>
+            Creates a rule for a property.
+            </summary>
+        </member>
+        <member name="M:Bogus.IRuleSet`1.Rules(System.Action{Bogus.Faker,`0})">
+            <summary>
+            Gives you a way to specify multiple rules inside an action
+            without having to call RuleFor multiple times. Note: StrictMode
+            must be false since property rules cannot be individually checked.
+            </summary>
+        </member>
+        <member name="T:Bogus.Person">
+            <summary>
+            Uses Faker to generate a person with contextually relevant fields.
+            </summary>
+        </member>
+        <member name="M:Bogus.Person.#ctor(System.String,System.Nullable{System.Int32},System.Nullable{System.DateTime})">
+            <summary>
+            Creates a new Person object.
+            </summary>
+            <param name="locale">The locale to use. Defaults to 'en'.</param>
+            <param name="seed">The seed used to generate person data. When a <paramref name="seed"/> is specified,
+            the Randomizer.Seed global static is ignored and a locally isolated derived seed is used to derive randomness.
+            However, if the <paramref name="seed"/> parameter is null, then the Randomizer.Seed global static is used to derive randomness.
+            </param>
+        </member>
+        <member name="T:Bogus.Platform.ExtensionsForType">
+            <summary>
+            Extension methods on <see cref="T:System.Type"/>.
+            </summary>
+        </member>
+        <member name="M:Bogus.Platform.ExtensionsForType.GetAllMembers(System.Type,System.Reflection.BindingFlags)">
+            <summary>
+            Returns all the members of a type, based on <paramref name="bindingFlags"/>.
+            </summary>
+            <remarks>
+            For class types, it will simply call <see cref="M:System.Type.GetMembers(System.Reflection.BindingFlags)"/>.
+            For interface types however, it will inspect *all* interfaces that <paramref name="type"/> implements,
+            and return all the members.
+            </remarks>
+            <param name="type">The type to inspect.</param>
+            <param name="bindingFlags">The binding flags to use.</param>
+            <see href="https://stackoverflow.com/a/47277547/15393"/>
+            <returns>The relevant members of <paramref name="type"/></returns>
+        </member>
+        <member name="T:Bogus.Premium.PremiumDataSet">
+            <summary>
+            Root object for premium data sets.
+            </summary>
+        </member>
+        <member name="T:Bogus.Randomizer">
+            <summary>
+            A randomizer that randomizes things.
+            </summary>
+        </member>
+        <member name="F:Bogus.Randomizer.Seed">
+            <summary>
+            Set the random number generator manually with a seed to get reproducible results.
+            </summary>
+        </member>
+        <member name="M:Bogus.Randomizer.#ctor">
+            <summary>
+            Constructor that uses the global static `<see cref="F:Bogus.Randomizer.Seed"/>.
+            Changing the global static seed after this constructor runs
+            will have no effect. A new randomizer is needed to capture a new
+            global seed.
+            </summary>
+        </member>
+        <member name="M:Bogus.Randomizer.#ctor(System.Int32)">
+            <summary>
+            Constructor that uses <see cref="F:Bogus.Randomizer.localSeed"/> parameter as a seed.
+            Completely ignores the global static <see cref="F:Bogus.Randomizer.Seed"/>.
+            </summary>
+        </member>
+        <member name="F:Bogus.Randomizer.localSeed">
+            <summary>
+            The pseudo-random number generator that is used for all random number generation in this instance.
+            </summary>
+        </member>
+        <member name="M:Bogus.Randomizer.Number(System.Int32)">
+            <summary>
+            Get an int from 0 to max.
+            </summary>
+            <param name="max">Upper bound, inclusive.</param>
+        </member>
+        <member name="M:Bogus.Randomizer.Digits(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Get a random sequence of digits.
+            </summary>
+            <param name="count">How many</param>
+            <param name="minDigit">minimum digit, inclusive</param>
+            <param name="maxDigit">maximum digit, inclusive</param>
+        </member>
+        <member name="M:Bogus.Randomizer.Number(System.Int32,System.Int32)">
+            <summary>
+            Get an int from min to max.
+            </summary>
+            <param name="min">Lower bound, inclusive</param>
+            <param name="max">Upper bound, inclusive</param>
+        </member>
+        <member name="M:Bogus.Randomizer.Even(System.Int32,System.Int32)">
+            <summary>
+            Returns a random even number. If the range does not contain any even numbers, an <see cref="T:System.ArgumentException" /> is thrown.
+            </summary>
+            <param name="min">Lower bound, inclusive</param>
+            <param name="max">Upper bound, inclusive</param>
+            <exception cref="T:System.ArgumentException">Thrown if it is impossible to select an odd number satisfying the specified range.</exception>
+        </member>
+        <member name="M:Bogus.Randomizer.Odd(System.Int32,System.Int32)">
+            <summary>
+            Returns a random odd number. If the range does not contain any odd numbers, an <see cref="T:System.ArgumentException" /> is thrown.
+            </summary>
+            <param name="min">Lower bound, inclusive</param>
+            <param name="max">Upper bound, inclusive</param>
+            <exception cref="T:System.ArgumentException">Thrown if it is impossible to select an odd number satisfying the specified range.</exception>
+        </member>
+        <member name="M:Bogus.Randomizer.Double(System.Double,System.Double)">
+            <summary>
+            Get a random double, between 0.0 and 1.0.
+            </summary>
+            <param name="min">Minimum, inclusive. Default 0.0</param>
+            <param name="max">Maximum, exclusive. Default 1.0</param>
+        </member>
+        <member name="M:Bogus.Randomizer.Decimal(System.Decimal,System.Decimal)">
+            <summary>
+            Get a random decimal, between 0.0 and 1.0.
+            </summary>
+            <param name="min">Minimum, inclusive. Default 0.0</param>
+            <param name="max">Maximum, exclusive. Default 1.0</param>
+        </member>
+        <member name="M:Bogus.Randomizer.Float(System.Single,System.Single)">
+            <summary>
+            Get a random float, between 0.0 and 1.0.
+            </summary>
+            <param name="min">Minimum, inclusive. Default 0.0</param>
+            <param name="max">Maximum, inclusive. Default 1.0</param>
+        </member>
+        <member name="M:Bogus.Randomizer.Byte(System.Byte,System.Byte)">
+            <summary>
+            Generate a random byte between 0 and 255.
+            </summary>
+            <param name="min">Min value, inclusive. Default byte.MinValue 0</param>
+            <param name="max">Max value, inclusive. Default byte.MaxValue 255</param>
+        </member>
+        <member name="M:Bogus.Randomizer.Bytes(System.Int32)">
+            <summary>
+            Get a random sequence of bytes.
+            </summary>
+            <param name="count">The size of the byte array</param>
+        </member>
+        <member name="M:Bogus.Randomizer.SByte(System.SByte,System.SByte)">
+            <summary>
+            Generate a random sbyte between -128 and 127.
+            </summary>
+            <param name="min">Min value, inclusive. Default sbyte.MinValue -128</param>
+            <param name="max">Max value, inclusive. Default sbyte.MaxValue 127</param>
+        </member>
+        <member name="M:Bogus.Randomizer.Int(System.Int32,System.Int32)">
+            <summary>
+            Generate a random int between MinValue and MaxValue.
+            </summary>
+            <param name="min">Min value, inclusive. Default int.MinValue</param>
+            <param name="max">Max value, inclusive. Default int.MaxValue</param>
+        </member>
+        <member name="M:Bogus.Randomizer.UInt(System.UInt32,System.UInt32)">
+            <summary>
+            Generate a random uint between MinValue and MaxValue.
+            </summary>
+            <param name="min">Min value, inclusive. Default uint.MinValue</param>
+            <param name="max">Max value, inclusive. Default uint.MaxValue</param>
+        </member>
+        <member name="M:Bogus.Randomizer.ULong(System.UInt64,System.UInt64)">
+            <summary>
+            Generate a random ulong between MinValue and MaxValue.
+            </summary>
+            <param name="min">Min value, inclusive. Default ulong.MinValue</param>
+            <param name="max">Max value, inclusive. Default ulong.MaxValue</param>
+        </member>
+        <member name="M:Bogus.Randomizer.Long(System.Int64,System.Int64)">
+            <summary>
+            Generate a random long between MinValue and MaxValue.
+            </summary>
+            <param name="min">Min value, inclusive. Default long.MinValue</param>
+            <param name="max">Max value, inclusive. Default long.MaxValue</param>
+        </member>
+        <member name="M:Bogus.Randomizer.Short(System.Int16,System.Int16)">
+            <summary>
+            Generate a random short between MinValue and MaxValue.
+            </summary>
+            <param name="min">Min value, inclusive. Default short.MinValue -32768</param>
+            <param name="max">Max value, inclusive. Default short.MaxValue 32767</param>
+        </member>
+        <member name="M:Bogus.Randomizer.UShort(System.UInt16,System.UInt16)">
+            <summary>
+            Generate a random ushort between MinValue and MaxValue.
+            </summary>
+            <param name="min">Min value, inclusive. Default ushort.MinValue 0</param>
+            <param name="max">Max value, inclusive. Default ushort.MaxValue 65535</param>
+        </member>
+        <member name="M:Bogus.Randomizer.Char(System.Char,System.Char)">
+            <summary>
+            Generate a random char between MinValue and MaxValue.
+            </summary>
+            <param name="min">Min value, inclusive. Default char.MinValue</param>
+            <param name="max">Max value, inclusive. Default char.MaxValue</param>
+        </member>
+        <member name="M:Bogus.Randomizer.Chars(System.Char,System.Char,System.Int32)">
+            <summary>
+            Generate a random chars between MinValue and MaxValue.
+            </summary>
+            <param name="min">Min value, inclusive. Default char.MinValue</param>
+            <param name="max">Max value, inclusive. Default char.MaxValue</param>
+            <param name="count">The length of chars to return</param>
+        </member>
+        <member name="M:Bogus.Randomizer.String(System.Nullable{System.Int32},System.Char,System.Char)">
+            <summary>
+            Get a string of characters of a specific length.
+            Uses <seealso cref="M:Bogus.Randomizer.Chars(System.Char,System.Char,System.Int32)"/>.
+            Note: This method can return ill-formed UTF16 Unicode strings with unpaired surrogates.
+            Use <seealso cref="M:Bogus.Randomizer.Utf16String(System.Int32,System.Int32,System.Boolean)"/> for technically valid Unicode.
+            </summary>
+            <param name="length">The exact length of the result string. If null, a random length is chosen between 40 and 80.</param>
+            <param name="minChar">Min character value, inclusive. Default char.MinValue</param>
+            <param name="maxChar">Max character value, inclusive. Default char.MaxValue</param>
+        </member>
+        <member name="M:Bogus.Randomizer.String(System.Int32,System.Int32,System.Char,System.Char)">
+            <summary>
+            Get a string of characters between <paramref name="minLength" /> and <paramref name="maxLength"/>.
+            Uses <seealso cref="M:Bogus.Randomizer.Chars(System.Char,System.Char,System.Int32)"/>.
+            Note: This method can return ill-formed UTF16 Unicode strings with unpaired surrogates.
+            Use <seealso cref="M:Bogus.Randomizer.Utf16String(System.Int32,System.Int32,System.Boolean)"/> for technically valid Unicode.
+            </summary>
+            <param name="minLength">Lower-bound string length. Inclusive.</param>
+            <param name="maxLength">Upper-bound string length. Inclusive.</param>
+            <param name="minChar">Min character value, inclusive. Default char.MinValue</param>
+            <param name="maxChar">Max character value, inclusive. Default char.MaxValue</param>
+        </member>
+        <member name="M:Bogus.Randomizer.String2(System.Int32,System.String)">
+            <summary>
+            Get a string of characters with a specific length drawing characters from <paramref name="chars"/>.
+            The returned string may contain repeating characters from the <paramref name="chars"/> string.
+            </summary>
+            <param name="length">The length of the string to return.</param>
+            <param name="chars">The pool of characters to draw from. The returned string may contain repeat characters from the pool.</param>
+        </member>
+        <member name="M:Bogus.Randomizer.String2(System.Int32,System.Int32,System.String)">
+            <summary>
+            Get a string of characters with a specific length drawing characters from <paramref name="chars"/>.
+            The returned string may contain repeating characters from the <paramref name="chars"/> string.
+            </summary>
+            <param name="minLength">The minimum length of the string to return, inclusive.</param>
+            <param name="maxLength">The maximum length of the string to return, inclusive.</param>
+            <param name="chars">The pool of characters to draw from. The returned string may contain repeat characters from the pool.</param>
+        </member>
+        <member name="M:Bogus.Randomizer.Utf16String(System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            Get a string of valid UTF16 Unicode characters.
+            This method returns a string where each character IsLetterOrDigit() is true.
+            </summary>
+            <param name="minLength">The minimum length of the string to return, inclusive.</param>
+            <param name="maxLength">The maximum length of the string to return, inclusive.</param>
+            <param name="excludeSurrogates">Excludes surrogate pairs from the returned string.</param>
+        </member>
+        <member name="M:Bogus.Randomizer.Hash(System.Int32,System.Boolean)">
+            <summary>
+            Return a random hex hash. Default 40 characters, aka SHA-1.
+            </summary>
+            <param name="length">The length of the hash string. Default, 40 characters, aka SHA-1.</param>
+            <param name="upperCase">Returns the hex string with uppercase characters.</param>
+        </member>
+        <member name="M:Bogus.Randomizer.Bool">
+            <summary>
+            Get a random boolean.
+            </summary>
+        </member>
+        <member name="M:Bogus.Randomizer.Bool(System.Single)">
+            <summary>
+            Get a random boolean.
+            </summary>
+            <param name="weight">The probability of true. Ranges from 0 to 1.</param>
+        </member>
+        <member name="M:Bogus.Randomizer.ArrayElement``1(``0[])">
+            <summary>
+            Get a random array element.
+            </summary>
+        </member>
+        <member name="M:Bogus.Randomizer.ArrayElement(Bogus.Bson.BArray,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Helper method to get a random element in a BSON array.
+            </summary>
+        </member>
+        <member name="M:Bogus.Randomizer.ArrayElement(System.Array)">
+            <summary>
+            Get a random array element.
+            </summary>
+        </member>
+        <member name="M:Bogus.Randomizer.ArrayElements``1(``0[],System.Nullable{System.Int32})">
+            <summary>
+            Get a random subset of an array.
+            </summary>
+            <param name="array">The source of items to pick from.</param>
+            <param name="count">The number of elements to pick; otherwise, a random amount is picked.</param>
+        </member>
+        <member name="M:Bogus.Randomizer.ListItem``1(System.Collections.Generic.List{``0})">
+            <summary>
+            Get a random list item.
+            </summary>
+        </member>
+        <member name="M:Bogus.Randomizer.ListItem``1(System.Collections.Generic.IList{``0})">
+            <summary>
+            Get a random list item.
+            </summary>
+        </member>
+        <member name="M:Bogus.Randomizer.ListItems``1(System.Collections.Generic.IList{``0},System.Nullable{System.Int32})">
+            <summary>
+            Get a random subset of a List.
+            </summary>
+            <param name="items">The source of items to pick from.</param>
+            <param name="count">The number of items to pick; otherwise, a random amount is picked.</param>
+        </member>
+        <member name="M:Bogus.Randomizer.ListItems``1(System.Collections.Generic.List{``0},System.Nullable{System.Int32})">
+            <summary>
+            Get a random subset of a List.
+            </summary>
+            <param name="items">The source of items to pick from.</param>
+            <param name="count">The number of items to pick; otherwise, a random amount is picked.</param>
+        </member>
+        <member name="M:Bogus.Randomizer.CollectionItem``1(System.Collections.Generic.ICollection{``0})">
+            <summary>
+            Get a random collection item.
+            </summary>
+        </member>
+        <member name="M:Bogus.Randomizer.ReplaceNumbers(System.String,System.Char)">
+            <summary>
+            Replaces symbols with numbers.
+            IE: ### -> 283
+            </summary>
+            <param name="format">The string format</param>
+            <param name="symbol">The symbol to search for in format that will be replaced with a number</param>
+        </member>
+        <member name="M:Bogus.Randomizer.ReplaceSymbols(System.String,System.Char,System.Func{System.Char})">
+            <summary>
+            Replaces each character instance in a string.
+            Func is called each time a symbol is encountered.
+            </summary>
+            <param name="format">The string with symbols to replace.</param>
+            <param name="symbol">The symbol to search for in the string.</param>
+            <param name="func">The function that produces a character for replacement. Invoked each time the replacement symbol is encountered.</param>
+        </member>
+        <member name="M:Bogus.Randomizer.Replace(System.String)">
+            <summary>
+            Replaces symbols with numbers and letters. # = number, ? = letter, * = number or letter.
+            IE: ###???* -> 283QED4. Letters are uppercase.
+            </summary>
+        </member>
+        <member name="M:Bogus.Randomizer.ClampString(System.String,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Clamps the length of a string between min and max characters.
+            If the string is below the minimum, the string is appended with random characters up to the minimum length.
+            If the string is over the maximum, the string is truncated at maximum characters; additionally, if the result string ends with
+            whitespace, it is replaced with a random characters.
+            </summary>
+        </member>
+        <member name="M:Bogus.Randomizer.Enum``1(``0[])">
+            <summary>
+            Picks a random enum value in T:Enum.
+            </summary>
+            <typeparam name="T">Must be an Enum</typeparam>
+            <param name="exclude">Exclude enum values from being returned</param>
+        </member>
+        <member name="M:Bogus.Randomizer.EnumValues``1(System.Nullable{System.Int32},``0[])">
+            <summary>
+            Picks a random subset of enum values in T:Enum.
+            </summary>
+            <typeparam name="T">The enum.</typeparam>
+            <param name="count">The number of enums to pick.</param>
+            <param name="exclude">Any enums that should be excluded before picking.</param>
+        </member>
+        <member name="M:Bogus.Randomizer.Shuffle``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Shuffles an IEnumerable source.
+            </summary>
+        </member>
+        <member name="M:Bogus.Randomizer.Word">
+            <summary>
+            Returns a single word or phrase in English.
+            </summary>
+        </member>
+        <member name="M:Bogus.Randomizer.Words(System.Nullable{System.Int32})">
+            <summary>
+            Gets some random words and phrases in English.
+            </summary>
+            <param name="count">Number of times to call Word()</param>
+        </member>
+        <member name="M:Bogus.Randomizer.WordsArray(System.Int32,System.Int32)">
+            <summary>
+            Get a range of words in an array (English).
+            </summary>
+            <param name="min">Minimum word count, inclusive.</param>
+            <param name="max">Maximum word count, inclusive.</param>
+        </member>
+        <member name="M:Bogus.Randomizer.WordsArray(System.Int32)">
+            <summary>
+            Get a specific number of words in an array (English).
+            </summary>
+        </member>
+        <member name="M:Bogus.Randomizer.Guid">
+            <summary>
+            Get a random GUID.
+            </summary>
+        </member>
+        <member name="M:Bogus.Randomizer.Uuid">
+            <summary>
+            Get a random GUID. Alias for Randomizer.Guid().
+            </summary>
+        </member>
+        <member name="M:Bogus.Randomizer.RandomLocale">
+            <summary>
+            Returns a random locale.
+            </summary>
+        </member>
+        <member name="M:Bogus.Randomizer.AlphaNumeric(System.Int32)">
+            <summary>
+            Returns a random set of alpha numeric characters 0-9, a-z.
+            </summary>
+        </member>
+        <member name="M:Bogus.Randomizer.Hexadecimal(System.Int32,System.String)">
+            <summary>
+            Generates a random hexadecimal string.
+            </summary>
+        </member>
+        <member name="M:Bogus.Randomizer.WeightedRandom``1(``0[],System.Single[])">
+            <summary>
+            Returns a selection of T[] based on a weighted distribution of probability.
+            </summary>
+            <param name="items">Items to draw the selection from.</param>
+            <param name="weights">Weights in decimal form: IE:[.25, .50, .25] for total of 3 items. Should add up to 1.</param>
+        </member>
+        <member name="T:Bogus.WordFunctions">
+            <summary>
+            General word functions that are available across
+            data sets. The default locale of these word functions is
+            to 'en' and it is intentional.
+            </summary>
+        </member>
+        <member name="P:Bogus.WordFunctions.Functions">
+            <summary>
+            After the class is created, <see cref="P:Bogus.WordFunctions.Functions"/> is a list
+            of <see cref="T:System.Func`1"/> strings used as a selection list
+            of word functions that generate English words or phrases.
+            </summary>
+        </member>
+        <member name="M:Bogus.WordFunctions.#ctor(Bogus.Randomizer)">
+            <summary>
+            Constructor for <see cref="T:Bogus.WordFunctions"/>.
+            </summary>
+        </member>
+        <member name="T:Bogus.ResourceHelper">
+            <summary>
+            Helper utility class to read resource manifest streams.
+            </summary>
+        </member>
+        <member name="M:Bogus.ResourceHelper.ResourceExists(System.Reflection.Assembly,System.String)">
+            <summary>
+            Checks to see if a resource exists in an assembly.
+            </summary>
+            <param name="assembly">The assembly containing the resource.</param>
+            <param name="resourceName">The name of the resource.</param>
+            <returns>A boolean indicating if the resource exists in the assembly.</returns>
+        </member>
+        <member name="M:Bogus.ResourceHelper.ReadResource(System.Reflection.Assembly,System.String)">
+            <summary>
+            Reads a byte[] resource from an assembly.
+            </summary>
+            <param name="assembly">The assembly containing the resource.</param>
+            <param name="resourceName">The name of the resource.</param>
+            <returns>The resource in bytes.</returns>
+        </member>
+        <member name="M:Bogus.ResourceHelper.ReadBValueResource(System.Reflection.Assembly,System.String)">
+            <summary>
+            Reads a BSON <see cref="T:Bogus.Bson.BValue"/> resource from an assembly.
+            </summary>
+            <param name="assembly">The assembly containing the resource.</param>
+            <param name="resourceName">The name of the resource.</param>
+            <returns>The value of the resource as a <see cref="T:Bogus.Bson.BValue"/> object.</returns>
+        </member>
+        <member name="M:Bogus.ResourceHelper.ReadBObjectResource(System.Reflection.Assembly,System.String)">
+            <summary>
+            Reads a BSON <see cref="T:Bogus.Bson.BObject"/> resource from an assembly.
+            </summary>
+            <param name="assembly">The assembly containing the resource.</param>
+            <param name="resourceName">The name of the resource.</param>
+            <returns>The value of the resource as a <see cref="T:Bogus.Bson.BObject"/> object.</returns>
+        </member>
+        <member name="T:Bogus.Rule`1">
+            <summary>
+            Represents a Faker rule
+            </summary>
+        </member>
+        <member name="P:Bogus.Rule`1.Action">
+            <summary>
+            Populate action
+            </summary>
+        </member>
+        <member name="P:Bogus.Rule`1.PropertyName">
+            <summary>
+            Property name, maybe null for finalize or create.
+            </summary>
+        </member>
+        <member name="P:Bogus.Rule`1.RuleSet">
+            <summary>
+            The rule set this rule belongs to.
+            </summary>
+        </member>
+        <member name="P:Bogus.Rule`1.ProhibitInStrictMode">
+            <summary>
+            Prohibits the rule from being applied in strict mode.
+            </summary>
+        </member>
+        <member name="T:Bogus.IHasRandomizer">
+            <summary>
+            Objects should implement this interface if they use a
+            <see cref="T:Bogus.Randomizer"/>.
+            </summary>
+        </member>
+        <member name="P:Bogus.IHasRandomizer.Random">
+            <summary>
+            Access the randomizer on the implementing object. When the property value
+            is set, the object is instructed to use the randomizer as a source of generating
+            random values. Additionally, setting this property also notifies any dependent
+            via <see cref="M:Bogus.SeedNotifier.Notify(Bogus.Randomizer)"/>. 
+            </summary>
+        </member>
+        <member name="M:Bogus.IHasRandomizer.GetNotifier">
+            <summary>
+            Retrieves the internal notifier registry for this object.
+            </summary>
+        </member>
+        <member name="T:Bogus.SeedNotifier">
+            <summary>
+            The seed notifier's purpose is to keep track of any objects that
+            might need to be notified when a seed/randomizer changes.
+            For example, the Internet dataset depends on the Name dataset 
+            to generate data. If the randomizer seed changes in Internet, the 
+            Name dependency data set should be notified of this change too.
+            This whole process is important in maintaining determinism in Bogus.
+            </summary>
+        </member>
+        <member name="M:Bogus.SeedNotifier.Flow``1(``0)">
+            <summary>
+            Causes <paramref name="item"/> to be remembered and tracked so that the
+            <paramref name="item"/> will be notified when <see cref="M:Bogus.SeedNotifier.Notify(Bogus.Randomizer)"/> is called.
+            </summary>
+        </member>
+        <member name="M:Bogus.SeedNotifier.Notify(Bogus.Randomizer)">
+            <summary>
+            Pushes/notifies all tracked objects that a new randomizer has been set.
+            </summary>
+        </member>
+        <member name="T:Bogus.Transliterater">
+            <summary>
+            Best effort utility for transliterating Unicode characters to US-ASCII.
+            </summary>
+        </member>
+        <member name="M:Bogus.Transliterater.Translate(System.String,System.String)">
+            <summary>
+            Main method for transliteration.
+            </summary>
+            <param name="input">The Unicode text to translate.</param>
+            <param name="lang">Optional. If a language specific transliterates are available it will be used.</param>
+        </member>
+        <member name="F:Bogus.Transliterater.CharMap">
+            <summary>
+            Char map for transliteration.
+            </summary>
+        </member>
+        <member name="F:Bogus.Transliterater.DiatricMap">
+            <summary>
+            Diacritic map for transliteration.
+            </summary>
+        </member>
+        <member name="F:Bogus.Transliterater.LangCharMap">
+            <summary>
+            Language specific map for transliteration. 
+            </summary>
+        </member>
+        <member name="F:Bogus.Transliterater.SymbolMap">
+            <summary>
+            Symbol map for transliteration.
+            </summary>
+        </member>
+        <member name="F:Bogus.Transliterater.EmptyDictionary">
+            <summary>
+            Default empty dictionary to avoid allocations.
+            </summary>
+        </member>
+        <member name="T:Bogus.Trie">
+            <summary>
+            A Trie data-structure mostly used for transliteration. The Trie is used as
+            a fundamental data-structure to traverse and replace characters in a string.
+            https://en.wikipedia.org/wiki/Trie
+            </summary>
+        </member>
+        <member name="M:Bogus.Trie.Insert(Bogus.Trie,System.String,System.String)">
+            <summary>
+            Given a Trie, insert the key and value.
+            </summary>
+            <param name="node">The Trie node to start the insertion.</param>
+            <param name="key">A key can be any length. Each character in the key is used to traverse the Trie. If a path doesn't exist, a new node in the Trie.</param>
+            <param name="value">The value to use at the end of the trie walk.</param>
+        </member>
+        <member name="M:Bogus.Trie.Find(Bogus.Trie,System.String)">
+            <summary>
+            If a key exists, returns the value at the end of the trie walk.
+            </summary>
+            <param name="node">The trie node to begin the walk.</param>
+            <param name="key">The key to lookup. Each character in the key is used to traverse the trie.</param>
+        </member>
+        <member name="T:Bogus.Utils">
+            <summary>
+            Some utility functions
+            </summary>
+        </member>
+        <member name="M:Bogus.Utils.Slugify(System.String)">
+            <summary>
+            Slugify's text so that it is URL compatible. IE: "Can make food" -> "Can-make-food".
+            </summary>
+        </member>
+        <member name="M:Bogus.Utils.Slashify(System.Collections.Generic.IEnumerable{System.String},System.String)">
+            <summary>
+            Takes string parts and joins them together with a separator.
+            </summary>
+        </member>
+        <member name="T:Bogus.ValidationException">
+            <summary>
+            Represents a validation exception.
+            </summary>
+        </member>
+        <member name="T:Bogus.ValidationResult">
+            <summary>
+            Contains validation results after validation
+            </summary>
+        </member>
+        <member name="P:Bogus.ValidationResult.IsValid">
+            <summary>
+            True if is valid
+            </summary>
+        </member>
+        <member name="P:Bogus.ValidationResult.MissingRules">
+            <summary>
+            A complete list of missing rules
+            </summary>
+        </member>
+        <member name="P:Bogus.ValidationResult.ExtraMessages">
+            <summary>
+            Extra validation messages to display
+            </summary>
+        </member>
+    </members>
+</doc>

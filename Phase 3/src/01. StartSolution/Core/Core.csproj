@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net9.0</TargetFramework>
+		<TargetFramework>net10.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<LangVersion>preview</LangVersion>
@@ -9,5 +9,13 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\DataAccess\DataAccess.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Customer\Commands\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="Scrutor" Version="7.0.0" />
 	</ItemGroup>
 </Project>

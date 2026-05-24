@@ -1,6 +1,4 @@
-﻿global using Common.Mappers;
-global using Common.Models;
+global using Common.Mappers;
+global using Common.Models.Results;
 global using DataAccess;
-global using FluentValidation;
 global using Microsoft.EntityFrameworkCore;
-global using MediatR;

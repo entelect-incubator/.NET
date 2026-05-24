@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>Riok.Mapperly</id>
+    <version>3.6.0</version>
+    <authors>Mapperly Contributors, Lars Tönz, Manuel Allenspach</authors>
+    <license type="expression">Apache-2.0</license>
+    <licenseUrl>https://licenses.nuget.org/Apache-2.0</licenseUrl>
+    <icon>logo.png</icon>
+    <readme>README.md</readme>
+    <projectUrl>https://mapperly.riok.app/</projectUrl>
+    <description>A .NET source generator for generating object mappings.
+      No runtime reflection.</description>
+    <releaseNotes># [3.6.0](https://github.com/riok/mapperly/compare/v3.5.1...v3.6.0) (2024-06-18)
+
+
+### Bug Fixes
+
+* correct syntax in nameof clause of throw null exceptions ([#1263](https://github.com/riok/mapperly/issues/1263)) ([3d43a6f](https://github.com/riok/mapperly/commit/3d43a6fc7567d77718ca26167abfa1ed1b7aaec3))
+* fixes using the wrong object factory when multiple factories with the same target type but different source types are used ([#1313](https://github.com/riok/mapperly/issues/1313)) ([51aa1da](https://github.com/riok/mapperly/commit/51aa1da0d315530d4d3f66afdbb0fdf519b9955b))
+* In disable nullable reference type contexts do not assume nullable IQueryable generic types ([#1268](https://github.com/riok/mapperly/issues/1268)) ([56b03d2](https://github.com/riok/mapperly/commit/56b03d2a23a3032fcb5f23fcaf7b6f14eadd5a09))
+* prefer coalesce operator over if-else to simplify generated source code ([#1262](https://github.com/riok/mapperly/issues/1262)) ([b4548d2](https://github.com/riok/mapperly/commit/b4548d258c6c32853704b36cadf147510875c86f))
+
+
+### Features
+
+* add a warning when a referenced mapping types do not match ([#1256](https://github.com/riok/mapperly/issues/1256)) ([2fd22e3](https://github.com/riok/mapperly/commit/2fd22e34d0b9871c9b0c7e08f21471d63d2fd2fa))
+* Adds an option to include all members of a single member ([#1245](https://github.com/riok/mapperly/issues/1245)) ([b69b2a9](https://github.com/riok/mapperly/commit/b69b2a93343bd66a5760e454c19e61e0dc460265))
+* Map from source object ([#1247](https://github.com/riok/mapperly/issues/1247)) ([d790055](https://github.com/riok/mapperly/commit/d7900552551cc08a78330fd7ed9db3ecb890e520))</releaseNotes>
+    <tags>Mapper SourceGenerator</tags>
+    <repository type="git" url="https://github.com/riok/mapperly" commit="51aa1da0d315530d4d3f66afdbb0fdf519b9955b" />
+    <dependencies>
+      <group targetFramework=".NETStandard2.0" />
+    </dependencies>
+  </metadata>
+</package>

@@ -1,4 +1,4 @@
-﻿global using Common.Entities;
+global using Common.Entities;
 global using Common.Models;
 global using Core;
 global using Core.Contracts;

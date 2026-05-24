@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<RuleSet Name="Microsoft Managed Recommended Rules" Description="These rules focus on the most critical problems in your code, including potential security holes, application crashes, and other important logic and design errors. It is recommended to include this rule set in any custom rule set you create for your projects." ToolsVersion="17.0">
+<RuleSet Name="Microsoft Managed Recommended Rules" Description="These rules focus on the most critical problems in your code, including potential security holes, application crashes, and other important logic and design errors. It is recommended to include this rule set in any custom rule set you create for your projects." ToolsVersion="18.0">
   <Localization ResourceAssembly="Microsoft.VisualStudio.CodeAnalysis.RuleSets.Strings.dll" ResourceBaseName="Microsoft.VisualStudio.CodeAnalysis.RuleSets.Strings.Localized">
     <Name Resource="MinimumRecommendedRules_Name" />
     <Description Resource="MinimumRecommendedRules_Description" />
@@ -8,7 +8,7 @@
     <Rule Id="SA0001" Action="None" />
     <Rule Id="SA0002" Action="Error" />
     <Rule Id="SA1000" Action="None" />
-    <Rule Id="SA1001" Action="Error" />
+    <Rule Id="SA1001" Action="None" />
     <Rule Id="SA1002" Action="Error" />
     <Rule Id="SA1003" Action="Error" />
     <Rule Id="SA1004" Action="Error" />

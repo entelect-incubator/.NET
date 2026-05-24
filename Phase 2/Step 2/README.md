@@ -1,168 +1,135 @@
-<img align="left" width="116" height="116" src="../Assets/logo.png" />
+﻿<img align="left" width="116" height="116" src="../Assets/pezza-logo.png" />
 
-# &nbsp;**E List - Phase 2 - Step 2**
+# **Pezza - Phase 2 - Step 2**
 
 <br/><br/>
 
-Unit testing
+## Step 2: Unit Testing
 
-## **Unit Tests**
+**Difficulty**: 3/5 (Intermediate)  
+**Estimated Time**: 1.5 - 2 hours  
+**Prerequisites**:
 
-Update the test data to align with the new models. Ensure that the test cases reflect the structure of the TodoModel, CreateTodoModel, and UpdateTodoModel to accurately test the functionality of the commands and queries with the new models.
+- Step 1 scaffolding complete
+- NUnit basics
+- Familiarity with in-memory EF Core
 
-```cs
-using Common.Models.Todos;
+### Learning Outcomes
 
-namespace Test.Setup.TestData.Pizza;
+- Create realistic test data with Bogus
+- Test command/query handlers directly via `ExecuteAsync`
+- Use in-memory `DatabaseContext` for isolated CRUD tests
+- Apply NUnit attributes: `[TestFixture]`, `[SetUp]`, `[Test]`
+- Assert results via the Result pattern (`HasError`, `Data`, `Count`)
 
-public static class TodoTestData
+---
+
+## What You Build in this Step
+
+1) Test data builders using Bogus (Customer + Pizza).  
+2) A shared test base that seeds an in-memory `DatabaseContext`.  
+3) CRUD tests for command/query classes (`Create`, `Get`, `GetAll`, `Update`, `Delete`).  
+4) Result-based assertions instead of exceptions.
+
+Reference implementation: [src/02. EndSolution/Test](../src/02.%20EndSolution/Test).
+
+---
+
+## 1) Test Data
+
+Place Bogus-based builders in [src/02. EndSolution/Test/Setup/TestData](../src/02.%20EndSolution/Test/Setup/TestData).
+
+```csharp
+public static class CustomerTestData
 {
-	public static Faker faker = new();
+    public static Faker Faker = new("en_ZA");
 
-	public static Todo Todo = new()
-	{
-		Id = 1,
-		Task = faker.Random.Word(),
-		IsCompleted = false,
-		DateCreated = DateTime.UtcNow,
-		SessionId = Guid.NewGuid(),
-	};
-
-	public static TodoModel TodoModel = new()
-	{
-		Id = 1,
-		Task = faker.Random.Word(),
-		IsCompleted = false,
-		DateCreated = DateTime.UtcNow,
-		SessionId = Guid.NewGuid(),
-	};
-
-	public static CreateTodoModel CreateTodoModel = new()
-	{
-		Task = faker.Random.Word(),
-		IsCompleted = false,
-		SessionId = Guid.NewGuid(),
-	};
-
-	public static UpdateTodoModel UpdateTodoModel = new()
-	{
-		Task = faker.Random.Word(),
-	};
+    public static CustomerModel CustomerModel => new()
+    {
+        Id = 1,
+        Name = Faker.Person.FullName,
+        Address = Faker.Address.FullAddress(),
+        Cellphone = Faker.Phone.PhoneNumber(),
+        Email = Faker.Person.Email,
+        DateCreated = DateTime.UtcNow
+    };
 }
 ```
 
-We will now enhance our Core unit tests to cover the new CQRS commands and queries.
+---
 
-For this, each test will utilize a handler with an in-memory DbContext. We will declare a new handler for each test and inject the DbContext into it. For example:
+## 2) Test Base (In-Memory EF)
 
-```cs
-var sutCreate = new CreateTodoCommandHandler(this.Context);
-```
+`QueryTestBase` in [src/02. EndSolution/Test/Setup](../src/02.%20EndSolution/Test/Setup) spins up an in-memory `DatabaseContext`. Inherit from it for all handler tests so each test gets a fresh context.
 
-We will then test the command or query handler using the test data created earlier. This approach ensures that each command and query is tested independently and consistently.
+Key points:
 
-TestTodoCore.cs in Core folder
+- Use `CancellationToken.None` (or a token from the test) in every async call.
+- Seed data in `[SetUp]` using the real commands/queries, not direct DbContext mutations.
 
-```cs
-namespace Test.Core;
+---
 
-using Common.Models.Todos;
-using global::Core.Todos.Commands;
-using global::Core.Todos.Queries;
-using Test.Setup.TestData.Pizza;
+## 3) Testing Command/Query Classes
 
+Pattern: arrange handler with the in-memory context, act via `ExecuteAsync`, assert Result.
+
+```csharp
 [TestFixture]
-public class TestTodoCore : QueryTestBase
+public class TestCustomerCore : QueryTestBase
 {
-	private TodoModel model;
+    private CustomerModel model;
 
-	[OneTimeSetUp]
-	public async Task Init()
-	{
-		var sutCreate = new AddTodoCommandHandler(this.Context);
-		var resultCreate = await sutCreate.Handle(
-			new AddTodoCommand
-			{
-				Data = TodoTestData.CreateTodoModel
-			}, CancellationToken.None);
+    [SetUp]
+    public async Task Init()
+    {
+        this.model = CustomerTestData.CustomerModel;
+        var create = new CreateCustomerCommand(this.Context);
+        var created = await create.ExecuteAsync(
+            new CreateCustomerModel
+            {
+                Name = this.model.Name,
+                Email = this.model.Email,
+                Address = this.model.Address,
+                Cellphone = this.model.Cellphone
+            }, CancellationToken.None);
 
-		if (!resultCreate.Succeeded)
-		{
-			Assert.Fail();
-		}
+        Assert.That(created.HasError, Is.False);
+        this.model = created.Data;
+    }
 
-		this.model = resultCreate.Data;
-	}
-
-	[Test, Order(1)]
-	public void AddAsync()
-	{
-		var outcome = this.model.Id != 0;
-		Assert.That(outcome, Is.True);
-	}
-
-	[Test, Order(2)]
-	public async Task GetAllAsync()
-	{
-		var sutGetAll = new GetTodosQueryHandler(this.Context);
-		var resultGetAll = await sutGetAll.Handle(new GetTodosQuery()
-		{
-			SessionId = this.model.SessionId,
-		}, CancellationToken.None);
-
-		Assert.That(resultGetAll.Succeeded, Is.True);
-		Assert.That(resultGetAll.Data.Count, Is.EqualTo(1));
-	}
-
-	[Test, Order(3)]
-	public async Task CompleteAsync()
-	{
-		var sutUpdate = new CompleteTodoCommandHandler(this.Context);
-		var resultUpdate = await sutUpdate.Handle(
-			new CompleteTodoCommand
-			{
-				Id = this.model.Id,
-			}, CancellationToken.None);
-
-		Assert.That(resultUpdate.Succeeded, Is.True);
-		Assert.That(resultUpdate.Data?.IsCompleted, Is.True);
-	}
-
-	[Test, Order(4)]
-	public async Task UpdateAsync()
-	{
-		var sutUpdate = new UpdateTodoCommandHandler(this.Context);
-		var resultUpdate = await sutUpdate.Handle(
-			new UpdateTodoCommand
-			{
-				Id = this.model.Id,
-				Data = TodoTestData.UpdateTodoModel
-			}, CancellationToken.None);
-
-		Assert.That(resultUpdate.Succeeded, Is.True);
-	}
-
-	[Test, Order(5)]
-	public async Task DeleteAsync()
-	{
-		var sutDelete = new DeleteTodoCommandHandler(this.Context);
-		var resultDelete = await sutDelete.Handle(
-			new DeleteTodoCommand
-			{
-				Id = this.model.Id,
-			}, CancellationToken.None);
-
-		Assert.That(resultDelete.Succeeded, Is.True);
-	}
+    [Test]
+    public async Task GetAsync()
+    {
+        var query = new GetCustomerQuery(this.Context);
+        var result = await query.ExecuteAsync(this.model.Id, CancellationToken.None);
+        Assert.That(result.Data, Is.Not.Null);
+    }
 }
 ```
 
-To run the test go to the top Menu bar -> Test -> Run All Tests. This will open the Test Explorer.
+Apply the same pattern for `GetCustomersQuery`, `UpdateCustomerCommand`, `DeleteCustomerCommand`, and the Pizza equivalents.
 
-![](./Assets/2024-09-14-14-43-06.png)
+---
 
-You should now have all Unit Tests pass.
+## 4) Assertions with Result Pattern
 
-## **STEP 3 - Finishing up the API to use CQRS**
+- Success: `Assert.That(result.HasError, Is.False);`
+- Data: `Assert.That(result.Data, Is.Not.Null);`
+- Counts: `Assert.That(result.Count, Is.GreaterThanOrEqualTo(1));`
+- Failure scenarios: create explicit negative tests (e.g., missing ID) and assert `HasError`.
 
-Move to Step 3 [Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%202/Step%203)
+---
+
+## Checklist
+
+- [ ] Test data builders created with Bogus for Customer and Pizza
+- [ ] QueryTestBase (in-memory context) inherited by all tests
+- [ ] CRUD handlers tested via `ExecuteAsync(..., CancellationToken)`
+- [ ] Assertions check `HasError`, `Data`, and `Count`
+- [ ] All tests passing: `dotnet test "Phase 2/src/01. StartSolution/Test/Test.csproj"`
+
+---
+
+## Next Step
+
+Move to [Step 3 - API](https://github.com/entelect-incubator/.NET/tree/master/Phase%202/Step%203) to wire controllers to these handlers using dependency injection and the shared `ResponseHelper`.

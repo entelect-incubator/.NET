@@ -1,19 +1,14 @@
-﻿namespace Api.Helpers;
+namespace Api.Helpers;
 
-using Api.Controllers;
+using Microsoft.AspNetCore.Mvc;
 
 public static class ResponseHelper
 {
-	public static ActionResult ResponseOutcome(Result result, ApiController controller)
-		=> !result.Succeeded ? controller.BadRequest(result) : controller.Ok(result);
+	public static ActionResult ResponseOutcome<T>(Result<T> result, ControllerBase controller) => result.Data == null
+			? controller.NotFound(Result.Failure($"{typeof(T).Name.Replace("Model", string.Empty)} not found"))
+			: !result.Succeeded ? controller.BadRequest(result) : controller.Ok(result);
 
-	public static ActionResult ResponseOutcome<T>(Result<T> result, ApiController controller)
-	{
-		if (result.Data is null)
-		{
-			return controller.NotFound(Result.Failure($"{typeof(T).Name.Replace("Model", string.Empty)} not found"));
-		}
+	public static ActionResult ResponseOutcome<T>(Result<IEnumerable<T>> result, ControllerBase controller) => !result.Succeeded ? controller.BadRequest(result) : controller.Ok(result);
 
-		return !result.Succeeded ? controller.BadRequest(result) : controller.Ok(result);
-	}
+	public static ActionResult ResponseOutcome(Result result, ControllerBase controller) => !result.Succeeded ? controller.BadRequest(result) : controller.Ok(result);
 }

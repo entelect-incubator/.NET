@@ -1,13 +1,17 @@
-﻿namespace Api.Controllers;
+namespace Api.Controllers;
 
-using MediatR;
+using Core;
+using Microsoft.AspNetCore.Mvc;
 
+/// <summary>
+/// Base API controller with dispatcher support for CQRS operations.
+/// </summary>
 [ApiController]
 [Route("[controller]")]
-[Produces("application/json")]
-public abstract class ApiController : ControllerBase
+public abstract class ApiController(Dispatcher dispatcher) : ControllerBase
 {
-	private IMediator mediator;
-
-	protected IMediator Mediator => this.mediator ??= this.HttpContext.RequestServices.GetService<IMediator>()!;
+	/// <summary>
+	/// Gets the dispatcher for executing commands and queries.
+	/// </summary>
+	protected Dispatcher Dispatcher { get; } = dispatcher;
 }

@@ -7,7 +7,7 @@ public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequ
 {
 	private readonly Stopwatch timer = new();
 
-	public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
+	public async Task<TResponse> Handle(TRequest request, Func<Task<TResponse>> next, CancellationToken cancellationToken)
 	{
 		this.timer.Restart();
 
@@ -20,7 +20,7 @@ public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequ
 		if (elapsedMilliseconds > 500)
 		{
 			var requestName = typeof(TRequest).Name;
-			Logging.LogInfo($"Long Running Request: {requestName} ({elapsedMilliseconds} milliseconds)", request);
+			Console.WriteLine($"Long Running Request: {requestName} ({elapsedMilliseconds} milliseconds)");
 		}
 
 		return response;

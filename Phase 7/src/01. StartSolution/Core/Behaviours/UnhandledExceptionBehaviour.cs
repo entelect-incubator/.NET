@@ -50,31 +50,31 @@ public class UnhandledExceptionBehaviour(RequestDelegate next)
 
 	private static Task HandleValidationExceptionAsync(HttpContext context, ValidationException exception)
 	{
-		var errors = ((ValidationException)exception).Errors;
+		var errors = exception.Errors;
 		if (errors.Any())
 		{
-			var failures = errors.Select(x => $"{x.PropertyName.Replace("Data.", "")}:{x.ErrorMessage.Replace("Data ", "")}"
-);
-			var result = Result.Failure(failures.ToList());
-			var code = HttpStatusCode.BadRequest;
-			var resultJson = JsonSerializer.Serialize(result);
+			var failures = errors
+				.Select(x => $"{x.PropertyName.Replace("Data.", string.Empty)}:{x.ErrorMessage.Replace("Data ", string.Empty)}")
+				.ToList();
+
+			var validationResult = Result.Failure(failures);
+			var validationCode = HttpStatusCode.BadRequest;
+			var validationResultJson = JsonSerializer.Serialize(validationResult);
 
 			context.Response.ContentType = "application/json";
-			context.Response.StatusCode = (int)code;
+			context.Response.StatusCode = (int)validationCode;
 
-			return context.Response.WriteAsync(resultJson);
+			return context.Response.WriteAsync(validationResultJson);
 		}
-		else
-		{
-			var code = HttpStatusCode.BadRequest;
-			var result = Result.Failure(exception?.Message);
-			var resultJson = JsonSerializer.Serialize(result);
 
-			context.Response.ContentType = "application/json";
-			context.Response.StatusCode = (int)code;
+		var code = HttpStatusCode.BadRequest;
+		var result = Result.Failure(exception?.Message);
+		var resultJson = JsonSerializer.Serialize(result);
 
-			return context.Response.WriteAsync(resultJson);
-		}
+		context.Response.ContentType = "application/json";
+		context.Response.StatusCode = (int)code;
+
+		return context.Response.WriteAsync(resultJson);
 	}
 
 	private static Task HandleUnhandledExceptionAsync(HttpContext context, Exception exception)

@@ -1,23 +1,17 @@
 ﻿namespace Common;
 
-using Serilog;
+using System;
 
 public static class Logging
 {
-	public static void LogInfo(string name, object data)
-	{
-		Setup();
-		Log.Information(name, data);
-	}
+    public static void LogInfo(string name, object? data = null)
+    {
+        var payload = data is null ? name : $"{name} | Data: {data}";
+        Console.WriteLine(payload);
+    }
 
-	public static void LogException(Exception e)
-	{
-		Setup();
-		Log.Fatal(e, "Exception");
-	}
-
-	private static void Setup() => Log.Logger = new LoggerConfiguration()
-		.Enrich.FromLogContext()
-		.WriteTo.File(@"logs\log.txt", rollingInterval: RollingInterval.Day)
-		.CreateLogger();
+    public static void LogException(Exception exception)
+    {
+        Console.WriteLine(exception.ToString());
+    }
 }

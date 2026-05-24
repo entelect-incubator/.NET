@@ -1,9 +1,9 @@
-namespace Api;
+namespace Scheduler;
 
 using System.Reflection;
 using System.Text.Json.Serialization;
+using Common.Behaviour;
 using Core;
-using Core.Behaviours;
 using DataAccess;
 using Hangfire;
 using Microsoft.AspNetCore.Builder;
@@ -12,10 +12,9 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using Scheduler.Jobs;
 
 public class Startup
 {
@@ -45,7 +44,7 @@ public class Startup
 		{
 			c.SwaggerDoc("v1", new OpenApiInfo
 			{
-				Title = "EList API",
+				Title = "Pezza API",
 				Version = "v1"
 			});
 
@@ -56,7 +55,7 @@ public class Startup
 
 		services.AddLazyCache();
 		services.AddDbContext<DatabaseContext>(options =>
-			options.UseInMemoryDatabase("EListDB"));
+			options.UseInMemoryDatabase("PezzaDB"));
 
 		services.AddResponseCompression(options =>
 		{
@@ -65,26 +64,19 @@ public class Startup
 		});
 		services.AddResponseCompression();
 
-		services.AddScoped<IEmailJob, EmailJob>();
 	}
 
 	public void Configure(WebApplication app, IWebHostEnvironment env)
 	{
 		app.UseSwagger();
-		app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "EList Scheduler API V1"));
+		app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Pezza Scheduler API V1"));
 		app.UseHttpsRedirection();
-		app.UseMiddleware(typeof(UnhandledExceptionBehaviour));
+		app.UseMiddleware(typeof(ExceptionHandlerMiddleware));
 		app.UseRouting();
-		app.UseEndpoints(endpoints => endpoints.MapControllers());
+		app.MapControllers();
 		app.UseAuthorization();
 		app.UseResponseCompression();
 		app.UseHangfireDashboard();
-
-		var jobOptions = new RecurringJobOptions()
-		{
-			TimeZone = TimeZoneInfo.Local
-		};
-		RecurringJob.AddOrUpdate<IEmailJob>("SendAsync", x => x.SendAsync(default), "* * * * *");
 
 		app.Run();
 	}

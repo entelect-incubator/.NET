@@ -1,0 +1,96 @@
+name: Phase 9 - Tailwind build + .NET build
+
+on:
+  push:
+    branches: [ main, master, upgrade/all-net10 ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Detect Tailwind client
+        id: tailwind
+        shell: pwsh
+        run: |
+          if (-not (Test-Path "Theme/package.json") -and (Test-Path "../Theme/package.json")) {
+            Copy-Item "../Theme" "Theme" -Recurse -Force
+          }
+
+          if (Test-Path "Theme/package.json") {
+            "exists=true" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+            "working_dir=Theme" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+            "build_script=build" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+            if (Test-Path "Theme/package-lock.json") {
+              "cache_file=Theme/package-lock.json" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+              "use_npm_ci=true" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+            }
+            else {
+              "cache_file=Theme/package.json" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+              "use_npm_ci=false" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+            }
+          }
+          elseif (Test-Path "Phase 9/Website/Blazor/Client/package.json") {
+            "exists=true" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+            "working_dir=Phase 9/Website/Blazor/Client" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+            "build_script=build:css" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+            if (Test-Path "Phase 9/Website/Blazor/Client/package-lock.json") {
+              "cache_file=Phase 9/Website/Blazor/Client/package-lock.json" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+              "use_npm_ci=true" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+            }
+            else {
+              "cache_file=Phase 9/Website/Blazor/Client/package.json" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+              "use_npm_ci=false" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+            }
+          }
+          else {
+            "exists=false" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+            "working_dir=" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+            "build_script=" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+            "cache_file=" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+            "use_npm_ci=false" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+          }
+
+      - name: Setup Node.js
+        if: steps.tailwind.outputs.exists == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: npm
+          cache-dependency-path: ${{ steps.tailwind.outputs.cache_file }}
+
+      - name: Install Tailwind deps
+        if: steps.tailwind.outputs.exists == 'true'
+        working-directory: ${{ steps.tailwind.outputs.working_dir }}
+        env:
+          NODE_OPTIONS: --max_old_space_size=4096
+        run: |
+          if ("${{ steps.tailwind.outputs.use_npm_ci }}" -eq "true") {
+            npm ci
+          }
+          else {
+            npm install --no-audit --no-fund
+          }
+
+      - name: Build Tailwind CSS
+        if: steps.tailwind.outputs.exists == 'true'
+        working-directory: ${{ steps.tailwind.outputs.working_dir }}
+        env:
+          NODE_OPTIONS: --max_old_space_size=4096
+        run: |
+          npm run ${{ steps.tailwind.outputs.build_script }}
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Restore & Build Solution
+        run: |
+          dotnet restore "Phase 9/src/02. FinalSolution/Pezza.slnx"
+          dotnet build "Phase 9/src/02. FinalSolution/Pezza.slnx" -c Release --no-restore

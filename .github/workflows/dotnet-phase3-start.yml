@@ -1,22 +1,24 @@
 name: .NET - Phase 3 - Start Solution
 
 on:
-    push:
-        branches: [master]
-    pull_request:
-        branches: [master]
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
 
 jobs:
-    build:
-        runs-on: ubuntu-latest
+  build:
 
-        steps:
-            - uses: actions/checkout@v2
-            - name: Setup .NET
-              uses: actions/setup-dotnet@v4
-              with:
-                  dotnet-version: 9.0.100-preview.7.24407.12
-            - name: Install dependencies
-              run: dotnet restore "./Phase 3/src/01. StartSolution/EList.sln"
-            - name: Build
-              run: dotnet build "./Phase 3/src/01. StartSolution/EList.sln" --configuration Release --no-restore
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - name: Install dependencies
+        run: dotnet restore "./Phase 3/src/01. StartSolution/Pezza.slnx"
+      - name: Build
+        run: dotnet build "./Phase 3/src/01. StartSolution/Pezza.slnx" --configuration
+          Release --no-restore

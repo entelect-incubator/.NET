@@ -1,177 +1,126 @@
-<img align="left" width="116" height="116" src="../Assets/logo.png" />
+<img align="left" width="116" height="116" src="../Assets/pezza-logo.png" />
 
-# &nbsp;**E List - Phase 2 - Step 3**
+# **Pezza - Phase 2 - Step 3**
 
 <br/><br/>
 
-Finalizing the API Implementation with CQRS
+## Step 3: API Implementation
 
-We are now completing the API by fully integrating the CQRS pattern. This involves refactoring the API endpoints to utilize separate command and query handlers, ensuring a clear separation of responsibilities and improved maintainability.
+**Difficulty**: 3/5 (Intermediate)  
+**Estimated Time**: 1.5 - 2 hours  
+**Prerequisites**:
 
-## **API**
+- Steps 1 and 2 complete
+- Basic ASP.NET Core controllers
+- Dependency injection fundamentals
 
-### **Base Api Controller** Will be used to inject Mediatr into all other Controllers
+### Learning Outcomes
 
-![Api Controller!](Assets/2020-11-20-11-16-51.png)
+- Keep controllers thin by calling handler interfaces directly
+- Standardize responses with `ResponseHelper`
+- Pass `CancellationToken` through every async endpoint
+- Configure Swagger to verify endpoints quickly
 
-ApiController.cs
+---
 
-```cs
-namespace Api.Controllers;
+## What You Build in this Step
 
-using MediatR;
+1) `ResponseHelper` that converts `Result`, `Result<T>`, and `Result<List<T>>` into HTTP responses.  
+2) Minimal `ApiController` base with shared attributes.  
+3) Feature controllers (Pizza/Customer) that resolve handlers via `[FromServices]` and call `ExecuteAsync`.  
+4) Swagger enabled for quick manual validation.
 
+Reference implementation: [src/02. EndSolution/Api](../src/02.%20EndSolution/Api).
+
+---
+
+## 1) ResponseHelper
+
+Located at [src/02. EndSolution/Api/Helpers/ResponseHelper.cs](../src/02.%20EndSolution/Api/Helpers/ResponseHelper.cs). It centralizes HTTP status decisions:
+
+```csharp
+public static ActionResult ResponseOutcome<T>(Result<T> result, ApiController controller)
+    => result.Data is null
+        ? controller.NotFound(Result.Failure($"{typeof(T).Name.Replace("Model", string.Empty)} not found"))
+        : result.HasError
+            ? controller.BadRequest(result)
+            : controller.Ok(result);
+```
+
+Use the overloads for `Result<List<T>>` and non-generic `Result` too.
+
+---
+
+## 2) Base ApiController
+
+Keep it lean: shared attributes only. Located at [src/02. EndSolution/Api/Controllers/ApiController.cs](../src/02.%20EndSolution/Api/Controllers/ApiController.cs).
+
+```csharp
 [ApiController]
 [Route("[controller]")]
 [Produces("application/json")]
 public abstract class ApiController : ControllerBase
 {
-    private IMediator mediator;
-
-	protected IMediator Mediator => this.mediator ??= this.HttpContext.RequestServices.GetService<IMediator>()!;
 }
 ```
 
-To provide clean, unified responses to the consumers of the API, we will introduce an ActionResult helper class. This helper will manage the HTTP responses based on the data retrieved from the Core layer, reducing code duplication across controllers.
+## 3) Feature Controllers (Handler Injection)
 
-Create a Helpers folder in the Api project, and inside it, add a file named ResponseHelper.cs with the following code:
+Example: Pizza controller in [src/02. EndSolution/Api/Controllers/PizzaController.cs](../src/02.%20EndSolution/Api/Controllers/PizzaController.cs):
 
-```cs
-namespace Api.Helpers;
-
-using Api.Controllers;
-
-public static class ResponseHelper
-{
-	public static ActionResult ResponseOutcome(Result result, ApiController controller)
-		=> !result.Succeeded ? controller.BadRequest(result) : controller.Ok(result);
-
-	public static ActionResult ResponseOutcome<T>(Result<T> result, ApiController controller)
-	{
-		if (result.Data is null)
-		{
-			return controller.NotFound(Result.Failure($"{typeof(T).Name.Replace("Model", string.Empty)} not found"));
-		}
-
-		return !result.Succeeded ? controller.BadRequest(result) : controller.Ok(result);
-	}
-}
-```
-
-## **Finishing the Todo API Controller**
-
-Now let's modify the Todo Controller to use Mediatr.
-
-Inherit from the ApiController instead of ControllerBase
-
-```cs
-public class TodoController : ApiController
-```
-
-Modify all the functions to use Mediatr and the new DataDTO's
-
-```cs
-namespace Api.Controllers;
-
-using Api.Helpers;
-using Common.Models.Todos;
-using Core.Todos.Commands;
-using Core.Todos.Queries;
-using Microsoft.AspNetCore.Mvc;
-
+```csharp
 [ApiController]
 [Route("[controller]")]
-public class TodosController : ApiController
+public sealed class PizzaController : ApiController
 {
-	/// <summary>
-	/// Get all Todos.
-	/// </summary>
-	/// <returns>ActionResult</returns>
-	[HttpPost("Search")]
-	[ProducesResponseType(200)]
-	public async Task<ActionResult> Search(Guid sessionId, CancellationToken cancellationToken = default)
-		=> ResponseHelper.ResponseOutcome(await this.Mediator.Send(new GetTodosQuery() { SessionId = sessionId }, cancellationToken), this);
+    [HttpGet("{id}")]
+    public async Task<ActionResult> Get([FromServices] IGetPizzaQuery query, int id, CancellationToken cancellationToken)
+        => ResponseHelper.ResponseOutcome(await query.ExecuteAsync(id, cancellationToken), this);
 
-	/// <summary>
-	/// Create a task.
-	/// </summary>
-	/// <remarks>
-	/// Sample request:
-	///
-	///     POST api/Todo
-	///     {
-	///       "task": "New task",
-	///     }
-	/// </remarks>
-	/// <param name="model">Create Todo Model</param>
-	/// <param name="cancellationToken">Cancellation Token</param>
-	/// <returns>ActionResult</returns>
-	[HttpPost]
-	[ProducesResponseType(200)]
-	[ProducesResponseType(400)]
-	public async Task<ActionResult<Todo>> Add([FromBody] CreateTodoModel model, CancellationToken cancellationToken = default)
-		=> ResponseHelper.ResponseOutcome(await this.Mediator.Send(new AddTodoCommand() { Data = model }, cancellationToken), this);
+    [HttpPost("Search")]
+    public async Task<ActionResult> Search([FromServices] IGetPizzasQuery query, CancellationToken cancellationToken)
+        => ResponseHelper.ResponseOutcome(await query.ExecuteAsync(cancellationToken), this);
 
-	/// <summary>
-	/// Complete a task.
-	/// </summary>
-	/// <remarks>
-	/// Sample request:
-	///
-	///     PUT api/Todo/Complete
-	///     {
-	///       "id": "1"
-	///     }
-	/// </remarks>
-	/// <param name="id">Task id</param>
-	/// <param name="cancellationToken">Cancellation Token</param>
-	/// <returns>ActionResult</returns>
-	[HttpPost("Complete")]
-	[ProducesResponseType(200)]
-	[ProducesResponseType(400)]
-	public async Task<ActionResult> Complete([FromBody] int id, CancellationToken cancellationToken = default)
-		=> ResponseHelper.ResponseOutcome(await this.Mediator.Send(new CompleteTodoCommand() { Id = id }, cancellationToken), this);
+    [HttpPost]
+    public async Task<ActionResult<Pizza>> Create([FromServices] ICreatePizzaCommand command, [FromBody] CreatePizzaModel model, CancellationToken cancellationToken)
+        => ResponseHelper.ResponseOutcome(await command.ExecuteAsync(model, cancellationToken), this);
 
+    [HttpPut("{id}")]
+    public async Task<ActionResult> Update([FromServices] IUpdatePizzaCommand command, int id, [FromBody] UpdatePizzaModel model, CancellationToken cancellationToken)
+        => ResponseHelper.ResponseOutcome(await command.ExecuteAsync(id, model, cancellationToken), this);
 
-	/// <summary>
-	/// Update Todo.
-	/// </summary>
-	/// <remarks>
-	/// Sample request:
-	///
-	///     PUT api/Todo/1
-	///     {
-	///       "Task": "New task"
-	///     }
-	/// </remarks>
-	/// <param name="id">Todo id</param>
-	/// <param name="model">Update Todo Model</param>
-	/// <param name="cancellationToken">Cancellation Token</param>
-	/// <returns>ActionResult</returns>
-	[HttpPut("{id}")]
-	[ProducesResponseType(200)]
-	[ProducesResponseType(400)]
-	public async Task<ActionResult> Update(int id, [FromBody] UpdateTodoModel model, CancellationToken cancellationToken = default)
-		=> ResponseHelper.ResponseOutcome(await this.Mediator.Send(new UpdateTodoCommand() { Id = id, Data = model }, cancellationToken), this);
-
-	/// <summary>
-	/// Delete a task by Id.
-	/// </summary>
-	/// <param name="id">Task Id</param>
-	/// <param name="cancellationToken">Cancellation Token</param>
-	/// <returns>ActionResult</returns>
-	[HttpDelete("{id}")]
-	[ProducesResponseType(200)]
-	[ProducesResponseType(400)]
-	public async Task<ActionResult> Delete(int id, CancellationToken cancellationToken = default)
-		=> ResponseHelper.ResponseOutcome(await this.Mediator.Send(new DeleteTodoCommand() { Id = id }, cancellationToken), this);
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> Delete([FromServices] IDeletePizzaCommand command, int id, CancellationToken cancellationToken)
+        => ResponseHelper.ResponseOutcome(await command.ExecuteAsync(id, cancellationToken), this);
 }
 ```
 
-Press F5 to run your API. You should see the following output or a similar result.
+Notes:
 
-![](./Assets/2024-09-14-15-01-40.png)
+- Dependencies are explicit per action using `[FromServices]`.
+- Every async endpoint accepts a `CancellationToken`.
+- Controllers never contain business logic; they delegate to handlers and use `ResponseHelper` for envelopes.
 
-## **Move to Phase 3**
+---
 
-[Click Here](https://github.com/entelect-incubator/.NET/tree/master/Phase%203)
+## 4) Swagger / Debugging
+
+Ensure Swagger is enabled in `Startup.ConfigureServices` and `Startup.Configure` (already present in EndSolution). Launch the API and verify endpoints at `/swagger`.
+
+---
+
+## Checklist
+
+- [ ] `ResponseHelper` handles all `Result` shapes
+- [ ] Base `ApiController` carries shared attributes only
+- [ ] Controllers resolve handler interfaces via `[FromServices]`
+- [ ] Endpoints pass `CancellationToken` to handlers
+- [ ] Swagger loads and endpoints return consistent envelopes
+
+---
+
+## Phase Wrap-up
+
+Phase 2 now has handler-based CQRS with clean controllers and standardized responses. Next, Phase 3 introduces the dispatcher/mediator to route commands and queries centrally without changing your handler implementations.
+
+[Go to Phase 3](https://github.com/entelect-incubator/.NET/tree/master/Phase%203)

@@ -1,0 +1,80 @@
+namespace Api;
+
+using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json.Serialization;
+
+public class Startup
+{
+	public Startup(IConfiguration configuration) => this.ConfigRoot = configuration;
+
+	public IConfiguration ConfigRoot
+	{
+		get;
+	}
+
+	public void ConfigureServices(IServiceCollection services)
+	{
+		services.AddControllers(options => options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true)
+			.AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()))
+			.AddNewtonsoftJson(x => x.SerializerSettings.ContractResolver = new DefaultContractResolver())
+			.AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+
+		DependencyInjection.AddApplication(services);
+
+		services.AddSwaggerDocument(config =>
+		{
+			config.PostProcess = document =>
+			{
+				document.Info.Version = "V1";
+				document.Info.Title = "Pezza Api";
+			};
+		});
+
+		services.AddLazyCache();
+
+		services.AddDbContext<DatabaseContext>(options =>
+			options.UseInMemoryDatabase("PezzaDB"));
+
+		services.AddResponseCompression(options =>
+		{
+			options.Providers.Add<BrotliCompressionProvider>();
+			options.Providers.Add<GzipCompressionProvider>();
+		});
+
+		services.AddResponseCompression();
+
+		this.EnsureDatabaseCreated(services);
+	}
+
+	public void Configure(WebApplication app, IWebHostEnvironment env)
+	{
+		app.UseOpenApi();
+		app.UseSwaggerUI();
+		app.UseHttpsRedirection();
+		app.UseRouting();
+		app.MapControllers();
+		app.UseAuthorization();
+		app.UseResponseCompression();
+		app.Run();
+	}
+
+	private void EnsureDatabaseCreated(IServiceCollection services)
+	{
+		using var serviceProvider = services.BuildServiceProvider();
+
+		var dbContext = serviceProvider.GetRequiredService<DatabaseContext>();
+
+		dbContext.Database.EnsureCreated();
+
+		dbContext.SaveChanges();
+
+		dbContext.Dispose();
+	}
+}

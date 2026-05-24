@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>LazyCache</id>
+    <version>2.4.0</version>
+    <authors>https://github.com/alastairtree</authors>
+    <license type="expression">MIT</license>
+    <licenseUrl>https://licenses.nuget.org/MIT</licenseUrl>
+    <icon>logo-128.png</icon>
+    <projectUrl>https://github.com/alastairtree/LazyCache</projectUrl>
+    <description>Lazy cache is a simple, thread safe, in-memory caching library that makes it easy to add high performance caching to your dotnet app.</description>
+    <releaseNotes>See https://raw.githubusercontent.com/alastairtree/LazyCache/master/ReleaseNotes.md</releaseNotes>
+    <copyright>Copyright 2014 - 2018 Alastair Crabtree</copyright>
+    <tags>Caching Performance Speed In-memory IMemoryCache Generics ServiceCacheing Lazy Cache Lazy-Load MemoryCache CachingService AppCache ApplicationCache Memcached</tags>
+    <repository url="https://github.com/alastairtree/LazyCache" />
+    <dependencies>
+      <group targetFramework=".NETStandard2.0">
+        <dependency id="Microsoft.Extensions.Caching.Abstractions" version="2.1.0" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Extensions.Caching.Memory" version="2.1.0" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+</package>
