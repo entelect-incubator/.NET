@@ -7,11 +7,9 @@ using HtmlAgilityPack;
 
 public class EmailService
 {
-	public string HtmlContent { get; set; }
+	public string HtmlContent { get; set; } = string.Empty;
 
-	public string ToEmail { get; set; }
-
-	public TodoModel Model { get; set; }
+	public string ToEmail { get; set; } = string.Empty;
 
 	public async Task<Result> SendEmail()
 	{

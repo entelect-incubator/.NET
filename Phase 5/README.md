@@ -8,7 +8,7 @@
 
 ## **Setup**
 
--   [ ] Use the Start Solution from Phase 5 to get started
+-   [ ] Start from **Phase 4\src\03. Step 2**, then continue in **Phase 5\src\01. StartSolution**.
 
 ## **Overview**
 

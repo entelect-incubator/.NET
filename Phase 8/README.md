@@ -10,7 +10,7 @@ In Phase 8, we will implement the front-end of the TODO application using both M
 
 ## **Setup**
 
--   [ ] Use the Final Solution from Phase 7 to get started or use Phase8\01. StartSolution
+-   [ ] Start from **Phase 7\src\02. EndSolution**, then continue in **Phase 8\src\01. StartSolution**.
 -   [ ] Use this template as a starter theme to streamline development, ensuring consistency and efficiency across multiple applications within the incubator's ecosystem. [E List Theme Template](https://github.com/entelect-incubator/Theme)
 -   [ ] To allow calls from your Web.API you need to add CORS in your starup.cs
 

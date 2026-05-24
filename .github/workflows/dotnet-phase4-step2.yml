@@ -16,6 +16,7 @@ jobs:
               uses: actions/setup-dotnet@v4
               with:
                   dotnet-version: 9.0.100-preview.7.24407.12
+                  cache: false
             - name: Install dependencies
               run: dotnet restore "./Phase 4/src/03. Step 2/EList.sln"
             - name: Build

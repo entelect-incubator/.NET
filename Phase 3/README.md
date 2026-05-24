@@ -29,7 +29,7 @@
 
 ## **Setup**
 
--   [ ] Use the Start Solution from Phase 3 to get started.
+-   [ ] Start from **Phase 2\src\02. EndSolution**, then continue in **Phase 3\src\01. StartSolution**.
 
 ## **Steps**
 

@@ -95,6 +95,27 @@ flowchart TD;
 
 ## Learning Outcomes
 
+### AI implementation instructions (all phases)
+
+Each phase must build on the previous phase output. Use this chain for all generated code and examples:
+
+```text
+Phase 1: Start fresh in Phase 1\src\01. StartSolution -> complete Phase 1\src\02. EndSolution
+Phase 2: Start from Phase 1\src\02. EndSolution -> continue in Phase 2\src\01. StartSolution -> complete Phase 2\src\02. EndSolution
+Phase 3: Start from Phase 2\src\02. EndSolution -> continue in Phase 3\src\01. StartSolution -> complete Phase 3\src\03. Step2
+Phase 4: Start from Phase 3\src\03. Step2 -> continue in Phase 4\src\01. StartSolution -> complete Phase 4\src\03. Step 2
+Phase 5: Start from Phase 4\src\03. Step 2 -> continue in Phase 5\src\01. StartSolution -> complete Phase 5\src\03. Step 2
+Phase 6: Start from Phase 5\src\03. Step 2 -> continue in Phase 6\src\01. StartSolution -> complete Phase 6\src\04. Step 3
+Phase 7: Start from Phase 6\src\04. Step 3 -> continue in Phase 7\src\01. StartSolution -> complete Phase 7\src\02. EndSolution
+Phase 8: Start from Phase 7\src\02. EndSolution -> continue in Phase 8\src\01. StartSolution -> complete Phase 8\src\02. MVC
+```
+
+Standards for all new code samples:
+
+-   Use dispatcher (MediatR-lite style) instead of MediatR packages.
+-   Use Mapperly-generated mappings; do not use static AutoMapper mapper calls.
+-   Use NUnit with Imposter for tests.
+
 ### Phase 1 - Getting started
 
 We will be starting with how to make a basic project and refactoring it into a solution following the single responsibility principle and how to set up a basic clean code architecture / layered architecture. This setup format will be used throughout the incubator.
@@ -109,7 +130,7 @@ Overview
 
 ### Phase 2 - Scaffolding
 
-In Phase 2, we will expand the foundational system to support operations for all entities. To improve scalability and maintainability, we will adopt the CQRS (Command Query Responsibility Segregation) pattern. Additionally, we will integrate the MediatR NuGet Package to simplify and decouple command and query responsibilities, allowing for better separation of concerns and more efficient processing across the system.
+In Phase 2, we will expand the foundational system to support operations for all entities. To improve scalability and maintainability, we will adopt the CQRS (Command Query Responsibility Segregation) pattern. Additionally, we will integrate a lightweight dispatcher to simplify and decouple command and query responsibilities, allowing for better separation of concerns and more efficient processing across the system.
 
 Overview
 
@@ -243,9 +264,9 @@ Overview
 
 -   **Serilog**: Serilog message templates are a simple DSL extending .NET format strings. Parameters can be named, and their values are serialized as properties on the event for incredible searching and sorting flexibility.
 
-##### MediatR
+##### Dispatcher (MediatR-lite)
 
--   **MediatR**: A simple mediator implementation in .NET for in-process messaging with no dependencies.
+-   **Dispatcher (MediatR-lite)**: A lightweight in-process command/query and notification dispatcher used throughout the incubator phases.
 
 ##### NUnit
 

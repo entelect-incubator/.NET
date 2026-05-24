@@ -12,7 +12,8 @@ In this tutorial, we will learn how to create an Api.Client that simplifies the 
 
 ## **Setup**
 
-Create a new Class Application Api.Client
+-   [ ] Start from **Phase 6\src\04. Step 3**, then continue in **Phase 7\src\01. StartSolution**.
+-   [ ] Create a new Class Application Api.Client.
 
 ![](./Assets/2023-07-23-21-53-22.png)
 

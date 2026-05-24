@@ -8,7 +8,7 @@
 
 ### **Setup**
 
--   [ ] Use the Start Solution from Phase 4 to get started
+-   [ ] Start from **Phase 3\src\03. Step2**, then continue in **Phase 4\src\01. StartSolution**.
 
 ### **Steps**
 
