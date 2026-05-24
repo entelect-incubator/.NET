@@ -18,8 +18,12 @@ public sealed class CreateProductCommandHandler(DatabaseContext databaseContext)
     {
         var entity = request.Data.ToEntity();
         databaseContext.Products.Add(entity);
-        request.Data.Id = entity.Id;
+        var outcome = await CoreHelper<ProductDTO>.Outcome(databaseContext, cancellationToken, request.Data, "Error creating a product");
+        if (outcome.Succeeded)
+        {
+            request.Data.Id = entity.Id;
+        }
 
-        return await CoreHelper<ProductDTO>.Outcome(databaseContext, cancellationToken, request.Data, "Error creating a product");
+        return outcome;
     }
 }

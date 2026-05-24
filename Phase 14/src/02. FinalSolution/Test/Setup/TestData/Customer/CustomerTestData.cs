@@ -11,6 +11,7 @@ public static class CustomerTestData
 
     public static CustomerDTO CustomerDTO = new()
     {
+        Name = faker.Person.FullName,
         ContactPerson = faker.Person.FullName,
         Email = faker.Person.Email,
         Phone = faker.Person.Phone,

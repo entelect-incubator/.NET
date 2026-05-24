@@ -21,7 +21,7 @@ public sealed class UpdateRestaurantCommandHandler(DatabaseContext databaseConte
         var findEntity = await databaseContext.Restaurants.FirstOrDefaultAsync(x => x.Id == dto.Id, cancellationToken);
         if (findEntity is null)
         {
-            return null;
+            return Result<RestaurantDTO>.Failure("Restaurant not found");
         }
 
         findEntity.Name = !string.IsNullOrEmpty(dto.Name) ? dto.Name : findEntity.Name;

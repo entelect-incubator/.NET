@@ -3,13 +3,31 @@ namespace Test.Setup;
 using System;
 using DataAccess;
 using LazyCache;
+using NUnit.Framework;
 using static DatabaseContextFactory;
 
-public class QueryTestBase : IDisposable
+public class QueryTestBase
 {
-    public CachingService CachingService = new();
+    private DatabaseContext context;
 
-    public DatabaseContext Context => Create();
+    public CachingService CachingService { get; private set; }
 
-    public void Dispose() => Destroy(this.Context);
+    public DatabaseContext Context => this.context;
+
+    [SetUp]
+    public void BaseSetUp()
+    {
+        this.context = Create();
+        this.CachingService = new CachingService();
+    }
+
+    [TearDown]
+    public void BaseTearDown()
+    {
+        if (this.context is not null)
+        {
+            Destroy(this.context);
+            this.context = null;
+        }
+    }
 }

@@ -29,8 +29,12 @@ public sealed class CreateCustomerCommandHandler(DatabaseContext databaseContext
             DateCreated = DateTime.UtcNow,
         };
         databaseContext.Customers.Add(entity);
-        request.Data.Id = entity.Id;
+        var outcome = await CoreHelper<CustomerDTO>.Outcome(databaseContext, cancellationToken, request.Data, "Error creating a customer");
+        if (outcome.Succeeded)
+        {
+            request.Data.Id = entity.Id;
+        }
 
-        return await CoreHelper<CustomerDTO>.Outcome(databaseContext, cancellationToken, request.Data, "Error creating a customer");
+        return outcome;
     }
 }

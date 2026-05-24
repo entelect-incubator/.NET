@@ -21,7 +21,7 @@ public sealed class GetProductsQueryHandler(DatabaseContext databaseContext) : I
 {
     public async Task<Result<IEnumerable<ProductDTO>>> Handle(GetProductsQuery request, CancellationToken cancellationToken)
     {
-        var dto = request.Data;
+        var dto = request.Data ?? new ProductDTO();
         if (string.IsNullOrEmpty(dto.OrderBy))
         {
             dto.OrderBy = "DateCreated desc";

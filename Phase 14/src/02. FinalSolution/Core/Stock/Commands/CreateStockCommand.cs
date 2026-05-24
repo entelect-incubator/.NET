@@ -18,8 +18,12 @@ public sealed class CreateStockCommandHandler(DatabaseContext databaseContext) :
     {
         var entity = request.Data.ToEntity();
         databaseContext.Stocks.Add(entity);
-        request.Data.Id = entity.Id;
+        var outcome = await CoreHelper<PizzaModel>.Outcome(databaseContext, cancellationToken, request.Data, "Error creating pizza");
+        if (outcome.Succeeded)
+        {
+            request.Data.Id = entity.Id;
+        }
 
-        return await CoreHelper<PizzaModel>.Outcome(databaseContext, cancellationToken, request.Data, "Error creating pizza");
+        return outcome;
     }
 }

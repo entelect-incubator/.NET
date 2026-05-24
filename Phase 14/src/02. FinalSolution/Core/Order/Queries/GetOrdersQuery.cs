@@ -21,7 +21,8 @@ public sealed class GetOrdersQueryHandler(DatabaseContext databaseContext) : IQu
 {
     public async Task<Result<IEnumerable<OrderDTO>>> Handle(GetOrdersQuery request, CancellationToken cancellationToken)
     {
-        var dto = request.Data;
+        var dto = request.Data ?? new OrderDTO();
+        var orderBy = string.IsNullOrEmpty(dto.OrderBy) ? "DateCreated desc" : dto.OrderBy;
         var entities = databaseContext.Orders
             .Include(x => x.OrderItems)
             .ThenInclude(x => x.Product)
@@ -34,7 +35,7 @@ public sealed class GetOrdersQueryHandler(DatabaseContext databaseContext) : IQu
             .FilterByCompleted(dto.Completed);
 
         var count = await entities.CountAsync(cancellationToken);
-        var paged = (await entities.ApplyPaging(dto.PagingArgs).OrderBy(dto.OrderBy).ToListAsync(cancellationToken)).Select(x => x.ToDto()).ToList();
+        var paged = (await entities.ApplyPaging(dto.PagingArgs).OrderBy(orderBy).ToListAsync(cancellationToken)).Select(x => x.ToDto()).ToList();
 
         return Result<IEnumerable<OrderDTO>>.Success(paged, count);
     }

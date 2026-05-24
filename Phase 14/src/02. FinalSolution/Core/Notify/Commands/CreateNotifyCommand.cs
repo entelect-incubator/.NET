@@ -18,8 +18,12 @@ public sealed class CreateNotifyCommandHandler(DatabaseContext databaseContext) 
     {
         var entity = request.Data.ToEntity();
         databaseContext.Notify.Add(entity);
-        request.Data.Id = entity.Id;
+        var outcome = await CoreHelper<NotifyDTO>.Outcome(databaseContext, cancellationToken, request.Data, "Error creating a Notification");
+        if (outcome.Succeeded)
+        {
+            request.Data.Id = entity.Id;
+        }
 
-        return await CoreHelper<NotifyDTO>.Outcome(databaseContext, cancellationToken, request.Data, "Error creating a Notification");
+        return outcome;
     }
 }

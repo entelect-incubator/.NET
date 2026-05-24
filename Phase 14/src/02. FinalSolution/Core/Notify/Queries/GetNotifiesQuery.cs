@@ -21,7 +21,7 @@ public sealed class GetNotifiesQueryHandler(DatabaseContext databaseContext) : I
 {
     public async Task<Result<IEnumerable<NotifyDTO>>> Handle(GetNotifiesQuery request, CancellationToken cancellationToken)
     {
-        var dto = request.Data;
+        var dto = request.Data ?? new NotifyDTO();
         if (string.IsNullOrEmpty(dto.OrderBy))
         {
             dto.OrderBy = "DateSent desc";

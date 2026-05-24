@@ -33,7 +33,7 @@ public sealed class GetRestaurantsQueryHandler : IQueryHandler<GetRestaurantsQue
 
     public async Task<Result<IEnumerable<RestaurantDTO>>> Handle(GetRestaurantsQuery request, CancellationToken cancellationToken)
     {
-        var dto = request.Data;
+        var dto = request.Data ?? new RestaurantDTO();
 
         if (dto.BustCache)
         {

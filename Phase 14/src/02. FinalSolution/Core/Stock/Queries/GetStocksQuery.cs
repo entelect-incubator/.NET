@@ -21,7 +21,7 @@ public sealed class GetStocksQueryHandler(DatabaseContext databaseContext) : IQu
 {
     public async Task<Result<IEnumerable<PizzaModel>>> Handle(GetStocksQuery request, CancellationToken cancellationToken)
     {
-        var dto = request.Data;
+        var dto = request.Data ?? new PizzaModel();
         if (string.IsNullOrEmpty(dto.OrderBy))
         {
             dto.OrderBy = "DateCreated desc";

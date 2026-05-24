@@ -26,12 +26,11 @@ public sealed class CreateOrderCommandHandler(
     {
         var entity = request.Data.ToEntity();
         databaseContext.Orders.Add(entity);
-        request.Data.Id = entity.Id;
-
         var outcome = await CoreHelper<OrderDTO>.Outcome(databaseContext, cancellationToken, request.Data, "Error creating a Order");
 
         if (outcome.Succeeded)
         {
+            request.Data.Id = entity.Id;
             var webhookUrl = configuration["DeliveryService:WebhookCallbackUrl"] ?? string.Empty;
             var deliveryRequest = new CreateDeliveryRequest
             {

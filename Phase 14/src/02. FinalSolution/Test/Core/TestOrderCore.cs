@@ -1,7 +1,9 @@
 namespace Test.Core;
 
+using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Common.Entities;
 using Common.DTO;
 using Imposter.Abstractions;
 using Microsoft.Extensions.Configuration;
@@ -21,6 +23,35 @@ public class TestOrderCore : QueryTestBase
     public async Task Init()
     {
         this.dto = OrderTestData.OrderDTO;
+        var customer = new Customer
+        {
+            Name = "Test Customer",
+            Phone = "0123456789",
+            Email = "test@example.com",
+            ContactPerson = "Test Contact",
+            Address = "Test Address",
+            City = "Test City",
+            Province = "Test Province",
+            PostalCode = "0001",
+            DateCreated = DateTime.UtcNow,
+        };
+        var restaurant = new Restaurant
+        {
+            Name = "Test Restaurant",
+            Description = "Test Description",
+            PictureUrl = string.Empty,
+            Address = "Test Address",
+            City = "Test City",
+            Province = "Test Province",
+            PostalCode = "0001",
+            IsActive = true,
+            DateCreated = DateTime.UtcNow,
+        };
+        this.Context.Customers.Add(customer);
+        this.Context.Restaurants.Add(restaurant);
+        await this.Context.SaveChangesAsync(CancellationToken.None);
+        this.dto.CustomerId = customer.Id;
+        this.dto.RestaurantId = restaurant.Id;
 
         var deliveryImposter = new global::Core.Delivery.IDeliveryServiceImposter();
         deliveryImposter

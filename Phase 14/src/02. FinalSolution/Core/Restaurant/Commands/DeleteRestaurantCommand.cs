@@ -21,6 +21,11 @@ public sealed class DeleteRestaurantCommandHandler : ICommandHandler<DeleteResta
     public async Task<Result> Handle(DeleteRestaurantCommand request, CancellationToken cancellationToken)
     {
         var findEntity = await this.databaseContext.Restaurants.FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
+        if (findEntity is null)
+        {
+            return Result.Failure("Restaurant not found");
+        }
+
         this.databaseContext.Restaurants.Remove(findEntity);
 
         return await CoreHelper.Outcome(this.databaseContext, cancellationToken, "Error deleting a restaurant");

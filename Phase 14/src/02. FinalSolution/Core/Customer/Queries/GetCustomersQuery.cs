@@ -21,7 +21,7 @@ public sealed class GetCustomersQueryHandler(DatabaseContext databaseContext) : 
 {
     public async Task<Result<IEnumerable<CustomerDTO>>> Handle(GetCustomersQuery request, CancellationToken cancellationToken)
     {
-        var dto = request.Data;
+        var dto = request.Data ?? new CustomerDTO();
 
         if (string.IsNullOrEmpty(dto.OrderBy))
         {

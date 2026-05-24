@@ -18,8 +18,12 @@ public sealed class CreateRestaurantCommandHandler(DatabaseContext databaseConte
     {
         var entity = request.Data.ToEntity();
         databaseContext.Restaurants.Add(entity);
-        request.Data.Id = entity.Id;
+        var outcome = await CoreHelper<RestaurantDTO>.Outcome(databaseContext, cancellationToken, request.Data, "Error creating a restaurant");
+        if (outcome.Succeeded)
+        {
+            request.Data.Id = entity.Id;
+        }
 
-        return await CoreHelper<RestaurantDTO>.Outcome(databaseContext, cancellationToken, request.Data, "Error creating a restaurant");
+        return outcome;
     }
 }
