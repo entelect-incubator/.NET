@@ -1,7 +1,6 @@
 ﻿namespace Core.Todos.Events;
 
 using System.Text;
-using Common.CQRS;
 using Core.Email;
 
 public class EmailEvent : INotification

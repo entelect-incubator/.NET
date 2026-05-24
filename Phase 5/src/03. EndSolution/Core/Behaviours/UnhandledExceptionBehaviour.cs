@@ -64,7 +64,7 @@ public class UnhandledExceptionBehaviour(RequestDelegate next)
 		else
 		{
 			var code = HttpStatusCode.BadRequest;
-			var result = Result.Failure(exception?.Message);
+			var result = Result.Failure(exception.Message);
 			var resultJson = JsonSerializer.Serialize(result);
 
 			context.Response.ContentType = "application/json";
