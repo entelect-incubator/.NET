@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>Scrutor</id>
+    <version>7.0.0</version>
+    <authors>Kristian Hellang</authors>
+    <license type="expression">MIT</license>
+    <licenseUrl>https://licenses.nuget.org/MIT</licenseUrl>
+    <readme>README.md</readme>
+    <projectUrl>https://github.com/khellang/Scrutor</projectUrl>
+    <description>Register services using assembly scanning and a fluent API.</description>
+    <tags>Dependency Injection DI Scanning Conventions Decoration</tags>
+    <repository type="git" url="https://github.com/khellang/Scrutor" commit="7f315dab5b0f7134a6be58941db1da8c904507e2" />
+    <dependencies>
+      <group targetFramework=".NETFramework4.6.2">
+        <dependency id="Microsoft.Extensions.DependencyInjection.Abstractions" version="10.0.0" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Extensions.DependencyModel" version="10.0.0" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework="net8.0">
+        <dependency id="Microsoft.Extensions.DependencyInjection.Abstractions" version="10.0.0" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Extensions.DependencyModel" version="10.0.0" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework="net10.0">
+        <dependency id="Microsoft.Extensions.DependencyInjection.Abstractions" version="10.0.0" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Extensions.DependencyModel" version="10.0.0" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework=".NETStandard2.0">
+        <dependency id="Microsoft.Extensions.DependencyInjection.Abstractions" version="10.0.0" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Extensions.DependencyModel" version="10.0.0" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+</package>

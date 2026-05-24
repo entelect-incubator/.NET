@@ -1,6 +1,6 @@
-﻿using Common.Models.Todos;
+﻿namespace Test.Setup.TestData.Pizza;
 
-namespace Test.Setup.TestData.Pizza;
+using Common.Models.Todos;
 
 public static class TodoTestData
 {
@@ -12,7 +12,7 @@ public static class TodoTestData
 		Task = faker.Random.Word(),
 		IsCompleted = false,
 		DateCreated = DateTime.UtcNow,
-		SessionId = Guid.NewGuid(),	
+		SessionId = Guid.NewGuid(),
 	};
 
 	public static TodoModel TodoModel = new()

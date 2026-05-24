@@ -10,13 +10,13 @@ public class Order
 
 	public required int CustomerId { get; set; }
 
-	public virtual Customer Customer { get; set; }
-
 	public DateTime? DateCreated { get; set; }
 
 	public required bool Completed { get; set; }
 
 ////	public List<int> PizzaIds { get; set; } // List of Pizza IDs
+
+	public virtual Customer Customer { get; set; } = null!;
 
 	public ICollection<Pizza> Pizzas { get; set; }
 }

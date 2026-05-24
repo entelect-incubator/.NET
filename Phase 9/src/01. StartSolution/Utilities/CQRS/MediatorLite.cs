@@ -1,26 +1,39 @@
 ﻿namespace Utilities.CQRS;
 
-using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
-public interface ICommand<TResult> : IRequest<TResult> { }
-public interface IQuery<TResult> : IRequest<TResult> { }
-public interface INotification : MediatR.INotification { }
+public interface ICommand<TResult> { }
+public interface IQuery<TResult> { }
+public interface INotification { }
 
-public interface ICommandHandler<TCommand, TResult> : IRequestHandler<TCommand, TResult>
+public interface ICommandHandler<TCommand, TResult>
 	where TCommand : ICommand<TResult>
-{ }
+{
+	Task<TResult> Handle(TCommand command, CancellationToken ct);
+}
 
-public interface IQueryHandler<TQuery, TResult> : IRequestHandler<TQuery, TResult>
+public interface IQueryHandler<TQuery, TResult>
 	where TQuery : IQuery<TResult>
-{ }
+{
+	Task<TResult> Handle(TQuery query, CancellationToken ct);
+}
 
-public interface INotificationHandler<TNotification> : MediatR.INotificationHandler<TNotification>
+public interface INotificationHandler<TNotification>
 	where TNotification : INotification
-{ }
+{
+	Task Handle(TNotification notification, CancellationToken ct);
+}
 
 public class Dispatcher(IServiceProvider provider)
 {
+	// Command overload that infers TResult from the command type at call sites.
+	public Task<TResult> Send<TResult>(ICommand<TResult> command, CancellationToken ct = default)
+		=> this.Send((dynamic)command, ct);
+
+	// Query overload for controller/job ergonomics.
+	public Task<TResult> Send<TResult>(IQuery<TResult> query, CancellationToken ct = default)
+		=> this.Query((dynamic)query, ct);
+
 	public Task<TResult> Send<TCommand, TResult>(TCommand command, CancellationToken ct = default)
 		where TCommand : ICommand<TResult>
 	{
@@ -40,6 +53,11 @@ public class Dispatcher(IServiceProvider provider)
 	{
 		var handlers = provider.GetServices<INotificationHandler<TNotification>>();
 		foreach (var handler in handlers)
+		{
 			await handler.Handle(notification, ct);
+		}
 	}
+
+	public Task Publish(INotification notification, CancellationToken ct = default)
+		=> this.Publish((dynamic)notification, ct);
 }

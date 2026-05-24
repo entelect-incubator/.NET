@@ -1,0 +1,2832 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Microsoft.Testing.Extensions.MSBuild</name>
+    </assembly>
+    <members>
+        <member name="T:System.Runtime.CompilerServices.CallerArgumentExpressionAttribute">
+            <summary>
+            Indicates that a parameter captures the expression passed for another parameter as a string.
+            </summary>
+        </member>
+        <member name="M:System.Runtime.CompilerServices.CallerArgumentExpressionAttribute.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.Runtime.CompilerServices.CallerArgumentExpressionAttribute"/> class.
+            </summary>
+        </member>
+        <member name="P:System.Runtime.CompilerServices.CallerArgumentExpressionAttribute.ParameterName">
+            <summary>
+            Gets the name of the parameter whose expression should be captured as a string.
+            </summary>
+        </member>
+        <member name="T:System.Runtime.CompilerServices.CompilerFeatureRequiredAttribute">
+            <summary>
+            Indicates that compiler support for a particular feature is required for the location where this attribute is applied.
+            </summary>
+        </member>
+        <member name="M:System.Runtime.CompilerServices.CompilerFeatureRequiredAttribute.#ctor(System.String)">
+            <summary>
+            Initialize a new instance of <see cref="T:System.Runtime.CompilerServices.CompilerFeatureRequiredAttribute"/>
+            </summary>
+        </member>
+        <member name="P:System.Runtime.CompilerServices.CompilerFeatureRequiredAttribute.FeatureName">
+            <summary>
+            The name of the compiler feature.
+            </summary>
+        </member>
+        <member name="P:System.Runtime.CompilerServices.CompilerFeatureRequiredAttribute.IsOptional">
+            <summary>
+            If true, the compiler can choose to allow access to the location where this attribute is applied if it does not understand <see cref="P:System.Runtime.CompilerServices.CompilerFeatureRequiredAttribute.FeatureName"/>.
+            </summary>
+        </member>
+        <member name="F:System.Runtime.CompilerServices.CompilerFeatureRequiredAttribute.RefStructs">
+            <summary>
+            The <see cref="P:System.Runtime.CompilerServices.CompilerFeatureRequiredAttribute.FeatureName"/> used for the ref structs C# feature.
+            </summary>
+        </member>
+        <member name="F:System.Runtime.CompilerServices.CompilerFeatureRequiredAttribute.RequiredMembers">
+            <summary>
+            The <see cref="P:System.Runtime.CompilerServices.CompilerFeatureRequiredAttribute.FeatureName"/> used for the required members C# feature.
+            </summary>
+        </member>
+        <member name="T:System.Runtime.CompilerServices.DisableRuntimeMarshallingAttribute">
+            <summary>
+            Disables the built-in runtime managed/unmanaged marshalling subsystem for
+            P/Invokes, Delegate types, and unmanaged function pointer invocations.
+            </summary>
+        </member>
+        <member name="T:System.Runtime.CompilerServices.IsExternalInit">
+            <summary>
+            Reserved to be used by the compiler for tracking metadata. This class should not be used by developers in source code.
+            </summary>
+        </member>
+        <member name="T:System.Runtime.CompilerServices.ModuleInitializerAttribute">
+            <summary>
+            Used to indicate to the compiler that a method should be called
+            in its containing module's initializer.
+            </summary>
+        </member>
+        <member name="T:System.Runtime.CompilerServices.OverloadResolutionPriorityAttribute">
+            <summary>
+            Specifies the priority of a member in overload resolution. When unspecified, the default priority is 0.
+            </summary>
+        </member>
+        <member name="M:System.Runtime.CompilerServices.OverloadResolutionPriorityAttribute.#ctor(System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.Runtime.CompilerServices.OverloadResolutionPriorityAttribute"/> class.
+            </summary>
+        </member>
+        <member name="P:System.Runtime.CompilerServices.OverloadResolutionPriorityAttribute.Priority">
+            <summary>
+            The priority of the member.
+            </summary>
+        </member>
+        <member name="T:System.Runtime.CompilerServices.ParamCollectionAttribute">
+            <summary>
+            Indicates that a method allows a variable number of arguments in its invocation.
+            </summary>
+        </member>
+        <member name="T:System.Runtime.CompilerServices.RequiredMemberAttribute">
+            <summary>
+            Specifies that a type has required members or that a member is required.
+            </summary>
+        </member>
+        <member name="T:System.Runtime.CompilerServices.SkipLocalsInitAttribute">
+            <summary>
+            Used to indicate to the compiler that the <c>.locals init</c>
+            flag should not be set in method headers.
+            </summary>
+        </member>
+        <member name="T:System.Runtime.CompilerServices.InterpolatedStringHandlerArgumentAttribute">
+            <summary>
+            Indicates which arguments to a method involving an interpolated string handler should be passed to that handler.
+            </summary>
+        </member>
+        <member name="M:System.Runtime.CompilerServices.InterpolatedStringHandlerArgumentAttribute.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.Runtime.CompilerServices.InterpolatedStringHandlerArgumentAttribute"/> class.
+            </summary>
+        </member>
+        <member name="M:System.Runtime.CompilerServices.InterpolatedStringHandlerArgumentAttribute.#ctor(System.String[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.Runtime.CompilerServices.InterpolatedStringHandlerArgumentAttribute"/> class.
+            </summary>
+        </member>
+        <member name="P:System.Runtime.CompilerServices.InterpolatedStringHandlerArgumentAttribute.Arguments">
+            <summary>Gets the names of the arguments that should be passed to the handler.</summary>
+        </member>
+        <member name="T:System.Runtime.CompilerServices.InterpolatedStringHandlerAttribute">
+            <summary>
+            Indicates the attributed type is to be used as an interpolated string handler.
+            </summary>
+        </member>
+        <member name="T:System.Runtime.Versioning.OSPlatformAttribute">
+            <summary>
+            Base type for all platform-specific API attributes.
+            </summary>
+        </member>
+        <member name="M:System.Runtime.Versioning.OSPlatformAttribute.#ctor(System.String)">
+            <summary>
+            Base type for all platform-specific API attributes.
+            </summary>
+        </member>
+        <member name="T:System.Runtime.Versioning.ObsoletedOSPlatformAttribute">
+            <summary>
+            Marks APIs that were obsoleted in a given operating system version.
+            </summary>
+        </member>
+        <member name="T:System.Runtime.Versioning.SupportedOSPlatformAttribute">
+            <summary>
+            Records the operating system (and minimum version) that supports an API. Multiple attributes can be
+            applied to indicate support on multiple operating systems.
+            </summary>
+        </member>
+        <member name="M:System.Runtime.Versioning.SupportedOSPlatformAttribute.#ctor(System.String)">
+            <summary>
+            Records the operating system (and minimum version) that supports an API. Multiple attributes can be
+            applied to indicate support on multiple operating systems.
+            </summary>
+        </member>
+        <member name="T:System.Runtime.Versioning.SupportedOSPlatformGuardAttribute">
+            <summary>
+            Annotates a custom guard field, property or method with a supported platform name and optional version.
+            Multiple attributes can be applied to indicate guard for multiple supported platforms.
+            </summary>
+        </member>
+        <member name="M:System.Runtime.Versioning.SupportedOSPlatformGuardAttribute.#ctor(System.String)">
+            <summary>
+            Annotates a custom guard field, property or method with a supported platform name and optional version.
+            Multiple attributes can be applied to indicate guard for multiple supported platforms.
+            </summary>
+        </member>
+        <member name="T:System.Runtime.Versioning.TargetPlatformAttribute">
+            <summary>
+            Records the platform that the project targeted.
+            </summary>
+        </member>
+        <member name="M:System.Runtime.Versioning.TargetPlatformAttribute.#ctor(System.String)">
+            <summary>
+            Records the platform that the project targeted.
+            </summary>
+        </member>
+        <member name="T:System.Runtime.Versioning.UnsupportedOSPlatformAttribute">
+            <summary>
+            Marks APIs that were removed in a given operating system version.
+            </summary>
+        </member>
+        <member name="T:System.Runtime.Versioning.UnsupportedOSPlatformGuardAttribute">
+            <summary>
+            Annotates the custom guard field, property or method with an unsupported platform name and optional version.
+            Multiple attributes can be applied to indicate guard for multiple unsupported platforms.
+            </summary>
+        </member>
+        <member name="M:System.Runtime.Versioning.UnsupportedOSPlatformGuardAttribute.#ctor(System.String)">
+            <summary>
+            Annotates the custom guard field, property or method with an unsupported platform name and optional version.
+            Multiple attributes can be applied to indicate guard for multiple unsupported platforms.
+            </summary>
+        </member>
+        <member name="M:System.Runtime.Versioning.RequiresPreviewFeaturesAttribute.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.Runtime.Versioning.RequiresPreviewFeaturesAttribute"/> class.
+            </summary>
+        </member>
+        <member name="M:System.Runtime.Versioning.RequiresPreviewFeaturesAttribute.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.Runtime.Versioning.RequiresPreviewFeaturesAttribute"/> class with the specified message.
+            </summary>
+        </member>
+        <member name="P:System.Runtime.Versioning.RequiresPreviewFeaturesAttribute.Message">
+            <summary>
+            Returns the optional message associated with this attribute instance.
+            </summary>
+        </member>
+        <member name="P:System.Runtime.Versioning.RequiresPreviewFeaturesAttribute.Url">
+            <summary>
+            Returns the optional URL associated with this attribute instance.
+            </summary>
+        </member>
+        <member name="T:System.Runtime.InteropServices.SuppressGCTransitionAttribute">
+            <summary>
+            An attribute used to indicate a GC transition should be skipped when making an unmanaged function call.
+            </summary>
+        </member>
+        <member name="T:System.Runtime.InteropServices.UnmanagedCallersOnlyAttribute">
+            <summary>
+            Any method marked with <see cref="T:System.Runtime.InteropServices.UnmanagedCallersOnlyAttribute" /> can be directly called from
+            native code. The function token can be loaded to a local variable using the <see href="https://docs.microsoft.com/dotnet/csharp/language-reference/operators/pointer-related-operators#address-of-operator-">address-of</see> operator
+            in C# and passed as a callback to a native method.
+            </summary>
+        </member>
+        <member name="F:System.Runtime.InteropServices.UnmanagedCallersOnlyAttribute.CallConvs">
+            <summary>
+            Optional. If omitted, the runtime will use the default platform calling convention.
+            </summary>
+        </member>
+        <member name="F:System.Runtime.InteropServices.UnmanagedCallersOnlyAttribute.EntryPoint">
+            <summary>
+            Optional. If omitted, no named export is emitted during compilation.
+            </summary>
+        </member>
+        <member name="T:System.Diagnostics.CodeAnalysis.ConstantExpectedAttribute">
+            <summary>
+            Indicates that the specified method parameter expects a constant.
+            </summary>
+        </member>
+        <member name="P:System.Diagnostics.CodeAnalysis.ConstantExpectedAttribute.Min">
+            <summary>
+            Indicates the minimum bound of the expected constant, inclusive.
+            </summary>
+        </member>
+        <member name="P:System.Diagnostics.CodeAnalysis.ConstantExpectedAttribute.Max">
+            <summary>
+            Indicates the maximum bound of the expected constant, inclusive.
+            </summary>
+        </member>
+        <member name="T:System.Diagnostics.CodeAnalysis.ExperimentalAttribute">
+            <summary>
+            Indicates that a parameter captures the expression passed for another parameter as a string.
+            </summary>
+            <summary>
+             Indicates that an API is experimental and it may change in the future.
+            </summary>
+        </member>
+        <member name="M:System.Diagnostics.CodeAnalysis.ExperimentalAttribute.#ctor(System.String)">
+            <summary>
+             Initializes a new instance of the <see cref="T:System.Diagnostics.CodeAnalysis.ExperimentalAttribute"/> class, specifying the ID that the compiler will use
+             when reporting a use of the API the attribute applies to.
+            </summary>
+        </member>
+        <member name="P:System.Diagnostics.CodeAnalysis.ExperimentalAttribute.DiagnosticId">
+            <summary>
+             Gets the ID that the compiler will use when reporting a use of the API the attribute applies to.
+            </summary>
+        </member>
+        <member name="P:System.Diagnostics.CodeAnalysis.ExperimentalAttribute.UrlFormat">
+            <summary>
+             Gets or sets the URL for corresponding documentation.
+             The API accepts a format string instead of an actual URL, creating a generic URL that includes the diagnostic ID.
+            </summary>
+        </member>
+        <member name="T:System.Diagnostics.CodeAnalysis.FeatureGuardAttribute">
+            <summary>
+            Indicates that the specified public static boolean get-only property
+            guards access to the specified feature.
+            </summary>
+        </member>
+        <member name="M:System.Diagnostics.CodeAnalysis.FeatureGuardAttribute.#ctor(System.Type)">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.Diagnostics.CodeAnalysis.FeatureGuardAttribute"/> class
+            with the specified feature type.
+            </summary>
+        </member>
+        <member name="P:System.Diagnostics.CodeAnalysis.FeatureGuardAttribute.FeatureType">
+            <summary>
+            The type that represents the feature guarded by the property.
+            </summary>
+        </member>
+        <member name="T:System.Diagnostics.CodeAnalysis.FeatureSwitchDefinitionAttribute">
+            <summary>
+            [AttributeUsage(AttributeTargets.Property, Inherited = false)]
+            </summary>
+        </member>
+        <member name="M:System.Diagnostics.CodeAnalysis.FeatureSwitchDefinitionAttribute.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.Diagnostics.CodeAnalysis.FeatureSwitchDefinitionAttribute"/> class
+            with the specified feature switch name.
+            </summary>
+        </member>
+        <member name="P:System.Diagnostics.CodeAnalysis.FeatureSwitchDefinitionAttribute.SwitchName">
+            <summary>
+            The name of the feature switch that provides the value for the specified property.
+            </summary>
+        </member>
+        <member name="T:System.Diagnostics.CodeAnalysis.AllowNullAttribute">
+            <summary>
+              Specifies that <see langword="null"/> is allowed as an input even if the
+              corresponding type disallows it.
+            </summary>
+        </member>
+        <member name="T:System.Diagnostics.CodeAnalysis.DisallowNullAttribute">
+            <summary>
+              Specifies that <see langword="null"/> is disallowed as an input even if the
+              corresponding type allows it.
+            </summary>
+        </member>
+        <member name="T:System.Diagnostics.CodeAnalysis.DoesNotReturnAttribute">
+            <summary>
+              Specifies that a method that will never return under any circumstance.
+            </summary>
+        </member>
+        <member name="T:System.Diagnostics.CodeAnalysis.DoesNotReturnIfAttribute">
+            <summary>
+              Specifies that the method will not return if the associated <see cref="T:System.Boolean"/>
+              parameter is passed the specified value.
+            </summary>
+        </member>
+        <member name="P:System.Diagnostics.CodeAnalysis.DoesNotReturnIfAttribute.ParameterValue">
+            <summary>
+              Gets the condition parameter value.
+              Code after the method is considered unreachable by diagnostics if the argument
+              to the associated parameter matches this value.
+            </summary>
+        </member>
+        <member name="M:System.Diagnostics.CodeAnalysis.DoesNotReturnIfAttribute.#ctor(System.Boolean)">
+            <summary>
+              Initializes a new instance of the <see cref="T:System.Diagnostics.CodeAnalysis.DoesNotReturnIfAttribute"/>
+              class with the specified parameter value.
+            </summary>
+        </member>
+        <member name="T:System.Diagnostics.CodeAnalysis.MaybeNullAttribute">
+            <summary>
+              Specifies that an output may be <see langword="null"/> even if the
+              corresponding type disallows it.
+            </summary>
+        </member>
+        <member name="T:System.Diagnostics.CodeAnalysis.MaybeNullWhenAttribute">
+            <summary>
+              Specifies that when a method returns <see cref="P:System.Diagnostics.CodeAnalysis.MaybeNullWhenAttribute.ReturnValue"/>,
+              the parameter may be <see langword="null"/> even if the corresponding type disallows it.
+            </summary>
+        </member>
+        <member name="P:System.Diagnostics.CodeAnalysis.MaybeNullWhenAttribute.ReturnValue">
+            <summary>
+              Gets the return value condition.
+              If the method returns this value, the associated parameter may be <see langword="null"/>.
+            </summary>
+        </member>
+        <member name="M:System.Diagnostics.CodeAnalysis.MaybeNullWhenAttribute.#ctor(System.Boolean)">
+            <summary>
+               Initializes the attribute with the specified return value condition.
+            </summary>
+        </member>
+        <member name="T:System.Diagnostics.CodeAnalysis.MemberNotNullAttribute">
+            <summary>
+              Specifies that the method or property will ensure that the listed field and property members have
+              not-<see langword="null"/> values.
+            </summary>
+        </member>
+        <member name="P:System.Diagnostics.CodeAnalysis.MemberNotNullAttribute.Members">
+            <summary>
+              Gets field or property member names.
+            </summary>
+        </member>
+        <member name="M:System.Diagnostics.CodeAnalysis.MemberNotNullAttribute.#ctor(System.String)">
+            <summary>
+              Initializes the attribute with a field or property member.
+            </summary>
+        </member>
+        <member name="M:System.Diagnostics.CodeAnalysis.MemberNotNullAttribute.#ctor(System.String[])">
+            <summary>
+              Initializes the attribute with the list of field and property members.
+            </summary>
+        </member>
+        <member name="T:System.Diagnostics.CodeAnalysis.MemberNotNullWhenAttribute">
+            <summary>
+              Specifies that the method or property will ensure that the listed field and property members have
+              non-<see langword="null"/> values when returning with the specified return value condition.
+            </summary>
+        </member>
+        <member name="P:System.Diagnostics.CodeAnalysis.MemberNotNullWhenAttribute.ReturnValue">
+            <summary>
+              Gets the return value condition.
+            </summary>
+        </member>
+        <member name="P:System.Diagnostics.CodeAnalysis.MemberNotNullWhenAttribute.Members">
+            <summary>
+              Gets field or property member names.
+            </summary>
+        </member>
+        <member name="M:System.Diagnostics.CodeAnalysis.MemberNotNullWhenAttribute.#ctor(System.Boolean,System.String)">
+            <summary>
+              Initializes the attribute with the specified return value condition and a field or property member.
+            </summary>
+        </member>
+        <member name="M:System.Diagnostics.CodeAnalysis.MemberNotNullWhenAttribute.#ctor(System.Boolean,System.String[])">
+            <summary>
+              Initializes the attribute with the specified return value condition and list
+              of field and property members.
+            </summary>
+        </member>
+        <member name="T:System.Diagnostics.CodeAnalysis.NotNullAttribute">
+            <summary>
+              Specifies that an output is not <see langword="null"/> even if the
+              corresponding type allows it.
+            </summary>
+        </member>
+        <member name="P:System.Diagnostics.CodeAnalysis.NotNullIfNotNullAttribute.ParameterName">
+            <summary>
+              Gets the associated parameter name.
+              The output will be non-<see langword="null"/> if the argument to the
+              parameter specified is non-<see langword="null"/>.
+            </summary>
+        </member>
+        <member name="M:System.Diagnostics.CodeAnalysis.NotNullIfNotNullAttribute.#ctor(System.String)">
+            <summary>
+              Initializes the attribute with the associated parameter name.
+            </summary>
+        </member>
+        <member name="T:System.Diagnostics.CodeAnalysis.NotNullWhenAttribute">
+            <summary>
+              Specifies that when a method returns <see cref="P:System.Diagnostics.CodeAnalysis.NotNullWhenAttribute.ReturnValue"/>,
+              the parameter will not be <see langword="null"/> even if the corresponding type allows it.
+            </summary>
+        </member>
+        <member name="P:System.Diagnostics.CodeAnalysis.NotNullWhenAttribute.ReturnValue">
+            <summary>
+              Gets the return value condition.
+              If the method returns this value, the associated parameter will not be <see langword="null"/>.
+            </summary>
+        </member>
+        <member name="M:System.Diagnostics.CodeAnalysis.NotNullWhenAttribute.#ctor(System.Boolean)">
+            <summary>
+              Initializes the attribute with the specified return value condition.
+            </summary>
+        </member>
+        <member name="T:System.Diagnostics.CodeAnalysis.SetsRequiredMembersAttribute">
+            <summary>
+            Specifies that this constructor sets all required members for the current type, and callers
+            do not need to set any required members themselves.
+            </summary>
+        </member>
+        <member name="T:System.Diagnostics.CodeAnalysis.StringSyntaxAttribute">
+            <summary>Specifies the syntax used in a string.</summary>
+        </member>
+        <member name="M:System.Diagnostics.CodeAnalysis.StringSyntaxAttribute.#ctor(System.String)">
+            <summary>Initializes the <see cref="T:System.Diagnostics.CodeAnalysis.StringSyntaxAttribute"/> with the identifier of the syntax used.</summary>
+        </member>
+        <member name="M:System.Diagnostics.CodeAnalysis.StringSyntaxAttribute.#ctor(System.String,System.Object[])">
+            <summary>Initializes the <see cref="T:System.Diagnostics.CodeAnalysis.StringSyntaxAttribute"/> with the identifier of the syntax used.</summary>
+        </member>
+        <member name="P:System.Diagnostics.CodeAnalysis.StringSyntaxAttribute.Syntax">
+            <summary>Gets the identifier of the syntax used.</summary>
+        </member>
+        <member name="P:System.Diagnostics.CodeAnalysis.StringSyntaxAttribute.Arguments">
+            <summary>Optional arguments associated with the specific syntax employed.</summary>
+        </member>
+        <member name="F:System.Diagnostics.CodeAnalysis.StringSyntaxAttribute.CompositeFormat">
+            <summary>The syntax identifier for strings containing composite formats for string formatting.</summary>
+        </member>
+        <member name="F:System.Diagnostics.CodeAnalysis.StringSyntaxAttribute.DateOnlyFormat">
+            <summary>The syntax identifier for strings containing date format specifiers.</summary>
+        </member>
+        <member name="F:System.Diagnostics.CodeAnalysis.StringSyntaxAttribute.DateTimeFormat">
+            <summary>The syntax identifier for strings containing date and time format specifiers.</summary>
+        </member>
+        <member name="F:System.Diagnostics.CodeAnalysis.StringSyntaxAttribute.EnumFormat">
+            <summary>The syntax identifier for strings containing <see cref="T:System.Enum"/> format specifiers.</summary>
+        </member>
+        <member name="F:System.Diagnostics.CodeAnalysis.StringSyntaxAttribute.GuidFormat">
+            <summary>The syntax identifier for strings containing <see cref="T:System.Guid"/> format specifiers.</summary>
+        </member>
+        <member name="F:System.Diagnostics.CodeAnalysis.StringSyntaxAttribute.Json">
+            <summary>The syntax identifier for strings containing JavaScript Object Notation (JSON).</summary>
+        </member>
+        <member name="F:System.Diagnostics.CodeAnalysis.StringSyntaxAttribute.NumericFormat">
+            <summary>The syntax identifier for strings containing numeric format specifiers.</summary>
+        </member>
+        <member name="F:System.Diagnostics.CodeAnalysis.StringSyntaxAttribute.Regex">
+            <summary>The syntax identifier for strings containing regular expressions.</summary>
+        </member>
+        <member name="F:System.Diagnostics.CodeAnalysis.StringSyntaxAttribute.TimeOnlyFormat">
+            <summary>The syntax identifier for strings containing time format specifiers.</summary>
+        </member>
+        <member name="F:System.Diagnostics.CodeAnalysis.StringSyntaxAttribute.TimeSpanFormat">
+            <summary>The syntax identifier for strings containing <see cref="T:System.TimeSpan"/> format specifiers.</summary>
+        </member>
+        <member name="F:System.Diagnostics.CodeAnalysis.StringSyntaxAttribute.Uri">
+            <summary>The syntax identifier for strings containing URIs.</summary>
+        </member>
+        <member name="F:System.Diagnostics.CodeAnalysis.StringSyntaxAttribute.Xml">
+            <summary>The syntax identifier for strings containing XML.</summary>
+        </member>
+        <member name="T:System.Diagnostics.CodeAnalysis.DynamicDependencyAttribute">
+            <summary>
+            States a dependency that one member has on another.
+            </summary>
+        </member>
+        <member name="M:System.Diagnostics.CodeAnalysis.DynamicDependencyAttribute.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.Diagnostics.CodeAnalysis.DynamicDependencyAttribute"/> class
+            with the specified signature of a member on the same type as the consumer.
+            </summary>
+        </member>
+        <member name="M:System.Diagnostics.CodeAnalysis.DynamicDependencyAttribute.#ctor(System.String,System.Type)">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.Diagnostics.CodeAnalysis.DynamicDependencyAttribute"/> class
+            with the specified signature of a member on a <see cref="P:System.Diagnostics.CodeAnalysis.DynamicDependencyAttribute.Type"/>.
+            </summary>
+        </member>
+        <member name="M:System.Diagnostics.CodeAnalysis.DynamicDependencyAttribute.#ctor(System.String,System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.Diagnostics.CodeAnalysis.DynamicDependencyAttribute"/> class
+            with the specified signature of a member on a type in an assembly.
+            </summary>
+        </member>
+        <member name="M:System.Diagnostics.CodeAnalysis.DynamicDependencyAttribute.#ctor(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes,System.Type)">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.Diagnostics.CodeAnalysis.DynamicDependencyAttribute"/> class
+            with the specified types of members on a <see cref="P:System.Diagnostics.CodeAnalysis.DynamicDependencyAttribute.Type"/>.
+            </summary>
+        </member>
+        <member name="M:System.Diagnostics.CodeAnalysis.DynamicDependencyAttribute.#ctor(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes,System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.Diagnostics.CodeAnalysis.DynamicDependencyAttribute"/> class
+            with the specified types of members on a type in an assembly.
+            </summary>
+        </member>
+        <member name="P:System.Diagnostics.CodeAnalysis.DynamicDependencyAttribute.MemberSignature">
+            <summary>
+            Gets the signature of the member depended on.
+            </summary>
+        </member>
+        <member name="P:System.Diagnostics.CodeAnalysis.DynamicDependencyAttribute.MemberTypes">
+            <summary>
+            Gets the <see cref="T:System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes"/> which specifies the type
+            of members depended on.
+            </summary>
+        </member>
+        <member name="P:System.Diagnostics.CodeAnalysis.DynamicDependencyAttribute.Type">
+            <summary>
+            Gets the <see cref="P:System.Diagnostics.CodeAnalysis.DynamicDependencyAttribute.Type"/> containing the specified member.
+            </summary>
+        </member>
+        <member name="P:System.Diagnostics.CodeAnalysis.DynamicDependencyAttribute.TypeName">
+            <summary>
+            Gets the full name of the type containing the specified member.
+            </summary>
+        </member>
+        <member name="P:System.Diagnostics.CodeAnalysis.DynamicDependencyAttribute.AssemblyName">
+            <summary>
+            Gets the assembly name of the specified type.
+            </summary>
+        </member>
+        <member name="P:System.Diagnostics.CodeAnalysis.DynamicDependencyAttribute.Condition">
+            <summary>
+            Gets or sets the condition in which the dependency is applicable, e.g. "DEBUG".
+            </summary>
+        </member>
+        <member name="T:System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes">
+             <summary>
+             Specifies the types of members that are dynamically accessed.
+            
+             This enumeration has a <see cref="T:System.FlagsAttribute"/> attribute that allows a
+             bitwise combination of its member values.
+             </summary>
+        </member>
+        <member name="F:System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.None">
+            <summary>
+            Specifies no members.
+            </summary>
+        </member>
+        <member name="F:System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicParameterlessConstructor">
+            <summary>
+            Specifies the default, parameterless public constructor.
+            </summary>
+        </member>
+        <member name="F:System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicConstructors">
+            <summary>
+            Specifies all public constructors.
+            </summary>
+        </member>
+        <member name="F:System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.NonPublicConstructors">
+            <summary>
+            Specifies all non-public constructors.
+            </summary>
+        </member>
+        <member name="F:System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicMethods">
+            <summary>
+            Specifies all public methods.
+            </summary>
+        </member>
+        <member name="F:System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.NonPublicMethods">
+            <summary>
+            Specifies all non-public methods.
+            </summary>
+        </member>
+        <member name="F:System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicFields">
+            <summary>
+            Specifies all public fields.
+            </summary>
+        </member>
+        <member name="F:System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.NonPublicFields">
+            <summary>
+            Specifies all non-public fields.
+            </summary>
+        </member>
+        <member name="F:System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicNestedTypes">
+            <summary>
+            Specifies all public nested types.
+            </summary>
+        </member>
+        <member name="F:System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.NonPublicNestedTypes">
+            <summary>
+            Specifies all non-public nested types.
+            </summary>
+        </member>
+        <member name="F:System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicProperties">
+            <summary>
+            Specifies all public properties.
+            </summary>
+        </member>
+        <member name="F:System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.NonPublicProperties">
+            <summary>
+            Specifies all non-public properties.
+            </summary>
+        </member>
+        <member name="F:System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicEvents">
+            <summary>
+            Specifies all public events.
+            </summary>
+        </member>
+        <member name="F:System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.NonPublicEvents">
+            <summary>
+            Specifies all non-public events.
+            </summary>
+        </member>
+        <member name="F:System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.Interfaces">
+            <summary>
+            Specifies all interfaces implemented by the type.
+            </summary>
+        </member>
+        <member name="F:System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.All">
+            <summary>
+            Specifies all members.
+            </summary>
+        </member>
+        <member name="T:System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembersAttribute">
+            <summary>
+            Indicates that certain members on a specified <see cref="T:System.Type"/> are accessed dynamically,
+            for example through <see cref="N:System.Reflection"/>.
+            </summary>
+        </member>
+        <member name="M:System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembersAttribute.#ctor(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes)">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembersAttribute"/> class
+            with the specified member types.
+            </summary>
+        </member>
+        <member name="P:System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembersAttribute.MemberTypes">
+            <summary>
+            Gets the <see cref="T:System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes"/> which specifies the type
+            of members dynamically accessed.
+            </summary>
+        </member>
+        <member name="T:System.Diagnostics.CodeAnalysis.RequiresDynamicCodeAttribute">
+            <summary>
+            Indicates that the specified method requires the ability to generate new code at runtime,
+            for example through <see cref="N:System.Reflection"/>.
+            </summary>
+        </member>
+        <member name="M:System.Diagnostics.CodeAnalysis.RequiresDynamicCodeAttribute.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.Diagnostics.CodeAnalysis.RequiresDynamicCodeAttribute"/> class
+            with the specified message.
+            </summary>
+        </member>
+        <member name="P:System.Diagnostics.CodeAnalysis.RequiresDynamicCodeAttribute.ExcludeStatics">
+            <summary>
+            When set to true, indicates that the annotation should not apply to static members.
+            </summary>
+        </member>
+        <member name="P:System.Diagnostics.CodeAnalysis.RequiresDynamicCodeAttribute.Message">
+            <summary>
+            Gets a message that contains information about the usage of dynamic code.
+            </summary>
+        </member>
+        <member name="P:System.Diagnostics.CodeAnalysis.RequiresDynamicCodeAttribute.Url">
+            <summary>
+            Gets or sets an optional URL that contains more information about the method,
+            why it requires dynamic code, and what options a consumer has to deal with it.
+            </summary>
+        </member>
+        <member name="T:System.Diagnostics.CodeAnalysis.RequiresUnreferencedCodeAttribute">
+            <summary>
+            Indicates that the specified method requires dynamic access to code that is not referenced
+            statically, for example through <see cref="N:System.Reflection"/>.
+            </summary>
+        </member>
+        <member name="M:System.Diagnostics.CodeAnalysis.RequiresUnreferencedCodeAttribute.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.Diagnostics.CodeAnalysis.RequiresUnreferencedCodeAttribute"/> class with the specified message.
+            </summary>
+        </member>
+        <member name="P:System.Diagnostics.CodeAnalysis.RequiresUnreferencedCodeAttribute.ExcludeStatics">
+            <summary>
+            When set to true, indicates that the annotation should not apply to static members.
+            </summary>
+        </member>
+        <member name="P:System.Diagnostics.CodeAnalysis.RequiresUnreferencedCodeAttribute.Message">
+            <summary>
+            Gets a message that contains information about the usage of unreferenced code.
+            </summary>
+        </member>
+        <member name="P:System.Diagnostics.CodeAnalysis.RequiresUnreferencedCodeAttribute.Url">
+            <summary>
+            Gets or sets an optional URL that contains more information about the method,
+            why it requires unreferenced code, and what options a consumer has to deal with it.
+            </summary>
+        </member>
+        <member name="T:System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessageAttribute">
+            <summary>
+            Suppresses reporting of a specific rule violation, allowing multiple suppressions on a
+            single code artifact.
+            </summary>
+        </member>
+        <member name="M:System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessageAttribute.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessageAttribute"/>
+            class, specifying the category of the tool and the identifier for an analysis rule.
+            </summary>
+        </member>
+        <member name="P:System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessageAttribute.Category">
+            <summary>
+            Gets the category identifying the classification of the attribute.
+            </summary>
+        </member>
+        <member name="P:System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessageAttribute.CheckId">
+            <summary>
+            Gets the identifier of the analysis tool rule to be suppressed.
+            </summary>
+        </member>
+        <member name="P:System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessageAttribute.Scope">
+            <summary>
+            Gets or sets the scope of the code that is relevant for the attribute.
+            </summary>
+        </member>
+        <member name="P:System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessageAttribute.Target">
+            <summary>
+            Gets or sets a fully qualified path that represents the target of the attribute.
+            </summary>
+        </member>
+        <member name="P:System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessageAttribute.MessageId">
+            <summary>
+            Gets or sets an optional argument expanding on exclusion criteria.
+            </summary>
+        </member>
+        <member name="P:System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessageAttribute.Justification">
+            <summary>
+            Gets or sets the justification for suppressing the code analysis message.
+            </summary>
+        </member>
+        <member name="T:System.Diagnostics.CodeAnalysis.UnscopedRefAttribute">
+            <summary>
+            Used to indicate a byref escapes and is not scoped.
+            </summary>
+        </member>
+        <member name="T:System.Diagnostics.DebuggerDisableUserUnhandledExceptionsAttribute">
+            <summary>
+            If a .NET Debugger is attached that supports the Debugger.BreakForUserUnhandledException(System.Exception) API, the debugger won't break on user-unhandled exceptions when the exception is caught by a method with this attribute, unless Debugger.BreakForUserUnhandledException(System.Exception) is called.
+            </summary>
+        </member>
+        <member name="T:System.Diagnostics.StackTraceHiddenAttribute">
+            <summary>
+            Types and Methods attributed with StackTraceHidden will be omitted from the stack trace text shown in StackTrace.ToString()
+            and Exception.StackTrace
+            </summary>
+        </member>
+        <member name="T:System.Diagnostics.TaskCompletionSource">
+            <summary>
+            Represents the producer side of a <see cref="P:System.Diagnostics.TaskCompletionSource.Task"/> unbound to a
+            delegate, providing access to the consumer side through the <see cref="P:System.Diagnostics.TaskCompletionSource.Task"/> property.
+            </summary>
+        </member>
+        <member name="M:System.Diagnostics.TaskCompletionSource.#ctor">
+            <summary>Creates a <see cref="T:System.Diagnostics.TaskCompletionSource"/>.</summary>
+        </member>
+        <member name="M:System.Diagnostics.TaskCompletionSource.#ctor(System.Threading.Tasks.TaskCreationOptions)">
+            <summary>Creates a <see cref="T:System.Diagnostics.TaskCompletionSource"/> with the specified options.</summary>
+        </member>
+        <member name="M:System.Diagnostics.TaskCompletionSource.#ctor(System.Object)">
+            <summary>Creates a <see cref="T:System.Diagnostics.TaskCompletionSource"/> with the specified state.</summary>
+        </member>
+        <member name="M:System.Diagnostics.TaskCompletionSource.#ctor(System.Object,System.Threading.Tasks.TaskCreationOptions)">
+            <summary>Creates a <see cref="T:System.Diagnostics.TaskCompletionSource"/> with the specified state and options.</summary>
+        </member>
+        <member name="P:System.Diagnostics.TaskCompletionSource.Task">
+            <summary>
+            Gets the <see cref="P:System.Diagnostics.TaskCompletionSource.Task"/> created
+            by this <see cref="T:System.Diagnostics.TaskCompletionSource"/>.
+            </summary>
+        </member>
+        <member name="M:System.Diagnostics.TaskCompletionSource.SetException(System.Exception)">
+            <summary>Transitions the underlying <see cref="P:System.Diagnostics.TaskCompletionSource.Task"/> into the <see cref="F:System.Threading.Tasks.TaskStatus.Faulted"/> state.</summary>
+        </member>
+        <member name="M:System.Diagnostics.TaskCompletionSource.SetException(System.Collections.Generic.IEnumerable{System.Exception})">
+            <summary>Transitions the underlying <see cref="P:System.Diagnostics.TaskCompletionSource.Task"/> into the <see cref="F:System.Threading.Tasks.TaskStatus.Faulted"/> state.</summary>
+        </member>
+        <member name="M:System.Diagnostics.TaskCompletionSource.TrySetException(System.Exception)">
+            <summary>
+            Attempts to transition the underlying <see cref="P:System.Diagnostics.TaskCompletionSource.Task"/> into the <see cref="F:System.Threading.Tasks.TaskStatus.Faulted"/> state.
+            </summary>
+        </member>
+        <member name="M:System.Diagnostics.TaskCompletionSource.TrySetException(System.Collections.Generic.IEnumerable{System.Exception})">
+            <summary>
+            Attempts to transition the underlying <see cref="P:System.Diagnostics.TaskCompletionSource.Task"/> into the <see cref="F:System.Threading.Tasks.TaskStatus.Faulted"/> state.
+            </summary>
+        </member>
+        <member name="M:System.Diagnostics.TaskCompletionSource.SetResult">
+            <summary>
+            Transitions the underlying <see cref="P:System.Diagnostics.TaskCompletionSource.Task"/> into the <see cref="F:System.Threading.Tasks.TaskStatus.RanToCompletion"/> state.
+            </summary>
+        </member>
+        <member name="M:System.Diagnostics.TaskCompletionSource.TrySetResult">
+            <summary>
+            Attempts to transition the underlying <see cref="P:System.Diagnostics.TaskCompletionSource.Task"/> into the <see cref="F:System.Threading.Tasks.TaskStatus.RanToCompletion"/> state.
+            </summary>
+        </member>
+        <member name="M:System.Diagnostics.TaskCompletionSource.SetCanceled">
+            <summary>
+            Transitions the underlying <see cref="P:System.Diagnostics.TaskCompletionSource.Task"/> into the <see cref="F:System.Threading.Tasks.TaskStatus.Canceled"/> state.
+            </summary>
+        </member>
+        <member name="M:System.Diagnostics.TaskCompletionSource.SetCanceled(System.Threading.CancellationToken)">
+            <summary>
+            Transitions the underlying <see cref="P:System.Diagnostics.TaskCompletionSource.Task"/> into the <see cref="F:System.Threading.Tasks.TaskStatus.Canceled"/> state
+            using the specified token.
+            </summary>
+        </member>
+        <member name="M:System.Diagnostics.TaskCompletionSource.TrySetCanceled">
+            <summary>
+            Attempts to transition the underlying <see cref="P:System.Diagnostics.TaskCompletionSource.Task"/> into the <see cref="F:System.Threading.Tasks.TaskStatus.Canceled"/> state.
+            </summary>
+        </member>
+        <member name="M:System.Diagnostics.TaskCompletionSource.TrySetCanceled(System.Threading.CancellationToken)">
+            <summary>
+            Attempts to transition the underlying <see cref="P:System.Diagnostics.TaskCompletionSource.Task"/> into the <see cref="F:System.Threading.Tasks.TaskStatus.Canceled"/> state.
+            </summary>
+        </member>
+        <member name="T:System.Diagnostics.UnreachableException">
+            <summary>
+            Exception thrown when the program executes an instruction that was thought to be unreachable.
+            </summary>
+            <seealso href="https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.unreachableexception"/>
+            <seealso href="https://source.dot.net/#System.Private.CoreLib/src/libraries/System.Private.CoreLib/src/System/Diagnostics/UnreachableException.cs"/>
+        </member>
+        <member name="M:System.Diagnostics.UnreachableException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.Diagnostics.UnreachableException"/> class with the default error message.
+            </summary>
+        </member>
+        <member name="M:System.Diagnostics.UnreachableException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.Diagnostics.UnreachableException"/>
+            class with a specified error message.
+            </summary>
+        </member>
+        <member name="M:System.Diagnostics.UnreachableException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.Diagnostics.UnreachableException"/>
+            class with a specified error message and a reference to the inner exception that is the cause of
+            this exception.
+            </summary>
+        </member>
+        <member name="T:System.Index">
+            <summary>Represent a type can be used to index a collection either from the start or the end.</summary>
+        </member>
+        <member name="M:System.Index.#ctor(System.Int32,System.Boolean)">
+            <summary>Construct an Index using a value and indicating if the index is from the start or from the end.</summary>
+        </member>
+        <member name="P:System.Index.Start">
+            <summary>Create an Index pointing at first element.</summary>
+        </member>
+        <member name="P:System.Index.End">
+            <summary>Create an Index pointing at beyond last element.</summary>
+        </member>
+        <member name="M:System.Index.FromStart(System.Int32)">
+            <summary>Create an Index from the start at the position indicated by the value.</summary>
+        </member>
+        <member name="M:System.Index.FromEnd(System.Int32)">
+            <summary>Create an Index from the end at the position indicated by the value.</summary>
+        </member>
+        <member name="P:System.Index.Value">
+            <summary>Returns the index value.</summary>
+        </member>
+        <member name="P:System.Index.IsFromEnd">
+            <summary>Indicates whether the index is from the start or the end.</summary>
+        </member>
+        <member name="M:System.Index.GetOffset(System.Int32)">
+            <summary>Calculate the offset from the start using the giving collection length.</summary>
+        </member>
+        <member name="M:System.Index.Equals(System.Object)">
+            <summary>Indicates whether the current Index object is equal to another object of the same type.</summary>
+        </member>
+        <member name="M:System.Index.Equals(System.Index)">
+            <summary>Indicates whether the current Index object is equal to another Index object.</summary>
+        </member>
+        <member name="M:System.Index.GetHashCode">
+            <summary>Returns the hash code for this instance.</summary>
+        </member>
+        <member name="M:System.Index.op_Implicit(System.Int32)~System.Index">
+            <summary>Converts integer number to an Index.</summary>
+        </member>
+        <member name="M:System.Index.ToString">
+            <summary>Converts the value of the current Index object to its equivalent string representation.</summary>
+        </member>
+        <member name="T:System.Range">
+            <summary>Represent a range has start and end indexes.</summary>
+        </member>
+        <member name="M:System.Range.#ctor(System.Index,System.Index)">
+            <summary>Represent a range has start and end indexes.</summary>
+        </member>
+        <member name="M:System.Range.ToString">
+            <summary>Converts the value of the current Range object to its equivalent string representation.</summary>
+        </member>
+        <member name="M:System.Range.StartAt(System.Index)">
+            <summary>Create a Range object starting from start index to the end of the collection.</summary>
+        </member>
+        <member name="M:System.Range.EndAt(System.Index)">
+            <summary>Create a Range object starting from first element in the collection to the end Index.</summary>
+        </member>
+        <member name="P:System.Range.All">
+            <summary>Create a Range object starting from first element to the end.</summary>
+        </member>
+        <member name="M:System.Range.GetOffsetAndLength(System.Int32)">
+            <summary>Calculate the start offset and length of range object using a collection length.</summary>
+        </member>
+        <member name="M:System.Collections.Generic.KeyValuePair.Create``2(``0,``1)">
+            <summary>
+            Creates a new key/value pair instance using provided values.
+            </summary>
+        </member>
+        <member name="T:System.Threading.Lock">
+            <summary>
+            Provides a way to get mutual exclusion in regions of code between different threads. A lock may be held by one thread at
+            a time.
+            </summary>
+        </member>
+        <member name="M:System.Threading.Lock.Enter">
+            <summary>
+            Enters the lock. Once the method returns, the calling thread would be the only thread that holds the lock.
+            </summary>
+        </member>
+        <member name="M:System.Threading.Lock.TryEnter">
+            <summary>
+            Tries to enter the lock without waiting. If the lock is entered, the calling thread would be the only thread that
+            holds the lock.
+            </summary>
+        </member>
+        <member name="M:System.Threading.Lock.TryEnter(System.TimeSpan)">
+            <summary>
+            Tries to enter the lock, waiting for roughly the specified duration. If the lock is entered, the calling thread
+            would be the only thread that holds the lock.
+            </summary>
+        </member>
+        <member name="M:System.Threading.Lock.TryEnter(System.Int32)">
+            <summary>
+            Tries to enter the lock, waiting for roughly the specified duration. If the lock is entered, the calling thread
+            would be the only thread that holds the lock.
+            </summary>
+        </member>
+        <member name="M:System.Threading.Lock.Exit">
+            <summary>
+            Exits the lock.
+            </summary>
+        </member>
+        <member name="M:System.Threading.Lock.EnterScope">
+            <summary>
+            Enters the lock and returns a <see cref="T:System.Threading.Lock.Scope"/> that may be disposed to exit the lock. Once the method returns,
+            the calling thread would be the only thread that holds the lock. This method is intended to be used along with a
+            language construct that would automatically dispose the <see cref="T:System.Threading.Lock.Scope"/>, such as with the C# <code>using</code>
+            statement.
+            </summary>
+        </member>
+        <member name="T:System.Threading.Lock.Scope">
+            <summary>
+            A disposable structure that is returned by <see cref="M:System.Threading.Lock.EnterScope"/>, which when disposed, exits the lock.
+            </summary>
+        </member>
+        <member name="M:System.Threading.Lock.Scope.#ctor(System.Threading.Lock)">
+            <summary>
+            A disposable structure that is returned by <see cref="M:System.Threading.Lock.EnterScope"/>, which when disposed, exits the lock.
+            </summary>
+        </member>
+        <member name="M:System.Threading.Lock.Scope.Dispose">
+            <summary>
+            Exits the lock.
+            </summary>
+        </member>
+        <member name="T:System.IO.UnixFileMode">
+             <summary>
+             Represents the Unix filesystem permissions.
+            
+             This enumeration supports a bitwise combination of its member values.
+             </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.ToHexString(System.Byte[],System.Int32,System.Int32)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$8E8D5B6126DFD7E817B5797C1A237D3F.ToHexString(System.Byte[],System.Int32,System.Int32)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.ToHexStringLower(System.Byte[],System.Int32,System.Int32)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$8E8D5B6126DFD7E817B5797C1A237D3F.ToHexStringLower(System.Byte[],System.Int32,System.Int32)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.ToHexStringLower(System.Byte[])">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$8E8D5B6126DFD7E817B5797C1A237D3F.ToHexStringLower(System.Byte[])"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.ToHexString(System.Byte[])">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$8E8D5B6126DFD7E817B5797C1A237D3F.ToHexString(System.Byte[])"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.FromHexString(System.String)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$8E8D5B6126DFD7E817B5797C1A237D3F.FromHexString(System.String)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.TryParse(System.String,System.IFormatProvider,System.DateTimeOffset@)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$F57D98B00617BA4856B9B5882EBBA37F.TryParse(System.String,System.IFormatProvider,System.DateTimeOffset@)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.TryParse(System.String,System.IFormatProvider,System.DateTime@)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$AC0E513418EF159D5C3E15BA59576B4F.TryParse(System.String,System.IFormatProvider,System.DateTime@)"/>
+        </member>
+        <member name="T:Polyfills.Polyfill.InvocationListEnumerator`1">
+            <summary>
+            Provides an enumerator for the invocation list of a delegate.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.EnumerateInvocationList``1(``0)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$4D3227A5AC6A380C659FBD62A27995E8.EnumerateInvocationList``1(``0)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.get_HasSingleTarget(System.Delegate)">
+            <inheritdoc cref="P:Polyfills.Polyfill.&lt;G&gt;$4D3227A5AC6A380C659FBD62A27995E8.HasSingleTarget"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.GetValues``1">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$8E5C3F0AE356A7A1CAD4B372112D6A6D.GetValues``1"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.IsDefined``1(``0)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$8E5C3F0AE356A7A1CAD4B372112D6A6D.IsDefined``1(``0)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.GetNames``1">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$8E5C3F0AE356A7A1CAD4B372112D6A6D.GetNames``1"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.Parse``1(System.String)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$8E5C3F0AE356A7A1CAD4B372112D6A6D.Parse``1(System.String)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.Parse``1(System.String,System.Boolean)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$8E5C3F0AE356A7A1CAD4B372112D6A6D.Parse``1(System.String,System.Boolean)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.get_ProcessId">
+            <inheritdoc cref="P:Polyfills.Polyfill.&lt;G&gt;$57DD63EC381B40E0D8049D1E01FA2D1C.ProcessId"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.AppendAllBytes(System.String,System.Byte[])">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$F8AA2908BAC5E2DCE9609C46C9D7AE18.AppendAllBytes(System.String,System.Byte[])"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.AppendAllBytesAsync(System.String,System.Byte[],System.Threading.CancellationToken)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$F8AA2908BAC5E2DCE9609C46C9D7AE18.AppendAllBytesAsync(System.String,System.Byte[],System.Threading.CancellationToken)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.Move(System.String,System.String,System.Boolean)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$F8AA2908BAC5E2DCE9609C46C9D7AE18.Move(System.String,System.String,System.Boolean)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.WriteAllBytesAsync(System.String,System.Byte[],System.Threading.CancellationToken)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$F8AA2908BAC5E2DCE9609C46C9D7AE18.WriteAllBytesAsync(System.String,System.Byte[],System.Threading.CancellationToken)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.WriteAllLinesAsync(System.String,System.Collections.Generic.IEnumerable{System.String},System.Threading.CancellationToken)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$F8AA2908BAC5E2DCE9609C46C9D7AE18.WriteAllLinesAsync(System.String,System.Collections.Generic.IEnumerable{System.String},System.Threading.CancellationToken)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.WriteAllLinesAsync(System.String,System.Collections.Generic.IEnumerable{System.String},System.Text.Encoding,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$F8AA2908BAC5E2DCE9609C46C9D7AE18.WriteAllLinesAsync(System.String,System.Collections.Generic.IEnumerable{System.String},System.Text.Encoding,System.Threading.CancellationToken)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.AppendAllLinesAsync(System.String,System.Collections.Generic.IEnumerable{System.String},System.Threading.CancellationToken)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$F8AA2908BAC5E2DCE9609C46C9D7AE18.AppendAllLinesAsync(System.String,System.Collections.Generic.IEnumerable{System.String},System.Threading.CancellationToken)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.AppendAllLinesAsync(System.String,System.Collections.Generic.IEnumerable{System.String},System.Text.Encoding,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$F8AA2908BAC5E2DCE9609C46C9D7AE18.AppendAllLinesAsync(System.String,System.Collections.Generic.IEnumerable{System.String},System.Text.Encoding,System.Threading.CancellationToken)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.WriteAllTextAsync(System.String,System.String,System.Text.Encoding,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$F8AA2908BAC5E2DCE9609C46C9D7AE18.WriteAllTextAsync(System.String,System.String,System.Text.Encoding,System.Threading.CancellationToken)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.WriteAllTextAsync(System.String,System.String,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$F8AA2908BAC5E2DCE9609C46C9D7AE18.WriteAllTextAsync(System.String,System.String,System.Threading.CancellationToken)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.AppendAllTextAsync(System.String,System.String,System.Text.Encoding,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$F8AA2908BAC5E2DCE9609C46C9D7AE18.AppendAllTextAsync(System.String,System.String,System.Text.Encoding,System.Threading.CancellationToken)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.AppendAllTextAsync(System.String,System.String,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$F8AA2908BAC5E2DCE9609C46C9D7AE18.AppendAllTextAsync(System.String,System.String,System.Threading.CancellationToken)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.ReadAllBytesAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$F8AA2908BAC5E2DCE9609C46C9D7AE18.ReadAllBytesAsync(System.String,System.Threading.CancellationToken)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.ReadAllLinesAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$F8AA2908BAC5E2DCE9609C46C9D7AE18.ReadAllLinesAsync(System.String,System.Threading.CancellationToken)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.ReadAllLinesAsync(System.String,System.Text.Encoding,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$F8AA2908BAC5E2DCE9609C46C9D7AE18.ReadAllLinesAsync(System.String,System.Text.Encoding,System.Threading.CancellationToken)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.ReadAllTextAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$F8AA2908BAC5E2DCE9609C46C9D7AE18.ReadAllTextAsync(System.String,System.Threading.CancellationToken)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.ReadAllTextAsync(System.String,System.Text.Encoding,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$F8AA2908BAC5E2DCE9609C46C9D7AE18.ReadAllTextAsync(System.String,System.Text.Encoding,System.Threading.CancellationToken)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.GetUnixFileMode(System.String)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$F8AA2908BAC5E2DCE9609C46C9D7AE18.GetUnixFileMode(System.String)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.SetUnixFileMode(System.String,System.IO.UnixFileMode)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$F8AA2908BAC5E2DCE9609C46C9D7AE18.SetUnixFileMode(System.String,System.IO.UnixFileMode)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.TryParse(System.String,System.IFormatProvider,System.Guid@)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$68F3962AE5697E254AA596E55C7A8792.TryParse(System.String,System.IFormatProvider,System.Guid@)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.CreateVersion7">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$68F3962AE5697E254AA596E55C7A8792.CreateVersion7"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.CreateVersion7(System.DateTimeOffset)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$68F3962AE5697E254AA596E55C7A8792.CreateVersion7(System.DateTimeOffset)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.Clamp(System.Single,System.Single,System.Single)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$853505F4C6E4266CC0CF997A13BEC9E3.Clamp(System.Single,System.Single,System.Single)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.Clamp(System.UIntPtr,System.UIntPtr,System.UIntPtr)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$853505F4C6E4266CC0CF997A13BEC9E3.Clamp(System.UIntPtr,System.UIntPtr,System.UIntPtr)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.Clamp(System.UInt64,System.UInt64,System.UInt64)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$853505F4C6E4266CC0CF997A13BEC9E3.Clamp(System.UInt64,System.UInt64,System.UInt64)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.Clamp(System.UInt32,System.UInt32,System.UInt32)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$853505F4C6E4266CC0CF997A13BEC9E3.Clamp(System.UInt32,System.UInt32,System.UInt32)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.Clamp(System.UInt16,System.UInt16,System.UInt16)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$853505F4C6E4266CC0CF997A13BEC9E3.Clamp(System.UInt16,System.UInt16,System.UInt16)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.Clamp(System.SByte,System.SByte,System.SByte)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$853505F4C6E4266CC0CF997A13BEC9E3.Clamp(System.SByte,System.SByte,System.SByte)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.Clamp(System.Int32,System.Int32,System.Int32)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$853505F4C6E4266CC0CF997A13BEC9E3.Clamp(System.Int32,System.Int32,System.Int32)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.Clamp(System.Int64,System.Int64,System.Int64)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$853505F4C6E4266CC0CF997A13BEC9E3.Clamp(System.Int64,System.Int64,System.Int64)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.Clamp(System.Int16,System.Int16,System.Int16)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$853505F4C6E4266CC0CF997A13BEC9E3.Clamp(System.Int16,System.Int16,System.Int16)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.Clamp(System.Double,System.Double,System.Double)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$853505F4C6E4266CC0CF997A13BEC9E3.Clamp(System.Double,System.Double,System.Double)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.Clamp(System.Decimal,System.Decimal,System.Decimal)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$853505F4C6E4266CC0CF997A13BEC9E3.Clamp(System.Decimal,System.Decimal,System.Decimal)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.Clamp(System.Byte,System.Byte,System.Byte)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$853505F4C6E4266CC0CF997A13BEC9E3.Clamp(System.Byte,System.Byte,System.Byte)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.Clamp(System.IntPtr,System.IntPtr,System.IntPtr)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$853505F4C6E4266CC0CF997A13BEC9E3.Clamp(System.IntPtr,System.IntPtr,System.IntPtr)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.TryParse(System.String,System.IFormatProvider,System.Byte@)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$984646E5C90D4BE007AAE446F159AC52.TryParse(System.String,System.IFormatProvider,System.Byte@)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.TryParse(System.String,System.IFormatProvider,System.Double@)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$4EDA8CBD8B61F6706755C541165134FD.TryParse(System.String,System.IFormatProvider,System.Double@)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.TryParse(System.String,System.IFormatProvider,System.Int16@)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$390DAE713F975834EF0C1ED2BEC2DBAC.TryParse(System.String,System.IFormatProvider,System.Int16@)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.TryParse(System.String,System.IFormatProvider,System.Int32@)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$BA41CFE2B5EDAEB8C1B9062F59ED4D69.TryParse(System.String,System.IFormatProvider,System.Int32@)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.TryParse(System.String,System.IFormatProvider,System.Int64@)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$E8CA98ACBCAEE63BB261A3FD4AF31675.TryParse(System.String,System.IFormatProvider,System.Int64@)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.TryParse(System.String,System.IFormatProvider,System.SByte@)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$49699017F639EF34A5A9E25ACB3E4B14.TryParse(System.String,System.IFormatProvider,System.SByte@)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.TryParse(System.String,System.IFormatProvider,System.UInt16@)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$B7387B77E15A9DBF0D30EA969A07D0DD.TryParse(System.String,System.IFormatProvider,System.UInt16@)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.TryParse(System.String,System.IFormatProvider,System.UInt32@)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$59D1B7AA0B822E2E4777E961258AA046.TryParse(System.String,System.IFormatProvider,System.UInt32@)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.TryParse(System.String,System.IFormatProvider,System.UInt64@)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$CC86B4FD6473E1534D8E28315C194AD4.TryParse(System.String,System.IFormatProvider,System.UInt64@)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.IsWasi">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$7605939981053B1C5929A1954636C53C.IsWasi"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.IsMacCatalyst">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$7605939981053B1C5929A1954636C53C.IsMacCatalyst"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.IsMacCatalystVersionAtLeast(System.Int32,System.Int32,System.Int32)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$7605939981053B1C5929A1954636C53C.IsMacCatalystVersionAtLeast(System.Int32,System.Int32,System.Int32)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.IsMacOSVersionAtLeast(System.Int32,System.Int32,System.Int32)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$7605939981053B1C5929A1954636C53C.IsMacOSVersionAtLeast(System.Int32,System.Int32,System.Int32)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.IsFreeBSDVersionAtLeast(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$7605939981053B1C5929A1954636C53C.IsFreeBSDVersionAtLeast(System.Int32,System.Int32,System.Int32,System.Int32)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.IsAndroid">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$7605939981053B1C5929A1954636C53C.IsAndroid"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.IsAndroidVersionAtLeast(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$7605939981053B1C5929A1954636C53C.IsAndroidVersionAtLeast(System.Int32,System.Int32,System.Int32,System.Int32)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.IsWindowsVersionAtLeast(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$7605939981053B1C5929A1954636C53C.IsWindowsVersionAtLeast(System.Int32,System.Int32,System.Int32,System.Int32)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.IsOSPlatform(System.String)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$7605939981053B1C5929A1954636C53C.IsOSPlatform(System.String)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.IsOSPlatformVersionAtLeast(System.String,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$7605939981053B1C5929A1954636C53C.IsOSPlatformVersionAtLeast(System.String,System.Int32,System.Int32,System.Int32,System.Int32)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.IsWindows">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$7605939981053B1C5929A1954636C53C.IsWindows"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.IsMacOS">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$7605939981053B1C5929A1954636C53C.IsMacOS"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.IsIOS">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$7605939981053B1C5929A1954636C53C.IsIOS"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.IsLinux">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$7605939981053B1C5929A1954636C53C.IsLinux"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.IsFreeBSD">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$7605939981053B1C5929A1954636C53C.IsFreeBSD"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.IsIOSVersionAtLeast(System.Int32,System.Int32,System.Int32)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$7605939981053B1C5929A1954636C53C.IsIOSVersionAtLeast(System.Int32,System.Int32,System.Int32)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.IsTvOSVersionAtLeast(System.Int32,System.Int32,System.Int32)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$7605939981053B1C5929A1954636C53C.IsTvOSVersionAtLeast(System.Int32,System.Int32,System.Int32)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.IsTvOS">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$7605939981053B1C5929A1954636C53C.IsTvOS"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.IsWatchOS">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$7605939981053B1C5929A1954636C53C.IsWatchOS"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.IsWatchOSVersionAtLeast(System.Int32,System.Int32,System.Int32)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$7605939981053B1C5929A1954636C53C.IsWatchOSVersionAtLeast(System.Int32,System.Int32,System.Int32)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.IsBrowser">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$7605939981053B1C5929A1954636C53C.IsBrowser"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.EndsInDirectorySeparator(System.String)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$009965FC9BE91ED9D11C3C63624A1761.EndsInDirectorySeparator(System.String)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.TrimEndingDirectorySeparator(System.String)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$009965FC9BE91ED9D11C3C63624A1761.TrimEndingDirectorySeparator(System.String)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.Exists(System.String)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$009965FC9BE91ED9D11C3C63624A1761.Exists(System.String)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.CopyTo``1(System.ArraySegment{``0},System.ArraySegment{``0})">
+            <summary>
+            Copies the contents of this instance into the specified destination array segment of the same type T.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.CopyTo``1(System.ArraySegment{``0},``0[])">
+            <summary>
+            Copies the contents of this instance into the specified destination array of the same type T.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.CopyTo``1(System.ArraySegment{``0},``0[],System.Int32)">
+            <summary>
+            Copies the contents of this instance into the specified destination array of the same type T, starting at the specified destination index.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.GetEnumerator``1(System.ArraySegment{``0})">
+            <summary>
+            Copies the contents of this instance into the specified destination array of the same type T, starting at the specified destination index.
+            </summary>
+        </member>
+        <member name="T:Polyfills.Polyfill.ArraySegmentEnumerator`1">
+            <summary>
+            Provides an enumerator for the elements of an <see cref="T:System.ArraySegment`1"/>.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.UnsafeRegister(System.Threading.CancellationToken,System.Action{System.Object},System.Object)">
+            <summary>
+            Registers a delegate that will be called when this
+            <see cref="T:System.Threading.CancellationToken">CancellationToken</see> is canceled.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.Register(System.Threading.CancellationToken,System.Action{System.Object,System.Threading.CancellationToken},System.Object)">
+            <summary>Registers a delegate that will be called when this <see cref="T:System.Threading.CancellationToken">CancellationToken</see> is canceled.</summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.UnsafeRegister(System.Threading.CancellationToken,System.Action{System.Object,System.Threading.CancellationToken},System.Object)">
+            <summary>Registers a delegate that will be called when this <see cref="T:System.Threading.CancellationToken">CancellationToken</see> is canceled.</summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.CancelAsync(System.Threading.CancellationTokenSource)">
+            <summary>Communicates a request for cancellation asynchronously.</summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.OpenAsync(System.IO.Compression.ZipArchiveEntry,System.Threading.CancellationToken)">
+            <summary>
+            Opens the entry from the zip archive.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.CreateEntryFromFileAsync(System.IO.Compression.ZipArchive,System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Archives a file by compressing it and adding it to the zip archive.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.CreateEntryFromFileAsync(System.IO.Compression.ZipArchive,System.String,System.String,System.IO.Compression.CompressionLevel,System.Threading.CancellationToken)">
+            <summary>
+            Archives a file by compressing it and adding it to the zip archive.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.ExtractToDirectoryAsync(System.IO.Compression.ZipArchive,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Extracts all the files in the zip archive to a directory on the file system.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.ExtractToDirectoryAsync(System.IO.Compression.ZipArchive,System.String,System.Boolean,System.Threading.CancellationToken)">
+            <summary>
+            Extracts all the files in the zip archive to a directory on the file system.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.ExtractToFileAsync(System.IO.Compression.ZipArchiveEntry,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Extracts an entry in the zip archive to a file.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.ExtractToFileAsync(System.IO.Compression.ZipArchiveEntry,System.String,System.Boolean,System.Threading.CancellationToken)">
+            <summary>
+            Extracts an entry in the zip archive to a file.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.ExtractToDirectory(System.IO.Compression.ZipArchive,System.String,System.Boolean)">
+            <summary>
+            Extracts all the files in the zip archive to a directory on the file system.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.Clear``1(System.Collections.Concurrent.ConcurrentBag{``0})">
+            <summary>
+            Removes all values from the <see cref="T:System.Collections.Concurrent.ConcurrentBag`1"/>.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.GetOrAdd``3(System.Collections.Concurrent.ConcurrentDictionary{``0,``1},``0,System.Func{``0,``2,``1},``2)">
+            <summary>
+            Adds a key/value pair to the <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2"/>
+            if the key does not already exist.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.Clear``1(System.Collections.Concurrent.ConcurrentQueue{``0})">
+            <summary>
+            Removes all values from the <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1"/>.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.Deconstruct(System.DateTime,System.Int32@,System.Int32@,System.Int32@)">
+            <summary>
+             Deconstructs <see cref="T:System.DateTime"/> by <see cref="P:System.DateTime.Year"/>, <see cref="P:System.DateTime.Month"/> and <see cref="P:System.DateTime.Day"/>.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.AsReadOnly``2(System.Collections.Generic.IDictionary{``0,``1})">
+            <summary>
+            Returns a read-only <see cref="T:System.Collections.ObjectModel.ReadOnlyDictionary`2"/> wrapper for the current dictionary.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.TryAdd``2(System.Collections.Generic.IDictionary{``0,``1},``0,``1)">
+            <summary>
+            Attempts to add the specified key and value to the <see cref="T:System.Collections.Generic.IDictionary`2"/>.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.Remove``2(System.Collections.Generic.IDictionary{``0,``1},``0,``1@)">
+            <summary>
+            Removes the value with the specified key from the <see cref="T:System.Collections.Generic.IDictionary`2"/>, and copies the element
+            to the value parameter.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.EnsureCapacity``2(System.Collections.Generic.Dictionary{``0,``1},System.Int32)">
+            <summary>
+            Ensures that the capacity of this dictionary is at least the specified capacity. If the current capacity is less than capacity, it is increased to at least the specified capacity.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.TrimExcess``2(System.Collections.Generic.Dictionary{``0,``1},System.Int32)">
+            <summary>
+            Sets the capacity of this dictionary to hold up a specified number of entries without any further expansion of its backing storage.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.TrimExcess``2(System.Collections.Generic.Dictionary{``0,``1})">
+            <summary>
+            Sets the capacity of this dictionary to what it would be if it had been originally initialized with all its entries.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.Deconstruct(System.Collections.DictionaryEntry,System.Object@,System.Object@)">
+            <summary>
+            Deconstructs the current <see cref="T:System.Collections.DictionaryEntry"/>.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.TryGetValue``1(System.Collections.Generic.HashSet{``0},``0,``0@)">
+            <summary>
+             Searches the set for a given value and returns the equal value it finds, if any.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.EnsureCapacity``1(System.Collections.Generic.HashSet{``0},System.Int32)">
+            <summary>
+            Ensures that the capacity of this HashSet is at least the specified capacity. If the current capacity is less than capacity, it is increased to at least the specified capacity.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.TrimExcess``1(System.Collections.Generic.HashSet{``0},System.Int32)">
+            <summary>
+            Sets the capacity of a HashSet object to the specified number of entries, rounded up to a nearby, implementation-specific value.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.AggregateBy``3(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},``2,System.Func{``2,``0,``2},System.Collections.Generic.IEqualityComparer{``1})">
+            <summary>
+            https://learn.microsoft.com/en-us/dotnet/core/whats-new/dotnet-9/overview#linq
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.AggregateBy``3(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Func{``1,``2},System.Func{``2,``0,``2},System.Collections.Generic.IEqualityComparer{``1})">
+            <summary>
+            https://learn.microsoft.com/en-us/dotnet/core/whats-new/dotnet-9/overview#linq
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.Chunk``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
+            <summary>
+            Split the elements of a sequence into chunks of size at most <paramref name="size"/>.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.CountBy``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Collections.Generic.IEqualityComparer{``1})">
+            <summary>
+            https://learn.microsoft.com/en-us/dotnet/core/whats-new/dotnet-9/overview#linq
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.DistinctBy``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})">
+            <summary>Returns distinct elements from a sequence according to a specified key selector function.</summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.DistinctBy``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Collections.Generic.IEqualityComparer{``1})">
+            <summary>Returns distinct elements from a sequence according to a specified key selector function.</summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.ElementAt``1(System.Collections.Generic.IEnumerable{``0},System.Index)">
+            <summary>Returns the element at a specified index in a sequence.</summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.ElementAtOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Index)">
+            <summary>Returns the element at a specified index in a sequence or a default value if the index is out of range.</summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.Except``1(System.Collections.Generic.IEnumerable{``0},``0)">
+            <summary>
+            Produces a set items excluding <paramref name="item"/> by using the default equality comparer to compare values.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.Except``1(System.Collections.Generic.IEnumerable{``0},``0,System.Collections.Generic.IEqualityComparer{``0})">
+            <summary>
+            Produces a set items excluding <paramref name="item"/> by using <paramref name="comparer"/> to compare values.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.Except``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEqualityComparer{``0},``0[])">
+            <summary>
+            Produces the set difference of two sequences by <paramref name="comparer"/> to compare values.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.ExceptBy``2(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``1},System.Func{``0,``1})">
+            <summary>
+            Produces the set difference of two sequences according to a specified key selector function.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.ExceptBy``2(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``1},System.Func{``0,``1},System.Collections.Generic.IEqualityComparer{``1})">
+            <summary>
+            Produces the set difference of two sequences according to a specified key selector function.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.FirstOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean},``0)">
+            <summary>Returns the first element of the sequence that satisfies a condition or a default value if no such element is found.</summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.FirstOrDefault``1(System.Collections.Generic.IEnumerable{``0},``0)">
+            <summary>Returns the first element of a sequence, or a default value if the sequence contains no elements.</summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.Index``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            https://learn.microsoft.com/en-us/dotnet/core/whats-new/dotnet-9/overview#linq
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.LastOrDefault``1(System.Collections.Generic.IEnumerable{``0},``0)">
+            <summary>Returns the last element of a sequence, or a default value if the sequence contains no elements.</summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.LastOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean},``0)">
+            <summary>Returns the last element of a sequence that satisfies a condition or a default value if no such element is found.</summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.Max``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IComparer{``0})">
+            <summary>Returns the maximum value in a generic sequence.</summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.MaxBy``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})">
+            <summary>
+            Returns the maximum value in a generic sequence according to a specified key selector function.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.MaxBy``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Collections.Generic.IComparer{``1})">
+            <summary>Returns the maximum value in a generic sequence according to a specified key selector function.</summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.Min``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IComparer{``0})">
+            <summary>Returns the minimum value in a generic sequence.</summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.MinBy``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})">
+            <summary>
+            Returns the minimum value in a generic sequence according to a specified key selector function.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.MinBy``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Collections.Generic.IComparer{``1})">
+            <summary>Returns the minimum value in a generic sequence according to a specified key selector function.</summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.SingleOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean},``0)">
+            <summary>Returns the only element of a sequence that satisfies a specified condition or a default value if no such element exists; this method throws an exception if more than one element satisfies the condition.</summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.SingleOrDefault``1(System.Collections.Generic.IEnumerable{``0},``0)">
+            <summary>Returns the only element of a sequence, or a default value if the sequence is empty; this method throws an exception if there is more than one element in the sequence.</summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.SkipLast``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
+            <summary>
+            Returns a new enumerable collection that contains the elements from source with the last count elements of the
+            source collection omitted.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.Take``1(System.Collections.Generic.IEnumerable{``0},System.Range)">
+            <summary>Returns a specified range of contiguous elements from a sequence.</summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.TakeLast``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
+            <summary>
+            Returns a new enumerable collection that contains the last count elements from source.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.ToHashSet``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEqualityComparer{``0})">
+            <summary>
+            Creates a <see cref="T:System.Collections.Generic.HashSet`1"/> from an <see cref="T:System.Collections.Generic.IEnumerable`1"/> using the comparer to compare keys.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.TryGetNonEnumeratedCount``1(System.Collections.Generic.IEnumerable{``0},System.Int32@)">
+            <summary>
+              Attempts to determine the number of elements in a sequence without forcing an enumeration.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.UnionBy``2(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})">
+            <summary>Produces the set union of two sequences according to a specified key selector function.</summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.UnionBy``2(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Collections.Generic.IEqualityComparer{``1})">
+            <summary>Produces the set union of two sequences according to a specified key selector function.</summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.Zip``3(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``1},System.Collections.Generic.IEnumerable{``2})">
+            <summary>
+            Produces a sequence of tuples with elements from the three specified sequences.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.Zip``2(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``1})">
+            <summary>
+            Produces a sequence of tuples with elements from the two specified sequences.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.GetValueOrDefault``2(System.Collections.Generic.IReadOnlyDictionary{``0,``1},``0)">
+            <summary>
+            Tries to get the value associated with the specified key in the dictionary.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.GetValueOrDefault``2(System.Collections.Generic.IReadOnlyDictionary{``0,``1},``0,``1)">
+            <summary>
+            Tries to get the value associated with the specified key in the dictionary.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.Deconstruct``2(System.Collections.Generic.KeyValuePair{``0,``1},``0@,``1@)">
+            <summary>
+            Deconstructs the current <see cref="T:System.Collections.Generic.KeyValuePair`2"/>
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.AsReadOnly``1(System.Collections.Generic.IList{``0})">
+            <summary>Returns a read-only <see cref="T:System.Collections.ObjectModel.ReadOnlyCollection`1" /> wrapper for the current collection.</summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.EnsureCapacity``1(System.Collections.Generic.List{``0},System.Int32)">
+            <summary>
+            Ensures that the capacity of this list is at least the specified capacity. If the current capacity is less than capacity, it is increased to at least the specified capacity.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.TrimExcess``1(System.Collections.Generic.List{``0})">
+            <summary>
+            Sets the capacity to the actual number of elements in the <see cref="T:System.Collections.Generic.List`1"/>, if that number is less than a threshold value.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.CreateDelegate``1(System.Reflection.MethodInfo)">
+            <summary>
+            Creates a delegate of type T with the specified target from this method.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.CreateDelegate``1(System.Reflection.MethodInfo,System.Object)">
+            <summary>
+            Creates a delegate of type T with the specified target from this method.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.Nanoseconds(System.TimeSpan)">
+            <summary>
+            Gets the nanosecond component of the time represented by the current <see cref="T:System.TimeSpan"/> object.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.Nanosecond(System.DateTime)">
+            <summary>
+            Gets the nanosecond component of the time represented by the current <see cref="T:System.DateTime"/> object.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.Nanosecond(System.DateTimeOffset)">
+            <summary>
+            Gets the nanosecond component of the time represented by the current <see cref="T:System.DateTimeOffset"/> object.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.Microseconds(System.TimeSpan)">
+            <summary>
+            Gets the microsecond component of the time represented by the current <see cref="T:System.TimeSpan"/> object.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.Microsecond(System.DateTime)">
+            <summary>
+            Gets the microsecond component of the time represented by the current <see cref="T:System.DateTime"/> object.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.Microsecond(System.DateTimeOffset)">
+            <summary>
+            Gets the microsecond component of the time represented by the current <see cref="T:System.DateTimeOffset"/> object.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.AddMicroseconds(System.DateTime,System.Double)">
+            <summary>
+            Returns a new <see cref="T:System.DateTime"/> object that adds a specified number of microseconds to the value of this instance..
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.AddMicroseconds(System.DateTimeOffset,System.Double)">
+            <summary>
+            Returns a new <see cref="T:System.DateTimeOffset"/> object that adds a specified number of microseconds to the value of this instance..
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.Kill(System.Diagnostics.Process,System.Boolean)">
+            <summary>
+            Immediately stops the associated process, and optionally its child/descendent processes.
+            Maps to <see cref="M:System.Diagnostics.Process.Kill"/>.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.WaitForExitAsync(System.Diagnostics.Process,System.Threading.CancellationToken)">
+            <summary>
+            Instructs the Process component to wait for the associated process to exit, or
+            for the <paramref name="cancellationToken"/> to be canceled.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.EnsureCapacity``1(System.Collections.Generic.Queue{``0},System.Int32)">
+            <summary>
+            Ensures that the capacity of this queue is at least the specified capacity. If the current capacity is less than capacity, it is increased to at least the specified capacity.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.TrimExcess``1(System.Collections.Generic.Queue{``0},System.Int32)">
+            <summary>
+            Sets the capacity of a Queue object to the specified number of entries.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.GetItems``1(System.Random,``0[],System.Int32)">
+            <summary>
+            Creates an array populated with items chosen at random from the provided set of choices.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.Shuffle``1(System.Random,``0[])">
+            <summary>
+            Performs an in-place shuffle of an array.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.GetKeyAtIndex``2(System.Collections.Generic.SortedList{``0,``1},System.Int32)">
+            <summary>
+            Gets the key corresponding to the specified index.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.GetValueAtIndex``2(System.Collections.Generic.SortedList{``0,``1},System.Int32)">
+            <summary>
+            Gets the value corresponding to the specified index.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.EnsureCapacity``1(System.Collections.Generic.Stack{``0},System.Int32)">
+            <summary>
+            Ensures that the capacity of this Stack is at least the specified capacity. If the current capacity is less than capacity, it is increased to at least the specified capacity.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.TrimExcess``1(System.Collections.Generic.Stack{``0},System.Int32)">
+            <summary>
+            Sets the capacity of a Stack object to a specified number of entries.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.TryPeek``1(System.Collections.Generic.Stack{``0},``0@)">
+            <summary>
+            Returns a value that indicates whether there is an object at the top of the <see cref="T:System.Collections.Generic.Stack`1"/>, and if one is present, copies it to the result parameter. The object is not removed from the <see cref="T:System.Collections.Generic.Stack`1"/>.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.TryPop``1(System.Collections.Generic.Stack{``0},``0@)">
+            <summary>
+            Returns a value that indicates whether there is an object at the top of the <see cref="T:System.Collections.Generic.Stack`1"/>, and if one is present, copies it to the result parameter, and removes it from the <see cref="T:System.Collections.Generic.Stack`1"/>.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.CopyToAsync(System.IO.Stream,System.IO.Stream,System.Threading.CancellationToken)">
+            <summary>
+            Asynchronously reads the bytes from the current stream and writes them to another stream, using a specified
+            cancellation token. Both streams positions are advanced by the number of bytes copied.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.ReadExactly(System.IO.Stream,System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Reads count number of bytes from the current stream and advances the position within the stream.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.GetHashCode(System.String,System.StringComparison)">
+            <summary>
+            Returns the hash code for this string using the specified rules.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.Contains(System.String,System.Char,System.StringComparison)">
+            <summary>
+            Returns a value indicating whether a specified character occurs within this string, using the specified comparison rules.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.IndexOf(System.String,System.Char,System.StringComparison)">
+            <summary>
+            Reports the zero-based index of the first occurrence of the specified Unicode character in this string. A parameter specifies the type of search to use for the specified character.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.Contains(System.String,System.String,System.StringComparison)">
+            <summary>
+            Returns a value indicating whether a specified string occurs within this string, using the specified comparison rules.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.StartsWith(System.String,System.Char)">
+            <summary>
+            Determines whether this string instance starts with the specified character.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.EndsWith(System.String,System.Char)">
+            <summary>
+            Returns a value indicating whether a specified character occurs within this string.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.Split(System.String,System.Char,System.StringSplitOptions)">
+            <summary>
+            Splits a string into substrings based on a specified delimiting character and, optionally, options.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.Split(System.String,System.Char,System.Int32,System.StringSplitOptions)">
+            <summary>
+            Splits a string into a maximum number of substrings based on a specified delimiting character and, optionally,
+            options. Splits a string into a maximum number of substrings based on the provided character separator,
+            optionally omitting empty substrings from the result.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.Split(System.String,System.String,System.StringSplitOptions)">
+            <summary>
+            Splits a string into substrings that are based on the provided string separator.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.Split(System.String,System.String,System.Int32,System.StringSplitOptions)">
+            <summary>
+            Splits a string into a maximum number of substrings based on a specified delimiting string and, optionally, options.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.Contains(System.String,System.Char)">
+            <summary>
+            Returns a value indicating whether a specified character occurs within this string.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.ReplaceLineEndings(System.String,System.String)">
+            <summary>
+            Replaces all newline sequences in the current string with <paramref name="replacementText"/>.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.ReplaceLineEndings(System.String)">
+            <summary>
+            Replaces all newline sequences in the current string with <see cref="P:System.Environment.NewLine"/>.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.Append(System.Text.StringBuilder,System.Text.StringBuilder,System.Int32,System.Int32)">
+            <summary>
+            Appends a copy of a substring within a specified string builder to this instance.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.AppendJoin``1(System.Text.StringBuilder,System.Char,System.Collections.Generic.IEnumerable{``0})">
+            <summary>Concatenates and appends the members of a collection, using the specified separator between each member.</summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.AppendJoin``1(System.Text.StringBuilder,System.String,System.Collections.Generic.IEnumerable{``0})">
+            <summary>Concatenates and appends the members of a collection, using the specified char separator between each member.</summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.AppendJoin(System.Text.StringBuilder,System.String,System.String[])">
+            <summary>Concatenates the strings of the provided array, using the specified separator between each string, then appends the result to the current instance of the string builder.</summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.AppendJoin(System.Text.StringBuilder,System.String,System.Object[])">
+            <summary>Concatenates the string representations of the elements in the provided array of objects, using the specified separator between each member, then appends the result to the current instance of the string builder.</summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.AppendJoin(System.Text.StringBuilder,System.Char,System.String[])">
+            <summary>Concatenates the strings of the provided array, using the specified char separator between each string, then appends the result to the current instance of the string builder.</summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.AppendJoin(System.Text.StringBuilder,System.Char,System.Object[])">
+            <summary>Concatenates the string representations of the elements in the provided array of objects, using the specified char separator between each member, then appends the result to the current instance of the string builder.</summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.AppendJoin``1(System.Text.StringBuilder,System.Char,``0[])">
+            <summary>Concatenates and appends the members of a collection, using the specified char separator between each member.</summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.AppendJoin``1(System.Text.StringBuilder,System.String,``0[])">
+            <summary>Concatenates and appends the members of a collection, using the specified char separator between each member.</summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.WaitAsync(System.Threading.Tasks.Task,System.Threading.CancellationToken)">
+            <summary>Gets a <see cref="T:System.Threading.Tasks.Task"/> that will complete when this <see cref="T:System.Threading.Tasks.Task"/> completes or when the specified <see cref="T:System.Threading.CancellationToken"/> has cancellation requested.</summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.WaitAsync(System.Threading.Tasks.Task,System.TimeSpan)">
+            <summary>Gets a <see cref="T:System.Threading.Tasks.Task"/> that will complete when this <see cref="T:System.Threading.Tasks.Task"/> completes or when the specified timeout expires.</summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.WaitAsync(System.Threading.Tasks.Task,System.TimeSpan,System.Threading.CancellationToken)">
+            <summary>Gets a <see cref="T:System.Threading.Tasks.Task"/> that will complete when this <see cref="T:System.Threading.Tasks.Task"/> completes, when the specified timeout expires, or when the specified <see cref="T:System.Threading.CancellationToken"/> has cancellation requested.</summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.WaitAsync``1(System.Threading.Tasks.Task{``0},System.Threading.CancellationToken)">
+            <summary>
+            Gets a <see cref="T:System.Threading.Tasks.Task"/> that will complete when this <see cref="T:System.Threading.Tasks.Task"/> completes, or when the specified <see cref="T:System.Threading.CancellationToken"/> has cancellation requested.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.WaitAsync``1(System.Threading.Tasks.Task{``0},System.TimeSpan)">
+            <summary>
+            Gets a <see cref="T:System.Threading.Tasks.Task"/> that will complete when this <see cref="T:System.Threading.Tasks.Task"/> completes, or when the specified timeout expires.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.WaitAsync``1(System.Threading.Tasks.Task{``0},System.TimeSpan,System.Threading.CancellationToken)">
+            <summary>
+            Gets a <see cref="T:System.Threading.Tasks.Task"/> that will complete when this <see cref="T:System.Threading.Tasks.Task"/> completes, when the specified timeout expires, or when the specified <see cref="T:System.Threading.CancellationToken"/> has cancellation requested.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.SetCanceled``1(System.Threading.Tasks.TaskCompletionSource{``0},System.Threading.CancellationToken)">
+            <summary>
+            Transitions the underlying <see cref="T:System.Threading.Tasks.Task`1"/> into the <see cref="F:System.Threading.Tasks.TaskStatus.Canceled"/> state
+            using the specified token.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.ReadToEndAsync(System.IO.TextReader,System.Threading.CancellationToken)">
+            <summary>
+            Reads all characters from the current position to the end of the stream asynchronously and returns them as one string.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.ReadLineAsync(System.IO.TextReader,System.Threading.CancellationToken)">
+            <summary>
+            Reads a line of characters asynchronously and returns the data as a string.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.FlushAsync(System.IO.TextWriter,System.Threading.CancellationToken)">
+            <summary>
+            Asynchronously clears all buffers for the current writer and causes any buffered data to
+            be written to the underlying device.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.Write(System.IO.TextWriter,System.Text.StringBuilder)">
+            <summary>
+            Equivalent to Write(stringBuilder.ToString()) however it uses the
+            StringBuilder.GetChunks() method to avoid creating the intermediate string
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.WriteAsync(System.IO.TextWriter,System.Text.StringBuilder,System.Threading.CancellationToken)">
+            <summary>
+            Equivalent to WriteAsync(stringBuilder.ToString()) however it uses the
+            StringBuilder.GetChunks() method to avoid creating the intermediate string
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.GetMethod(System.Type,System.String,System.Int32,System.Reflection.BindingFlags,System.Reflection.Binder,System.Type[],System.Reflection.ParameterModifier[])">
+            <summary>
+            Searches for the specified method whose parameters match the specified generic parameter count, argument types and modifiers, using the specified binding constraints.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.GetMethod(System.Type,System.String,System.Int32,System.Reflection.BindingFlags,System.Type[])">
+            <summary>
+            Searches for the specified method whose parameters match the specified generic parameter count, argument types and modifiers, using the specified binding constraints.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.IsGenericMethodParameter(System.Type)">
+            <summary>
+            Gets a value that indicates whether the current Type represents a type parameter in the definition of a generic method.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.IsAssignableTo``1(System.Type)">
+            <summary>
+            Generic version of Type.IsAssignableTo https://learn.microsoft.com/en-us/dotnet/api/system.type.isassignableto.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.IsAssignableFrom``1(System.Type)">
+            <summary>
+            Generic version of Type.IsAssignableFrom https://learn.microsoft.com/en-us/dotnet/api/system.type.isassignablefrom.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.IsAssignableTo(System.Type,System.Type)">
+            <summary>
+            Determines whether the current type can be assigned to a variable of the specified targetType.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.GetMemberWithSameMetadataDefinitionAs(System.Type,System.Reflection.MemberInfo)">
+            <summary>
+            Searches for the MemberInfo on the current Type that matches the specified MemberInfo.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.SaveAsync(System.Xml.Linq.XDocument,System.Xml.XmlWriter,System.Threading.CancellationToken)">
+            <summary>
+            Output this <see cref="T:System.Xml.Linq.XDocument"/> to an <see cref="T:System.Xml.XmlWriter"/>.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.SaveAsync(System.Xml.Linq.XDocument,System.IO.Stream,System.Xml.Linq.SaveOptions,System.Threading.CancellationToken)">
+            <summary>
+            Output this <see cref="T:System.Xml.Linq.XDocument"/> to a <see cref="T:System.IO.Stream"/>.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.SaveAsync(System.Xml.Linq.XDocument,System.IO.TextWriter,System.Xml.Linq.SaveOptions,System.Threading.CancellationToken)">
+            <summary>
+            Output this <see cref="T:System.Xml.Linq.XDocument"/> to a <see cref="T:System.IO.TextWriter"/>.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.SaveAsync(System.Xml.Linq.XElement,System.Xml.XmlWriter,System.Threading.CancellationToken)">
+            <summary>
+            Output this <see cref="T:System.Xml.Linq.XElement"/> to an <see cref="T:System.Xml.XmlWriter"/>.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.SaveAsync(System.Xml.Linq.XElement,System.IO.Stream,System.Xml.Linq.SaveOptions,System.Threading.CancellationToken)">
+            <summary>
+            Output this <see cref="T:System.Xml.Linq.XElement"/> to a <see cref="T:System.IO.Stream"/>.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.SaveAsync(System.Xml.Linq.XElement,System.IO.TextWriter,System.Xml.Linq.SaveOptions,System.Threading.CancellationToken)">
+            <summary>
+            Output this <see cref="T:System.Xml.Linq.XElement"/> to a <see cref="T:System.IO.TextWriter"/>.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.GetInt32(System.Int32,System.Int32)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$492A05EBCBEAE9092DC986CDAE193EE9.GetInt32(System.Int32,System.Int32)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.GetInt32(System.Int32)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$492A05EBCBEAE9092DC986CDAE193EE9.GetInt32(System.Int32)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.GetBytes(System.Int32)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$492A05EBCBEAE9092DC986CDAE193EE9.GetBytes(System.Int32)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.GetHexString(System.Int32,System.Boolean)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$492A05EBCBEAE9092DC986CDAE193EE9.GetHexString(System.Int32,System.Boolean)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.get_Shared">
+            <inheritdoc cref="P:Polyfills.Polyfill.&lt;G&gt;$5AB4ABAAFA3359CDE65D50F3C2439F05.Shared"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.Join(System.Char,System.String[])">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$34505F560D9EACF86A87F3ED1F85E448.Join(System.Char,System.String[])"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.Join(System.Char,System.Object[])">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$34505F560D9EACF86A87F3ED1F85E448.Join(System.Char,System.Object[])"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.Join(System.Char,System.String[],System.Int32,System.Int32)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$34505F560D9EACF86A87F3ED1F85E448.Join(System.Char,System.String[],System.Int32,System.Int32)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.Join``1(System.Char,System.Collections.Generic.IEnumerable{``0})">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$34505F560D9EACF86A87F3ED1F85E448.Join``1(System.Char,System.Collections.Generic.IEnumerable{``0})"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.get_ExternalAttributes(System.IO.Compression.ZipArchiveEntry)">
+            <inheritdoc cref="P:Polyfills.Polyfill.&lt;G&gt;$E59C9E2B0DA09EA97F0D27E2F5DEBB2A.ExternalAttributes"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.set_ExternalAttributes(System.IO.Compression.ZipArchiveEntry,System.Int32)">
+            <inheritdoc cref="P:Polyfills.Polyfill.&lt;G&gt;$E59C9E2B0DA09EA97F0D27E2F5DEBB2A.ExternalAttributes"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.ExtractToDirectoryAsync(System.String,System.String,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$4E14A39FD01773A148FA55FFD9F99471.ExtractToDirectoryAsync(System.String,System.String,System.Threading.CancellationToken)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.ExtractToDirectoryAsync(System.String,System.String,System.Boolean,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$4E14A39FD01773A148FA55FFD9F99471.ExtractToDirectoryAsync(System.String,System.String,System.Boolean,System.Threading.CancellationToken)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.ExtractToDirectoryAsync(System.String,System.String,System.Text.Encoding,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$4E14A39FD01773A148FA55FFD9F99471.ExtractToDirectoryAsync(System.String,System.String,System.Text.Encoding,System.Threading.CancellationToken)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.ExtractToDirectoryAsync(System.String,System.String,System.Text.Encoding,System.Boolean,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$4E14A39FD01773A148FA55FFD9F99471.ExtractToDirectoryAsync(System.String,System.String,System.Text.Encoding,System.Boolean,System.Threading.CancellationToken)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.CreateFromDirectoryAsync(System.String,System.String,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$4E14A39FD01773A148FA55FFD9F99471.CreateFromDirectoryAsync(System.String,System.String,System.Threading.CancellationToken)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.CreateFromDirectoryAsync(System.String,System.String,System.IO.Compression.CompressionLevel,System.Boolean,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$4E14A39FD01773A148FA55FFD9F99471.CreateFromDirectoryAsync(System.String,System.String,System.IO.Compression.CompressionLevel,System.Boolean,System.Threading.CancellationToken)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.CreateFromDirectoryAsync(System.String,System.String,System.IO.Compression.CompressionLevel,System.Boolean,System.Text.Encoding,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$4E14A39FD01773A148FA55FFD9F99471.CreateFromDirectoryAsync(System.String,System.String,System.IO.Compression.CompressionLevel,System.Boolean,System.Text.Encoding,System.Threading.CancellationToken)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$8E8D5B6126DFD7E817B5797C1A237D3F.ToHexString(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Converts a subset of an array of 8-bit unsigned integers to its equivalent string representation that is encoded with uppercase hex characters.
+            Parameters specify the subset as an offset in the input array and the number of elements in the array to convert.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$8E8D5B6126DFD7E817B5797C1A237D3F.ToHexStringLower(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Converts a subset of an array of 8-bit unsigned integers to its equivalent string representation that is encoded with lowercase hex characters.
+            Parameters specify the subset as an offset in the input array and the number of elements in the array to convert.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$8E8D5B6126DFD7E817B5797C1A237D3F.ToHexStringLower(System.Byte[])">
+            <summary>
+            Converts an array of 8-bit unsigned integers to its equivalent string representation that is encoded with lowercase hex characters.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$8E8D5B6126DFD7E817B5797C1A237D3F.ToHexString(System.Byte[])">
+            <summary>
+            Converts an array of 8-bit unsigned integers to its equivalent string representation that is encoded with uppercase hex characters.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$8E8D5B6126DFD7E817B5797C1A237D3F.FromHexString(System.String)">
+            <summary>
+            Converts the specified string, which encodes binary data as hex characters, to an equivalent 8-bit unsigned integer array.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$F57D98B00617BA4856B9B5882EBBA37F.TryParse(System.String,System.IFormatProvider,System.DateTimeOffset@)">
+            <summary>
+            Tries to parse a string into a value.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$AC0E513418EF159D5C3E15BA59576B4F.TryParse(System.String,System.IFormatProvider,System.DateTime@)">
+            <summary>
+            Tries to parse a string into a value.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$4D3227A5AC6A380C659FBD62A27995E8.EnumerateInvocationList``1(``0)">
+            <summary>
+            Gets an enumerator for the invocation targets of this delegate.
+            </summary>
+        </member>
+        <member name="P:Polyfills.Polyfill.&lt;G&gt;$4D3227A5AC6A380C659FBD62A27995E8.HasSingleTarget">
+            <summary>
+            Gets a value that indicates whether the Delegate has a single invocation target.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$8E5C3F0AE356A7A1CAD4B372112D6A6D.GetValues``1">
+            <summary>
+            Retrieves an array of the values of the constants in a specified enumeration type.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$8E5C3F0AE356A7A1CAD4B372112D6A6D.IsDefined``1(``0)">
+            <summary>Returns a <see cref="T:System.Boolean"/> telling whether a given integral value exists in a specified enumeration.</summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$8E5C3F0AE356A7A1CAD4B372112D6A6D.GetNames``1">
+            <summary>
+            Retrieves an array of the names of the constants in a specified enumeration type.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$8E5C3F0AE356A7A1CAD4B372112D6A6D.Parse``1(System.String)">
+            <summary>
+            Converts the string representation of the name or numeric value of one or more enumerated constants specified by TEnum to an equivalent enumerated object.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$8E5C3F0AE356A7A1CAD4B372112D6A6D.Parse``1(System.String,System.Boolean)">
+            <summary>
+            Converts the string representation of the name or numeric value of one or more enumerated constants specified by TEnum to an equivalent enumerated object.
+            </summary>
+        </member>
+        <member name="P:Polyfills.Polyfill.&lt;G&gt;$57DD63EC381B40E0D8049D1E01FA2D1C.ProcessId">
+            <summary>
+            Gets the unique identifier for the current process.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$F8AA2908BAC5E2DCE9609C46C9D7AE18.AppendAllBytes(System.String,System.Byte[])">
+            <summary>
+            Appends the specified byte array to the end of the file at the given path.
+            If the file doesn't exist, this method creates a new file. If the operation is canceled, the task will return in a canceled state.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$F8AA2908BAC5E2DCE9609C46C9D7AE18.AppendAllBytesAsync(System.String,System.Byte[],System.Threading.CancellationToken)">
+            <summary>
+            Asynchronously appends the specified byte array to the end of the file at the given path.
+            If the file doesn't exist, this method creates a new file. If the operation is canceled, the task will return in a canceled state.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$F8AA2908BAC5E2DCE9609C46C9D7AE18.Move(System.String,System.String,System.Boolean)">
+            <summary>
+            Moves a specified file to a new location, providing the options to specify a new file name and to replace the destination file if it already exists.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$F8AA2908BAC5E2DCE9609C46C9D7AE18.WriteAllBytesAsync(System.String,System.Byte[],System.Threading.CancellationToken)">
+            <summary>
+            Asynchronously creates a new file, writes the specified byte array to the file, and then closes the file. If the target file already exists, it is truncated and overwritten.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$F8AA2908BAC5E2DCE9609C46C9D7AE18.WriteAllLinesAsync(System.String,System.Collections.Generic.IEnumerable{System.String},System.Threading.CancellationToken)">
+            <summary>
+            Asynchronously creates a new file, writes the specified lines to the file, and then closes the file.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$F8AA2908BAC5E2DCE9609C46C9D7AE18.WriteAllLinesAsync(System.String,System.Collections.Generic.IEnumerable{System.String},System.Text.Encoding,System.Threading.CancellationToken)">
+            <summary>
+            Asynchronously creates a new file, write the specified lines to the file by using the specified encoding, and then closes the file.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$F8AA2908BAC5E2DCE9609C46C9D7AE18.AppendAllLinesAsync(System.String,System.Collections.Generic.IEnumerable{System.String},System.Threading.CancellationToken)">
+            <summary>
+            Asynchronously appends lines to a file, and then closes the file. If the specified file does not exist, this method creates a file, writes the specified lines to the file, and then closes the file.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$F8AA2908BAC5E2DCE9609C46C9D7AE18.AppendAllLinesAsync(System.String,System.Collections.Generic.IEnumerable{System.String},System.Text.Encoding,System.Threading.CancellationToken)">
+            <summary>
+            Asynchronously appends lines to a file by using a specified encoding, and then closes the file. If the specified file does not exist, this method creates a file, writes the specified lines to the file, and then closes the file.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$F8AA2908BAC5E2DCE9609C46C9D7AE18.WriteAllTextAsync(System.String,System.String,System.Text.Encoding,System.Threading.CancellationToken)">
+            <summary>
+            Asynchronously creates a new file, writes the specified string to the file using the specified encoding, and then closes the file. If the target file already exists, it is truncated and overwritten.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$F8AA2908BAC5E2DCE9609C46C9D7AE18.WriteAllTextAsync(System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Asynchronously creates a new file, writes the specified string to the file using the specified encoding, and then closes the file. If the target file already exists, it is truncated and overwritten.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$F8AA2908BAC5E2DCE9609C46C9D7AE18.AppendAllTextAsync(System.String,System.String,System.Text.Encoding,System.Threading.CancellationToken)">
+            <summary>
+            Asynchronously opens a file or creates the file if it does not already exist, appends the specified string to the file using the specified encoding, and then closes the file.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$F8AA2908BAC5E2DCE9609C46C9D7AE18.AppendAllTextAsync(System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Asynchronously opens a file or creates the file if it does not already exist, appends the specified string to the file, and then closes the file.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$F8AA2908BAC5E2DCE9609C46C9D7AE18.ReadAllBytesAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Asynchronously opens a binary file, reads the contents of the file into a byte array, and then closes the file.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$F8AA2908BAC5E2DCE9609C46C9D7AE18.ReadAllLinesAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Asynchronously opens a text file, reads all lines of the file, and then closes the file.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$F8AA2908BAC5E2DCE9609C46C9D7AE18.ReadAllLinesAsync(System.String,System.Text.Encoding,System.Threading.CancellationToken)">
+            <summary>
+            Asynchronously opens a text file, reads all lines of the file with the specified encoding, and then closes the file.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$F8AA2908BAC5E2DCE9609C46C9D7AE18.ReadAllTextAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Asynchronously opens a text file, reads all the text in the file, and then closes the file.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$F8AA2908BAC5E2DCE9609C46C9D7AE18.ReadAllTextAsync(System.String,System.Text.Encoding,System.Threading.CancellationToken)">
+            <summary>
+            Asynchronously opens a text file, reads all text in the file with the specified encoding, and then closes the file.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$F8AA2908BAC5E2DCE9609C46C9D7AE18.GetUnixFileMode(System.String)">
+            <summary>
+            Gets the UnixFileMode of the file on the path.
+            </summary>
+            <param name="path">The path to the file.</param>
+            <returns>The UnixFileMode of the file handle.</returns>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$F8AA2908BAC5E2DCE9609C46C9D7AE18.SetUnixFileMode(System.String,System.IO.UnixFileMode)">
+            <summary>
+            Sets the specified UnixFileMode of the file on the specified pat
+            </summary>
+            <param name="path">The path to the file.</param>
+            <param name="mode">The Unix file mode.</param>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$68F3962AE5697E254AA596E55C7A8792.TryParse(System.String,System.IFormatProvider,System.Guid@)">
+            <summary>
+            Tries to parse a string into a value.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$68F3962AE5697E254AA596E55C7A8792.CreateVersion7">
+            <summary>Creates a new <see cref="T:System.Guid" /> according to RFC 9562, following the Version 7 format.</summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$68F3962AE5697E254AA596E55C7A8792.CreateVersion7(System.DateTimeOffset)">
+            <summary>Creates a new <see cref="T:System.Guid" /> according to RFC 9562, following the Version 7 format.</summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$853505F4C6E4266CC0CF997A13BEC9E3.Clamp(System.Single,System.Single,System.Single)">
+            <summary>
+            Returns value clamped to the inclusive range of min and max.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$853505F4C6E4266CC0CF997A13BEC9E3.Clamp(System.UIntPtr,System.UIntPtr,System.UIntPtr)">
+            <summary>
+            Returns value clamped to the inclusive range of min and max.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$853505F4C6E4266CC0CF997A13BEC9E3.Clamp(System.UInt64,System.UInt64,System.UInt64)">
+            <summary>
+            Returns value clamped to the inclusive range of min and max.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$853505F4C6E4266CC0CF997A13BEC9E3.Clamp(System.UInt32,System.UInt32,System.UInt32)">
+            <summary>
+            Returns value clamped to the inclusive range of min and max.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$853505F4C6E4266CC0CF997A13BEC9E3.Clamp(System.UInt16,System.UInt16,System.UInt16)">
+            <summary>
+            Returns value clamped to the inclusive range of min and max.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$853505F4C6E4266CC0CF997A13BEC9E3.Clamp(System.SByte,System.SByte,System.SByte)">
+            <summary>
+            Returns value clamped to the inclusive range of min and max.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$853505F4C6E4266CC0CF997A13BEC9E3.Clamp(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Returns value clamped to the inclusive range of min and max.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$853505F4C6E4266CC0CF997A13BEC9E3.Clamp(System.Int64,System.Int64,System.Int64)">
+            <summary>
+            Returns value clamped to the inclusive range of min and max.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$853505F4C6E4266CC0CF997A13BEC9E3.Clamp(System.Int16,System.Int16,System.Int16)">
+            <summary>
+            Returns value clamped to the inclusive range of min and max.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$853505F4C6E4266CC0CF997A13BEC9E3.Clamp(System.Double,System.Double,System.Double)">
+            <summary>
+            Returns value clamped to the inclusive range of min and max.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$853505F4C6E4266CC0CF997A13BEC9E3.Clamp(System.Decimal,System.Decimal,System.Decimal)">
+            <summary>
+            Returns value clamped to the inclusive range of min and max.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$853505F4C6E4266CC0CF997A13BEC9E3.Clamp(System.Byte,System.Byte,System.Byte)">
+            <summary>
+            Returns value clamped to the inclusive range of min and max.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$853505F4C6E4266CC0CF997A13BEC9E3.Clamp(System.IntPtr,System.IntPtr,System.IntPtr)">
+            <summary>
+            Returns value clamped to the inclusive range of min and max.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$984646E5C90D4BE007AAE446F159AC52.TryParse(System.String,System.IFormatProvider,System.Byte@)">
+            <summary>
+            Tries to parse a string into a value.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$4EDA8CBD8B61F6706755C541165134FD.TryParse(System.String,System.IFormatProvider,System.Double@)">
+            <summary>
+            Tries to parse a string into a value.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$390DAE713F975834EF0C1ED2BEC2DBAC.TryParse(System.String,System.IFormatProvider,System.Int16@)">
+            <summary>
+            Tries to parse a string into a value.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$BA41CFE2B5EDAEB8C1B9062F59ED4D69.TryParse(System.String,System.IFormatProvider,System.Int32@)">
+            <summary>
+            Tries to parse a string into a value.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$E8CA98ACBCAEE63BB261A3FD4AF31675.TryParse(System.String,System.IFormatProvider,System.Int64@)">
+            <summary>
+            Tries to parse a string into a value.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$49699017F639EF34A5A9E25ACB3E4B14.TryParse(System.String,System.IFormatProvider,System.SByte@)">
+            <summary>
+            Tries to parse a string into a value.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$B7387B77E15A9DBF0D30EA969A07D0DD.TryParse(System.String,System.IFormatProvider,System.UInt16@)">
+            <summary>
+            Tries to parse a string into a value.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$59D1B7AA0B822E2E4777E961258AA046.TryParse(System.String,System.IFormatProvider,System.UInt32@)">
+            <summary>
+            Tries to parse a string into a value.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$CC86B4FD6473E1534D8E28315C194AD4.TryParse(System.String,System.IFormatProvider,System.UInt64@)">
+            <summary>
+            Tries to parse a string into a value.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$7605939981053B1C5929A1954636C53C.IsWasi">
+            <summary>
+            Indicates whether the current application is running as WASI.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$7605939981053B1C5929A1954636C53C.IsMacCatalyst">
+            <summary>
+            Indicates whether the current application is running on Mac Catalyst.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$7605939981053B1C5929A1954636C53C.IsMacCatalystVersionAtLeast(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Check for the Mac Catalyst version (iOS version as presented in Apple documentation) with a ≤ version comparison. Used to guard APIs that were added in the given Mac Catalyst release.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$7605939981053B1C5929A1954636C53C.IsMacOSVersionAtLeast(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Checks if the macOS version (returned by libobjc.get_operatingSystemVersion) is greater than or equal to the specified version. This method can be used to guard APIs that were added in the specified macOS version.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$7605939981053B1C5929A1954636C53C.IsFreeBSDVersionAtLeast(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Checks if the FreeBSD version (returned by the Linux command uname) is greater than or equal to the specified version.
+            This method can be used to guard APIs that were added in the specified version.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$7605939981053B1C5929A1954636C53C.IsAndroid">
+            <summary>
+            Indicates whether the current application is running on Android.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$7605939981053B1C5929A1954636C53C.IsAndroidVersionAtLeast(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Checks if the Android version (returned by the Linux command uname) is greater than or equal to the specified version. This method can be used to guard APIs that were added in the specified version.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$7605939981053B1C5929A1954636C53C.IsWindowsVersionAtLeast(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Checks if the Windows version (returned by RtlGetVersion) is greater than or equal to the specified version. This method can be used to guard APIs that were added in the specified Windows version.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$7605939981053B1C5929A1954636C53C.IsOSPlatform(System.String)">
+            <summary>
+            Indicates whether the current application is running on the specified platform.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$7605939981053B1C5929A1954636C53C.IsOSPlatformVersionAtLeast(System.String,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Checks if the operating system version is greater than or equal to the specified platform version. This method can be used to guard APIs that were added in the specified OS version.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$7605939981053B1C5929A1954636C53C.IsWindows">
+            <summary>
+            Indicates whether the current application is running on Windows.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$7605939981053B1C5929A1954636C53C.IsMacOS">
+            <summary>
+            Indicates whether the current application is running on macOS.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$7605939981053B1C5929A1954636C53C.IsIOS">
+            <summary>
+            Indicates whether the current application is running on iOS or MacCatalyst.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$7605939981053B1C5929A1954636C53C.IsLinux">
+            <summary>
+            Indicates whether the current application is running on Linux.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$7605939981053B1C5929A1954636C53C.IsFreeBSD">
+            <summary>
+            Indicates whether the current application is running on FreeBSD.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$7605939981053B1C5929A1954636C53C.IsIOSVersionAtLeast(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Checks if the iOS/MacCatalyst version (returned by libobjc.get_operatingSystemVersion) is greater than or equal to the specified version. This method can be used to guard APIs that were added in the specified iOS version.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$7605939981053B1C5929A1954636C53C.IsTvOSVersionAtLeast(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Checks if the tvOS version (returned by libobjc.get_operatingSystemVersion) is greater than or equal to the specified version. This method can be used to guard APIs that were added in the specified tvOS version.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$7605939981053B1C5929A1954636C53C.IsTvOS">
+            <summary>
+            Indicates whether the current application is running on tvOS.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$7605939981053B1C5929A1954636C53C.IsWatchOS">
+            <summary>
+            Indicates whether the current application is running on watchOS.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$7605939981053B1C5929A1954636C53C.IsWatchOSVersionAtLeast(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Checks if the watchOS version (returned by libobjc.get_operatingSystemVersion) is greater than or equal to the specified version. This method can be used to guard APIs that were added in the specified watchOS version.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$7605939981053B1C5929A1954636C53C.IsBrowser">
+            <summary>
+            Indicates whether the current application is running as WASM in a browser.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$009965FC9BE91ED9D11C3C63624A1761.EndsInDirectorySeparator(System.String)">
+            <summary>
+            Returns a value that indicates whether the specified path ends in a directory separator.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$009965FC9BE91ED9D11C3C63624A1761.TrimEndingDirectorySeparator(System.String)">
+            <summary>
+            Trims one trailing directory separator beyond the root of the specified path.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$009965FC9BE91ED9D11C3C63624A1761.Exists(System.String)">
+            <summary>
+            Determines whether the specified file or directory exists.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$492A05EBCBEAE9092DC986CDAE193EE9.GetInt32(System.Int32,System.Int32)">
+             <summary>
+            Generates a random integer between a specified inclusive lower bound and a specified exclusive upper bound using a cryptographically strong random number generator.
+             </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$492A05EBCBEAE9092DC986CDAE193EE9.GetInt32(System.Int32)">
+            <summary>
+            Generates a random integer between 0 (inclusive) and a specified exclusive upper bound using a cryptographically strong random number generator.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$492A05EBCBEAE9092DC986CDAE193EE9.GetBytes(System.Int32)">
+            <summary>
+            Creates an array of bytes with a cryptographically strong random sequence of values.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$492A05EBCBEAE9092DC986CDAE193EE9.GetHexString(System.Int32,System.Boolean)">
+            <summary>
+              Creates a string filled with cryptographically random hexadecimal characters.
+            </summary>
+        </member>
+        <member name="P:Polyfills.Polyfill.&lt;G&gt;$5AB4ABAAFA3359CDE65D50F3C2439F05.Shared">
+            <summary>
+            Provides a thread-safe Random instance that may be used concurrently from any thread.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$34505F560D9EACF86A87F3ED1F85E448.Join(System.Char,System.String[])">
+            <summary>
+            Concatenates an array of strings, using the specified separator between each member.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$34505F560D9EACF86A87F3ED1F85E448.Join(System.Char,System.Object[])">
+            <summary>
+            Concatenates the string representations of an array of objects, using the specified separator between each member.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$34505F560D9EACF86A87F3ED1F85E448.Join(System.Char,System.String[],System.Int32,System.Int32)">
+            <summary>
+            Concatenates the specified elements of a string array, using the specified separator between each element.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$34505F560D9EACF86A87F3ED1F85E448.Join``1(System.Char,System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Concatenates the specified elements of a string array, using the specified separator between each element.
+            </summary>
+        </member>
+        <member name="P:Polyfills.Polyfill.&lt;G&gt;$E59C9E2B0DA09EA97F0D27E2F5DEBB2A.ExternalAttributes">
+            <summary>
+            OS and application specific file attributes.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$4E14A39FD01773A148FA55FFD9F99471.ExtractToDirectoryAsync(System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Asynchronously extracts all the files in the specified archive to a directory on the file system.
+            </summary>
+            <param name="sourceArchiveFileName">The path to the archive to extract.</param>
+            <param name="destinationDirectoryName">The path to the directory in which to place the extracted files.</param>
+            <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+            <returns>A task that represents the asynchronous extract operation.</returns>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$4E14A39FD01773A148FA55FFD9F99471.ExtractToDirectoryAsync(System.String,System.String,System.Boolean,System.Threading.CancellationToken)">
+            <summary>
+            Asynchronously extracts all the files in the specified archive to a directory on the file system.
+            </summary>
+            <param name="sourceArchiveFileName">The path to the archive to extract.</param>
+            <param name="destinationDirectoryName">The path to the directory in which to place the extracted files.</param>
+            <param name="overwriteFiles">true to overwrite existing files; false otherwise.</param>
+            <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+            <returns>A task that represents the asynchronous extract operation.</returns>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$4E14A39FD01773A148FA55FFD9F99471.ExtractToDirectoryAsync(System.String,System.String,System.Text.Encoding,System.Threading.CancellationToken)">
+            <summary>
+            Asynchronously extracts all the files in the specified archive to a directory on the file system and uses the specified character encoding for entry names.
+            </summary>
+            <param name="sourceArchiveFileName">The path to the archive to extract.</param>
+            <param name="destinationDirectoryName">The path to the directory in which to place the extracted files.</param>
+            <param name="entryNameEncoding">The encoding to use when reading entry names in this archive.</param>
+            <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+            <returns>A task that represents the asynchronous extract operation.</returns>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$4E14A39FD01773A148FA55FFD9F99471.ExtractToDirectoryAsync(System.String,System.String,System.Text.Encoding,System.Boolean,System.Threading.CancellationToken)">
+            <summary>
+            Asynchronously extracts all the files in the specified archive to a directory on the file system and uses the specified character encoding for entry names.
+            </summary>
+            <param name="sourceArchiveFileName">The path to the archive to extract.</param>
+            <param name="destinationDirectoryName">The path to the directory in which to place the extracted files.</param>
+            <param name="entryNameEncoding">The encoding to use when reading entry names in this archive.</param>
+            <param name="overwriteFiles">true to overwrite existing files; false otherwise.</param>
+            <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+            <returns>A task that represents the asynchronous extract operation.</returns>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$4E14A39FD01773A148FA55FFD9F99471.CreateFromDirectoryAsync(System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Asynchronously creates a zip archive that contains the files and directories from the specified directory.
+            </summary>
+            <param name="sourceDirectoryName">The path to the directory to archive.</param>
+            <param name="destinationArchiveFileName">The path of the archive to create.</param>
+            <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+            <returns>A task that represents the asynchronous create operation.</returns>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$4E14A39FD01773A148FA55FFD9F99471.CreateFromDirectoryAsync(System.String,System.String,System.IO.Compression.CompressionLevel,System.Boolean,System.Threading.CancellationToken)">
+            <summary>
+            Asynchronously creates a zip archive that contains the files and directories from the specified directory and uses the specified compression level.
+            </summary>
+            <param name="sourceDirectoryName">The path to the directory to archive.</param>
+            <param name="destinationArchiveFileName">The path of the archive to create.</param>
+            <param name="compressionLevel">The compression level to use.</param>
+            <param name="includeBaseDirectory">true to include the directory name from sourceDirectoryName at the root of the archive; false otherwise.</param>
+            <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+            <returns>A task that represents the asynchronous create operation.</returns>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$4E14A39FD01773A148FA55FFD9F99471.CreateFromDirectoryAsync(System.String,System.String,System.IO.Compression.CompressionLevel,System.Boolean,System.Text.Encoding,System.Threading.CancellationToken)">
+            <summary>
+            Asynchronously creates a zip archive that contains the files and directories from the specified directory, uses the specified compression level and character encoding for entry names.
+            </summary>
+            <param name="sourceDirectoryName">The path to the directory to archive.</param>
+            <param name="destinationArchiveFileName">The path of the archive to create.</param>
+            <param name="compressionLevel">The compression level to use.</param>
+            <param name="includeBaseDirectory">true to include the directory name from sourceDirectoryName at the root of the archive; false otherwise.</param>
+            <param name="entryNameEncoding">The encoding to use when reading or writing entry names in this archive.</param>
+            <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+            <returns>A task that represents the asynchronous create operation.</returns>
+        </member>
+        <member name="M:Polyfills.Ensure.Equal``1(``0,``0,System.String)">
+            <summary>Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if <paramref name="value"/> is not equal to <paramref name="other"/>.</summary>
+            <param name="value">The argument to validate as equal to <paramref name="other"/>.</param>
+            <param name="other">The value to compare with <paramref name="value"/>.</param>
+            <param name="name">The name of the parameter with which <paramref name="value"/> corresponds.</param>
+        </member>
+        <member name="M:Polyfills.Ensure.NotEqual``1(``0,``0,System.String)">
+            <summary>Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if <paramref name="value"/> is equal to <paramref name="other"/>.</summary>
+            <param name="value">The argument to validate as not equal to <paramref name="other"/>.</param>
+            <param name="other">The value to compare with <paramref name="value"/>.</param>
+            <param name="name">The name of the parameter with which <paramref name="value"/> corresponds.</param>
+        </member>
+        <member name="M:Polyfills.Ensure.NotGreaterThan``1(``0,``0,System.String)">
+            <summary>Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if <paramref name="value"/> is greater than <paramref name="other"/>.</summary>
+            <param name="value">The argument to validate as less or equal than <paramref name="other"/>.</param>
+            <param name="other">The value to compare with <paramref name="value"/>.</param>
+            <param name="name">The name of the parameter with which <paramref name="value"/> corresponds.</param>
+        </member>
+        <member name="M:Polyfills.Ensure.NotGreaterThan(System.IntPtr,System.IntPtr,System.String)">
+            <summary>Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if <paramref name="value"/> is greater than <paramref name="other"/>.</summary>
+            <param name="value">The argument to validate as less or equal than <paramref name="other"/>.</param>
+            <param name="other">The value to compare with <paramref name="value"/>.</param>
+            <param name="name">The name of the parameter with which <paramref name="value"/> corresponds.</param>
+        </member>
+        <member name="M:Polyfills.Ensure.NotGreaterThanOrEqual``1(``0,``0,System.String)">
+            <summary>Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if <paramref name="value"/> is greater than or equal <paramref name="other"/>.</summary>
+            <param name="value">The argument to validate as less than <paramref name="other"/>.</param>
+            <param name="other">The value to compare with <paramref name="value"/>.</param>
+            <param name="name">The name of the parameter with which <paramref name="value"/> corresponds.</param>
+        </member>
+        <member name="M:Polyfills.Ensure.NotGreaterThanOrEqual(System.IntPtr,System.IntPtr,System.String)">
+            <summary>Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if <paramref name="value"/> is greater than or equal <paramref name="other"/>.</summary>
+            <param name="value">The argument to validate as less than <paramref name="other"/>.</param>
+            <param name="other">The value to compare with <paramref name="value"/>.</param>
+            <param name="name">The name of the parameter with which <paramref name="value"/> corresponds.</param>
+        </member>
+        <member name="M:Polyfills.Ensure.NotLessThan``1(``0,``0,System.String)">
+            <summary>Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if <paramref name="value"/> is less than <paramref name="other"/>.</summary>
+            <param name="value">The argument to validate as greater than or equal than <paramref name="other"/>.</param>
+            <param name="other">The value to compare with <paramref name="value"/>.</param>
+            <param name="name">The name of the parameter with which <paramref name="value"/> corresponds.</param>
+        </member>
+        <member name="M:Polyfills.Ensure.NotLessThan(System.IntPtr,System.IntPtr,System.String)">
+            <summary>Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if <paramref name="value"/> is less than <paramref name="other"/>.</summary>
+            <param name="value">The argument to validate as greater than or equal than <paramref name="other"/>.</param>
+            <param name="other">The value to compare with <paramref name="value"/>.</param>
+            <param name="name">The name of the parameter with which <paramref name="value"/> corresponds.</param>
+        </member>
+        <member name="M:Polyfills.Ensure.NotLessThanOrEqual``1(``0,``0,System.String)">
+            <summary>Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if <paramref name="value"/> is less than or equal <paramref name="other"/>.</summary>
+            <param name="value">The argument to validate as greater than <paramref name="other"/>.</param>
+            <param name="other">The value to compare with <paramref name="value"/>.</param>
+            <param name="name">The name of the parameter with which <paramref name="value"/> corresponds.</param>
+        </member>
+        <member name="M:Polyfills.Ensure.NotLessThanOrEqual(System.IntPtr,System.IntPtr,System.String)">
+            <summary>Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if <paramref name="value"/> is less than or equal <paramref name="other"/>.</summary>
+            <param name="value">The argument to validate as greater than <paramref name="other"/>.</param>
+            <param name="other">The value to compare with <paramref name="value"/>.</param>
+            <param name="name">The name of the parameter with which <paramref name="value"/> corresponds.</param>
+        </member>
+        <member name="M:Polyfills.Ensure.NotNegative``1(``0,System.String)">
+            <summary>Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if <paramref name="value"/> is negative.</summary>
+            <param name="value">The argument to validate as non-negative.</param>
+            <param name="name">The name of the parameter with which <paramref name="value"/> corresponds.</param>
+        </member>
+        <member name="M:Polyfills.Ensure.NotNegative(System.IntPtr,System.String)">
+            <summary>Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if <paramref name="value"/> is negative.</summary>
+            <param name="value">The argument to validate as non-negative.</param>
+            <param name="name">The name of the parameter with which <paramref name="value"/> corresponds.</param>
+        </member>
+        <member name="M:Polyfills.Ensure.NotNegativeOrZero``1(``0,System.String)">
+            <summary>Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if <paramref name="value"/> is negative or zero.</summary>
+            <param name="value">The argument to validate as non-zero or non-negative.</param>
+            <param name="name">The name of the parameter with which <paramref name="value"/> corresponds.</param>
+        </member>
+        <member name="M:Polyfills.Ensure.NotNegativeOrZero(System.IntPtr,System.String)">
+            <summary>Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if <paramref name="value"/> is negative or zero.</summary>
+            <param name="value">The argument to validate as non-zero or non-negative.</param>
+            <param name="name">The name of the parameter with which <paramref name="value"/> corresponds.</param>
+        </member>
+        <member name="M:Polyfills.Ensure.NotZero``1(``0,System.String)">
+            <summary>Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if <paramref name="value"/> is zero.</summary>
+            <param name="value">The argument to validate as non-zero.</param>
+            <param name="name">The name of the parameter with which <paramref name="value"/> corresponds.</param>
+        </member>
+        <member name="M:Polyfills.Ensure.NotZero(System.IntPtr,System.String)">
+            <summary>Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if <paramref name="value"/> is zero.</summary>
+            <param name="value">The argument to validate as non-zero.</param>
+            <param name="name">The name of the parameter with which <paramref name="value"/> corresponds.</param>
+        </member>
+        <member name="M:Polyfills.Guard.Equal``1(``0,``0,System.String)">
+            <summary>Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if <paramref name="value"/> is not equal to <paramref name="other"/>.</summary>
+            <param name="value">The argument to validate as equal to <paramref name="other"/>.</param>
+            <param name="other">The value to compare with <paramref name="value"/>.</param>
+            <param name="name">The name of the parameter with which <paramref name="value"/> corresponds.</param>
+        </member>
+        <member name="M:Polyfills.Guard.NotEqual``1(``0,``0,System.String)">
+            <summary>Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if <paramref name="value"/> is equal to <paramref name="other"/>.</summary>
+            <param name="value">The argument to validate as not equal to <paramref name="other"/>.</param>
+            <param name="other">The value to compare with <paramref name="value"/>.</param>
+            <param name="name">The name of the parameter with which <paramref name="value"/> corresponds.</param>
+        </member>
+        <member name="M:Polyfills.Guard.NotGreaterThan``1(``0,``0,System.String)">
+            <summary>Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if <paramref name="value"/> is greater than <paramref name="other"/>.</summary>
+            <param name="value">The argument to validate as less or equal than <paramref name="other"/>.</param>
+            <param name="other">The value to compare with <paramref name="value"/>.</param>
+            <param name="name">The name of the parameter with which <paramref name="value"/> corresponds.</param>
+        </member>
+        <member name="M:Polyfills.Guard.NotGreaterThanOrEqual``1(``0,``0,System.String)">
+            <summary>Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if <paramref name="value"/> is greater than or equal <paramref name="other"/>.</summary>
+            <param name="value">The argument to validate as less than <paramref name="other"/>.</param>
+            <param name="other">The value to compare with <paramref name="value"/>.</param>
+            <param name="name">The name of the parameter with which <paramref name="value"/> corresponds.</param>
+        </member>
+        <member name="M:Polyfills.Guard.NotLessThan``1(``0,``0,System.String)">
+            <summary>Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if <paramref name="value"/> is less than <paramref name="other"/>.</summary>
+            <param name="value">The argument to validate as greater than or equal than <paramref name="other"/>.</param>
+            <param name="other">The value to compare with <paramref name="value"/>.</param>
+            <param name="name">The name of the parameter with which <paramref name="value"/> corresponds.</param>
+        </member>
+        <member name="M:Polyfills.Guard.NotLessThanOrEqual``1(``0,``0,System.String)">
+            <summary>Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if <paramref name="value"/> is less than or equal <paramref name="other"/>.</summary>
+            <param name="value">The argument to validate as greater than than <paramref name="other"/>.</param>
+            <param name="other">The value to compare with <paramref name="value"/>.</param>
+            <param name="name">The name of the parameter with which <paramref name="value"/> corresponds.</param>
+        </member>
+        <member name="M:Polyfills.Guard.NotNegative``1(``0,System.String)">
+            <summary>Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if <paramref name="value"/> is negative.</summary>
+            <param name="value">The argument to validate as non-negative.</param>
+            <param name="name">The name of the parameter with which <paramref name="value"/> corresponds.</param>
+        </member>
+        <member name="M:Polyfills.Guard.NotNegativeOrZero``1(``0,System.String)">
+            <summary>Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if <paramref name="value"/> is negative or zero.</summary>
+            <param name="value">The argument to validate as non-zero or non-negative.</param>
+            <param name="name">The name of the parameter with which <paramref name="value"/> corresponds.</param>
+        </member>
+        <member name="M:Polyfills.Guard.NotZero``1(``0,System.String)">
+            <summary>Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if <paramref name="value"/> is zero.</summary>
+            <param name="value">The argument to validate as non-zero.</param>
+            <param name="name">The name of the parameter with which <paramref name="value"/> corresponds.</param>
+        </member>
+        <member name="M:Polyfills.MD5Polyfill.HashData(System.Byte[])">
+            <inheritdoc cref="M:Polyfills.MD5Polyfill.&lt;G&gt;$306697C4D3B8334ACB19138F90E57C7C.HashData(System.Byte[])"/>
+        </member>
+        <member name="M:Polyfills.MD5Polyfill.HashData(System.IO.Stream)">
+            <inheritdoc cref="M:Polyfills.MD5Polyfill.&lt;G&gt;$306697C4D3B8334ACB19138F90E57C7C.HashData(System.IO.Stream)"/>
+        </member>
+        <member name="M:Polyfills.MD5Polyfill.&lt;G&gt;$306697C4D3B8334ACB19138F90E57C7C.HashData(System.Byte[])">
+            <summary>
+            Computes the hash of data using the MD5 algorithm.
+            </summary>
+        </member>
+        <member name="M:Polyfills.MD5Polyfill.&lt;G&gt;$306697C4D3B8334ACB19138F90E57C7C.HashData(System.IO.Stream)">
+            <summary>
+            Computes the hash of a stream using the MD5 algorithm.
+            </summary>
+        </member>
+        <member name="M:Polyfills.SHA1Polyfill.HashData(System.Byte[])">
+            <inheritdoc cref="M:Polyfills.SHA1Polyfill.&lt;G&gt;$C7CA6E8CA2D248DD86E84A80A4E2CF6F.HashData(System.Byte[])"/>
+        </member>
+        <member name="M:Polyfills.SHA1Polyfill.HashData(System.IO.Stream)">
+            <inheritdoc cref="M:Polyfills.SHA1Polyfill.&lt;G&gt;$C7CA6E8CA2D248DD86E84A80A4E2CF6F.HashData(System.IO.Stream)"/>
+        </member>
+        <member name="M:Polyfills.SHA1Polyfill.&lt;G&gt;$C7CA6E8CA2D248DD86E84A80A4E2CF6F.HashData(System.Byte[])">
+            <summary>
+            Computes the hash of data using the SHA-1 algorithm.
+            </summary>
+        </member>
+        <member name="M:Polyfills.SHA1Polyfill.&lt;G&gt;$C7CA6E8CA2D248DD86E84A80A4E2CF6F.HashData(System.IO.Stream)">
+            <summary>
+            Computes the hash of a stream using the SHA-1 algorithm.
+            </summary>
+        </member>
+        <member name="M:Polyfills.SHA256Polyfill.HashData(System.Byte[])">
+            <inheritdoc cref="M:Polyfills.SHA256Polyfill.&lt;G&gt;$CC114BC9B5FE901CCCB00AEFA719A137.HashData(System.Byte[])"/>
+        </member>
+        <member name="M:Polyfills.SHA256Polyfill.HashData(System.IO.Stream)">
+            <inheritdoc cref="M:Polyfills.SHA256Polyfill.&lt;G&gt;$CC114BC9B5FE901CCCB00AEFA719A137.HashData(System.IO.Stream)"/>
+        </member>
+        <member name="M:Polyfills.SHA256Polyfill.&lt;G&gt;$CC114BC9B5FE901CCCB00AEFA719A137.HashData(System.Byte[])">
+            <summary>
+            Computes the hash of data using the SHA-256 algorithm.
+            </summary>
+        </member>
+        <member name="M:Polyfills.SHA256Polyfill.&lt;G&gt;$CC114BC9B5FE901CCCB00AEFA719A137.HashData(System.IO.Stream)">
+            <summary>
+            Computes the hash of a stream using the SHA-256 algorithm.
+            </summary>
+        </member>
+        <member name="M:Polyfills.SHA384Polyfill.HashData(System.Byte[])">
+            <inheritdoc cref="M:Polyfills.SHA384Polyfill.&lt;G&gt;$BFDA3EABF63842513F0262FC6ECFE7D7.HashData(System.Byte[])"/>
+        </member>
+        <member name="M:Polyfills.SHA384Polyfill.HashData(System.IO.Stream)">
+            <inheritdoc cref="M:Polyfills.SHA384Polyfill.&lt;G&gt;$BFDA3EABF63842513F0262FC6ECFE7D7.HashData(System.IO.Stream)"/>
+        </member>
+        <member name="M:Polyfills.SHA384Polyfill.&lt;G&gt;$BFDA3EABF63842513F0262FC6ECFE7D7.HashData(System.Byte[])">
+            <summary>
+            Computes the hash of data using the SHA-384 algorithm.
+            </summary>
+        </member>
+        <member name="M:Polyfills.SHA384Polyfill.&lt;G&gt;$BFDA3EABF63842513F0262FC6ECFE7D7.HashData(System.IO.Stream)">
+            <summary>
+            Computes the hash of a stream using the SHA-384 algorithm.
+            </summary>
+        </member>
+        <member name="M:Polyfills.SHA512Polyfill.HashData(System.Byte[])">
+            <inheritdoc cref="M:Polyfills.SHA512Polyfill.&lt;G&gt;$31E03A186755FE55335F2C6A28FC14A3.HashData(System.Byte[])"/>
+        </member>
+        <member name="M:Polyfills.SHA512Polyfill.HashData(System.IO.Stream)">
+            <inheritdoc cref="M:Polyfills.SHA512Polyfill.&lt;G&gt;$31E03A186755FE55335F2C6A28FC14A3.HashData(System.IO.Stream)"/>
+        </member>
+        <member name="M:Polyfills.SHA512Polyfill.&lt;G&gt;$31E03A186755FE55335F2C6A28FC14A3.HashData(System.Byte[])">
+            <summary>
+            Computes the hash of data using the SHA-512 algorithm.
+            </summary>
+        </member>
+        <member name="M:Polyfills.SHA512Polyfill.&lt;G&gt;$31E03A186755FE55335F2C6A28FC14A3.HashData(System.IO.Stream)">
+            <summary>
+            Computes the hash of a stream using the SHA-512 algorithm.
+            </summary>
+        </member>
+        <member name="M:Polyfills.XDocumentPolyfill.LoadAsync(System.IO.Stream,System.Xml.Linq.LoadOptions,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:Polyfills.XDocumentPolyfill.&lt;G&gt;$BE912B4A4E8EFDED95BD9DCDF1BB864F.LoadAsync(System.IO.Stream,System.Xml.Linq.LoadOptions,System.Threading.CancellationToken)"/>
+        </member>
+        <member name="M:Polyfills.XDocumentPolyfill.LoadAsync(System.IO.TextReader,System.Xml.Linq.LoadOptions,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:Polyfills.XDocumentPolyfill.&lt;G&gt;$BE912B4A4E8EFDED95BD9DCDF1BB864F.LoadAsync(System.IO.TextReader,System.Xml.Linq.LoadOptions,System.Threading.CancellationToken)"/>
+        </member>
+        <member name="M:Polyfills.XDocumentPolyfill.LoadAsync(System.Xml.XmlReader,System.Xml.Linq.LoadOptions,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:Polyfills.XDocumentPolyfill.&lt;G&gt;$BE912B4A4E8EFDED95BD9DCDF1BB864F.LoadAsync(System.Xml.XmlReader,System.Xml.Linq.LoadOptions,System.Threading.CancellationToken)"/>
+        </member>
+        <member name="M:Polyfills.XDocumentPolyfill.&lt;G&gt;$BE912B4A4E8EFDED95BD9DCDF1BB864F.LoadAsync(System.IO.Stream,System.Xml.Linq.LoadOptions,System.Threading.CancellationToken)">
+            <summary>
+            Asynchronously creates a new XDocument and initializes its underlying XML tree using the specified stream, optionally preserving white space.
+            </summary>
+        </member>
+        <member name="M:Polyfills.XDocumentPolyfill.&lt;G&gt;$BE912B4A4E8EFDED95BD9DCDF1BB864F.LoadAsync(System.IO.TextReader,System.Xml.Linq.LoadOptions,System.Threading.CancellationToken)">
+            <summary>
+            Asynchronously creates a new XDocument and initializes its underlying XML tree using the specified text reader, optionally preserving white space.
+            </summary>
+        </member>
+        <member name="M:Polyfills.XDocumentPolyfill.&lt;G&gt;$BE912B4A4E8EFDED95BD9DCDF1BB864F.LoadAsync(System.Xml.XmlReader,System.Xml.Linq.LoadOptions,System.Threading.CancellationToken)">
+            <summary>
+            Asynchronously creates a new XDocument and initializes its underlying XML tree using the specified text reader, optionally preserving white space.
+            </summary>
+        </member>
+        <member name="M:Polyfills.XElementPolyfill.LoadAsync(System.IO.Stream,System.Xml.Linq.LoadOptions,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:Polyfills.XElementPolyfill.&lt;G&gt;$7F36B48A1CC0DC1944B161C6557E26E4.LoadAsync(System.IO.Stream,System.Xml.Linq.LoadOptions,System.Threading.CancellationToken)"/>
+        </member>
+        <member name="M:Polyfills.XElementPolyfill.LoadAsync(System.IO.TextReader,System.Xml.Linq.LoadOptions,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:Polyfills.XElementPolyfill.&lt;G&gt;$7F36B48A1CC0DC1944B161C6557E26E4.LoadAsync(System.IO.TextReader,System.Xml.Linq.LoadOptions,System.Threading.CancellationToken)"/>
+        </member>
+        <member name="M:Polyfills.XElementPolyfill.LoadAsync(System.Xml.XmlReader,System.Xml.Linq.LoadOptions,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:Polyfills.XElementPolyfill.&lt;G&gt;$7F36B48A1CC0DC1944B161C6557E26E4.LoadAsync(System.Xml.XmlReader,System.Xml.Linq.LoadOptions,System.Threading.CancellationToken)"/>
+        </member>
+        <member name="M:Polyfills.XElementPolyfill.&lt;G&gt;$7F36B48A1CC0DC1944B161C6557E26E4.LoadAsync(System.IO.Stream,System.Xml.Linq.LoadOptions,System.Threading.CancellationToken)">
+            <summary>
+            Asynchronously creates a new XElement and initializes its underlying XML tree using the specified stream, optionally preserving white space.
+            </summary>
+        </member>
+        <member name="M:Polyfills.XElementPolyfill.&lt;G&gt;$7F36B48A1CC0DC1944B161C6557E26E4.LoadAsync(System.IO.TextReader,System.Xml.Linq.LoadOptions,System.Threading.CancellationToken)">
+            <summary>
+            Asynchronously creates a new XElement and initializes its underlying XML tree using the specified text reader, optionally preserving white space.
+            </summary>
+        </member>
+        <member name="M:Polyfills.XElementPolyfill.&lt;G&gt;$7F36B48A1CC0DC1944B161C6557E26E4.LoadAsync(System.Xml.XmlReader,System.Xml.Linq.LoadOptions,System.Threading.CancellationToken)">
+            <summary>
+            Asynchronously creates a new XElement and initializes its underlying XML tree using the specified text reader, optionally preserving white space.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Testing.Extensions.MSBuild.Resources.ExtensionResources.MSBuildExtensionsDescription">
+            <summary>Extension used to pass parameters from MSBuild node and the hosts</summary>
+        </member>
+        <member name="T:Microsoft.Testing.Platform.MSBuild.MSBuildExtensions">
+            <summary>
+            Extension methods for adding MSBuild support to the test application builder.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Testing.Platform.MSBuild.MSBuildExtensions.AddMSBuild(Microsoft.Testing.Platform.Builder.ITestApplicationBuilder)">
+            <summary>
+            Adds MSBuild support to the test application builder.
+            </summary>
+            <param name="builder">The test application builder.</param>
+        </member>
+        <member name="T:Microsoft.Testing.Platform.MSBuild.TestingPlatformBuilderHook">
+            <summary>
+            This class is used by Microsoft.Testing.Platform.MSBuild to hook into the Testing Platform Builder to add MSBuild support.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Testing.Platform.MSBuild.TestingPlatformBuilderHook.AddExtensions(Microsoft.Testing.Platform.Builder.ITestApplicationBuilder,System.String[])">
+            <summary>
+            Adds MSBuild support to the Testing Platform Builder.
+            </summary>
+            <param name="testApplicationBuilder">The test application builder.</param>
+            <param name="_">The command line arguments.</param>
+        </member>
+        <member name="M:Microsoft.Testing.Platform.IPC.NamedPipeServer.InternalLoopAsync(System.Threading.CancellationToken)">
+            <summary>
+            4 bytes = message size
+            ------- Payload -------
+            4 bytes = serializer id
+            x bytes = object buffer.
+            </summary>
+        </member>
+    </members>
+</doc>

@@ -52,7 +52,7 @@ public class TestPizzaCore : QueryTestBase
 		var sutGetAll = new GetPizzasQueryHandler(this.Context);
 		var resultGetAll = await sutGetAll.HandleAsync(new GetPizzasQuery(), CancellationToken.None);
 
-		Assert.That(resultGetAll?.Data.Count, Is.EqualTo(1));
+		Assert.That(resultGetAll?.Count, Is.EqualTo(1));
 	}
 
 	[Test]

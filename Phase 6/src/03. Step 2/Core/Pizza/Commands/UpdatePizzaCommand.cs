@@ -1,5 +1,6 @@
 namespace Core.Pizza.Commands;
 
+using Core;
 using LazyCache;
 
 public sealed class UpdatePizzaCommand : ICommand<Result<PizzaModel>>
@@ -33,7 +34,7 @@ public sealed class UpdatePizzaCommandHandler(DatabaseContext databaseContext, I
 		var outcome = databaseContext.Pizzas.Update(findEntity);
 		var result = await databaseContext.SaveChangesAsync(cancellationToken);
 
-		cache.Remove(Common.Data.CacheKey);
+		cache.Remove(Common.CacheData.CacheKey);
 
 		return result > 0 ? Result<PizzaModel>.Success(findEntity.Map()) : Result<PizzaModel>.Failure("Error");
 	}

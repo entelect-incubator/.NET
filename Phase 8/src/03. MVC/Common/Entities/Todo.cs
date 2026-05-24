@@ -9,6 +9,6 @@ public sealed class Todo
 	public bool IsCompleted { get; set; }
 
 	public DateTime? DateCreated { get; set; }
-	
+
 	public Guid SessionId { get; set; }
 }

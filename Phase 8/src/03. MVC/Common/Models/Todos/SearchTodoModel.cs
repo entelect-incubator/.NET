@@ -7,7 +7,7 @@ public sealed class SearchTodoModel
 	public bool? IsCompleted { get; set; }
 
 	public DateTime? DateCreated { get; set; }
-	
+
 	public int? Year { get; set; }
 
 	public int? Month { get; set; }

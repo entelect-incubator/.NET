@@ -2,16 +2,22 @@
 
 using FluentValidation;
 
-public class ValidationBehavior<TRequest, TResponse>(IEnumerable<IValidator<TRequest>> validators)
-	: IPipelineBehavior<TRequest, TResponse> where TRequest : IRequest<TResponse>
+public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
 {
-	public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
+	private readonly IEnumerable<IValidator<TRequest>> validators;
+
+	public ValidationBehavior(IEnumerable<IValidator<TRequest>> validators)
 	{
-		if (validators.Any())
+		this.validators = validators;
+	}
+
+	public async Task<TResponse> Handle(TRequest request, Func<Task<TResponse>> next, CancellationToken cancellationToken)
+	{
+		if (this.validators.Any())
 		{
 			var context = new ValidationContext<TRequest>(request);
 
-			var validationResults = await Task.WhenAll(validators.Select(v => v.ValidateAsync(context, cancellationToken)));
+			var validationResults = await Task.WhenAll(this.validators.Select(v => v.ValidateAsync(context, cancellationToken)));
 			var failures = validationResults.SelectMany(r => r.Errors).Where(f => f != null);
 
 			if (failures.Any())
@@ -19,6 +25,7 @@ public class ValidationBehavior<TRequest, TResponse>(IEnumerable<IValidator<TReq
 				throw new ValidationException(failures);
 			}
 		}
+
 		return await next();
 	}
 }

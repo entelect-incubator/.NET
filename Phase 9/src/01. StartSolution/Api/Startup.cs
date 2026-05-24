@@ -36,7 +36,9 @@ public class Startup
 				document.Info.Title = "Pezza Api";
 			};
 		});
+
 		services.AddLazyCache();
+
 		services.AddDbContext<DatabaseContext>(options =>
 			options.UseInMemoryDatabase("PezzaDB"));
 
@@ -45,14 +47,10 @@ public class Startup
 			options.Providers.Add<BrotliCompressionProvider>();
 			options.Providers.Add<GzipCompressionProvider>();
 		});
+
 		services.AddResponseCompression();
-		using (var serviceProvider = services.BuildServiceProvider())
-		{
-			var dbContext = serviceProvider.GetRequiredService<DatabaseContext>();
-			dbContext.Database.EnsureCreated();
-			dbContext.SaveChanges();
-			dbContext.Dispose();
-		}
+
+		this.EnsureDatabaseCreated(services);
 	}
 
 	public void Configure(WebApplication app, IWebHostEnvironment env)
@@ -66,5 +64,18 @@ public class Startup
 		app.UseAuthorization();
 		app.UseResponseCompression();
 		app.Run();
+	}
+
+	private void EnsureDatabaseCreated(IServiceCollection services)
+	{
+		using var serviceProvider = services.BuildServiceProvider();
+
+		var dbContext = serviceProvider.GetRequiredService<DatabaseContext>();
+
+		dbContext.Database.EnsureCreated();
+
+		dbContext.SaveChanges();
+
+		dbContext.Dispose();
 	}
 }

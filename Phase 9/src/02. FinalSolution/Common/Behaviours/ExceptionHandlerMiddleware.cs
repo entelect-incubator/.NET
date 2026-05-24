@@ -42,9 +42,8 @@ public class ExceptionHandlerMiddleware
                         Error = x.ErrorMessage.Replace("Data ", string.Empty)
                     };
                 });
-                var result = Result.Failure(failures.ToList<object>());
                 var code = HttpStatusCode.BadRequest;
-                var resultJson = JsonConvert.SerializeObject(result);
+                var resultJson = JsonConvert.SerializeObject(new { isSuccess = false, errors = failures.ToList() });
 
                 context.Response.ContentType = "application/json";
                 context.Response.StatusCode = (int)code;
@@ -54,8 +53,7 @@ public class ExceptionHandlerMiddleware
             else
             {
                 var code = HttpStatusCode.BadRequest;
-                var result = Result.Failure(exception?.Message);
-                var resultJson = JsonConvert.SerializeObject(result);
+                var resultJson = JsonConvert.SerializeObject(new { isSuccess = false, error = exception?.Message });
 
                 context.Response.ContentType = "application/json";
                 context.Response.StatusCode = (int)code;

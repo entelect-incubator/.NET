@@ -2,15 +2,15 @@
 
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Common.Models.Customer;
+using Common.Models;
 using FluentEmail.Core;
 using HtmlAgilityPack;
 
 public class EmailService
 {
-	public string HtmlContent { get; set; }
+	public required string HtmlContent { get; set; }
 
-	public CustomerModel Customer { get; set; }
+	public required CustomerModel Customer { get; set; }
 
 	public async Task<Result> SendEmail()
 	{

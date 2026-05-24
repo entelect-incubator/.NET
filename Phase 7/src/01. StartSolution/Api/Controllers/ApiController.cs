@@ -1,6 +1,6 @@
 namespace Api.Controllers;
 
-using Dispatch;
+using Core;
 
 [ApiController]
 [Route("[controller]")]

@@ -43,6 +43,14 @@ public class Startup
         });
         services.AddResponseCompression();
 
+        services.AddAntiforgery(options => options.HeaderName = "X-CSRF-TOKEN");
+        services.Configure<CookiePolicyOptions>(options =>
+        {
+            options.HttpOnly = HttpOnlyPolicy.Always;
+            options.Secure = CookieSecurePolicy.Always;
+            options.MinimumSameSitePolicy = SameSiteMode.Strict;
+        });
+
         services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters();
         services.AddControllersWithViews();
         services.AddMvc(options =>
@@ -68,6 +76,14 @@ public class Startup
             app.UseHsts();
         }
         app.UseHttpsRedirection();
+        app.UseCookiePolicy();
+        app.Use(async (context, next) =>
+        {
+            context.Response.Headers["X-Content-Type-Options"] = "nosniff";
+            context.Response.Headers["X-Frame-Options"] = "DENY";
+            context.Response.Headers["Referrer-Policy"] = "no-referrer";
+            await next();
+        });
         app.UseStaticFiles();
 
         app.UseRouting();

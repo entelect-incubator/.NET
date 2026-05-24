@@ -1,0 +1,12 @@
+root = true
+
+# All files
+[*]
+indent_style = tab
+
+# Xml files
+[*.xml]
+indent_size = 4
+
+[*.cs]
+csharp_style_namespace_declarations=file_scoped:suggestion

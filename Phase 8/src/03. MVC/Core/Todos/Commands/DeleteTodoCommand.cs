@@ -2,12 +2,12 @@
 
 using LazyCache;
 
-public class DeleteTodoCommand : IRequest<Result>
+public class DeleteTodoCommand : ICommand<Result>
 {
 	public required int Id { get; set; }
 }
 
-public class DeleteTodoCommandHandler(DatabaseContext databaseContext, IAppCache cache) : IRequestHandler<DeleteTodoCommand, Result>
+public class DeleteTodoCommandHandler(DatabaseContext databaseContext, IAppCache cache) : ICommandHandler<DeleteTodoCommand, Result>
 {
 	private const string ERROR = "Error deleting a task";
 

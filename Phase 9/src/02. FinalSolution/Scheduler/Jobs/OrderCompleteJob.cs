@@ -1,23 +1,23 @@
 ﻿namespace Scheduler.Jobs;
 
 using System.Threading.Tasks;
-using MediatR;
 using Common.DTO;
 using Common.Models;
 using Core.Customer.Queries;
 using Core.Email;
 using Core.Notify.Commands;
 using Core.Notify.Queries;
+using Utilities.CQRS;
 
 public class OrderCompleteJob : IOrderCompleteJob
 {
-    private readonly IMediator mediator;
+    private readonly Dispatcher dispatcher;
 
-    public OrderCompleteJob(IMediator mediator) => this.mediator = mediator;
+    public OrderCompleteJob(Dispatcher dispatcher) => this.dispatcher = dispatcher;
 
     public async Task SendNotificationAsync()
     {
-        var notifiesResult = await this.mediator.Send(new GetNotifiesQuery
+        var notifiesResult = await this.dispatcher.Send(new GetNotifiesQuery
         {
             Data = new NotifyDTO
             {
@@ -32,7 +32,7 @@ public class OrderCompleteJob : IOrderCompleteJob
             {
                 if (notification.CustomerId.HasValue)
                 {
-                    var customerResult = await this.mediator.Send(new GetCustomerQuery
+                    var customerResult = await this.dispatcher.Send(new GetCustomerQuery
                     {
                         Id = notification.CustomerId.Value
                     });
@@ -50,7 +50,7 @@ public class OrderCompleteJob : IOrderCompleteJob
                         if (emailResult.Succeeded)
                         {
                             notification.Sent = true;
-                            var updateNotifyResult = await this.mediator.Send(new UpdateNotifyCommand { Data = notification });
+                            var updateNotifyResult = await this.dispatcher.Send(new UpdateNotifyCommand { Data = notification });
                         }
                     }
                 }

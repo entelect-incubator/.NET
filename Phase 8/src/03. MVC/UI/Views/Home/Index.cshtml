@@ -22,28 +22,18 @@
             @foreach (var item in Model)
             {
                 <li class="todo">
-                    @if (item.IsCompleted.HasValue)
+                    @if (item.IsCompleted)
                     {
-                        @if (item.IsCompleted.Value)
-                        {
-                            <strike>@Html.DisplayFor(modelItem => item.Task)</strike>
-                        }
-                        else
-                        {
-                            @Html.DisplayFor(modelItem => item.Task)
-                        }
+                        <strike>@Html.DisplayFor(modelItem => item.Task)</strike>
                     }
                     else
                     {
-                    @Html.DisplayFor(modelItem => item.Task)
+                        @Html.DisplayFor(modelItem => item.Task)
                     }
                     <button class="btn-delete" onclick="location.href='@Url.Action("Delete", "Home", new { id = item.Id })'">Delete</button>
-                    @if (item.IsCompleted.HasValue)
+                    @if (!item.IsCompleted)
                     {
-                        @if (!item.IsCompleted.Value)
-                        {
-                            <button class="btn-complete" onclick="location.href='@Url.Action("MarkComplete", "Home", new { id = item.Id })'">Complete</button>
-                        }
+                        <button class="btn-complete" onclick="location.href='@Url.Action("MarkComplete", "Home", new { id = item.Id })'">Complete</button>
                     }
                 </li>
             }

@@ -11,8 +11,7 @@ var database = builder
 // Add DbUp migrations project - runs first to ensure schema is ready
 var migrations = builder
     .AddProject<DbUp_Migrations>("migrations")
-    .WithReference(database)
-    .WithEnvironment("ConnectionStrings__DefaultConnection", database.GetConnectionString());
+    .WithReference(database);
 
 var api = builder
     .AddProject<Api>("api")

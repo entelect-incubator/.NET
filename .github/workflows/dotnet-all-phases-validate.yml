@@ -1,0 +1,34 @@
+name: .NET - Validate All Phase Solutions
+
+on:
+    workflow_dispatch:
+    pull_request:
+        branches: [master]
+        paths:
+            - "Phase */**"
+            - "scripts/Test-PhaseSolutions.ps1"
+            - ".github/workflows/dotnet-all-phases-validate.yml"
+    push:
+        branches: [master]
+        paths:
+            - "Phase */**"
+            - "scripts/Test-PhaseSolutions.ps1"
+            - ".github/workflows/dotnet-all-phases-validate.yml"
+
+jobs:
+    validate-phase-solutions:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Setup .NET
+              uses: actions/setup-dotnet@v4
+              with:
+                  dotnet-version: 10.0.x
+                  cache: true
+
+            - name: Build all phase solutions
+              shell: pwsh
+              run: ./scripts/Test-PhaseSolutions.ps1 -Configuration Release

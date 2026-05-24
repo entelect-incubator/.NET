@@ -1,4 +1,4 @@
-﻿namespace Common.Entities;
+namespace Common.Entities;
 
 public sealed class Customer
 {
@@ -14,4 +14,3 @@ public sealed class Customer
 
 	public DateTime DateCreated { get; set; }
 }
-

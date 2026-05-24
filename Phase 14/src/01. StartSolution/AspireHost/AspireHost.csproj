@@ -10,14 +10,16 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Aspire.Hosting.AppHost" Version="13.2.4" />
-        <PackageReference Include="Aspire.Hosting.SqlServer" Version="13.2.4" />
+        <PackageReference Include="Aspire.Hosting.AppHost" Version="13.3.0" />
+        <PackageReference Include="Aspire.Hosting.SqlServer" Version="13.3.0" />
         <PackageReference Include="OpenTelemetry" Version="1.15.3" />
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\Api\Api.csproj" />
+        <ProjectReference Include="..\Common\Common.csproj" IsAspireProjectResource="false" />
         <ProjectReference Include="..\DbUp.Migrations\DbUp.Migrations.csproj" />
         <ProjectReference Include="..\Mcp\Mcp.csproj" />
+        <ProjectReference Include="..\Core\Core.csproj" IsAspireProjectResource="false" />
     </ItemGroup>
 </Project>

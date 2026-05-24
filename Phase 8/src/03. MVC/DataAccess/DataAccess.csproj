@@ -1,27 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-<<<<<<<< HEAD:Phase 5/src/03. EndSolution/DataAccess/DataAccess.csproj
 		<TargetFramework>net10.0</TargetFramework>
-========
-		<TargetFramework>net9.0</TargetFramework>
->>>>>>>> master:Phase 8/src/02. MVC/DataAccess/DataAccess.csproj
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<LangVersion>preview</LangVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
-<<<<<<<< HEAD:Phase 5/src/03. EndSolution/DataAccess/DataAccess.csproj
-		<PackageReference Include="All" Version="1.1.0.1" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.7" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.7" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.7" />
-========
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.8" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.8" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.8" />
->>>>>>>> master:Phase 8/src/02. MVC/DataAccess/DataAccess.csproj
+		<PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 	</ItemGroup>
 
 	<ItemGroup>

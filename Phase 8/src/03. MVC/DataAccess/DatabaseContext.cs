@@ -16,5 +16,5 @@ public class DatabaseContext : DbContext
 		=> modelBuilder.ApplyConfiguration(new TodoMap());
 
 	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-		=> optionsBuilder.UseInMemoryDatabase(databaseName: "EListDb");
+		=> optionsBuilder.UseInMemoryDatabase(databaseName: "PezzaDB");
 }

@@ -1,6 +1,7 @@
 namespace Test.Setup;
 
 using System;
+using AutoMapper;
 using Common.Profiles;
 using DataAccess;
 using LazyCache;

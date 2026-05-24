@@ -1,11 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
 	<PropertyGroup>
-<<<<<<<< HEAD:Phase 9/src/01. StartSolution/Api/Api.csproj
 		<TargetFramework>net10.0</TargetFramework>
-========
-		<TargetFramework>net9.0</TargetFramework>
->>>>>>>> master:Phase 8/src/02. MVC/Api/Api.csproj
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<LangVersion>preview</LangVersion>
@@ -20,20 +16,14 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-<<<<<<<< HEAD:Phase 9/src/01. StartSolution/Api/Api.csproj
 		<PackageReference Include="LazyCache.AspNetCore" Version="2.4.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="10.0.7" />
 		<PackageReference Include="NSwag.AspNetCore" Version="14.7.1" />
 		<PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
-		  <PrivateAssets>all</PrivateAssets>
-		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="10.1.7" />
-========
-		<PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.8" />
-		<PackageReference Include="NSwag.AspNetCore" Version="14.1.0" />
-		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.7.3" />
->>>>>>>> master:Phase 8/src/02. MVC/Api/Api.csproj
 	</ItemGroup>
 
 	<ItemGroup>

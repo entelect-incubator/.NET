@@ -1,8 +1,11 @@
 ﻿namespace Test.Core;
 
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Common.DTO;
+using global::Core.Stock.Commands;
+using global::Core.Stock.Queries;
 using NUnit.Framework;
 using Test.Setup;
 using Test.Setup.TestData.Stock;
@@ -24,11 +27,7 @@ public class TestPizzaCore : QueryTestBase
                 Data = this.dto
             }, CancellationToken.None);
 
-        if (!resultCreate.Succeeded)
-        {
-            Assert.That(false, Is.True);
-        }
-
+        Assert.IsTrue(resultCreate.Succeeded);
         this.dto = resultCreate.Data;
     }
 
@@ -51,7 +50,7 @@ public class TestPizzaCore : QueryTestBase
         var sutGetAll = new GetStocksQueryHandler(this.Context, Mapper());
         var resultGetAll = await sutGetAll.Handle(new GetStocksQuery(), CancellationToken.None);
 
-        Assert.That(resultGetAll?.Data.Count, Is.EqualTo(1));
+        Assert.That(resultGetAll?.Data?.Count(), Is.EqualTo(1));
     }
 
     [Test]

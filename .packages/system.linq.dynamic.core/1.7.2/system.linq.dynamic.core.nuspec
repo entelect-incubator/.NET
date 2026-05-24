@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>System.Linq.Dynamic.Core</id>
+    <version>1.7.2</version>
+    <authors>ZZZ Projects,Stef Heyenrath,Microsoft,Scott Guthrie,King Wilder,Nathan Arnott</authors>
+    <license type="expression">Apache-2.0</license>
+    <licenseUrl>https://licenses.nuget.org/Apache-2.0</licenseUrl>
+    <icon>logo.png</icon>
+    <readme>PackageReadme.md</readme>
+    <projectUrl>https://dynamic-linq.net/</projectUrl>
+    <description>This is a .NETStandard / .NET Core port of the the Microsoft assembly for the .Net 4.0 Dynamic language functionality.</description>
+    <releaseNotes>Bugfixes and new Features. For details see CHANGELOG.md</releaseNotes>
+    <copyright>Copyright © ZZZ Projects</copyright>
+    <tags>system linq dynamic core dotnet NETCoreApp NETStandard</tags>
+    <repository type="git" url="https://github.com/zzzprojects/System.Linq.Dynamic.Core" branch="refs/heads/master" commit="e33dc6c16338e9538c27116d4a8a89868dc75836" />
+    <dependencies>
+      <group targetFramework=".NETFramework3.5">
+        <dependency id="NetLegacySupport.ConcurrentDictionary" version="1.1.1" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework=".NETFramework4.0" />
+      <group targetFramework=".NETFramework4.5" />
+      <group targetFramework=".NETFramework4.5.2" />
+      <group targetFramework=".NETFramework4.6" />
+      <group targetFramework=".NETStandard1.3">
+        <dependency id="NETStandard.Library" version="1.6.1" exclude="Build,Analyzers" />
+        <dependency id="System.ComponentModel.TypeConverter" version="4.3.0" exclude="Build,Analyzers" />
+        <dependency id="System.Diagnostics.TraceSource" version="4.3.0" exclude="Build,Analyzers" />
+        <dependency id="System.Dynamic.Runtime" version="4.3.0" exclude="Build,Analyzers" />
+        <dependency id="System.Linq.Queryable" version="4.3.0" exclude="Build,Analyzers" />
+        <dependency id="System.Reflection.Emit" version="4.3.0" exclude="Build,Analyzers" />
+        <dependency id="System.Reflection.TypeExtensions" version="4.3.0" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework="UAP10.0.10240">
+        <dependency id="Microsoft.NETCore.UniversalWindowsPlatform" version="6.0.10" exclude="Build,Analyzers" />
+        <dependency id="System.ComponentModel.TypeConverter" version="4.1.0" exclude="Build,Analyzers" />
+        <dependency id="System.Diagnostics.TraceSource" version="4.0.0" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework=".NETCoreApp2.1" />
+      <group targetFramework=".NETCoreApp3.1" />
+      <group targetFramework="net5.0" />
+      <group targetFramework="net6.0" />
+      <group targetFramework="net7.0" />
+      <group targetFramework="net8.0" />
+      <group targetFramework="net10.0" />
+      <group targetFramework="net10.0" />
+      <group targetFramework=".NETStandard2.0">
+        <dependency id="System.Reflection.Emit" version="4.3.0" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework=".NETStandard2.1" />
+    </dependencies>
+  </metadata>
+</package>

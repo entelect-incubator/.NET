@@ -12,7 +12,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-        <PackageReference Include="Riok.Mapperly" Version="3.6.0" />
+        <PackageReference Include="Riok.Mapperly" Version="4.3.1" />
 	  <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.7" />
 	</ItemGroup>
 

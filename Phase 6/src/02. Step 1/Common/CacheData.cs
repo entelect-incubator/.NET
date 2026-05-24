@@ -1,4 +1,4 @@
-﻿namespace Common;
+﻿namespace Common.Data;
 
 public static class CacheData
 {

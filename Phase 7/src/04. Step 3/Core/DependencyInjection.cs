@@ -5,6 +5,7 @@ using Core.Customer.Commands;
 using Dispatch;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
+using Scrutor;
 
 public static class DependencyInjection
 {

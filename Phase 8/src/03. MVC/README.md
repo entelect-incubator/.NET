@@ -52,10 +52,10 @@ Phase 8/src/03. MVC/
 dotnet --version
 
 # restore and build the full solution
-dotnet build "./Phase 8/src/03. MVC/EList.sln"
+dotnet build "./Phase 8/src/03. MVC/Pezza.slnx"
 
 # run the unit tests
-dotnet test "./Phase 8/src/03. MVC/EList.sln"
+dotnet test "./Phase 8/src/03. MVC/Pezza.slnx"
 
 # run the API (in a separate terminal)
 dotnet run --project "./Phase 8/src/03. MVC/Api/Api.csproj"

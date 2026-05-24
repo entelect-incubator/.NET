@@ -34,6 +34,7 @@ public static class OrderTestData
                 OrderId = 1,
                 Product = ProductTestData.ProductDTO
             }
+
         ]
     };
 

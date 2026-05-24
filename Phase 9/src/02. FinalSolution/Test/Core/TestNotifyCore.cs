@@ -1,8 +1,11 @@
 ﻿namespace Test.Core;
 
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Common.DTO;
+using global::Core.Notify.Commands;
+using global::Core.Notify.Queries;
 using NUnit.Framework;
 using Test.Setup;
 using Test.Setup.TestData.Notify;
@@ -24,11 +27,7 @@ public class TestNotifyCore : QueryTestBase
                 Data = this.dto
             }, CancellationToken.None);
 
-        if (!resultCreate.Succeeded)
-        {
-            Assert.That(false, Is.True);
-        }
-
+        Assert.IsTrue(resultCreate.Succeeded);
         this.dto = resultCreate.Data;
     }
 
@@ -51,7 +50,7 @@ public class TestNotifyCore : QueryTestBase
         var sutGetAll = new GetNotifiesQueryHandler(this.Context, Mapper());
         var resultGetAll = await sutGetAll.Handle(new GetNotifiesQuery(), CancellationToken.None);
 
-        Assert.That(resultGetAll?.Data.Count, Is.EqualTo(1));
+        Assert.That(resultGetAll?.Data?.Count(), Is.EqualTo(1));
     }
 
     [Test]

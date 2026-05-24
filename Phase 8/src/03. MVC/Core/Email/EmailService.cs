@@ -21,7 +21,7 @@ public class EmailService
 		plainText = Regex.Replace(plainText, @"\s+", " ").Trim();
 
 		var email = await Email
-			.From("todos@elist.com", "EList")
+			.From("todos@Pezza.com", "Pezza")
 			.To(this.ToEmail)
 			.Subject("Todo item(s) is about to expire")
 			.Body(this.HtmlContent)

@@ -1,7 +1,6 @@
 ﻿global using Bogus;
-global using Common.Entities;
-global using Common.Models;
-global using Core;
+global using Common.Models.Customer;
+global using Common.Models.Pizza;
 global using DataAccess;
 global using Microsoft.EntityFrameworkCore;
 global using NUnit.Framework;

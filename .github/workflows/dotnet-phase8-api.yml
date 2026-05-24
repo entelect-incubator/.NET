@@ -17,6 +17,6 @@ jobs:
               with:
                   dotnet-version: 10.0.x
             - name: Install dependencies
-              run: dotnet restore "./Phase 8/API Solution/EList.sln"
+              run: dotnet restore "./Phase 8/API Solution/Pezza.slnx"
             - name: Build
-              run: dotnet build "./Phase 8/API Solution/EList.sln" --configuration Release --no-restore
+              run: dotnet build "./Phase 8/API Solution/Pezza.slnx" --configuration Release --no-restore

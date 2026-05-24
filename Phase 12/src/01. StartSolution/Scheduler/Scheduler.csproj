@@ -11,7 +11,7 @@
         <PackageReference Include="Hangfire.AspNetCore" Version="1.7.31" />
         <PackageReference Include="Hangfire.Core" Version="1.7.31" />
         <PackageReference Include="Hangfire.SqlServer" Version="1.7.31" />
-        <PackageReference Include="MediatR" Version="11.0.0" />
+        <PackageReference Include="MediatR" Version="14.1.0" />
     </ItemGroup>
 
     <ItemGroup>

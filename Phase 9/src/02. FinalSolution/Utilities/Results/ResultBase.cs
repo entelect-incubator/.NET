@@ -32,4 +32,6 @@ public abstract class ResultBase
 	}
 
 	public bool HasError => this.ErrorResult != ErrorResults.None;
+
+	public bool Succeeded => !this.HasError;
 }

@@ -1,12 +1,14 @@
 ﻿namespace Api.Controllers;
 
+using Api.Helpers;
 using Common.Models.Pizza;
 using Core.Pizza.Commands;
 using Core.Pizza.Queries;
+using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
 [Route("[controller]")]
-public class PizzaController() : ApiController
+public class PizzaController(Dispatcher dispatcher) : ControllerBase
 {
 	/// <summary>
 	/// Get Pizza by Id.
@@ -18,7 +20,7 @@ public class PizzaController() : ApiController
 	[ProducesResponseType(404)]
 	public async Task<ActionResult> Get(int id)
 	{
-		var result = await this.Dispatcher.Query(new GetPizzaQuery { Id = id }, CancellationToken.None);
+		var result = await dispatcher.Query(new GetPizzaQuery { Id = id }, CancellationToken.None);
 		return ResponseHelper.ResponseOutcome(result, this);
 	}
 
@@ -30,7 +32,7 @@ public class PizzaController() : ApiController
 	[ProducesResponseType(200)]
 	public async Task<ActionResult> Search(SearchPizzaModel data)
 	{
-		var result = await this.Dispatcher.Query(
+		var result = await dispatcher.Query(
 			new GetPizzasQuery()
 			{
 				Data = data
@@ -58,7 +60,7 @@ public class PizzaController() : ApiController
 	[ProducesResponseType(400)]
 	public async Task<ActionResult<Pizza>> Create([FromBody] CreatePizzaModel model)
 	{
-		var result = await this.Dispatcher.Send(new CreatePizzaCommand
+		var result = await dispatcher.Send(new CreatePizzaCommand
 		{
 			Data = model
 		});
@@ -84,7 +86,7 @@ public class PizzaController() : ApiController
 	[ProducesResponseType(400)]
 	public async Task<ActionResult> Update([FromBody] UpdatePizzaModel model)
 	{
-		var result = await this.Dispatcher.Send(new UpdatePizzaCommand
+		var result = await dispatcher.Send(new UpdatePizzaCommand
 		{
 			Data = model
 		});
@@ -102,7 +104,7 @@ public class PizzaController() : ApiController
 	[ProducesResponseType(400)]
 	public async Task<ActionResult> Delete(int id)
 	{
-		var result = await this.Dispatcher.Send(new DeletePizzaCommand { Id = id });
+		var result = await dispatcher.Send(new DeletePizzaCommand { Id = id });
 		return ResponseHelper.ResponseOutcome(result, this);
 	}
 }

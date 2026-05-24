@@ -21,7 +21,7 @@ public static class PizzaMapper
 			Id = model.Id,
 			Name = model.Name,
 			Description = model.Description,
-			DateCreated = model.DateCreated
+			DateCreated = model.DateCreated ?? DateTime.UtcNow
 		};
 
 		if (model.Price.HasValue)

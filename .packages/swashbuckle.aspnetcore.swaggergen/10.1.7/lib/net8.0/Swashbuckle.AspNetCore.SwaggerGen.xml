@@ -1,0 +1,800 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Swashbuckle.AspNetCore.SwaggerGen</name>
+    </assembly>
+    <members>
+        <member name="T:Swashbuckle.AspNetCore.Annotations.SwaggerIgnoreAttribute">
+            <summary>
+            Causes the annotated member to be ignored during schema generation.
+            Does not alter serialization behavior.
+            </summary>
+            <remarks>
+            Can be used in combination with <see cref="T:System.Text.Json.Serialization.JsonExtensionDataAttribute"/>
+            to capture and invalidate unsupported properties.
+            </remarks>
+        </member>
+        <member name="M:Swashbuckle.AspNetCore.SwaggerGen.XmlCommentsTextHelper.RefTag">
+            <remarks>
+            Pattern:<br/>
+            <code>&lt;(see|paramref) (name|cref|langword)="([TPF]{1}:)?(?&lt;display&gt;.+?)" ?/&gt;</code><br/>
+            Explanation:<br/>
+            <code>
+            ○ Match '&lt;'.<br/>
+            ○ 1st capture group.<br/>
+                ○ Match with 2 alternative expressions.<br/>
+                    ○ Match the string "see".<br/>
+                    ○ Match the string "paramref".<br/>
+            ○ Match ' '.<br/>
+            ○ 2nd capture group.<br/>
+                ○ Match with 3 alternative expressions.<br/>
+                    ○ Match the string "name".<br/>
+                    ○ Match the string "cref".<br/>
+                    ○ Match the string "langword".<br/>
+            ○ Match the string "=\"".<br/>
+            ○ Optional (greedy).<br/>
+                ○ 3rd capture group.<br/>
+                    ○ Match a character in the set [FPT].<br/>
+                    ○ Match ':'.<br/>
+            ○ "display" capture group.<br/>
+                ○ Match a character other than '\n' lazily at least once.<br/>
+            ○ Match '"'.<br/>
+            ○ Match ' ' atomically, optionally.<br/>
+            ○ Match the string "/&gt;".<br/>
+            </code>
+            </remarks>
+        </member>
+        <member name="M:Swashbuckle.AspNetCore.SwaggerGen.XmlCommentsTextHelper.CodeTag">
+            <remarks>
+            Pattern:<br/>
+            <code>&lt;c&gt;(?&lt;display&gt;.+?)&lt;/c&gt;</code><br/>
+            Explanation:<br/>
+            <code>
+            ○ Match the string "&lt;c&gt;".<br/>
+            ○ "display" capture group.<br/>
+                ○ Match a character other than '\n' lazily at least once.<br/>
+            ○ Match the string "&lt;/c&gt;".<br/>
+            </code>
+            </remarks>
+        </member>
+        <member name="M:Swashbuckle.AspNetCore.SwaggerGen.XmlCommentsTextHelper.MultilineCodeTag">
+            <remarks>
+            Pattern:<br/>
+            <code>&lt;code&gt;(?&lt;display&gt;.+?)&lt;/code&gt;</code><br/>
+            Options:<br/>
+            <code>RegexOptions.Singleline</code><br/>
+            Explanation:<br/>
+            <code>
+            ○ Match the string "&lt;code&gt;".<br/>
+            ○ "display" capture group.<br/>
+                ○ Match any character lazily at least once.<br/>
+            ○ Match the string "&lt;/code&gt;".<br/>
+            </code>
+            </remarks>
+        </member>
+        <member name="M:Swashbuckle.AspNetCore.SwaggerGen.XmlCommentsTextHelper.ParaTag">
+            <remarks>
+            Pattern:<br/>
+            <code>&lt;para&gt;(?&lt;display&gt;.+?)&lt;/para&gt;</code><br/>
+            Options:<br/>
+            <code>RegexOptions.Singleline</code><br/>
+            Explanation:<br/>
+            <code>
+            ○ Match the string "&lt;para&gt;".<br/>
+            ○ "display" capture group.<br/>
+                ○ Match any character lazily at least once.<br/>
+            ○ Match the string "&lt;/para&gt;".<br/>
+            </code>
+            </remarks>
+        </member>
+        <member name="M:Swashbuckle.AspNetCore.SwaggerGen.XmlCommentsTextHelper.HrefTag">
+            <remarks>
+            Pattern:<br/>
+            <code>&lt;see\\s+href=\\"([^"]*)\\"&gt;\\s*(.*?)\\s*&lt;\\/see&gt;</code><br/>
+            Options:<br/>
+            <code>RegexOptions.Singleline</code><br/>
+            Explanation:<br/>
+            <code>
+            ○ Match the string "&lt;see".<br/>
+            ○ Match a whitespace character atomically at least once.<br/>
+            ○ Match the string "href=\"".<br/>
+            ○ 1st capture group.<br/>
+                ○ Match a character other than '"' atomically any number of times.<br/>
+            ○ Match the string "\"&gt;".<br/>
+            ○ Match a whitespace character greedily any number of times.<br/>
+            ○ 2nd capture group.<br/>
+                ○ Match any character lazily any number of times.<br/>
+            ○ Match a whitespace character atomically any number of times.<br/>
+            ○ Match the string "&lt;/see&gt;".<br/>
+            </code>
+            </remarks>
+        </member>
+        <member name="M:Swashbuckle.AspNetCore.SwaggerGen.XmlCommentsTextHelper.BrTag">
+            <remarks>
+            Pattern:<br/>
+            <code>(&lt;br ?\\/?&gt;)</code><br/>
+            Explanation:<br/>
+            <code>
+            ○ 1st capture group.<br/>
+                ○ Match the string "&lt;br".<br/>
+                ○ Match ' ' atomically, optionally.<br/>
+                ○ Match '/' atomically, optionally.<br/>
+                ○ Match '&gt;'.<br/>
+            </code>
+            </remarks>
+        </member>
+        <member name="M:Swashbuckle.AspNetCore.SwaggerGen.XmlCommentsTextHelper.LineBreaks">
+            <remarks>
+            Pattern:<br/>
+            <code>\\r?\\n</code><br/>
+            Explanation:<br/>
+            <code>
+            ○ Match '\r' atomically, optionally.<br/>
+            ○ Match '\n'.<br/>
+            </code>
+            </remarks>
+        </member>
+        <member name="M:Swashbuckle.AspNetCore.SwaggerGen.XmlCommentsTextHelper.DoubleUpLineBreaks">
+            <remarks>
+            Pattern:<br/>
+            <code>(\\r?\\n){2,}</code><br/>
+            Explanation:<br/>
+            <code>
+            ○ Loop greedily and atomically at least twice.<br/>
+                ○ 1st capture group.<br/>
+                    ○ Match '\r' atomically, optionally.<br/>
+                    ○ Match '\n'.<br/>
+            </code>
+            </remarks>
+        </member>
+        <member name="T:Microsoft.Extensions.ApiDescriptions.IDocumentProvider">
+            <summary>
+            This service will be looked up by name from the service collection when using
+            the <c>dotnet-getdocument</c> tool from the Microsoft.Extensions.ApiDescription.Server package.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.SwaggerGenOptionsExtensions.SwaggerDoc(Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions,System.String,Microsoft.OpenApi.OpenApiInfo)">
+            <summary>
+            Define one or more documents to be created by the Swagger generator
+            </summary>
+            <param name="swaggerGenOptions"></param>
+            <param name="name">A URI-friendly name that uniquely identifies the document</param>
+            <param name="info">Global metadata to be included in the Swagger output</param>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.SwaggerGenOptionsExtensions.DocInclusionPredicate(Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions,System.Func{System.String,Microsoft.AspNetCore.Mvc.ApiExplorer.ApiDescription,System.Boolean})">
+            <summary>
+            Provide a custom strategy for selecting actions.
+            </summary>
+            <param name="swaggerGenOptions"></param>
+            <param name="predicate">
+            A lambda that returns true/false based on document name and ApiDescription
+            </param>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.SwaggerGenOptionsExtensions.IgnoreObsoleteActions(Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions)">
+            <summary>
+            Ignore any actions that are decorated with the ObsoleteAttribute
+            </summary>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.SwaggerGenOptionsExtensions.ResolveConflictingActions(Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions,System.Func{System.Collections.Generic.IEnumerable{Microsoft.AspNetCore.Mvc.ApiExplorer.ApiDescription},Microsoft.AspNetCore.Mvc.ApiExplorer.ApiDescription})">
+            <summary>
+            Merge actions that have conflicting HTTP methods and paths (must be unique for Swagger 2.0)
+            </summary>
+            <param name="swaggerGenOptions"></param>
+            <param name="resolver"></param>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.SwaggerGenOptionsExtensions.CustomOperationIds(Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions,System.Func{Microsoft.AspNetCore.Mvc.ApiExplorer.ApiDescription,System.String})">
+            <summary>
+            Provide a custom strategy for assigning "operationId" to operations
+            </summary>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.SwaggerGenOptionsExtensions.TagActionsBy(Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions,System.Func{Microsoft.AspNetCore.Mvc.ApiExplorer.ApiDescription,System.Collections.Generic.IList{System.String}})">
+            <summary>
+            Provide a custom strategy for assigning "tags" to actions
+            </summary>
+            <param name="swaggerGenOptions"></param>
+            <param name="tagsSelector"></param>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.SwaggerGenOptionsExtensions.OrderActionsBy(Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions,System.Func{Microsoft.AspNetCore.Mvc.ApiExplorer.ApiDescription,System.String})">
+            <summary>
+            Provide a custom strategy for sorting actions before they're transformed into the Swagger format
+            </summary>
+            <param name="swaggerGenOptions"></param>
+            <param name="sortKeySelector"></param>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.SwaggerGenOptionsExtensions.SortSchemasWith(Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions,System.Collections.Generic.IComparer{System.String})">
+            <summary>
+            Provide a custom comprarer to sort schemas with
+            </summary>
+            <param name="swaggerGenOptions"></param>
+            <param name="schemaComparer"></param>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.SwaggerGenOptionsExtensions.DescribeAllParametersInCamelCase(Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions)">
+            <summary>
+            Describe all parameters, regardless of how they appear in code, in camelCase
+            </summary>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.SwaggerGenOptionsExtensions.AddServer(Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions,Microsoft.OpenApi.OpenApiServer)">
+            <summary>
+            Provide specific server information to include in the generated Swagger document
+            </summary>
+            <param name="swaggerGenOptions"></param>
+            <param name="server">A description of the server</param>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.SwaggerGenOptionsExtensions.AddSecurityDefinition(Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions,System.String,Microsoft.OpenApi.IOpenApiSecurityScheme)">
+            <summary>
+            Add one or more "securityDefinitions", describing how your API is protected, to the generated Swagger
+            </summary>
+            <param name="swaggerGenOptions"></param>
+            <param name="name">A unique name for the scheme, as per the Swagger spec.</param>
+            <param name="securityScheme">
+            A description of the scheme - can be an instance of BasicAuthScheme, ApiKeyScheme or OAuth2Scheme
+            </param>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.SwaggerGenOptionsExtensions.AddSecurityRequirement(Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions,System.Func{Microsoft.OpenApi.OpenApiDocument,Microsoft.OpenApi.OpenApiSecurityRequirement})">
+            <summary>
+            Adds a global security requirement
+            </summary>
+            <param name="swaggerGenOptions"></param>
+            <param name="securityRequirement">
+            A dictionary of required schemes (logical AND). Keys must correspond to schemes defined through AddSecurityDefinition
+            If the scheme is of type "oauth2", then the value is a list of scopes, otherwise it MUST be an empty array
+            </param>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.SwaggerGenOptionsExtensions.MapType(Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions,System.Type,System.Func{Microsoft.OpenApi.IOpenApiSchema})">
+            <summary>
+            Provide a custom mapping, for a given type, to the Swagger-flavored JSONSchema
+            </summary>
+            <param name="swaggerGenOptions"></param>
+            <param name="type">System type</param>
+            <param name="schemaFactory">A factory method that generates Schema's for the provided type</param>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.SwaggerGenOptionsExtensions.MapType``1(Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions,System.Func{Microsoft.OpenApi.IOpenApiSchema})">
+            <summary>
+            Provide a custom mapping, for a given type, to the Swagger-flavored JSONSchema
+            </summary>
+            <typeparam name="T">System type</typeparam>
+            <param name="swaggerGenOptions"></param>
+            <param name="schemaFactory">A factory method that generates Schema's for the provided type</param>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.SwaggerGenOptionsExtensions.UseInlineDefinitionsForEnums(Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions)">
+            <summary>
+            Generate inline schema definitions (as opposed to referencing a shared definition) for enum parameters and properties
+            </summary>
+            <param name="swaggerGenOptions"></param>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.SwaggerGenOptionsExtensions.CustomSchemaIds(Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions,System.Func{System.Type,System.String})">
+            <summary>
+            Provide a custom strategy for generating the unique Ids that are used to reference object Schemas
+            </summary>
+            <param name="swaggerGenOptions"></param>
+            <param name="schemaIdSelector">
+            A lambda that returns a unique identifier for the provided system type
+            </param>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.SwaggerGenOptionsExtensions.IgnoreObsoleteProperties(Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions)">
+            <summary>
+            Ignore any properties that are decorated with the ObsoleteAttribute
+            </summary>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.SwaggerGenOptionsExtensions.UseAllOfForInheritance(Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions)">
+            <summary>
+            Enables composite schema generation. If enabled, subtype schemas will contain the allOf construct to
+            incorporate properties from the base class instead of defining those properties inline.
+            </summary>
+            <param name="swaggerGenOptions"></param>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.SwaggerGenOptionsExtensions.UseOneOfForPolymorphism(Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions)">
+            <summary>
+            Enables polymorphic schema generation. If enabled, request and response schemas will contain the oneOf
+            construct to describe sub types as a set of alternative schemas.
+            </summary>
+            <param name="swaggerGenOptions"></param>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.SwaggerGenOptionsExtensions.SelectSubTypesUsing(Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions,System.Func{System.Type,System.Collections.Generic.IEnumerable{System.Type}})">
+            <summary>
+            To support polymorphism and inheritance behavior, Swashbuckle needs to detect the "known" subtypes for a given base type.
+            That is, the subtypes exposed by your API. By default, this will be any subtypes in the same assembly as the base type.
+            To override this, you can provide a custom selector function. This setting is only applicable when used in conjunction with
+            UseOneOfForPolymorphism and/or UseAllOfForInheritance.
+            </summary>
+            <param name="swaggerGenOptions"></param>
+            <param name="customSelector"></param>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.SwaggerGenOptionsExtensions.SelectDiscriminatorNameUsing(Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions,System.Func{System.Type,System.String})">
+            <summary>
+            If the configured serializer supports polymorphic serialization/deserialization by emitting/accepting a special "discriminator" property,
+            and UseOneOfForPolymorphism is enabled, then Swashbuckle will include a description for that property based on the serializer's behavior.
+            However, if you've customized your serializer to support polymorphism, you can provide a custom strategy to tell Swashbuckle which property,
+            for a given type, will be used as a discriminator. This setting is only applicable when used in conjunction with UseOneOfForPolymorphism.
+            </summary>
+            <param name="swaggerGenOptions"></param>
+            <param name="customSelector"></param>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.SwaggerGenOptionsExtensions.SelectDiscriminatorValueUsing(Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions,System.Func{System.Type,System.String})">
+            <summary>
+            If the configured serializer supports polymorphic serialization/deserialization by emitting/accepting a special "discriminator" property,
+            and UseOneOfForPolymorphism is enabled, then Swashbuckle will include a mapping of possible discriminator values to schema definitions.
+            However, if you've customized your serializer to support polymorphism, you can provide a custom mapping strategy to tell Swashbuckle what
+            the discriminator value should be for a given sub type. This setting is only applicable when used in conjunction with UseOneOfForPolymorphism.
+            </summary>
+            <param name="swaggerGenOptions"></param>
+            <param name="customSelector"></param>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.SwaggerGenOptionsExtensions.UseAllOfToExtendReferenceSchemas(Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions)">
+            <summary>
+            Extend reference schemas (using the allOf construct) so that contextual metadata can be applied to all parameter and property schemas
+            </summary>
+            <param name="swaggerGenOptions"></param>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.SwaggerGenOptionsExtensions.SupportNonNullableReferenceTypes(Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions)">
+            <summary>
+            Enable detection of non nullable reference types to set Nullable flag accordingly on schema properties
+            </summary>
+            <param name="swaggerGenOptions"></param>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.SwaggerGenOptionsExtensions.NonNullableReferenceTypesAsRequired(Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions)">
+            <summary>
+            Enable detection of non nullable reference types to mark the member as required in schema properties
+            </summary>
+            <param name="swaggerGenOptions"></param>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.SwaggerGenOptionsExtensions.InferSecuritySchemes(Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions,System.Func{System.Collections.Generic.IEnumerable{Microsoft.AspNetCore.Authentication.AuthenticationScheme},System.Collections.Generic.IDictionary{System.String,Microsoft.OpenApi.IOpenApiSecurityScheme}})">
+            <summary>
+            Automatically infer security schemes from authentication/authorization state in ASP.NET Core.
+            </summary>
+            <param name="swaggerGenOptions"></param>
+            <param name="securitySchemesSelector">
+            Provide alternative implementation that maps ASP.NET Core Authentication schemes to Open API security schemes
+            </param>
+            <remarks>Currently only supports JWT Bearer authentication</remarks>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.SwaggerGenOptionsExtensions.SchemaFilter``1(Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions,System.Object[])">
+            <summary>
+            Extend the Swagger Generator with "filters" that can modify Schemas after they're initially generated
+            </summary>
+            <typeparam name="TFilter">A type that derives from <see cref="T:Swashbuckle.AspNetCore.SwaggerGen.ISchemaFilter"/></typeparam>
+            <param name="swaggerGenOptions"></param>
+            <param name="arguments">Optionally inject parameters through filter constructors</param>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.SwaggerGenOptionsExtensions.AddSchemaFilterInstance``1(Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions,``0)">
+            <summary>
+            Extend the Swagger Generator with "filters" that can modify Schemas after they're initially generated
+            </summary>
+            <typeparam name="TFilter">A type that derives from <see cref="T:Swashbuckle.AspNetCore.SwaggerGen.ISchemaFilter"/></typeparam>
+            <param name="swaggerGenOptions"></param>
+            <param name="filterInstance">The filter instance to use.</param>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.SwaggerGenOptionsExtensions.ParameterFilter``1(Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions,System.Object[])">
+            <summary>
+            Extend the Swagger Generator with "filters" that can modify Parameters after they're initially generated
+            </summary>
+            <typeparam name="TFilter">A type that derives from <see cref="T:Swashbuckle.AspNetCore.SwaggerGen.IParameterFilter"/></typeparam>
+            <param name="swaggerGenOptions"></param>
+            <param name="arguments">Optionally inject parameters through filter constructors</param>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.SwaggerGenOptionsExtensions.ParameterAsyncFilter``1(Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions,System.Object[])">
+            <summary>
+            Extend the Swagger Generator with "filters" that can modify Parameters asynchronously after they're initially generated
+            </summary>
+            <typeparam name="TFilter">A type that derives from <see cref="T:Swashbuckle.AspNetCore.SwaggerGen.IParameterAsyncFilter"/></typeparam>
+            <param name="swaggerGenOptions"></param>
+            <param name="arguments">Optionally inject parameters through filter constructors</param>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.SwaggerGenOptionsExtensions.AddParameterFilterInstance``1(Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions,``0)">
+            <summary>
+            Extend the Swagger Generator with "filters" that can modify Parameters after they're initially generated
+            </summary>
+            <typeparam name="TFilter">A type that derives from <see cref="T:Swashbuckle.AspNetCore.SwaggerGen.IParameterFilter"/></typeparam>
+            <param name="swaggerGenOptions"></param>
+            <param name="filterInstance">The filter instance to use.</param>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.SwaggerGenOptionsExtensions.AddParameterAsyncFilterInstance``1(Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions,``0)">
+            <summary>
+            Extend the Swagger Generator with "filters" that can modify Parameters asynchronously after they're initially generated
+            </summary>
+            <typeparam name="TFilter">A type that derives from <see cref="T:Swashbuckle.AspNetCore.SwaggerGen.IParameterAsyncFilter"/></typeparam>
+            <param name="swaggerGenOptions"></param>
+            <param name="filterInstance">The filter instance to use.</param>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.SwaggerGenOptionsExtensions.RequestBodyFilter``1(Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions,System.Object[])">
+            <summary>
+            Extend the Swagger Generator with "filters" that can modify RequestBodys after they're initially generated
+            </summary>
+            <typeparam name="TFilter">A type that derives from <see cref="T:Swashbuckle.AspNetCore.SwaggerGen.IRequestBodyFilter"/></typeparam>
+            <param name="swaggerGenOptions"></param>
+            <param name="arguments">Optionally inject parameters through filter constructors</param>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.SwaggerGenOptionsExtensions.RequestBodyAsyncFilter``1(Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions,System.Object[])">
+            <summary>
+            Extend the Swagger Generator with "filters" that can modify RequestBodys asynchronously after they're initially generated
+            </summary>
+            <typeparam name="TFilter">A type that derives from <see cref="T:Swashbuckle.AspNetCore.SwaggerGen.IRequestBodyAsyncFilter"/></typeparam>
+            <param name="swaggerGenOptions"></param>
+            <param name="arguments">Optionally inject parameters through filter constructors</param>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.SwaggerGenOptionsExtensions.AddRequestBodyFilterInstance``1(Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions,``0)">
+            <summary>
+            Extend the Swagger Generator with "filters" that can modify RequestBodys after they're initially generated
+            </summary>
+            <typeparam name="TFilter">A type that derives from <see cref="T:Swashbuckle.AspNetCore.SwaggerGen.IRequestBodyFilter"/></typeparam>
+            <param name="swaggerGenOptions"></param>
+            <param name="filterInstance">The filter instance to use.</param>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.SwaggerGenOptionsExtensions.AddRequestBodyAsyncFilterInstance``1(Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions,``0)">
+            <summary>
+            Extend the Swagger Generator with "filters" that can modify RequestBodys asynchronously after they're initially generated
+            </summary>
+            <typeparam name="TFilter">A type that derives from <see cref="T:Swashbuckle.AspNetCore.SwaggerGen.IRequestBodyAsyncFilter"/></typeparam>
+            <param name="swaggerGenOptions"></param>
+            <param name="filterInstance">The filter instance to use.</param>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.SwaggerGenOptionsExtensions.OperationFilter``1(Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions,System.Object[])">
+            <summary>
+            Extend the Swagger Generator with "filters" that can modify Operations after they're initially generated
+            </summary>
+            <typeparam name="TFilter">A type that derives from <see cref="T:Swashbuckle.AspNetCore.SwaggerGen.IOperationFilter"/></typeparam>
+            <param name="swaggerGenOptions"></param>
+            <param name="arguments">Optionally inject parameters through filter constructors</param>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.SwaggerGenOptionsExtensions.OperationAsyncFilter``1(Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions,System.Object[])">
+            <summary>
+            Extend the Swagger Generator with "filters" that can modify Operations asynchronously after they're initially generated
+            </summary>
+            <typeparam name="TFilter">A type that derives from <see cref="T:Swashbuckle.AspNetCore.SwaggerGen.IOperationAsyncFilter"/></typeparam>
+            <param name="swaggerGenOptions"></param>
+            <param name="arguments">Optionally inject parameters through filter constructors</param>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.SwaggerGenOptionsExtensions.AddOperationFilterInstance``1(Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions,``0)">
+            <summary>
+            Extend the Swagger Generator with "filters" that can modify Operations after they're initially generated
+            </summary>
+            <typeparam name="TFilter">A type that derives from <see cref="T:Swashbuckle.AspNetCore.SwaggerGen.IOperationFilter"/></typeparam>
+            <param name="swaggerGenOptions"></param>
+            <param name="filterInstance">The filter instance to use.</param>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.SwaggerGenOptionsExtensions.AddOperationAsyncFilterInstance``1(Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions,``0)">
+            <summary>
+            Extend the Swagger Generator with "filters" that can modify Operations asynchronously after they're initially generated
+            </summary>
+            <typeparam name="TFilter">A type that derives from <see cref="T:Swashbuckle.AspNetCore.SwaggerGen.IOperationAsyncFilter"/></typeparam>
+            <param name="swaggerGenOptions"></param>
+            <param name="filterInstance">The filter instance to use</param>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.SwaggerGenOptionsExtensions.DocumentFilter``1(Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions,System.Object[])">
+            <summary>
+            Extend the Swagger Generator with "filters" that can modify SwaggerDocuments after they're initially generated
+            </summary>
+            <typeparam name="TFilter">A type that derives from <see cref="T:Swashbuckle.AspNetCore.SwaggerGen.IDocumentFilter"/></typeparam>
+            <param name="swaggerGenOptions"></param>
+            <param name="arguments">Optionally inject parameters through filter constructors</param>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.SwaggerGenOptionsExtensions.DocumentAsyncFilter``1(Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions,System.Object[])">
+            <summary>
+            Extend the Swagger Generator with "filters" that can modify SwaggerDocuments asynchronously after they're initially generated
+            </summary>
+            <typeparam name="TFilter">A type that derives from <see cref="T:Swashbuckle.AspNetCore.SwaggerGen.IDocumentAsyncFilter"/></typeparam>
+            <param name="swaggerGenOptions"></param>
+            <param name="arguments">Optionally inject parameters through filter constructors</param>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.SwaggerGenOptionsExtensions.AddDocumentFilterInstance``1(Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions,``0)">
+            <summary>
+            Extend the Swagger Generator with "filters" that can modify SwaggerDocuments after they're initially generated
+            </summary>
+            <typeparam name="TFilter">A type that derives from <see cref="T:Swashbuckle.AspNetCore.SwaggerGen.IDocumentFilter"/></typeparam>
+            <param name="swaggerGenOptions"></param>
+            <param name="filterInstance">The filter instance to use.</param>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.SwaggerGenOptionsExtensions.AddDocumentAsyncFilterInstance``1(Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions,``0)">
+            <summary>
+            Extend the Swagger Generator with "filters" that can modify SwaggerDocuments asynchronously after they're initially generated
+            </summary>
+            <typeparam name="TFilter">A type that derives from <see cref="T:Swashbuckle.AspNetCore.SwaggerGen.IDocumentAsyncFilter"/></typeparam>
+            <param name="swaggerGenOptions"></param>
+            <param name="filterInstance">The filter instance to use.</param>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.SwaggerGenOptionsExtensions.IncludeXmlComments(Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions,System.Func{System.Xml.XPath.XPathDocument},System.Boolean)">
+            <summary>
+            Inject human-friendly descriptions for Operations, Parameters and Schemas based on XML Comment files
+            </summary>
+            <param name="swaggerGenOptions"></param>
+            <param name="xmlDocFactory">A factory method that returns XML Comments as an XPathDocument</param>
+            <param name="includeControllerXmlComments">
+            Flag to indicate if controller XML comments (i.e. summary) should be used to assign Tag descriptions.
+            Don't set this flag if you're customizing the default tag for operations via TagActionsBy.
+            </param>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.SwaggerGenOptionsExtensions.IncludeXmlComments(Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions,System.String,System.Boolean)">
+            <summary>
+            Inject human-friendly descriptions for Operations, Parameters and Schemas based on XML Comment files
+            </summary>
+            <param name="swaggerGenOptions"></param>
+            <param name="filePath">An absolute path to the file that contains XML Comments</param>
+            <param name="includeControllerXmlComments">
+            Flag to indicate if controller XML comments (i.e. summary) should be used to assign Tag descriptions.
+            Don't set this flag if you're customizing the default tag for operations via TagActionsBy.
+            </param>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.SwaggerGenOptionsExtensions.IncludeXmlComments(Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions,System.Reflection.Assembly,System.Boolean)">
+            <summary>
+            Inject human-friendly descriptions for Operations, Parameters and Schemas based on XML comments
+            from specific Assembly
+            </summary>
+            <param name="swaggerGenOptions"></param>
+            <param name="assembly">Assembly that contains XML Comments</param>
+            <param name="includeControllerXmlComments">
+            Flag to indicate if controller XML comments (i.e. summary) should be used to assign Tag descriptions.
+            Don't set this flag if you're customizing the default tag for operations via TagActionsBy.
+            </param>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.RefTag_0">
+            <summary>Custom <see cref="T:System.Text.RegularExpressions.Regex"/>-derived type for the RefTag method.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.RefTag_0.Instance">
+            <summary>Cached, thread-safe singleton instance.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.RefTag_0.#ctor">
+            <summary>Initializes the instance.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.RefTag_0.RunnerFactory">
+            <summary>Provides a factory for creating <see cref="T:System.Text.RegularExpressions.RegexRunner"/> instances to be used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.RefTag_0.RunnerFactory.CreateInstance">
+            <summary>Creates an instance of a <see cref="T:System.Text.RegularExpressions.RegexRunner"/> used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.RefTag_0.RunnerFactory.Runner">
+            <summary>Provides the runner that contains the custom logic implementing the specified regular expression.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.RefTag_0.RunnerFactory.Runner.Scan(System.ReadOnlySpan{System.Char})">
+            <summary>Scan the <paramref name="inputSpan"/> starting from base.runtextstart for the next match.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.RefTag_0.RunnerFactory.Runner.TryFindNextPossibleStartingPosition(System.ReadOnlySpan{System.Char})">
+            <summary>Search <paramref name="inputSpan"/> starting from base.runtextpos for the next location a match could possibly start.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if a possible match was found; false if no more matches are possible.</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.RefTag_0.RunnerFactory.Runner.TryMatchAtCurrentPosition(System.ReadOnlySpan{System.Char})">
+            <summary>Determine whether <paramref name="inputSpan"/> at base.runtextpos is a match for the regular expression.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if the regular expression matches at the current position; otherwise, false.</returns>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.CodeTag_1">
+            <summary>Custom <see cref="T:System.Text.RegularExpressions.Regex"/>-derived type for the CodeTag method.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.CodeTag_1.Instance">
+            <summary>Cached, thread-safe singleton instance.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.CodeTag_1.#ctor">
+            <summary>Initializes the instance.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.CodeTag_1.RunnerFactory">
+            <summary>Provides a factory for creating <see cref="T:System.Text.RegularExpressions.RegexRunner"/> instances to be used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.CodeTag_1.RunnerFactory.CreateInstance">
+            <summary>Creates an instance of a <see cref="T:System.Text.RegularExpressions.RegexRunner"/> used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.CodeTag_1.RunnerFactory.Runner">
+            <summary>Provides the runner that contains the custom logic implementing the specified regular expression.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.CodeTag_1.RunnerFactory.Runner.Scan(System.ReadOnlySpan{System.Char})">
+            <summary>Scan the <paramref name="inputSpan"/> starting from base.runtextstart for the next match.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.CodeTag_1.RunnerFactory.Runner.TryFindNextPossibleStartingPosition(System.ReadOnlySpan{System.Char})">
+            <summary>Search <paramref name="inputSpan"/> starting from base.runtextpos for the next location a match could possibly start.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if a possible match was found; false if no more matches are possible.</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.CodeTag_1.RunnerFactory.Runner.TryMatchAtCurrentPosition(System.ReadOnlySpan{System.Char})">
+            <summary>Determine whether <paramref name="inputSpan"/> at base.runtextpos is a match for the regular expression.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if the regular expression matches at the current position; otherwise, false.</returns>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.MultilineCodeTag_2">
+            <summary>Custom <see cref="T:System.Text.RegularExpressions.Regex"/>-derived type for the MultilineCodeTag method.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.MultilineCodeTag_2.Instance">
+            <summary>Cached, thread-safe singleton instance.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.MultilineCodeTag_2.#ctor">
+            <summary>Initializes the instance.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.MultilineCodeTag_2.RunnerFactory">
+            <summary>Provides a factory for creating <see cref="T:System.Text.RegularExpressions.RegexRunner"/> instances to be used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.MultilineCodeTag_2.RunnerFactory.CreateInstance">
+            <summary>Creates an instance of a <see cref="T:System.Text.RegularExpressions.RegexRunner"/> used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.MultilineCodeTag_2.RunnerFactory.Runner">
+            <summary>Provides the runner that contains the custom logic implementing the specified regular expression.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.MultilineCodeTag_2.RunnerFactory.Runner.Scan(System.ReadOnlySpan{System.Char})">
+            <summary>Scan the <paramref name="inputSpan"/> starting from base.runtextstart for the next match.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.MultilineCodeTag_2.RunnerFactory.Runner.TryFindNextPossibleStartingPosition(System.ReadOnlySpan{System.Char})">
+            <summary>Search <paramref name="inputSpan"/> starting from base.runtextpos for the next location a match could possibly start.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if a possible match was found; false if no more matches are possible.</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.MultilineCodeTag_2.RunnerFactory.Runner.TryMatchAtCurrentPosition(System.ReadOnlySpan{System.Char})">
+            <summary>Determine whether <paramref name="inputSpan"/> at base.runtextpos is a match for the regular expression.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if the regular expression matches at the current position; otherwise, false.</returns>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.ParaTag_3">
+            <summary>Custom <see cref="T:System.Text.RegularExpressions.Regex"/>-derived type for the ParaTag method.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.ParaTag_3.Instance">
+            <summary>Cached, thread-safe singleton instance.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.ParaTag_3.#ctor">
+            <summary>Initializes the instance.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.ParaTag_3.RunnerFactory">
+            <summary>Provides a factory for creating <see cref="T:System.Text.RegularExpressions.RegexRunner"/> instances to be used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.ParaTag_3.RunnerFactory.CreateInstance">
+            <summary>Creates an instance of a <see cref="T:System.Text.RegularExpressions.RegexRunner"/> used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.ParaTag_3.RunnerFactory.Runner">
+            <summary>Provides the runner that contains the custom logic implementing the specified regular expression.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.ParaTag_3.RunnerFactory.Runner.Scan(System.ReadOnlySpan{System.Char})">
+            <summary>Scan the <paramref name="inputSpan"/> starting from base.runtextstart for the next match.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.ParaTag_3.RunnerFactory.Runner.TryFindNextPossibleStartingPosition(System.ReadOnlySpan{System.Char})">
+            <summary>Search <paramref name="inputSpan"/> starting from base.runtextpos for the next location a match could possibly start.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if a possible match was found; false if no more matches are possible.</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.ParaTag_3.RunnerFactory.Runner.TryMatchAtCurrentPosition(System.ReadOnlySpan{System.Char})">
+            <summary>Determine whether <paramref name="inputSpan"/> at base.runtextpos is a match for the regular expression.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if the regular expression matches at the current position; otherwise, false.</returns>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.HrefTag_4">
+            <summary>Custom <see cref="T:System.Text.RegularExpressions.Regex"/>-derived type for the HrefTag method.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.HrefTag_4.Instance">
+            <summary>Cached, thread-safe singleton instance.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.HrefTag_4.#ctor">
+            <summary>Initializes the instance.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.HrefTag_4.RunnerFactory">
+            <summary>Provides a factory for creating <see cref="T:System.Text.RegularExpressions.RegexRunner"/> instances to be used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.HrefTag_4.RunnerFactory.CreateInstance">
+            <summary>Creates an instance of a <see cref="T:System.Text.RegularExpressions.RegexRunner"/> used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.HrefTag_4.RunnerFactory.Runner">
+            <summary>Provides the runner that contains the custom logic implementing the specified regular expression.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.HrefTag_4.RunnerFactory.Runner.Scan(System.ReadOnlySpan{System.Char})">
+            <summary>Scan the <paramref name="inputSpan"/> starting from base.runtextstart for the next match.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.HrefTag_4.RunnerFactory.Runner.TryFindNextPossibleStartingPosition(System.ReadOnlySpan{System.Char})">
+            <summary>Search <paramref name="inputSpan"/> starting from base.runtextpos for the next location a match could possibly start.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if a possible match was found; false if no more matches are possible.</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.HrefTag_4.RunnerFactory.Runner.TryMatchAtCurrentPosition(System.ReadOnlySpan{System.Char})">
+            <summary>Determine whether <paramref name="inputSpan"/> at base.runtextpos is a match for the regular expression.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if the regular expression matches at the current position; otherwise, false.</returns>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.BrTag_5">
+            <summary>Custom <see cref="T:System.Text.RegularExpressions.Regex"/>-derived type for the BrTag method.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.BrTag_5.Instance">
+            <summary>Cached, thread-safe singleton instance.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.BrTag_5.#ctor">
+            <summary>Initializes the instance.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.BrTag_5.RunnerFactory">
+            <summary>Provides a factory for creating <see cref="T:System.Text.RegularExpressions.RegexRunner"/> instances to be used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.BrTag_5.RunnerFactory.CreateInstance">
+            <summary>Creates an instance of a <see cref="T:System.Text.RegularExpressions.RegexRunner"/> used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.BrTag_5.RunnerFactory.Runner">
+            <summary>Provides the runner that contains the custom logic implementing the specified regular expression.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.BrTag_5.RunnerFactory.Runner.Scan(System.ReadOnlySpan{System.Char})">
+            <summary>Scan the <paramref name="inputSpan"/> starting from base.runtextstart for the next match.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.BrTag_5.RunnerFactory.Runner.TryFindNextPossibleStartingPosition(System.ReadOnlySpan{System.Char})">
+            <summary>Search <paramref name="inputSpan"/> starting from base.runtextpos for the next location a match could possibly start.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if a possible match was found; false if no more matches are possible.</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.BrTag_5.RunnerFactory.Runner.TryMatchAtCurrentPosition(System.ReadOnlySpan{System.Char})">
+            <summary>Determine whether <paramref name="inputSpan"/> at base.runtextpos is a match for the regular expression.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if the regular expression matches at the current position; otherwise, false.</returns>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.LineBreaks_6">
+            <summary>Custom <see cref="T:System.Text.RegularExpressions.Regex"/>-derived type for the LineBreaks method.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.LineBreaks_6.Instance">
+            <summary>Cached, thread-safe singleton instance.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.LineBreaks_6.#ctor">
+            <summary>Initializes the instance.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.LineBreaks_6.RunnerFactory">
+            <summary>Provides a factory for creating <see cref="T:System.Text.RegularExpressions.RegexRunner"/> instances to be used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.LineBreaks_6.RunnerFactory.CreateInstance">
+            <summary>Creates an instance of a <see cref="T:System.Text.RegularExpressions.RegexRunner"/> used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.LineBreaks_6.RunnerFactory.Runner">
+            <summary>Provides the runner that contains the custom logic implementing the specified regular expression.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.LineBreaks_6.RunnerFactory.Runner.Scan(System.ReadOnlySpan{System.Char})">
+            <summary>Scan the <paramref name="inputSpan"/> starting from base.runtextstart for the next match.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.LineBreaks_6.RunnerFactory.Runner.TryFindNextPossibleStartingPosition(System.ReadOnlySpan{System.Char})">
+            <summary>Search <paramref name="inputSpan"/> starting from base.runtextpos for the next location a match could possibly start.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if a possible match was found; false if no more matches are possible.</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.LineBreaks_6.RunnerFactory.Runner.TryMatchAtCurrentPosition(System.ReadOnlySpan{System.Char})">
+            <summary>Determine whether <paramref name="inputSpan"/> at base.runtextpos is a match for the regular expression.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if the regular expression matches at the current position; otherwise, false.</returns>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.DoubleUpLineBreaks_7">
+            <summary>Custom <see cref="T:System.Text.RegularExpressions.Regex"/>-derived type for the DoubleUpLineBreaks method.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.DoubleUpLineBreaks_7.Instance">
+            <summary>Cached, thread-safe singleton instance.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.DoubleUpLineBreaks_7.#ctor">
+            <summary>Initializes the instance.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.DoubleUpLineBreaks_7.RunnerFactory">
+            <summary>Provides a factory for creating <see cref="T:System.Text.RegularExpressions.RegexRunner"/> instances to be used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.DoubleUpLineBreaks_7.RunnerFactory.CreateInstance">
+            <summary>Creates an instance of a <see cref="T:System.Text.RegularExpressions.RegexRunner"/> used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.DoubleUpLineBreaks_7.RunnerFactory.Runner">
+            <summary>Provides the runner that contains the custom logic implementing the specified regular expression.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.DoubleUpLineBreaks_7.RunnerFactory.Runner.Scan(System.ReadOnlySpan{System.Char})">
+            <summary>Scan the <paramref name="inputSpan"/> starting from base.runtextstart for the next match.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.DoubleUpLineBreaks_7.RunnerFactory.Runner.TryFindNextPossibleStartingPosition(System.ReadOnlySpan{System.Char})">
+            <summary>Search <paramref name="inputSpan"/> starting from base.runtextpos for the next location a match could possibly start.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if a possible match was found; false if no more matches are possible.</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.DoubleUpLineBreaks_7.RunnerFactory.Runner.TryMatchAtCurrentPosition(System.ReadOnlySpan{System.Char})">
+            <summary>Determine whether <paramref name="inputSpan"/> at base.runtextpos is a match for the regular expression.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if the regular expression matches at the current position; otherwise, false.</returns>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.Utilities">
+            <summary>Helper methods used by generated <see cref="T:System.Text.RegularExpressions.Regex"/>-derived implementations.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_defaultTimeout">
+            <summary>Default timeout value set in <see cref="T:System.AppContext"/>, or <see cref="F:System.Text.RegularExpressions.Regex.InfiniteMatchTimeout"/> if none was set.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_hasTimeout">
+            <summary>Whether <see cref="F:System.Text.RegularExpressions.Generated.Utilities.s_defaultTimeout"/> is non-infinite.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.Utilities.StackPush(System.Int32[]@,System.Int32@,System.Int32,System.Int32)">
+            <summary>Pushes 2 values onto the backtracking stack.</summary>
+        </member>
+    </members>
+</doc>

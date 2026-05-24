@@ -1,7 +1,7 @@
 namespace DataAccess;
 
 using Common.Entities;
-using DataAccess.Map;
+using DataAccess.Mapping;
 using Microsoft.EntityFrameworkCore;
 
 public class DatabaseContext : DbContext

@@ -5,14 +5,14 @@ using Common.Models.Pizza;
 public static class PizzaMapper
 {
 	public static PizzaModel Map(this Pizza entity)
-		=> new()
-		{
-			Id = entity.Id,
-			Name = entity.Name,
-			Description = entity.Description,
-			Price = entity.Price,
-			DateCreated = entity.DateCreated
-		};
+	=> new()
+	{
+		Id = entity.Id,
+		Name = entity.Name,
+		Description = entity.Description,
+		Price = entity.Price,
+		DateCreated = entity.DateCreated
+	};
 
 	public static Pizza Map(this PizzaModel model)
 	{
@@ -33,9 +33,8 @@ public static class PizzaMapper
 	}
 
 	public static IEnumerable<PizzaModel> Map(this List<Pizza> entities)
-		=> entities.Select(x => x.Map());
+	=> entities.Select(x => x.Map());
 
 	public static IEnumerable<Pizza> Map(this List<PizzaModel> models)
-		=> models.Select(x => x.Map());
+	=> models.Select(x => x.Map());
 }
-

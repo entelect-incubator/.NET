@@ -2,7 +2,7 @@ namespace Api.Helpers;
 
 using System.Collections.Concurrent;
 using System.Reflection;
-using Dispatch;
+using Core;
 
 public static class DispatcherExtensions
 {
@@ -46,8 +46,5 @@ public static class DispatcherExtensions
 	}
 
 	public static Task Publish<TNotification>(this Dispatcher dispatcher, TNotification notification, CancellationToken ct = default)
-		where TNotification : INotification
-	{
-		return dispatcher.Publish(notification, ct);
-	}
+		where TNotification : INotification => dispatcher.Publish(notification, ct);
 }

@@ -38,6 +38,12 @@ public class Startup
         services.AddSingleton<IOrderCompleteJob, OrderCompleteJob>();
 
         services.AddLazyCache();
+        services.Configure<CookiePolicyOptions>(options =>
+        {
+            options.HttpOnly = HttpOnlyPolicy.Always;
+            options.Secure = CookieSecurePolicy.Always;
+            options.MinimumSameSitePolicy = SameSiteMode.Strict;
+        });
 
         DependencyInjection.AddApplication(services);
     }
@@ -66,6 +72,14 @@ public class Startup
         }
 
         app.UseHttpsRedirection();
+        app.UseCookiePolicy();
+        app.Use(async (context, next) =>
+        {
+            context.Response.Headers["X-Content-Type-Options"] = "nosniff";
+            context.Response.Headers["X-Frame-Options"] = "DENY";
+            context.Response.Headers["Referrer-Policy"] = "no-referrer";
+            await next();
+        });
         app.UseStaticFiles();
 
         app.UseRouting();

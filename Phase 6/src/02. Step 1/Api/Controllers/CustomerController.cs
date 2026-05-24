@@ -1,10 +1,14 @@
 namespace Api.Controllers;
 
+using Api.Helpers;
 using Common.Models.Customer;
 using Core.Customer.Commands;
 using Core.Customer.Queries;
+using Microsoft.AspNetCore.Mvc;
 
-public class CustomerController : ApiController
+[ApiController]
+[Route("[controller]")]
+public class CustomerController(Dispatcher dispatcher) : ControllerBase
 {
 	/// <summary>
 	/// Get Customer by Id.
@@ -20,7 +24,7 @@ public class CustomerController : ApiController
 	[ProducesResponseType(typeof(ErrorResult), 404)]
 	public async Task<ActionResult> GetCustomer(int id)
 	{
-		var result = await this.Dispatcher.Query(new GetCustomerQuery { Id = id }, CancellationToken.None);
+		var result = await dispatcher.Query(new GetCustomerQuery { Id = id }, CancellationToken.None);
 		return ResponseHelper.ResponseOutcome(result, this);
 	}
 
@@ -37,7 +41,7 @@ public class CustomerController : ApiController
 	[Route("Search")]
 	public async Task<ActionResult> Search(SearchCustomerModel data)
 	{
-		var result = await this.Dispatcher.Query(
+		var result = await dispatcher.Query(
 			new GetCustomersQuery()
 			{
 				Data = data
@@ -67,7 +71,7 @@ public class CustomerController : ApiController
 	[ProducesResponseType(typeof(ErrorResult), 400)]
 	public async Task<ActionResult<CustomerModel>> Create(CreateCustomerModel model)
 	{
-		var result = await this.Dispatcher.Send(new CreateCustomerCommand
+		var result = await dispatcher.Send(new CreateCustomerCommand
 		{
 			Data = model
 		});
@@ -97,7 +101,7 @@ public class CustomerController : ApiController
 	[ProducesResponseType(typeof(Result), 404)]
 	public async Task<ActionResult> Update(UpdateCustomerModel model)
 	{
-		var result = await this.Dispatcher.Send(new UpdateCustomerCommand
+		var result = await dispatcher.Send(new UpdateCustomerCommand
 		{
 			Data = model
 		});
@@ -117,7 +121,7 @@ public class CustomerController : ApiController
 	[ProducesResponseType(typeof(ErrorResult), 400)]
 	public async Task<ActionResult> Delete(int id)
 	{
-		var result = await this.Dispatcher.Send(new DeleteCustomerCommand { Id = id });
+		var result = await dispatcher.Send(new DeleteCustomerCommand { Id = id });
 		return ResponseHelper.ResponseOutcome(result, this);
 	}
 }

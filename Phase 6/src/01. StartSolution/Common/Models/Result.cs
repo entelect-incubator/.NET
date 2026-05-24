@@ -2,9 +2,7 @@ namespace Common.Models;
 
 public class Result
 {
-	public Result()
-	{
-	}
+	public Result() => this.Errors = [];
 
 	internal Result(bool succeeded, string error)
 	{
@@ -50,12 +48,14 @@ public class Result<T>
 		[
 			error
 		];
+		this.Data = default!;
 	}
 
 	internal Result(bool succeeded, List<object> errors)
 	{
 		this.Succeeded = succeeded;
 		this.Errors = errors;
+		this.Data = default!;
 	}
 
 	internal Result(bool succeeded, T data, List<object> errors)
@@ -65,76 +65,28 @@ public class Result<T>
 		this.Data = data;
 	}
 
+	internal Result(T data, int count)
+	{
+		this.Succeeded = true;
+		this.Data = data;
+		this.Count = count;
+		this.Errors = [];
+	}
 	public bool Succeeded { get; set; }
 
 	public T Data { get; set; }
+
+	public int Count { get; set; }
 
 	public List<object> Errors { get; set; }
 
 	public static Result<T> Success(T data) => new(true, data, []);
 
+	public static Result<T> Success(T data, int count) => new(data, count);
+
 	public static Result<T> Failure(string error) => new(false, error);
 
 	public static Result<T> Failure(List<object> errors) => new(false, errors);
-}
-
-public class ListResult<T>
-{
-	internal ListResult(bool succeeded, string error)
-	{
-		this.Succeeded = succeeded;
-		this.Errors =
-		[
-			error
-		];
-	}
-
-	internal ListResult(bool succeeded, List<object> errors)
-	{
-		this.Succeeded = succeeded;
-		this.Errors = errors;
-	}
-
-	internal ListResult(bool succeeded, List<T> data, int count, List<object> errors)
-	{
-		this.Succeeded = succeeded;
-		this.Errors = errors;
-		this.Data = data;
-		this.Count = count;
-	}
-
-	internal ListResult(bool succeeded, IEnumerable<T> data, int count, List<object> errors)
-	{
-		this.Succeeded = succeeded;
-		this.Errors = errors;
-		this.Data = data.ToList();
-		this.Count = count;
-	}
-
-	public bool Succeeded { get; set; }
-
-	public List<T> Data { get; set; }
-
-	public List<object> Errors { get; set; }
-
-	public int Count { get; set; }
-
-	public static ListResult<T> Success(List<T> data, int count) => new(true, data, count, []);
-
-	public static ListResult<T> Success(IEnumerable<T> data, int count) => new(true, data, count, []);
-
-	public static ListResult<T> Failure(string error) => new(false, error);
-
-	public static ListResult<T> Failure(List<object> errors) => new(false, errors);
-}
-
-public class ListOutcome<T>
-{
-	public List<T>? Data { get; set; }
-
-	public int Count { get; set; }
-
-	public List<string>? Errors { get; set; }
 }
 
 public class ErrorResult : Result

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Common.DTO;
 using Core.Email;
 using Core.Notify.Commands;
+using Utilities.CQRS;
 
 public class OrderCompletedEvent : INotification
 {
@@ -15,9 +16,9 @@ public class OrderCompletedEvent : INotification
 
 public class OrderCompletedEventHandler : INotificationHandler<OrderCompletedEvent>
 {
-    private readonly IMediator mediator;
+    private readonly Dispatcher dispatcher;
 
-    public OrderCompletedEventHandler(IMediator mediator) => this.mediator = mediator;
+    public OrderCompletedEventHandler(Dispatcher dispatcher) => this.dispatcher = dispatcher;
 
     public async Task Handle(OrderCompletedEvent notification, CancellationToken cancellationToken)
     {
@@ -34,7 +35,7 @@ public class OrderCompletedEventHandler : INotificationHandler<OrderCompletedEve
         var send = await emailService.SendEmail();
 
         var customer = notification.CompletedOrder?.Customer;
-        var notify = await this.mediator.Send(
+        await this.dispatcher.Send<CreateNotifyCommand, Result<NotifyDTO>>(
             new CreateNotifyCommand
             {
                 Data = new NotifyDTO

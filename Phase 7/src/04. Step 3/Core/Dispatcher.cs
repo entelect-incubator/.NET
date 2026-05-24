@@ -23,11 +23,6 @@ public interface INotificationHandler<TNotification>
 	Task Handle(TNotification notification, CancellationToken ct);
 }
 
-public interface IPipelineBehavior<TRequest, TResult>
-{
-	Task<TResult> Handle(TRequest request, Func<Task<TResult>> next, CancellationToken ct);
-}
-
 public interface IQuery<TResult>
 {
 }
@@ -131,7 +126,8 @@ public class Dispatcher(IServiceProvider provider)
 	}
 
 	// Priority sorting utilities
-	private IEnumerable<IRequestExceptionAction<TRequest, TEx>> GetExceptionActions<TRequest, TEx>() where TEx : Exception
+	private IEnumerable<IRequestExceptionAction<TRequest, TEx>> GetExceptionActions<TRequest, TEx>()
+		where TEx : Exception
 	{
 		var all = provider.GetServices<IRequestExceptionAction<TRequest, TEx>>();
 		return SortByPriority(typeof(TRequest), all);
@@ -159,9 +155,20 @@ public class Dispatcher(IServiceProvider provider)
 		var itemAsm = itemType.Assembly;
 		var itemNs = itemType.Namespace ?? string.Empty;
 
-		if (itemAsm == reqAsm) score += 4;
-		if (itemNs.StartsWith(reqNs, StringComparison.Ordinal)) score += 2;
-		if (reqNs.Contains(itemNs, StringComparison.Ordinal)) score += 1;
+		if (itemAsm == reqAsm)
+		{
+			score += 4;
+		}
+
+		if (itemNs.StartsWith(reqNs, StringComparison.Ordinal))
+		{
+			score += 2;
+		}
+
+		if (reqNs.Contains(itemNs, StringComparison.Ordinal))
+		{
+			score += 1;
+		}
 
 		return score;
 	}

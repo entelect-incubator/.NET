@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>Bogus</id>
+    <version>35.6.5</version>
+    <authors>Brian Chavez</authors>
+    <license type="file">LICENSE</license>
+    <licenseUrl>https://aka.ms/deprecateLicenseUrl</licenseUrl>
+    <icon>bogus.128.png</icon>
+    <projectUrl>https://github.com/bchavez/Bogus</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/bchavez/Bogus/master/Docs/logo.png</iconUrl>
+    <description>A simple and sane data generator for populating objects that supports different locales. A delightful port of the famed faker.js and inspired by FluentValidation. Use Bogus to create UIs with fake data or seed databases. Get started by using Faker class or a DataSet directly.</description>
+    <releaseNotes>## v35.6.5
+Release Date: 2025-10-25
+* PR 622: Adds music and vehicle faker classes to parse method and unit tests. Thanks Perks-of-Being-a-Cauliflower!
+
+## v35.6.4
+Release Date: 2025-09-25
+* PR 614: Adds Extension Method to generate Iranian National Numbers. Thanks @amirh-p!
+* PR 607, 617, 618, 616, 615: General code improvements. Thanks @SimonCropp!
+* Issue 619 and PR 620: Replaced defunct Placeholder.com with placehold.co. Image.PlaceholderUrl should work again. Thanks mahmmoudkinawy!
+
+## v35.6.3
+Release Date: 2025-04-12
+* Issue 601: Fixes `Internet.Avatar()` URL generation. Moves from Cloudflare IPFS to IPFS.io.
+* Fixed broken checksum calculation test in `BelgianExtensionTests`.
+* .NET SDK 9 now required for builds. Various C# improvements and modernizations. Thanks @SimonCropp!
+
+## v35.6.2
+Release Date: 2025-02-20
+* PR 584: Pack LICENSE file with NuGet package. Also, use ProjectIcon.
+* Issue 581: Fix `Randomizer.ULong()` arithmetic overflow. Thanks @reuterma24!
+* PR 586: Use .NET 9 SDK build tooling. Thanks @SimonCropp!
+* PR 587: Fix CS1584 incorrect use of cref in XML doc comment. Thanks @SimonCropp!
+* PR 589: Unlock ability to use any .NET SDK build tooling on AppVeyor. Thanks @SimonCropp!
+
+## v35.6.1
+Release Date: 2024-09-02
+* PR 560: Ensure Belgian National Numbers has padded checksum. Thanks @vyruz1986!
+
+
+Full History Here: https://github.com/bchavez/Bogus/blob/master/HISTORY.md</releaseNotes>
+    <tags>faker fake bogus poco data generator database seed values test-data test tdd testing .net EF</tags>
+    <repository type="git" url="https://github.com/bchavez/Bogus" commit="70fd9acc9491058b77283a65f1fb7873483f6bd7" />
+    <dependencies>
+      <group targetFramework=".NETFramework4.0" />
+      <group targetFramework=".NETStandard1.3">
+        <dependency id="NETStandard.Library" version="1.6.1" exclude="Build,Analyzers" />
+        <dependency id="System.Globalization.Extensions" version="4.3.0" exclude="Build,Analyzers" />
+        <dependency id="System.Reflection.TypeExtensions" version="4.3.0" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework="net6.0" />
+      <group targetFramework=".NETStandard2.0" />
+    </dependencies>
+    <frameworkAssemblies>
+      <frameworkAssembly assemblyName="Microsoft.CSharp" targetFramework=".NETFramework4.0" />
+      <frameworkAssembly assemblyName="System" targetFramework=".NETFramework4.0" />
+    </frameworkAssemblies>
+  </metadata>
+</package>

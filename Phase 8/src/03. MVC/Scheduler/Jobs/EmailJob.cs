@@ -1,16 +1,16 @@
 ﻿namespace Scheduler.Jobs;
 
 using System.Threading.Tasks;
+using Common.CQRS;
 using Core.Todos.Commands;
-using MediatR;
 
 public interface IEmailJob
 {
 	Task SendAsync(CancellationToken cancellationToken = default);
 }
 
-public sealed class EmailJob(IMediator mediator) : IEmailJob
+public sealed class EmailJob(Dispatcher dispatcher) : IEmailJob
 {
 	public async Task SendAsync(CancellationToken cancellationToken = default)
-		=> await mediator.Send(new ExpiredTodoCommand() { ToEmail = "fakeemail@test.com" }, cancellationToken);
+		=> await dispatcher.Send(new ExpiredTodoCommand() { ToEmail = "fakeemail@test.com" }, cancellationToken);
 }

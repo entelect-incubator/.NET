@@ -2,14 +2,14 @@
 
 using Common.Models.Todos;
 
-public class UpdateTodoCommand : IRequest<Result<TodoModel>>
+public class UpdateTodoCommand : ICommand<Result<TodoModel>>
 {
 	public required int Id { get; set; }
 
 	public required UpdateTodoModel Data { get; set; }
 }
 
-public class UpdateTodoCommandHandler(DatabaseContext databaseContext) : IRequestHandler<UpdateTodoCommand, Result<TodoModel>>
+public class UpdateTodoCommandHandler(DatabaseContext databaseContext) : ICommandHandler<UpdateTodoCommand, Result<TodoModel>>
 {
 	private const string ERROR = "Error updating a task";
 

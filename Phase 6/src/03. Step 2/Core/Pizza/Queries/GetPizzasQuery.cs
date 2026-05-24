@@ -1,6 +1,8 @@
 namespace Core.Pizza.Queries;
 
 using System.Linq;
+using Core;
+using DataAccess.Filters;
 using LazyCache;
 
 public sealed class GetPizzasQuery : IQuery<ListResult<PizzaModel>>
@@ -17,7 +19,7 @@ public sealed class GetPizzasQueryHandler(DatabaseContext databaseContext, IAppC
 		var entity = request.Data;
 
 		Task<IEnumerable<PizzaModel>> DataDelegate() => this.GetData();
-		var cachedData = await cache.GetOrAddAsync(Common.Data.CacheKey, DataDelegate, this.cacheExpiry);
+		var cachedData = await cache.GetOrAddAsync(Common.CacheData.CacheKey, DataDelegate, this.cacheExpiry);
 
 		if (cachedData != null)
 		{

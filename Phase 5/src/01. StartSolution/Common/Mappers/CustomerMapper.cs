@@ -1,6 +1,6 @@
 ﻿namespace Common.Mappers;
 
-using Common.Models.Customer;
+using Common.Models;
 
 public static class CustomerMapper
 {

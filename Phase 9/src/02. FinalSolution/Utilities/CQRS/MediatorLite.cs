@@ -30,11 +30,27 @@ public class Dispatcher(IServiceProvider provider)
 		return handler.Handle(command, ct);
 	}
 
+	public Task<TResult> Send<TResult>(ICommand<TResult> command, CancellationToken ct = default)
+	{
+		var commandType = command.GetType();
+		var handlerType = typeof(ICommandHandler<,>).MakeGenericType(commandType, typeof(TResult));
+		dynamic handler = provider.GetRequiredService(handlerType);
+		return handler.Handle((dynamic)command, ct);
+	}
+
 	public Task<TResult> Query<TQuery, TResult>(TQuery query, CancellationToken ct = default)
 		where TQuery : IQuery<TResult>
 	{
 		var handler = provider.GetRequiredService<IQueryHandler<TQuery, TResult>>();
 		return handler.Handle(query, ct);
+	}
+
+	public Task<TResult> Query<TResult>(IQuery<TResult> query, CancellationToken ct = default)
+	{
+		var queryType = query.GetType();
+		var handlerType = typeof(IQueryHandler<,>).MakeGenericType(queryType, typeof(TResult));
+		dynamic handler = provider.GetRequiredService(handlerType);
+		return handler.Handle((dynamic)query, ct);
 	}
 
 	public async Task Publish<TNotification>(TNotification notification, CancellationToken ct = default)

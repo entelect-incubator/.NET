@@ -6,18 +6,18 @@ using Common.Mappers;
 using Core.Email;
 using Core.Notify.Commands;
 using Core.Pizza.Queries;
-using MediatR;
+using Utilities.CQRS;
 
 public interface IOrderCompleteJob
 {
 	Task SendNotificationAsync();
 }
 
-public sealed class OrderCompleteJob(IMediator mediator) : IOrderCompleteJob
+public sealed class OrderCompleteJob(Dispatcher dispatcher) : IOrderCompleteJob
 {
 	public async Task SendNotificationAsync()
 	{
-		var notifiesResult = await mediator.Send(new GetNotifiesQuery());
+		var notifiesResult = await dispatcher.Send(new GetNotifiesQuery());
 
 		if (!notifiesResult.HasError && notifiesResult.Data?.Count() != 0)
 		{
@@ -32,7 +32,7 @@ public sealed class OrderCompleteJob(IMediator mediator) : IOrderCompleteJob
 				if (!emailResult.HasError)
 				{
 					notification.Sent = true;
-					var updateNotifyResult = await mediator.Send(new UpdateNotifyCommand
+					var updateNotifyResult = await dispatcher.Send(new UpdateNotifyCommand
 					{
 						Id = notification.Id,
 						Sent = true

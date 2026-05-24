@@ -14,7 +14,7 @@
         <PackageReference Include="FluentValidation.AspNetCore" Version="11.2.2" />
         <PackageReference Include="Json.Net" Version="1.0.33" />
         <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="12.2.1" />
-        <PackageReference Include="MediatR" Version="11.0.0" />
+        <PackageReference Include="MediatR" Version="14.1.0" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     </ItemGroup>
 

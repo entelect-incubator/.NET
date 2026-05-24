@@ -44,7 +44,7 @@ public class TestCustomerCore : QueryTestBase
 				Id = this.model.Id
 			}, CancellationToken.None);
 
-		Assert.That(resultGet?.Data, Is.Not.Null);
+		Assert.That(resultGet.Data, Is.Not.Null);
 	}
 
 	[Test]
@@ -53,7 +53,7 @@ public class TestCustomerCore : QueryTestBase
 		var sutGetAll = new GetCustomersQueryHandler(this.Context);
 		var resultGetAll = await sutGetAll.Handle(new GetCustomersQuery(), CancellationToken.None);
 
-		Assert.That(resultGetAll?.Data.Count, Is.EqualTo(1));
+		Assert.That(resultGetAll.Data.Count, Is.EqualTo(1));
 	}
 
 	[Test]

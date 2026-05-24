@@ -5,21 +5,21 @@ using Common.Entities;
 using Common.Models.Todos;
 using LazyCache;
 
-public class GetTodosQuery : IRequest<Result<IEnumerable<TodoModel>>>
+public class GetTodosQuery : IQuery<Result<IEnumerable<TodoModel>>>
 {
 	public required SearchTodoModel Data { get; set; }
 }
 
-public class GetTodosQueryHandler(DatabaseContext databaseContext, IAppCache cache) : IRequestHandler<GetTodosQuery, Result<IEnumerable<TodoModel>>>
+public class GetTodosQueryHandler(DatabaseContext databaseContext, IAppCache cache) : IQueryHandler<GetTodosQuery, Result<IEnumerable<TodoModel>>>
 {
-	private readonly TimeSpan CacheExpiry = new(12, 0, 0);
+	private readonly TimeSpan cacheExpiry = new(12, 0, 0);
 
 	public async Task<Result<IEnumerable<TodoModel>>> Handle(GetTodosQuery request, CancellationToken cancellationToken)
 	{
 		var entity = request.Data!;
 
 		Task<IEnumerable<Todo>> DataDelegate() => this.GetData();
-		var cachedData = await cache.GetOrAddAsync(CacheData.CacheKey, DataDelegate, this.CacheExpiry);
+		var cachedData = await cache.GetOrAddAsync(CacheData.CacheKey, DataDelegate, this.cacheExpiry);
 
 		if (cachedData is not null)
 		{
@@ -38,11 +38,11 @@ public class GetTodosQueryHandler(DatabaseContext databaseContext, IAppCache cac
 			.FilterByTask(entity.Task)
 			.FilterByCompleted(entity.IsCompleted)
 			.FilterByDate(entity.DateCreated, entity.Year, entity.Month, entity.Day)
-			.OrderBy(entity.OrderBy);		
+			.OrderBy(entity.OrderBy);
 
 		var count = entities.Count();
 
-		if(count is 0)
+		if (count is 0)
 		{
 			return Result<IEnumerable<TodoModel>>.Success([], 0);
 		}

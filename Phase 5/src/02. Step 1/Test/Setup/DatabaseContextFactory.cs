@@ -8,7 +8,7 @@ public class DatabaseContextFactory
 
 	public static DatabaseContext DBContext()
 	{
-		var options = new DbContextOptionsBuilder<DbContext>().UseInMemoryDatabase("EListDb").Options;
+		var options = new DbContextOptionsBuilder<DbContext>().UseInMemoryDatabase("PezzaDB").Options;
 		return new DatabaseContext(options);
 	}
 

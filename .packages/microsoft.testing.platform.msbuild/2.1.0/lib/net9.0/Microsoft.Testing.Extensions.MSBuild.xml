@@ -1,0 +1,410 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Microsoft.Testing.Extensions.MSBuild</name>
+    </assembly>
+    <members>
+        <member name="P:Microsoft.Testing.Extensions.MSBuild.Resources.ExtensionResources.MSBuildExtensionsDescription">
+            <summary>Extension used to pass parameters from MSBuild node and the hosts</summary>
+        </member>
+        <member name="T:Microsoft.Testing.Platform.MSBuild.MSBuildExtensions">
+            <summary>
+            Extension methods for adding MSBuild support to the test application builder.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Testing.Platform.MSBuild.MSBuildExtensions.AddMSBuild(Microsoft.Testing.Platform.Builder.ITestApplicationBuilder)">
+            <summary>
+            Adds MSBuild support to the test application builder.
+            </summary>
+            <param name="builder">The test application builder.</param>
+        </member>
+        <member name="T:Microsoft.Testing.Platform.MSBuild.TestingPlatformBuilderHook">
+            <summary>
+            This class is used by Microsoft.Testing.Platform.MSBuild to hook into the Testing Platform Builder to add MSBuild support.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Testing.Platform.MSBuild.TestingPlatformBuilderHook.AddExtensions(Microsoft.Testing.Platform.Builder.ITestApplicationBuilder,System.String[])">
+            <summary>
+            Adds MSBuild support to the Testing Platform Builder.
+            </summary>
+            <param name="testApplicationBuilder">The test application builder.</param>
+            <param name="_">The command line arguments.</param>
+        </member>
+        <member name="M:Microsoft.Testing.Platform.IPC.NamedPipeServer.InternalLoopAsync(System.Threading.CancellationToken)">
+            <summary>
+            4 bytes = message size
+            ------- Payload -------
+            4 bytes = serializer id
+            x bytes = object buffer.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Ensure.Equal``1(``0,``0,System.String)">
+            <summary>Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if <paramref name="value"/> is not equal to <paramref name="other"/>.</summary>
+            <param name="value">The argument to validate as equal to <paramref name="other"/>.</param>
+            <param name="other">The value to compare with <paramref name="value"/>.</param>
+            <param name="name">The name of the parameter with which <paramref name="value"/> corresponds.</param>
+        </member>
+        <member name="M:Polyfills.Ensure.NotEqual``1(``0,``0,System.String)">
+            <summary>Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if <paramref name="value"/> is equal to <paramref name="other"/>.</summary>
+            <param name="value">The argument to validate as not equal to <paramref name="other"/>.</param>
+            <param name="other">The value to compare with <paramref name="value"/>.</param>
+            <param name="name">The name of the parameter with which <paramref name="value"/> corresponds.</param>
+        </member>
+        <member name="M:Polyfills.Ensure.NotGreaterThan``1(``0,``0,System.String)">
+            <summary>Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if <paramref name="value"/> is greater than <paramref name="other"/>.</summary>
+            <param name="value">The argument to validate as less or equal than <paramref name="other"/>.</param>
+            <param name="other">The value to compare with <paramref name="value"/>.</param>
+            <param name="name">The name of the parameter with which <paramref name="value"/> corresponds.</param>
+        </member>
+        <member name="M:Polyfills.Ensure.NotGreaterThanOrEqual``1(``0,``0,System.String)">
+            <summary>Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if <paramref name="value"/> is greater than or equal <paramref name="other"/>.</summary>
+            <param name="value">The argument to validate as less than <paramref name="other"/>.</param>
+            <param name="other">The value to compare with <paramref name="value"/>.</param>
+            <param name="name">The name of the parameter with which <paramref name="value"/> corresponds.</param>
+        </member>
+        <member name="M:Polyfills.Ensure.NotLessThan``1(``0,``0,System.String)">
+            <summary>Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if <paramref name="value"/> is less than <paramref name="other"/>.</summary>
+            <param name="value">The argument to validate as greater than or equal than <paramref name="other"/>.</param>
+            <param name="other">The value to compare with <paramref name="value"/>.</param>
+            <param name="name">The name of the parameter with which <paramref name="value"/> corresponds.</param>
+        </member>
+        <member name="M:Polyfills.Ensure.NotLessThanOrEqual``1(``0,``0,System.String)">
+            <summary>Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if <paramref name="value"/> is less than or equal <paramref name="other"/>.</summary>
+            <param name="value">The argument to validate as greater than <paramref name="other"/>.</param>
+            <param name="other">The value to compare with <paramref name="value"/>.</param>
+            <param name="name">The name of the parameter with which <paramref name="value"/> corresponds.</param>
+        </member>
+        <member name="M:Polyfills.Ensure.NotNegative``1(``0,System.String)">
+            <summary>Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if <paramref name="value"/> is negative.</summary>
+            <param name="value">The argument to validate as non-negative.</param>
+            <param name="name">The name of the parameter with which <paramref name="value"/> corresponds.</param>
+        </member>
+        <member name="M:Polyfills.Ensure.NotNegativeOrZero``1(``0,System.String)">
+            <summary>Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if <paramref name="value"/> is negative or zero.</summary>
+            <param name="value">The argument to validate as non-zero or non-negative.</param>
+            <param name="name">The name of the parameter with which <paramref name="value"/> corresponds.</param>
+        </member>
+        <member name="M:Polyfills.Ensure.NotZero``1(``0,System.String)">
+            <summary>Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if <paramref name="value"/> is zero.</summary>
+            <param name="value">The argument to validate as non-zero.</param>
+            <param name="name">The name of the parameter with which <paramref name="value"/> corresponds.</param>
+        </member>
+        <member name="M:Polyfills.Polyfill.InfiniteSequence``1(``0,``0)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$00EF3C2134D2076141FEFBF32646106D.InfiniteSequence``1(``0,``0)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.Sequence``1(``0,``0,``0)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$00EF3C2134D2076141FEFBF32646106D.Sequence``1(``0,``0,``0)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.TryParse(System.ReadOnlySpan{System.Byte},System.Guid@)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$68F3962AE5697E254AA596E55C7A8792.TryParse(System.ReadOnlySpan{System.Byte},System.Guid@)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.Parse(System.ReadOnlySpan{System.Byte})">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$68F3962AE5697E254AA596E55C7A8792.Parse(System.ReadOnlySpan{System.Byte})"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.OpenAsync(System.IO.Compression.ZipArchiveEntry,System.Threading.CancellationToken)">
+            <summary>
+            Opens the entry from the zip archive.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.CreateEntryFromFileAsync(System.IO.Compression.ZipArchive,System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Archives a file by compressing it and adding it to the zip archive.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.CreateEntryFromFileAsync(System.IO.Compression.ZipArchive,System.String,System.String,System.IO.Compression.CompressionLevel,System.Threading.CancellationToken)">
+            <summary>
+            Archives a file by compressing it and adding it to the zip archive.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.ExtractToDirectoryAsync(System.IO.Compression.ZipArchive,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Extracts all the files in the zip archive to a directory on the file system.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.ExtractToDirectoryAsync(System.IO.Compression.ZipArchive,System.String,System.Boolean,System.Threading.CancellationToken)">
+            <summary>
+            Extracts all the files in the zip archive to a directory on the file system.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.ExtractToFileAsync(System.IO.Compression.ZipArchiveEntry,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Extracts an entry in the zip archive to a file.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.ExtractToFileAsync(System.IO.Compression.ZipArchiveEntry,System.String,System.Boolean,System.Threading.CancellationToken)">
+            <summary>
+            Extracts an entry in the zip archive to a file.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.Except``1(System.Collections.Generic.IEnumerable{``0},``0)">
+            <summary>
+            Produces a set items excluding <paramref name="item"/> by using the default equality comparer to compare values.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.Except``1(System.Collections.Generic.IEnumerable{``0},``0,System.Collections.Generic.IEqualityComparer{``0})">
+            <summary>
+            Produces a set items excluding <paramref name="item"/> by using <paramref name="comparer"/> to compare values.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.Except``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEqualityComparer{``0},``0[])">
+            <summary>
+            Produces the set difference of two sequences by <paramref name="comparer"/> to compare values.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.Contains``1(System.ReadOnlySpan{``0},``0,System.Collections.Generic.IEqualityComparer{``0})">
+            <summary>
+            Indicates whether a specified value occurs within a read-only span.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.CountAny``1(System.ReadOnlySpan{``0},System.Buffers.SearchValues{``0})">
+            <summary>Counts the number of times any of the specified <paramref name="values"/> occurs in the <paramref name="span"/>.</summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.CountAny``1(System.ReadOnlySpan{``0},System.ReadOnlySpan{``0})">
+            <summary>Counts the number of times any of the specified <paramref name="values"/> occurs in the <paramref name="span"/>.</summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.CountAny``1(System.ReadOnlySpan{``0},System.ReadOnlySpan{``0},System.Collections.Generic.IEqualityComparer{``0})">
+            <summary>Counts the number of times any of the specified <paramref name="values"/> occurs in the <paramref name="span"/>.</summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.IndexOf``1(System.ReadOnlySpan{``0},``0,System.Collections.Generic.IEqualityComparer{``0})">
+            <summary>
+            Searches for the specified value and returns the index of its first occurrence. If not found, returns -1. Values are compared using IEquatable{T}.Equals(T).
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.IndexOfAny``1(System.ReadOnlySpan{``0},System.ReadOnlySpan{``0},System.Collections.Generic.IEqualityComparer{``0})">
+            <summary>
+            Searches for the first index of any of the specified values similar to calling IndexOf several times with the logical OR operator. If not found, returns -1.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.Nanoseconds(System.TimeSpan)">
+            <summary>
+            Gets the nanosecond component of the time represented by the current <see cref="T:System.TimeSpan"/> object.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.Nanosecond(System.DateTime)">
+            <summary>
+            Gets the nanosecond component of the time represented by the current <see cref="T:System.DateTime"/> object.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.Nanosecond(System.DateTimeOffset)">
+            <summary>
+            Gets the nanosecond component of the time represented by the current <see cref="T:System.DateTimeOffset"/> object.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.Microseconds(System.TimeSpan)">
+            <summary>
+            Gets the microsecond component of the time represented by the current <see cref="T:System.TimeSpan"/> object.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.Microsecond(System.DateTime)">
+            <summary>
+            Gets the microsecond component of the time represented by the current <see cref="T:System.DateTime"/> object.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.Microsecond(System.DateTimeOffset)">
+            <summary>
+            Gets the microsecond component of the time represented by the current <see cref="T:System.DateTimeOffset"/> object.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.AsReadOnly``1(System.Collections.Generic.ISet{``0})">
+            <summary>
+            Returns a read-only <see cref="!:ReadOnlySet"/> wrapper for the specified set.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.IsNormalized(System.ReadOnlySpan{System.Char},System.Text.NormalizationForm)">
+            <summary>
+            Indicates whether the specified string is in Unicode normalization form C.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.IsGenericMethodParameter(System.Type)">
+            <summary>
+            Gets a value that indicates whether the current Type represents a type parameter in the definition of a generic method.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.IsAssignableTo``1(System.Type)">
+            <summary>
+            Generic version of Type.IsAssignableTo https://learn.microsoft.com/en-us/dotnet/api/system.type.isassignableto.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.IsAssignableFrom``1(System.Type)">
+            <summary>
+            Generic version of Type.IsAssignableFrom https://learn.microsoft.com/en-us/dotnet/api/system.type.isassignablefrom.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.Append(System.Text.StringBuilder,System.Text.StringBuilder.AppendInterpolatedStringHandler@)">
+            <summary>Appends the specified interpolated string to this instance.</summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.Append(System.Text.StringBuilder,System.IFormatProvider,System.Text.StringBuilder.AppendInterpolatedStringHandler@)">
+            <summary>Appends the specified interpolated string to this instance.</summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.AppendLine(System.Text.StringBuilder,System.Text.StringBuilder.AppendInterpolatedStringHandler@)">
+            <summary>Appends the specified interpolated string followed by the default line terminator to the end of the current StringBuilder object.</summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.AppendLine(System.Text.StringBuilder,System.IFormatProvider,System.Text.StringBuilder.AppendInterpolatedStringHandler@)">
+            <summary>Appends the specified interpolated string followed by the default line terminator to the end of the current StringBuilder object.</summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.ExtractToDirectoryAsync(System.String,System.String,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$4E14A39FD01773A148FA55FFD9F99471.ExtractToDirectoryAsync(System.String,System.String,System.Threading.CancellationToken)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.ExtractToDirectoryAsync(System.String,System.String,System.Boolean,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$4E14A39FD01773A148FA55FFD9F99471.ExtractToDirectoryAsync(System.String,System.String,System.Boolean,System.Threading.CancellationToken)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.ExtractToDirectoryAsync(System.String,System.String,System.Text.Encoding,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$4E14A39FD01773A148FA55FFD9F99471.ExtractToDirectoryAsync(System.String,System.String,System.Text.Encoding,System.Threading.CancellationToken)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.ExtractToDirectoryAsync(System.String,System.String,System.Text.Encoding,System.Boolean,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$4E14A39FD01773A148FA55FFD9F99471.ExtractToDirectoryAsync(System.String,System.String,System.Text.Encoding,System.Boolean,System.Threading.CancellationToken)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.CreateFromDirectoryAsync(System.String,System.String,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$4E14A39FD01773A148FA55FFD9F99471.CreateFromDirectoryAsync(System.String,System.String,System.Threading.CancellationToken)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.CreateFromDirectoryAsync(System.String,System.String,System.IO.Compression.CompressionLevel,System.Boolean,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$4E14A39FD01773A148FA55FFD9F99471.CreateFromDirectoryAsync(System.String,System.String,System.IO.Compression.CompressionLevel,System.Boolean,System.Threading.CancellationToken)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.CreateFromDirectoryAsync(System.String,System.String,System.IO.Compression.CompressionLevel,System.Boolean,System.Text.Encoding,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:Polyfills.Polyfill.&lt;G&gt;$4E14A39FD01773A148FA55FFD9F99471.CreateFromDirectoryAsync(System.String,System.String,System.IO.Compression.CompressionLevel,System.Boolean,System.Text.Encoding,System.Threading.CancellationToken)"/>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$00EF3C2134D2076141FEFBF32646106D.InfiniteSequence``1(``0,``0)">
+            <summary>
+            Generates an infinite sequence that begins with <paramref name="start"/> and yields additional values each incremented by <paramref name="step"/>.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$00EF3C2134D2076141FEFBF32646106D.Sequence``1(``0,``0,``0)">
+            <summary>
+            Generates a sequence that begins with <paramref name="start"/> and yields additional values each incremented by <paramref name="step"/> until <paramref name="endInclusive"/> is reached.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$68F3962AE5697E254AA596E55C7A8792.TryParse(System.ReadOnlySpan{System.Byte},System.Guid@)">
+            <summary>
+            Tries to parse a span of UTF-8 bytes into a value.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$68F3962AE5697E254AA596E55C7A8792.Parse(System.ReadOnlySpan{System.Byte})">
+            <summary>
+            Parse a span of UTF-8 bytes into a value.
+            </summary>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$4E14A39FD01773A148FA55FFD9F99471.ExtractToDirectoryAsync(System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Asynchronously extracts all the files in the specified archive to a directory on the file system.
+            </summary>
+            <param name="sourceArchiveFileName">The path to the archive to extract.</param>
+            <param name="destinationDirectoryName">The path to the directory in which to place the extracted files.</param>
+            <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+            <returns>A task that represents the asynchronous extract operation.</returns>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$4E14A39FD01773A148FA55FFD9F99471.ExtractToDirectoryAsync(System.String,System.String,System.Boolean,System.Threading.CancellationToken)">
+            <summary>
+            Asynchronously extracts all the files in the specified archive to a directory on the file system.
+            </summary>
+            <param name="sourceArchiveFileName">The path to the archive to extract.</param>
+            <param name="destinationDirectoryName">The path to the directory in which to place the extracted files.</param>
+            <param name="overwriteFiles">true to overwrite existing files; false otherwise.</param>
+            <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+            <returns>A task that represents the asynchronous extract operation.</returns>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$4E14A39FD01773A148FA55FFD9F99471.ExtractToDirectoryAsync(System.String,System.String,System.Text.Encoding,System.Threading.CancellationToken)">
+            <summary>
+            Asynchronously extracts all the files in the specified archive to a directory on the file system and uses the specified character encoding for entry names.
+            </summary>
+            <param name="sourceArchiveFileName">The path to the archive to extract.</param>
+            <param name="destinationDirectoryName">The path to the directory in which to place the extracted files.</param>
+            <param name="entryNameEncoding">The encoding to use when reading entry names in this archive.</param>
+            <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+            <returns>A task that represents the asynchronous extract operation.</returns>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$4E14A39FD01773A148FA55FFD9F99471.ExtractToDirectoryAsync(System.String,System.String,System.Text.Encoding,System.Boolean,System.Threading.CancellationToken)">
+            <summary>
+            Asynchronously extracts all the files in the specified archive to a directory on the file system and uses the specified character encoding for entry names.
+            </summary>
+            <param name="sourceArchiveFileName">The path to the archive to extract.</param>
+            <param name="destinationDirectoryName">The path to the directory in which to place the extracted files.</param>
+            <param name="entryNameEncoding">The encoding to use when reading entry names in this archive.</param>
+            <param name="overwriteFiles">true to overwrite existing files; false otherwise.</param>
+            <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+            <returns>A task that represents the asynchronous extract operation.</returns>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$4E14A39FD01773A148FA55FFD9F99471.CreateFromDirectoryAsync(System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Asynchronously creates a zip archive that contains the files and directories from the specified directory.
+            </summary>
+            <param name="sourceDirectoryName">The path to the directory to archive.</param>
+            <param name="destinationArchiveFileName">The path of the archive to create.</param>
+            <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+            <returns>A task that represents the asynchronous create operation.</returns>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$4E14A39FD01773A148FA55FFD9F99471.CreateFromDirectoryAsync(System.String,System.String,System.IO.Compression.CompressionLevel,System.Boolean,System.Threading.CancellationToken)">
+            <summary>
+            Asynchronously creates a zip archive that contains the files and directories from the specified directory and uses the specified compression level.
+            </summary>
+            <param name="sourceDirectoryName">The path to the directory to archive.</param>
+            <param name="destinationArchiveFileName">The path of the archive to create.</param>
+            <param name="compressionLevel">The compression level to use.</param>
+            <param name="includeBaseDirectory">true to include the directory name from sourceDirectoryName at the root of the archive; false otherwise.</param>
+            <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+            <returns>A task that represents the asynchronous create operation.</returns>
+        </member>
+        <member name="M:Polyfills.Polyfill.&lt;G&gt;$4E14A39FD01773A148FA55FFD9F99471.CreateFromDirectoryAsync(System.String,System.String,System.IO.Compression.CompressionLevel,System.Boolean,System.Text.Encoding,System.Threading.CancellationToken)">
+            <summary>
+            Asynchronously creates a zip archive that contains the files and directories from the specified directory, uses the specified compression level and character encoding for entry names.
+            </summary>
+            <param name="sourceDirectoryName">The path to the directory to archive.</param>
+            <param name="destinationArchiveFileName">The path of the archive to create.</param>
+            <param name="compressionLevel">The compression level to use.</param>
+            <param name="includeBaseDirectory">true to include the directory name from sourceDirectoryName at the root of the archive; false otherwise.</param>
+            <param name="entryNameEncoding">The encoding to use when reading or writing entry names in this archive.</param>
+            <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+            <returns>A task that represents the asynchronous create operation.</returns>
+        </member>
+        <member name="M:Polyfills.Guard.Equal``1(``0,``0,System.String)">
+            <summary>Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if <paramref name="value"/> is not equal to <paramref name="other"/>.</summary>
+            <param name="value">The argument to validate as equal to <paramref name="other"/>.</param>
+            <param name="other">The value to compare with <paramref name="value"/>.</param>
+            <param name="name">The name of the parameter with which <paramref name="value"/> corresponds.</param>
+        </member>
+        <member name="M:Polyfills.Guard.NotEqual``1(``0,``0,System.String)">
+            <summary>Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if <paramref name="value"/> is equal to <paramref name="other"/>.</summary>
+            <param name="value">The argument to validate as not equal to <paramref name="other"/>.</param>
+            <param name="other">The value to compare with <paramref name="value"/>.</param>
+            <param name="name">The name of the parameter with which <paramref name="value"/> corresponds.</param>
+        </member>
+        <member name="M:Polyfills.Guard.NotGreaterThan``1(``0,``0,System.String)">
+            <summary>Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if <paramref name="value"/> is greater than <paramref name="other"/>.</summary>
+            <param name="value">The argument to validate as less or equal than <paramref name="other"/>.</param>
+            <param name="other">The value to compare with <paramref name="value"/>.</param>
+            <param name="name">The name of the parameter with which <paramref name="value"/> corresponds.</param>
+        </member>
+        <member name="M:Polyfills.Guard.NotGreaterThanOrEqual``1(``0,``0,System.String)">
+            <summary>Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if <paramref name="value"/> is greater than or equal <paramref name="other"/>.</summary>
+            <param name="value">The argument to validate as less than <paramref name="other"/>.</param>
+            <param name="other">The value to compare with <paramref name="value"/>.</param>
+            <param name="name">The name of the parameter with which <paramref name="value"/> corresponds.</param>
+        </member>
+        <member name="M:Polyfills.Guard.NotLessThan``1(``0,``0,System.String)">
+            <summary>Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if <paramref name="value"/> is less than <paramref name="other"/>.</summary>
+            <param name="value">The argument to validate as greater than or equal than <paramref name="other"/>.</param>
+            <param name="other">The value to compare with <paramref name="value"/>.</param>
+            <param name="name">The name of the parameter with which <paramref name="value"/> corresponds.</param>
+        </member>
+        <member name="M:Polyfills.Guard.NotLessThanOrEqual``1(``0,``0,System.String)">
+            <summary>Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if <paramref name="value"/> is less than or equal <paramref name="other"/>.</summary>
+            <param name="value">The argument to validate as greater than than <paramref name="other"/>.</param>
+            <param name="other">The value to compare with <paramref name="value"/>.</param>
+            <param name="name">The name of the parameter with which <paramref name="value"/> corresponds.</param>
+        </member>
+        <member name="M:Polyfills.Guard.NotNegative``1(``0,System.String)">
+            <summary>Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if <paramref name="value"/> is negative.</summary>
+            <param name="value">The argument to validate as non-negative.</param>
+            <param name="name">The name of the parameter with which <paramref name="value"/> corresponds.</param>
+        </member>
+        <member name="M:Polyfills.Guard.NotNegativeOrZero``1(``0,System.String)">
+            <summary>Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if <paramref name="value"/> is negative or zero.</summary>
+            <param name="value">The argument to validate as non-zero or non-negative.</param>
+            <param name="name">The name of the parameter with which <paramref name="value"/> corresponds.</param>
+        </member>
+        <member name="M:Polyfills.Guard.NotZero``1(``0,System.String)">
+            <summary>Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if <paramref name="value"/> is zero.</summary>
+            <param name="value">The argument to validate as non-zero.</param>
+            <param name="name">The name of the parameter with which <paramref name="value"/> corresponds.</param>
+        </member>
+    </members>
+</doc>

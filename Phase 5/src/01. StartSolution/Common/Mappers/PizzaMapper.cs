@@ -1,6 +1,6 @@
 ﻿namespace Common.Mappers;
 
-using Common.Models.Pizza;
+using Common.Models;
 
 public static class PizzaMapper
 {
@@ -21,13 +21,9 @@ public static class PizzaMapper
 			Id = model.Id,
 			Name = model.Name,
 			Description = model.Description,
+			Price = model.Price,
 			DateCreated = model.DateCreated
 		};
-
-		if (model.Price.HasValue)
-		{
-			entity.Price = model.Price.Value;
-		}
 
 		return entity;
 	}

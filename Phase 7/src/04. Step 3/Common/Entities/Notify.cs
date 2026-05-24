@@ -14,5 +14,5 @@ public class Notify
 
 	public DateTime? DateSent { get; set; }
 
-	public virtual Customer Customer { get; set; }
+	public required virtual Customer Customer { get; set; }
 }

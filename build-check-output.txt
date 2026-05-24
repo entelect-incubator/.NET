@@ -1,0 +1,19 @@
+﻿  Determining projects to restore...
+C:\Dev\Incubator\.NET\Phase 8\src\03. MVC\Core\Core.csproj : warning NU1903: Package 'System.Linq.Dynamic.Core' 1.4.5 has a known high severity vulnerability, https://github.com/advisories/GHSA-4cv2-4hjh-77rx [C:\Dev\Incubator\.NET\Phase 8\src\03. MVC\Api\Api.csproj]
+  All projects are up-to-date for restore.
+C:\Dev\Incubator\.NET\Phase 8\src\03. MVC\Core\Core.csproj : warning NU1903: Package 'System.Linq.Dynamic.Core' 1.4.5 has a known high severity vulnerability, https://github.com/advisories/GHSA-4cv2-4hjh-77rx
+  Common -> C:\Dev\Incubator\.NET\Phase 8\src\03. MVC\Common\bin\Debug\net10.0\Common.dll
+  DataAccess -> C:\Dev\Incubator\.NET\Phase 8\src\03. MVC\DataAccess\bin\Debug\net10.0\DataAccess.dll
+  Core -> C:\Dev\Incubator\.NET\Phase 8\src\03. MVC\Core\bin\Debug\net10.0\Core.dll
+C:\Dev\Incubator\.NET\Phase 8\src\03. MVC\Api\Controllers\ApiController.cs(10,20): warning CS8618: Non-nullable field 'mediator' must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring the field as nullable. [C:\Dev\Incubator\.NET\Phase 8\src\03. MVC\Api\Api.csproj]
+  Api -> C:\Dev\Incubator\.NET\Phase 8\src\03. MVC\Api\bin\Debug\net10.0\Api.dll
+
+Build succeeded.
+
+C:\Dev\Incubator\.NET\Phase 8\src\03. MVC\Core\Core.csproj : warning NU1903: Package 'System.Linq.Dynamic.Core' 1.4.5 has a known high severity vulnerability, https://github.com/advisories/GHSA-4cv2-4hjh-77rx [C:\Dev\Incubator\.NET\Phase 8\src\03. MVC\Api\Api.csproj]
+C:\Dev\Incubator\.NET\Phase 8\src\03. MVC\Core\Core.csproj : warning NU1903: Package 'System.Linq.Dynamic.Core' 1.4.5 has a known high severity vulnerability, https://github.com/advisories/GHSA-4cv2-4hjh-77rx
+C:\Dev\Incubator\.NET\Phase 8\src\03. MVC\Api\Controllers\ApiController.cs(10,20): warning CS8618: Non-nullable field 'mediator' must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring the field as nullable. [C:\Dev\Incubator\.NET\Phase 8\src\03. MVC\Api\Api.csproj]
+    3 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:03.87

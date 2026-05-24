@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>Swashbuckle.AspNetCore</id>
+    <version>10.1.7</version>
+    <authors>domaindrivendev</authors>
+    <owners>domaindrivendev</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <licenseUrl>https://licenses.nuget.org/MIT</licenseUrl>
+    <readme>docs\package-readme.md</readme>
+    <projectUrl>https://github.com/domaindrivendev/Swashbuckle.AspNetCore</projectUrl>
+    <description>Swagger tools for documenting APIs built on ASP.NET Core</description>
+    <tags>swagger openapi documentation discovery help webapi aspnet aspnetcore</tags>
+    <repository type="git" url="https://github.com/domaindrivendev/Swashbuckle.AspNetCore.git" commit="71bd58ad6227452a40724bb3fc881acb725b0ac6" />
+    <dependencies>
+      <group targetFramework="net8.0">
+        <dependency id="Swashbuckle.AspNetCore.Swagger" version="10.1.7" exclude="Build,Analyzers" />
+        <dependency id="Swashbuckle.AspNetCore.SwaggerGen" version="10.1.7" exclude="Build,Analyzers" />
+        <dependency id="Swashbuckle.AspNetCore.SwaggerUI" version="10.1.7" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Extensions.ApiDescription.Server" version="8.0.0" />
+      </group>
+      <group targetFramework="net10.0">
+        <dependency id="Swashbuckle.AspNetCore.Swagger" version="10.1.7" exclude="Build,Analyzers" />
+        <dependency id="Swashbuckle.AspNetCore.SwaggerGen" version="10.1.7" exclude="Build,Analyzers" />
+        <dependency id="Swashbuckle.AspNetCore.SwaggerUI" version="10.1.7" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Extensions.ApiDescription.Server" version="9.0.0" />
+      </group>
+      <group targetFramework="net10.0">
+        <dependency id="Swashbuckle.AspNetCore.Swagger" version="10.1.7" exclude="Build,Analyzers" />
+        <dependency id="Swashbuckle.AspNetCore.SwaggerGen" version="10.1.7" exclude="Build,Analyzers" />
+        <dependency id="Swashbuckle.AspNetCore.SwaggerUI" version="10.1.7" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Extensions.ApiDescription.Server" version="10.0.0" />
+      </group>
+    </dependencies>
+  </metadata>
+</package>

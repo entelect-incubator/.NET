@@ -1,5 +1,7 @@
 namespace Core.Customer.Commands;
 
+using Core;
+
 public sealed class CreateCustomerCommand : ICommand<Result<CustomerModel>>
 {
 	public CreateCustomerModel? Data { get; set; }

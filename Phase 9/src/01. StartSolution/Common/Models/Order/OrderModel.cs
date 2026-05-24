@@ -10,7 +10,7 @@ public sealed class OrderModel
 
 	public required CustomerModel Customer { get; set; }
 
-	public List<int> PizzaIds { get; set; } // List of Pizza IDs
+	public List<int> PizzaIds { get; set; } = new(); // List of Pizza IDs
 
 	public required List<PizzaModel> Pizzas { get; set; }
 

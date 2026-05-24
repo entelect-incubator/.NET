@@ -1,5 +1,7 @@
 namespace Core.Pizza.Queries;
 
+using Core;
+
 public sealed class GetPizzaQuery : IQuery<Result<PizzaModel>>
 {
 	public int Id { get; set; }

@@ -7,7 +7,7 @@ using DataAccess;
 
 public class OrderEvent : INotification
 {
-	public OrderModel Data { get; set; }
+	public required OrderModel Data { get; set; }
 }
 
 public class OrderEventHandler(DatabaseContext databaseContext) : INotificationHandler<OrderEvent>
@@ -30,6 +30,15 @@ public class OrderEventHandler(DatabaseContext databaseContext) : INotificationH
 		databaseContext.Notifies.Add(new Notify
 		{
 			CustomerId = notification.Data.Customer.Id,
+			Customer = new Customer
+			{
+				Id = notification.Data.Customer.Id,
+				Name = notification.Data.Customer.Name,
+				Email = notification.Data.Customer.Email,
+				Address = notification.Data.Customer.Address,
+				Cellphone = notification.Data.Customer.Cellphone,
+				DateCreated = notification.Data.Customer.DateCreated
+			},
 			CustomerEmail = notification.Data?.Customer?.Email,
 			DateSent = null,
 			EmailContent = html,

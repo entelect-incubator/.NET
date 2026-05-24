@@ -12,7 +12,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-        <PackageReference Include="Riok.Mapperly" Version="3.6.0" />
 	  <PackageReference Include="All" Version="1.1.0.1" />
 	  <PackageReference Include="FluentValidation" Version="12.1.1" />
 	  <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.3.9" />

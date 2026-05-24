@@ -27,7 +27,7 @@ public class StockController : ApiController
     [ProducesResponseType(typeof(ErrorResult), 404)]
     public async Task<ActionResult> Get(int id, CancellationToken cancellationToken = default)
     {
-        var result = await this.Mediator.Send(new GetStockQuery { Id = id }, cancellationToken);
+        var result = await this.Dispatcher.Query(new GetStockQuery { Id = id }, cancellationToken);
         return ResponseHelper.ResponseOutcome(result, this);
     }
 
@@ -45,8 +45,7 @@ public class StockController : ApiController
     [Route("Search")]
     public async Task<ActionResult> Search(PizzaModel dto, CancellationToken cancellationToken = default)
     {
-        var result = await this.Mediator.Send(
-            new GetStocksQuery
+        var result = await this.Dispatcher.Query(new GetStocksQuery
             {
                 Data = dto,
             }, cancellationToken);
@@ -77,7 +76,7 @@ public class StockController : ApiController
     [ProducesResponseType(typeof(ErrorResult), 400)]
     public async Task<ActionResult<Stock>> Create(PizzaModel data, CancellationToken cancellationToken = default)
     {
-        var result = await this.Mediator.Send(
+        var result = await this.Dispatcher.Send(
             new CreateStockCommand
             {
                 Data = data,
@@ -110,7 +109,7 @@ public class StockController : ApiController
     [ProducesResponseType(typeof(Result), 404)]
     public async Task<ActionResult> Update(PizzaModel data, CancellationToken cancellationToken = default)
     {
-        var result = await this.Mediator.Send(
+        var result = await this.Dispatcher.Send(
             new UpdateStockCommand
             {
                 Data = data,
@@ -132,7 +131,10 @@ public class StockController : ApiController
     [ProducesResponseType(typeof(ErrorResult), 400)]
     public async Task<ActionResult> Delete(int id, CancellationToken cancellationToken = default)
     {
-        var result = await this.Mediator.Send(new DeleteStockCommand { Id = id }, cancellationToken);
+        var result = await this.Dispatcher.Send(new DeleteStockCommand { Id = id }, cancellationToken);
         return ResponseHelper.ResponseOutcome(result, this);
     }
 }
+
+
+

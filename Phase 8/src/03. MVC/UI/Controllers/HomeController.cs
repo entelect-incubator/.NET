@@ -41,13 +41,9 @@ public class HomeController(IHttpClientFactory httpClientFactory) : Controller
 		{
 			newItem.SessionId = new Guid(this.HttpContext.Session.GetString(SessionKey));
 			var result = await this.todoClient.AddAsync(newItem);
-			if(result.Succeeded.HasValue)
-			{
-				if (!result.Succeeded.Value)
-				{
-					return this.RedirectToAction("Error");
-				}
-			}
+            if (!result.Succeeded)
+            {
+                return this.RedirectToAction("Error");
 		}
 
 		return this.RedirectToAction("Index");
@@ -58,15 +54,9 @@ public class HomeController(IHttpClientFactory httpClientFactory) : Controller
 		if (this.ModelState.IsValid)
 		{
 			var result = await this.todoClient.CompleteAsync(id);
-			if (result.Succeeded.HasValue)
-			{
-				if (!result.Succeeded.Value)
-				{
-					return this.RedirectToAction("Error");
-				}
-			}
-		}
-
+            if (!result.Succeeded)
+            {
+                return this.RedirectToAction("Error");
 		return this.RedirectToAction("Index");
 	}
 
@@ -75,15 +65,9 @@ public class HomeController(IHttpClientFactory httpClientFactory) : Controller
 		if (this.ModelState.IsValid)
 		{
 			var result = await this.todoClient.DeleteAsync(id);
-			if (result.Succeeded.HasValue)
-			{
-				if (!result.Succeeded.Value)
-				{
-					return this.RedirectToAction("Error");
-				}
-			}
-		}
-
+            if (!result.Succeeded)
+            {
+                return this.RedirectToAction("Error");
 		return this.RedirectToAction("Index");
 	}
 }

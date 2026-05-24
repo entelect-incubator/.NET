@@ -1,4 +1,4 @@
-namespace Portal;
+﻿namespace Portal;
 
 using System.Threading.Tasks;
 using FluentValidation.AspNetCore;
@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -43,6 +44,14 @@ public class Startup
         });
         services.AddResponseCompression();
 
+        services.AddAntiforgery(options => options.HeaderName = "X-CSRF-TOKEN");
+        services.Configure<CookiePolicyOptions>(options =>
+        {
+            options.HttpOnly = HttpOnlyPolicy.Always;
+            options.Secure = CookieSecurePolicy.Always;
+            options.MinimumSameSitePolicy = SameSiteMode.Strict;
+        });
+
         services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters();
         services.AddControllersWithViews();
         services.AddMvc(options =>
@@ -68,7 +77,16 @@ public class Startup
             app.UseHsts();
         }
         app.UseHttpsRedirection();
+        app.UseCookiePolicy();
+        app.Use(async (context, next) =>
+        {
+            context.Response.Headers["X-Content-Type-Options"] = "nosniff";
+            context.Response.Headers["X-Frame-Options"] = "DENY";
+            context.Response.Headers["Referrer-Policy"] = "no-referrer";
+            await next();
+        });
         app.UseStaticFiles();
+
 
         app.UseRouting();
 
@@ -94,3 +112,5 @@ public class Startup
         return context;
     }
 }
+
+

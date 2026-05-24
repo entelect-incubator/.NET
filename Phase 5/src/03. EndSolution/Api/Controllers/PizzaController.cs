@@ -1,12 +1,13 @@
 ﻿namespace Api.Controllers;
 
+using Api.Helpers;
 using Common.Models.Pizza;
 using Core.Pizza.Commands;
 using Core.Pizza.Queries;
 
 [ApiController]
 [Route("[controller]")]
-public class PizzaController() : ApiController
+public class PizzaController : ApiController
 {
 	/// <summary>
 	/// Get Pizza by Id.
@@ -30,7 +31,7 @@ public class PizzaController() : ApiController
 	[ProducesResponseType(200)]
 	public async Task<ActionResult> Search(SearchPizzaModel data)
 	{
-		var result = await this.QryMediator.QueryAsync<ListResult<PizzaModel>>(new GetPizzasQuery()
+		var result = await this.QryMediator.QueryAsync<Result<IEnumerable<PizzaModel>>>(new GetPizzasQuery()
 		{
 			Data = data
 		});

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.OpenApi;
 using Newtonsoft.Json.Serialization;
 
 public class Startup(IConfiguration configuration)
@@ -16,8 +17,6 @@ public class Startup(IConfiguration configuration)
 	{
 		get;
 	} = configuration;
-
-	public Startup(IConfiguration configuration) => this.ConfigRoot = configuration;
 
 	public void ConfigureServices(IServiceCollection services)
 	{
@@ -32,7 +31,7 @@ public class Startup(IConfiguration configuration)
 		{
 			c.SwaggerDoc("v1", new OpenApiInfo
 			{
-				Title = "EList API",
+				Title = "Pezza API",
 				Version = "v1"
 			});
 
@@ -50,7 +49,7 @@ public class Startup(IConfiguration configuration)
 	{
 		app.UseMiddleware<UnhandledExceptionBehaviour>();
 		app.UseSwagger();
-		app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "EList API V1"));
+		app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Pezza API V1"));
 		app.UseHttpsRedirection();
 		app.UseRouting();
 		app.MapControllers();

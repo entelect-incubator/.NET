@@ -7,6 +7,9 @@ using Common.Mappers;
 using Core.Email;
 using Core.Notify.Commands;
 using Core.Pizza.Queries;
+using Common.Entities;
+using Dispatch;
+using Utilities.Results;
 
 public interface IOrderCompleteJob
 {
@@ -17,7 +20,7 @@ public sealed class OrderCompleteJob(Dispatcher dispatcher) : IOrderCompleteJob
 {
 	public async Task SendNotificationAsync()
 	{
-		var notifiesResult = await dispatcher.Query(new GetNotifiesQuery());
+		var notifiesResult = await dispatcher.Query<GetNotifiesQuery, Result<IEnumerable<Notify>>>(new GetNotifiesQuery());
 
 		if (notifiesResult.Succeeded && notifiesResult.Data?.Any() == true)
 		{

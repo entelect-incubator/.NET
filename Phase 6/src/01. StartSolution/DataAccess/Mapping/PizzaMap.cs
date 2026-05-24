@@ -1,4 +1,4 @@
-﻿namespace DataAccess.Mapping;
+namespace DataAccess.Mapping;
 
 public sealed class PizzaMap : IEntityTypeConfiguration<Pizza>
 {

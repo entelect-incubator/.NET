@@ -53,8 +53,8 @@ public class UnhandledExceptionBehaviour(RequestDelegate next)
 		var errors = ((ValidationException)exception).Errors;
 		if (errors.Any())
 		{
-			var failures = errors.Select(x => $"{x.PropertyName.Replace("Data.", "")}:{x.ErrorMessage.Replace("Data ", "")}"
-);
+			var failures = errors.Select(x =>
+				$"{x.PropertyName.Replace("Data.", string.Empty)}:{x.ErrorMessage.Replace("Data ", string.Empty)}");
 			var result = Result.Failure(failures.ToList());
 			var code = HttpStatusCode.BadRequest;
 			var resultJson = JsonSerializer.Serialize(result);

@@ -3,12 +3,12 @@
 using Common.Models.Todos;
 using LazyCache;
 
-public class CompleteTodoCommand : IRequest<Result<TodoModel>>
+public class CompleteTodoCommand : ICommand<Result<TodoModel>>
 {
 	public required int? Id { get; set; }
 }
 
-public class CompleteTodoCommandHandler(DatabaseContext databaseContext, IAppCache cache) : IRequestHandler<CompleteTodoCommand, Result<TodoModel>>
+public class CompleteTodoCommandHandler(DatabaseContext databaseContext, IAppCache cache) : ICommandHandler<CompleteTodoCommand, Result<TodoModel>>
 {
 	private const string ERROR = "Error completing a task";
 

@@ -11,7 +11,10 @@
   <Folder Name="/04 Common/">
     <Project Path="Common/Common.csproj" />
   </Folder>
-  <Folder Name="/05 Tests/">
+  <Folder Name="/05 Utilities/">
+    <Project Path="Utilities/Utilities.csproj" />
+  </Folder>
+  <Folder Name="/06 Tests/">
     <Project Path="Test/Test.csproj" />
   </Folder>
   <Folder Name="/Solution Items/">

@@ -1,5 +1,6 @@
 ﻿namespace Api.Helpers;
 
+using Api.Controllers;
 using Utilities.Results;
 
 /// <summary>

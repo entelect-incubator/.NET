@@ -1,6 +1,6 @@
-﻿using Common.Models.Todos;
+﻿namespace Common.Mappers;
 
-namespace Common.Mappers;
+using Common.Models.Todos;
 
 [Mapper]
 public static partial class TodoMapper

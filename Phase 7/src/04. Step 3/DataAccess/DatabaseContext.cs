@@ -11,7 +11,9 @@ public class DatabaseContext : DbContext
 	}
 
 	public virtual DbSet<Customer> Customers { get; set; }
+
 	public virtual DbSet<Pizza> Pizzas { get; set; }
+
 	public virtual DbSet<Notify> Notifies { get; set; }
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder)

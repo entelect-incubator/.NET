@@ -14,4 +14,3 @@ public sealed class Customer
 
 	public DateTime DateCreated { get; set; }
 }
-

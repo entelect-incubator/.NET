@@ -20,7 +20,7 @@ public sealed class GetPizzasQueryHandler(DatabaseContext databaseContext, IAppC
 		var entity = request.Data;
 
 		Task<IEnumerable<PizzaModel>> DataDelegate() => this.GetData();
-		var cachedData = await cache.GetOrAddAsync(Common.Data.CacheKey, DataDelegate, this.cacheExpiry);
+		var cachedData = await cache.GetOrAddAsync(Common.Data.CacheData.CacheKey, DataDelegate, this.cacheExpiry);
 
 		if (cachedData != null)
 		{

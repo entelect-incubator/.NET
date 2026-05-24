@@ -1,4 +1,4 @@
-namespace Common.Entities;
+﻿namespace Common.Entities;
 
 public sealed class Customer
 {

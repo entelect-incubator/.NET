@@ -27,7 +27,7 @@ public class ProductController : ApiController
     [ProducesResponseType(typeof(ErrorResult), 404)]
     public async Task<ActionResult> Get(int id, CancellationToken cancellationToken = default)
     {
-        var result = await this.Mediator.Send(new GetProductQuery { Id = id }, cancellationToken);
+        var result = await this.Dispatcher.Query(new GetProductQuery { Id = id }, cancellationToken);
         return ResponseHelper.ResponseOutcome(result, this);
     }
 
@@ -45,8 +45,7 @@ public class ProductController : ApiController
     [Route("Search")]
     public async Task<ActionResult> Search(ProductDTO dto, CancellationToken cancellationToken = default)
     {
-        var result = await this.Mediator.Send(
-            new GetProductsQuery
+        var result = await this.Dispatcher.Query(new GetProductsQuery
             {
                 Data = dto,
             }, cancellationToken);
@@ -87,7 +86,7 @@ public class ProductController : ApiController
             }
         }
 
-        var result = await this.Mediator.Send(
+        var result = await this.Dispatcher.Send(
             new CreateProductCommand
             {
                 Data = data,
@@ -128,7 +127,7 @@ public class ProductController : ApiController
             }
         }
 
-        var result = await this.Mediator.Send(
+        var result = await this.Dispatcher.Send(
             new UpdateProductCommand
             {
                 Data = data,
@@ -150,7 +149,10 @@ public class ProductController : ApiController
     [ProducesResponseType(typeof(ErrorResult), 400)]
     public async Task<ActionResult> Delete(int id, CancellationToken cancellationToken = default)
     {
-        var result = await this.Mediator.Send(new DeleteProductCommand { Id = id }, cancellationToken);
+        var result = await this.Dispatcher.Send(new DeleteProductCommand { Id = id }, cancellationToken);
         return ResponseHelper.ResponseOutcome(result, this);
     }
 }
+
+
+

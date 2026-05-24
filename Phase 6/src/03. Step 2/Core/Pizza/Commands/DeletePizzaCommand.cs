@@ -1,5 +1,6 @@
 namespace Core.Pizza.Commands;
 
+using Core;
 using LazyCache;
 
 public sealed class DeletePizzaCommand : ICommand<Result>
@@ -26,7 +27,7 @@ public sealed class DeletePizzaCommandHandler(DatabaseContext databaseContext, I
 		databaseContext.Pizzas.Remove(findEntity);
 		var result = await databaseContext.SaveChangesAsync(cancellationToken);
 
-		cache.Remove(Common.Data.CacheKey);
+		cache.Remove(Common.CacheData.CacheKey);
 
 		return result > 0 ? Result.Success() : Result.Failure("Error");
 	}

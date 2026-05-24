@@ -12,4 +12,3 @@ public class Pizza
 
 	public DateTime? DateCreated { get; set; }
 }
-

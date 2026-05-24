@@ -43,7 +43,7 @@ public class Startup(IConfiguration configuration)
 		{
 			c.SwaggerDoc("v1", new OpenApiInfo
 			{
-				Title = "EList API",
+				Title = "Pezza API",
 				Version = "v1"
 			});
 
@@ -61,7 +61,7 @@ public class Startup(IConfiguration configuration)
 	{
 		app.UseResponseCompression();
 		app.UseSwagger();
-		app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "EList API V1"));
+		app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Pezza API V1"));
 		app.UseHttpsRedirection();
 		app.UseRouting();
 		app.MapControllers();

@@ -1,4 +1,4 @@
-namespace DataAccess;
+﻿namespace DataAccess;
 
 public class DatabaseContext : DbContext
 {

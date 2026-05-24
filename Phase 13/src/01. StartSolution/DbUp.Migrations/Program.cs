@@ -2,6 +2,7 @@ namespace DbUp.Migrations;
 
 using System.Reflection;
 using DbUp.Engine.Output;
+using Microsoft.Extensions.Configuration;
 
 class Program
 {
@@ -25,7 +26,7 @@ class Program
                     Assembly.GetExecutingAssembly(),
                     s => s.StartsWith("DbUp.Migrations.Scripts"))
                 .LogScriptOutput()
-                .LogToAutoChangeUsingDbUpLogging()
+                .LogToConsole()
                 .Build();
 
             var result = upgrader.PerformUpgrade();

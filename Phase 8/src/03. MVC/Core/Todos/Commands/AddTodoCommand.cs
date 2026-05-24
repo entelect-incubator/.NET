@@ -3,12 +3,12 @@
 using Common.Models.Todos;
 using LazyCache;
 
-public class AddTodoCommand : IRequest<Result<TodoModel>>
+public class AddTodoCommand : ICommand<Result<TodoModel>>
 {
 	public required CreateTodoModel Data { get; set; }
 }
 
-public class AddTodoCommandHandler(DatabaseContext databaseContext, IAppCache cache) : IRequestHandler<AddTodoCommand, Result<TodoModel>>
+public class AddTodoCommandHandler(DatabaseContext databaseContext, IAppCache cache) : ICommandHandler<AddTodoCommand, Result<TodoModel>>
 {
 	private const string ERROR = "Error adding a task";
 

@@ -27,7 +27,7 @@ public class NotifyController : ApiController
     [ProducesResponseType(typeof(ErrorResult), 404)]
     public async Task<ActionResult> Get(int id, CancellationToken cancellationToken = default)
     {
-        var result = await this.Mediator.Send(new GetNotifyQuery { Id = id }, cancellationToken);
+        var result = await this.Dispatcher.Query(new GetNotifyQuery { Id = id }, cancellationToken);
 
         return ResponseHelper.ResponseOutcome(result, this);
     }
@@ -46,8 +46,7 @@ public class NotifyController : ApiController
     [Route("Search")]
     public async Task<ActionResult> Search(NotifyDTO dto, CancellationToken cancellationToken = default)
     {
-        var result = await this.Mediator.Send(
-            new GetNotifiesQuery
+        var result = await this.Dispatcher.Query(new GetNotifiesQuery
             {
                 Data = dto,
             }, cancellationToken);
@@ -82,7 +81,7 @@ public class NotifyController : ApiController
     [Route("Notify")]
     public async Task<ActionResult<Notify>> Create(NotifyDTO notify, CancellationToken cancellationToken = default)
     {
-        var result = await this.Mediator.Send(
+        var result = await this.Dispatcher.Send(
             new CreateNotifyCommand
             {
                 Data = notify,
@@ -114,7 +113,7 @@ public class NotifyController : ApiController
     [ProducesResponseType(typeof(Result), 404)]
     public async Task<ActionResult> Update(NotifyDTO notify, CancellationToken cancellationToken = default)
     {
-        var result = await this.Mediator.Send(
+        var result = await this.Dispatcher.Send(
             new UpdateNotifyCommand
             {
                 Data = notify,
@@ -136,7 +135,10 @@ public class NotifyController : ApiController
     [ProducesResponseType(typeof(ErrorResult), 400)]
     public async Task<ActionResult> Delete(int id, CancellationToken cancellationToken = default)
     {
-        var result = await this.Mediator.Send(new DeleteNotifyCommand { Id = id }, cancellationToken);
+        var result = await this.Dispatcher.Send(new DeleteNotifyCommand { Id = id }, cancellationToken);
         return ResponseHelper.ResponseOutcome(result, this);
     }
 }
+
+
+

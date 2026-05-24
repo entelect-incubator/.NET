@@ -3,6 +3,7 @@
 using System.Net;
 using System.Text.Json;
 using Microsoft.AspNetCore.Http;
+using Utilities.Results;
 
 public class ExceptionHandlerMiddleware
 {
@@ -31,14 +32,8 @@ public class ExceptionHandlerMiddleware
 			if (errors.Any())
 			{
 				var failures = errors.Select(x =>
-				{
-					return new
-					{
-						Property = x.PropertyName.Replace("Data.", string.Empty),
-						Error = x.ErrorMessage.Replace("Data ", string.Empty)
-					};
-				});
-				var result = Result.Failure(failures.ToList<object>());
+					$"{x.PropertyName.Replace("Data.", string.Empty)}: {x.ErrorMessage.Replace("Data ", string.Empty)}");
+				var result = Result.Failure(failures.ToList());
 				var code = HttpStatusCode.BadRequest;
 				var resultJson = JsonSerializer.Serialize(result);
 

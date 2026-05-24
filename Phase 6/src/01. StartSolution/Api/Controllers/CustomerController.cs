@@ -1,8 +1,10 @@
 namespace Api.Controllers;
 
+using Api.Helpers;
 using Common.Models.Customer;
 using Core.Customer.Commands;
 using Core.Customer.Queries;
+using LiteBus.Queries.Abstractions;
 
 public class CustomerController : ApiController
 {
@@ -19,10 +21,7 @@ public class CustomerController : ApiController
 	[ProducesResponseType(typeof(ErrorResult), 400)]
 	[ProducesResponseType(typeof(ErrorResult), 404)]
 	public async Task<ActionResult> GetCustomer(int id)
-	{
-		var result = await this.QryMediator.QueryAsync<Result<CustomerModel>>(new GetCustomerQuery { Id = id });
-		return ResponseHelper.ResponseOutcome(result, this);
-	}
+		=> ResponseHelper.ResponseOutcome(await this.QryMediator.QueryAsync(new GetCustomerQuery { Id = id }), this);
 
 	/// <summary>
 	/// Get all Customers.
@@ -32,17 +31,11 @@ public class CustomerController : ApiController
 	/// <response code="200">Customer Search</response>
 	/// <response code="400">Error searching for customers</response>
 	[HttpPost]
-	[ProducesResponseType(typeof(ListResult<CustomerModel>), 200)]
+	[ProducesResponseType(typeof(Result<IEnumerable<CustomerModel>>), 200)]
 	[ProducesResponseType(typeof(ErrorResult), 400)]
 	[Route("Search")]
-	public async Task<ActionResult> Search(SearchCustomerModel data)
-	{
-		var result = await this.QryMediator.QueryAsync<ListResult<CustomerModel>>(new GetCustomersQuery()
-		{
-			Data = data
-		});
-		return ResponseHelper.ResponseOutcome(result, this);
-	}
+	public async Task<ActionResult<Result<IEnumerable<CustomerModel>>>> Search(SearchCustomerModel? data)
+		=> ResponseHelper.ResponseOutcome(await this.QryMediator.QueryAsync<Result<IEnumerable<CustomerModel>>>(new GetCustomersQuery { Data = data }), this);
 
 	/// <summary>
 	/// Create Customer.

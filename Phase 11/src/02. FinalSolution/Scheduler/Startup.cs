@@ -1,4 +1,4 @@
-namespace Scheduler;
+﻿namespace Scheduler;
 
 using System;
 using Hangfire;
@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.CookiePolicy;
 using Common.Behaviours;
 using Core;
 using DataAccess;
@@ -39,6 +41,13 @@ public class Startup
 
         services.AddLazyCache();
 
+        services.Configure<CookiePolicyOptions>(options =>
+        {
+            options.HttpOnly = HttpOnlyPolicy.Always;
+            options.Secure = CookieSecurePolicy.Always;
+            options.MinimumSameSitePolicy = SameSiteMode.Strict;
+        });
+
         DependencyInjection.AddApplication(services);
     }
 
@@ -66,7 +75,16 @@ public class Startup
         }
 
         app.UseHttpsRedirection();
+        app.UseCookiePolicy();
+        app.Use(async (context, next) =>
+        {
+            context.Response.Headers["X-Content-Type-Options"] = "nosniff";
+            context.Response.Headers["X-Frame-Options"] = "DENY";
+            context.Response.Headers["Referrer-Policy"] = "no-referrer";
+            await next();
+        });
         app.UseStaticFiles();
+
 
         app.UseRouting();
 
@@ -75,3 +93,5 @@ public class Startup
         app.UseEndpoints(endpoints => endpoints.MapRazorPages());
     }
 }
+
+

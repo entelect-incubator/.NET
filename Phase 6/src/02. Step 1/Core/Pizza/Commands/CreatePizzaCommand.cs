@@ -28,7 +28,7 @@ public sealed class CreatePizzaCommandHandler(DatabaseContext databaseContext, I
 		databaseContext.Pizzas.Add(entity);
 		var result = await databaseContext.SaveChangesAsync(cancellationToken);
 
-		cache.Remove(Common.Data.CacheKey);
+		cache.Remove(Common.Data.CacheData.CacheKey);
 
 		return result > 0 ? Result<PizzaModel>.Success(entity.Map()) : Result<PizzaModel>.Failure("Error");
 	}

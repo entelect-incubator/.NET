@@ -52,9 +52,9 @@ public class TestCustomerCore : QueryTestBase
 	public async Task GetAllAsync()
 	{
 		var sutGetAll = new GetCustomersQueryHandler(this.Context);
-		var resultGetAll = await sutGetAll.HandleAsync(new GetCustomersQuery(), CancellationToken.None);
+		var resultGetAll = await sutGetAll.Handle(new GetCustomersQuery(), CancellationToken.None);
 
-		Assert.That(resultGetAll?.Data.Count, Is.EqualTo(1));
+		Assert.That(resultGetAll?.Count, Is.EqualTo(1));
 	}
 
 	[Test]
