@@ -51,7 +51,7 @@ public class TestNotifyCore : QueryTestBase
         var sutGetAll = new GetNotifiesQueryHandler(this.Context, Mapper());
         var resultGetAll = await sutGetAll.Handle(new GetNotifiesQuery(), CancellationToken.None);
 
-        Assert.That(resultGetAll?.Data.Count, Is.EqualTo(1));
+        Assert.That(resultGetAll?.Data.Count(), Is.EqualTo(1));
     }
 
     [Test]

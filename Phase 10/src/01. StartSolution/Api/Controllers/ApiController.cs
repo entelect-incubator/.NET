@@ -1,5 +1,6 @@
 namespace Api.Controllers;
 
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]

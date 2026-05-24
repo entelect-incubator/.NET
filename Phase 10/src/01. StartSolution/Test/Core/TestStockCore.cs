@@ -51,7 +51,7 @@ public class TestPizzaCore : QueryTestBase
         var sutGetAll = new GetStocksQueryHandler(this.Context, Mapper());
         var resultGetAll = await sutGetAll.Handle(new GetStocksQuery(), CancellationToken.None);
 
-        Assert.That(resultGetAll?.Data.Count, Is.EqualTo(1));
+        Assert.That(resultGetAll?.Data.Count(), Is.EqualTo(1));
     }
 
     [Test]

@@ -10,7 +10,7 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
-        services.AddMediatR(typeof(CreateStockCommand).GetTypeInfo().Assembly);
+        services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<CreateStockCommand>());
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
         AssemblyScanner.FindValidatorsInAssembly(typeof(CreateStockCommand).Assembly)

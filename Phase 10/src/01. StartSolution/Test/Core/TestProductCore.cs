@@ -51,7 +51,7 @@ public class TestProductCore : QueryTestBase
         var sutGetAll = new GetProductsQueryHandler(this.Context, Mapper());
         var resultGetAll = await sutGetAll.Handle(new GetProductsQuery(), CancellationToken.None);
 
-        Assert.That(resultGetAll?.Data.Count, Is.EqualTo(1));
+        Assert.That(resultGetAll?.Data.Count(), Is.EqualTo(1));
     }
 
     [Test]

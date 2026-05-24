@@ -51,7 +51,7 @@ public class TestOrderCore : QueryTestBase
         var sutGetAll = new GetOrdersQueryHandler(this.Context, Mapper());
         var resultGetAll = await sutGetAll.Handle(new GetOrdersQuery(), CancellationToken.None);
 
-        Assert.That(resultGetAll?.Data.Count, Is.EqualTo(1));
+        Assert.That(resultGetAll?.Data.Count(), Is.EqualTo(1));
     }
 
     [Test]

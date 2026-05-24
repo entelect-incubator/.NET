@@ -51,7 +51,7 @@ public class TestRestaurantCore : QueryTestBase
         var sutGetAll = new GetRestaurantsQueryHandler(this.Context, Mapper(), this.CachingService);
         var resultGetAll = await sutGetAll.Handle(new GetRestaurantsQuery(), CancellationToken.None);
 
-        Assert.That(resultGetAll?.Data.Count, Is.EqualTo(1));
+        Assert.That(resultGetAll?.Data.Count(), Is.EqualTo(1));
     }
 
     [Test]

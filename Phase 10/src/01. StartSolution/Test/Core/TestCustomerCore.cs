@@ -50,7 +50,7 @@ public class TestCustomerCore : QueryTestBase
         var sutGetAll = new GetCustomersQueryHandler(this.Context, Mapper());
         var resultGetAll = await sutGetAll.Handle(new GetCustomersQuery(), CancellationToken.None);
 
-        Assert.That(resultGetAll?.Data.Count, Is.EqualTo(1));
+        Assert.That(resultGetAll?.Data.Count(), Is.EqualTo(1));
     }
 
     [Test]

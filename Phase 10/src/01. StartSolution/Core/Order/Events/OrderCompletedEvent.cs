@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Common.DTO;
 using Core.Email;
 using Core.Notify.Commands;
+using MediatR;
 
 public class OrderCompletedEvent : INotification
 {
