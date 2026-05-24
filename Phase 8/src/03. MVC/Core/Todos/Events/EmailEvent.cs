@@ -6,7 +6,7 @@ using Core.Email;
 
 public class EmailEvent : INotification
 {
-	public string ToEmail { get; set; }
+	public string ToEmail { get; set; } = string.Empty;
 }
 
 public class EmailEventHandler(DatabaseContext databaseContext) : INotificationHandler<EmailEvent>
@@ -22,8 +22,13 @@ public class EmailEventHandler(DatabaseContext databaseContext) : INotificationH
 			.ToListAsync(cancellationToken);
 
 		var content = new StringBuilder();
-		foreach (var task in tasks.Where(x => x.DateCreated is not null))
+		foreach (var task in tasks)
 		{
+			if (!task.DateCreated.HasValue)
+			{
+				continue;
+			}
+
 			content.Append($"<tr><td>{task.Task}</td><td>{task.DateCreated.Value:yyyy-MM-dd}</td></tr>");
 		}
 
