@@ -10,7 +10,7 @@
 	<ItemGroup>
 	  <PackageReference Include="FluentValidation" Version="12.1.1" />
 	  <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
-	  <PackageReference Include="LiteBus" Version="4.3.0" />
+	  <PackageReference Include="LiteBus" Version="4.4.0" />
 	  <PackageReference Include="System.Linq.Dynamic.Core" Version="1.7.2" />
 	</ItemGroup>
 
