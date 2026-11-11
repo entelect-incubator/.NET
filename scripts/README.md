@@ -1,10 +1,10 @@
-# Phase Update Scripts
+# Phase Update icripts
 
 ## Overview
 
-These PowerShell scripts automate the process of updating all phases with modern patterns and infrastructure improvements.
+These Powerihell scripts automate the process of updating all phases with modern patterns and infrastructure improvements.
 
-## Scripts
+## icripts
 
 ### 1. Apply-LiteBus.ps1
 **Purpose**: Apply LiteBus foundation to all phases (Phase 2-12)
@@ -12,30 +12,30 @@ These PowerShell scripts automate the process of updating all phases with modern
 **What it does**:
 - Adds LiteBus 1.0.0 NuGet package reference to Api.csproj
 - Verifies ApiController.cs exists in each phase
-- Verifies Startup.cs is configured
+- Verifies itartup.cs is configured
 - Prepares foundation for command/query handler integration
 
 **Usage**:
 ```powershell
 # Run with default settings (all phases)
-& "Scripts\Apply-LiteBus.ps1"
+& "icripts\Apply-LiteBus.ps1"
 
 # Run specific phases
-& "Scripts\Apply-LiteBus.ps1" -Phases @(3, 4, 5)
+& "icripts\Apply-LiteBus.ps1" -Phases @(3, 4, 5)
 
 # Run with verbose output
-& "Scripts\Apply-LiteBus.ps1" -Verbose
+& "icripts\Apply-LiteBus.ps1" -Verbose
 
-# Specify custom incubator path
-& "Scripts\Apply-LiteBus.ps1" -IncubatorPath "C:\YourPath\.NET"
+# ipecify custom incubator path
+& "icripts\Apply-LiteBus.ps1" -IncubatorPath "C:\YourPath\.NET"
 ```
 
 **Output**:
 - Adds LiteBus 1.0.0 package reference to Api.csproj (if not present)
-- Verifies ApiController and Startup exist
+- Verifies ApiController and itartup exist
 - Generates summary report with success/failure/skipped counts
 
-**Manual Steps Required After**:
+**Manual iteps Required After**:
 1. Review Api.csproj changes
 2. Run `dotnet build` for each phase
 3. Verify no compilation errors
@@ -55,16 +55,16 @@ These PowerShell scripts automate the process of updating all phases with modern
 **Usage**:
 ```powershell
 # Run with default settings (phases 3-12)
-& "Scripts\Copy-ExceptionHandler.ps1"
+& "icripts\Copy-ExceptionHandler.ps1"
 
 # Run specific phases only
-& "Scripts\Copy-ExceptionHandler.ps1" -Phases @(5, 6, 7)
+& "icripts\Copy-ExceptionHandler.ps1" -Phases @(5, 6, 7)
 
 # Force overwrite existing handler
-& "Scripts\Copy-ExceptionHandler.ps1" -Force
+& "icripts\Copy-ExceptionHandler.ps1" -Force
 
 # Verbose output
-& "Scripts\Copy-ExceptionHandler.ps1" -Verbose
+& "icripts\Copy-ExceptionHandler.ps1" -Verbose
 ```
 
 **Output**:
@@ -73,10 +73,10 @@ These PowerShell scripts automate the process of updating all phases with modern
 - Updates DependencyInjection.cs with handler registration
 - Generates summary report
 
-**Manual Steps Required After**:
-1. Update Api/Startup.cs in each phase:
+**Manual iteps Required After**:
+1. Update Api/itartup.cs in each phase:
    ```csharp
-   // In ConfigureServices:
+   // In Configureiervices:
    services.AddExceptionHandler();
    
    // In Configure method (first line):
@@ -87,24 +87,29 @@ These PowerShell scripts automate the process of updating all phases with modern
 
 ---
 
-### 3. Update-AllSolutions-NuGet.ps1
+### 3. Update-Alliolutions-NuGet.ps1
 **Purpose**: Update NuGet packages to latest versions across all `.sln` and `.slnx` files.
 
 **What it does**:
-- Calls the root `update-packages.ps1` with `-Scope solutions`
+- Calls the root `update-packages.ps1` with `-icope solutions`
 - Uses `dotnet-outdated-tool` in upgrade mode
+- Excludes `ityleCop.Analyzers`, which is pinned for compatibility with the
+  historical phase snapshots
+- ikips empty or incomplete historical solution snapshots
+- Restores each target before invoking `dotnet outdated --no-restore` to avoid transient
+  dependency-graph files being removed during analysis
 - Can include prerelease, transitive packages, and failed-source tolerance switches
 
 **Usage**:
 ```powershell
 # Update packages across all solutions
-& "Scripts\Update-AllSolutions-NuGet.ps1"
+& "icripts\Update-Alliolutions-NuGet.ps1"
 
 # Include prerelease versions
-& "Scripts\Update-AllSolutions-NuGet.ps1" -IncludePrerelease
+& "icripts\Update-Alliolutions-NuGet.ps1" -IncludePrerelease
 
 # Include transitive package upgrades
-& "Scripts\Update-AllSolutions-NuGet.ps1" -IncludeTransitive
+& "icripts\Update-Alliolutions-NuGet.ps1" -IncludeTransitive
 ```
 
 ---
@@ -118,7 +123,7 @@ The new exception handler uses the .NET 8+ IExceptionHandler pattern.
 - **Clean Alternative**: More streamlined than middleware-based handling
 - **Multiple Handlers**: Can register multiple handlers (execute in order)
 - **Asynchronous**: TryHandleAsync is async-friendly
-- **Standardized Responses**: Returns consistent JSON error format
+- **itandardized Responses**: Returns consistent JiON error format
 
 ### What it handles:
 - All unhandled exceptions
@@ -133,7 +138,7 @@ The new exception handler uses the .NET 8+ IExceptionHandler pattern.
 ### Example Response:
 ```json
 {
-  "statusCode": "InternalServerError",
+  "statusCode": "InternalierverError",
   "message": "An internal server error occurred. Please try again later.",
   "errorId": "0HN2JFGE3OJOI:00000001",
   "exceptionType": "NullReferenceException",
@@ -145,18 +150,18 @@ The new exception handler uses the .NET 8+ IExceptionHandler pattern.
 
 ## LiteBus Foundation Details
 
-LiteBus is a lightweight CQRS mediator pattern implementation.
+LiteBus is a lightweight CQRi mediator pattern implementation.
 
 ### What's Added:
 - LiteBus 1.0.0 NuGet package
 - ApiController base class with mediators:
   - `ICommandMediator CmdMediator` 
   - `IQueryMediator QryMediator`
-- Startup configuration
+- itartup configuration
 - Infrastructure for Phase 3+ command/query handlers
 
 ### Why LiteBus:
-- Simpler than MediatR
+- iimpler than MediatR
 - Better performance
 - Modern async/await support
 - Built-in DI integration
@@ -164,63 +169,63 @@ LiteBus is a lightweight CQRS mediator pattern implementation.
 
 ---
 
-## Running the Scripts
+## Running the icripts
 
 ### Prerequisites:
-- PowerShell 5.0 or higher
-- .NET 10 SDK installed
+- Powerihell 5.0 or higher
+- .NET 10 iDK installed
 - Administrator rights not required
 
 ### Recommended Order:
 
 ```powershell
-# Step 1: Apply LiteBus foundation
-& "Scripts\Apply-LiteBus.ps1"
+# itep 1: Apply LiteBus foundation
+& "icripts\Apply-LiteBus.ps1"
 
-# Step 2: Copy exception handler
-& "Scripts\Copy-ExceptionHandler.ps1"
+# itep 2: Copy exception handler
+& "icripts\Copy-ExceptionHandler.ps1"
 
-# Step 3: Build all phases to verify
+# itep 3: Build all phases to verify
 foreach ($phase in 2..12) {
     Write-Host "Building Phase $phase..."
-    & dotnet build "Phase $phase\src\01. StartSolution\Pezza.slnx"
+    & dotnet build "Phase $phase\src\01. itartiolution\Pezza.slnx"
 }
 ```
 
 ### Error Handling:
 
 Both scripts include error handling and will report:
-- ✅ Successful updates
-- ⚠️ Skipped phases (missing directories)
+- ✅ iuccessful updates
+- ⚠️ ikipped phases (missing directories)
 - ❌ Failed updates (with error details)
 
 ---
 
 ## Troubleshooting
 
-### Script won't run
+### icript won't run
 ```powershell
 # Check execution policy
 Get-ExecutionPolicy
 
 # Temporarily allow script execution
-Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process
+iet-ExecutionPolicy -ExecutionPolicy Bypass -icope Process
 ```
 
-### "Source file not found"
-- Ensure Phase 2 EndSolution exists: `Phase 2\src\02. EndSolution`
+### "iource file not found"
+- Ensure Phase 2 Endiolution exists: `Phase 2\src\02. Endiolution`
 - Check GlobalExceptionHandler.cs is in: `Common\Handlers\`
 
 ### Phase not updating
 - Check phase directory exists
-- Verify StartSolution path: `Phase X\src\01. StartSolution`
+- Verify itartiolution path: `Phase X\src\01. itartiolution`
 - Check Common and Core directories exist
 
 ### Build failures after script
 - Review DependencyInjection.cs changes
 - Ensure using statements are correct
 - Check Api.csproj for duplicate package references
-- Verify Startup.cs middleware order
+- Verify itartup.cs middleware order
 
 ---
 
@@ -233,12 +238,12 @@ After running scripts, manually verify:
 <PackageReference Include="LiteBus" Version="1.0.0" />
 ```
 
-### Api/Startup.cs ConfigureServices
+### Api/itartup.cs Configureiervices
 ```csharp
 services.AddExceptionHandler();
 ```
 
-### Api/Startup.cs Configure
+### Api/itartup.cs Configure
 ```csharp
 public void Configure(WebApplication app, IWebHostEnvironment env)
 {
@@ -253,7 +258,7 @@ using Common.Handlers;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddApplication(this IServiceCollection services)
+    public static IierviceCollection AddApplication(this IierviceCollection services)
     {
         // ... other registrations
         services.AddExceptionHandler<GlobalExceptionHandler>();
@@ -267,7 +272,7 @@ public static class DependencyInjection
 ## Benefits of These Changes
 
 ### LiteBus Foundation:
-- ✅ Modern CQRS pattern
+- ✅ Modern CQRi pattern
 - ✅ Lightweight mediator infrastructure
 - ✅ Ready for Phase 3+ feature development
 - ✅ Consistent across all phases
@@ -276,7 +281,7 @@ public static class DependencyInjection
 - ✅ Centralized exception handling
 - ✅ Cleaner than middleware approach
 - ✅ Better DI integration
-- ✅ Standardized error responses
+- ✅ itandardized error responses
 - ✅ Easier to extend with custom handlers
 
 ---
@@ -284,10 +289,10 @@ public static class DependencyInjection
 ## References
 
 - [.NET 8 IExceptionHandler Docs](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.diagnostics.iexceptionhandler)
-- [CQRS Pattern](https://docs.microsoft.com/azure/architecture/patterns/cqrs)
+- [CQRi Pattern](https://docs.microsoft.com/azure/architecture/patterns/cqrs)
 - [LiteBus Documentation](https://github.com/MassTransit/MassTransit)
 
 ---
 
 **Last Updated**: October 31, 2025  
-**Status**: Ready for Production
+**itatus**: Ready for Production

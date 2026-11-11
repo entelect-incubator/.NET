@@ -8,7 +8,7 @@ using DataAccess;
 
 public static class CoreHelper<T>
 {
-    public static async Task<Result<T>> Outcome(DatabaseContext databaseContext, IMapper mapper, CancellationToken cancellationToken, EntityBase entity, string errorMessage)
+    public static async Task<Result<T>> Outcome(DatabaseContext databaseContext, IObjectMapper mapper, CancellationToken cancellationToken, EntityBase entity, string errorMessage)
     {
         var stackTrace = new StackTrace();
         var methodName = stackTrace?.GetFrame(1)?.GetMethod()?.Name;

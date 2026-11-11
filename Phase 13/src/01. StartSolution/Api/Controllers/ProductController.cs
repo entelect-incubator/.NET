@@ -27,7 +27,7 @@ public class ProductController : ApiController
     [ProducesResponseType(typeof(ErrorResult), 404)]
     public async Task<ActionResult> Get(int id, CancellationToken cancellationToken = default)
     {
-        var result = await this.Mediator.Send(new GetProductQuery { Id = id }, cancellationToken);
+        var result = await this.Mediator.Send<GetProductQuery, Result<ProductDTO>>(new GetProductQuery { Id = id }, cancellationToken);
         return ResponseHelper.ResponseOutcome(result, this);
     }
 
@@ -45,8 +45,7 @@ public class ProductController : ApiController
     [Route("Search")]
     public async Task<ActionResult> Search(ProductDTO dto, CancellationToken cancellationToken = default)
     {
-        var result = await this.Mediator.Send(
-            new GetProductsQuery
+        var result = await this.Mediator.Send<GetProductsQuery, Result<IEnumerable<ProductDTO>>>(new GetProductsQuery
             {
                 Data = dto,
             }, cancellationToken);
@@ -87,8 +86,7 @@ public class ProductController : ApiController
             }
         }
 
-        var result = await this.Mediator.Send(
-            new CreateProductCommand
+        var result = await this.Mediator.Send<CreateProductCommand, Result<ProductDTO>>(new CreateProductCommand
             {
                 Data = data,
             }, cancellationToken);
@@ -128,8 +126,7 @@ public class ProductController : ApiController
             }
         }
 
-        var result = await this.Mediator.Send(
-            new UpdateProductCommand
+        var result = await this.Mediator.Send<UpdateProductCommand, Result<ProductDTO>>(new UpdateProductCommand
             {
                 Data = data,
             }, cancellationToken);
@@ -150,7 +147,7 @@ public class ProductController : ApiController
     [ProducesResponseType(typeof(ErrorResult), 400)]
     public async Task<ActionResult> Delete(int id, CancellationToken cancellationToken = default)
     {
-        var result = await this.Mediator.Send(new DeleteProductCommand { Id = id }, cancellationToken);
+        var result = await this.Mediator.Send<DeleteProductCommand, Result>(new DeleteProductCommand { Id = id }, cancellationToken);
         return ResponseHelper.ResponseOutcome(result, this);
     }
 }

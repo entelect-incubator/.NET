@@ -16,9 +16,9 @@ public sealed class UpdateProductCommandHandler : ICommandHandler<UpdateProductC
 {
     private readonly DatabaseContext databaseContext;
 
-    private readonly IMapper mapper;
+    private readonly IObjectMapper mapper;
 
-    public UpdateProductCommandHandler(DatabaseContext databaseContext, IMapper mapper)
+    public UpdateProductCommandHandler(DatabaseContext databaseContext, IObjectMapper mapper)
         => (this.databaseContext, this.mapper) = (databaseContext, mapper);
 
     public async Task<Result<ProductDTO>> Handle(UpdateProductCommand request, CancellationToken cancellationToken)

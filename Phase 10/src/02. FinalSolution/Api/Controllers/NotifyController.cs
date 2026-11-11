@@ -27,7 +27,7 @@ public class NotifyController : ApiController
     [ProducesResponseType(typeof(ErrorResult), 404)]
     public async Task<ActionResult> Get(int id, CancellationToken cancellationToken = default)
     {
-        var result = await this.Mediator.Send(new GetNotifyQuery { Id = id }, cancellationToken);
+        var result = await this.Mediator.Send<GetNotifyQuery, Result<NotifyDTO>>(new GetNotifyQuery { Id = id }, cancellationToken);
 
         return ResponseHelper.ResponseOutcome(result, this);
     }
@@ -46,8 +46,7 @@ public class NotifyController : ApiController
     [Route("Search")]
     public async Task<ActionResult> Search(NotifyDTO dto, CancellationToken cancellationToken = default)
     {
-        var result = await this.Mediator.Send(
-            new GetNotifiesQuery
+        var result = await this.Mediator.Send<GetNotifiesQuery, Result<IEnumerable<NotifyDTO>>>(new GetNotifiesQuery
             {
                 Data = dto,
             }, cancellationToken);
@@ -82,8 +81,7 @@ public class NotifyController : ApiController
     [Route("Notify")]
     public async Task<ActionResult<Notify>> Create(NotifyDTO notify, CancellationToken cancellationToken = default)
     {
-        var result = await this.Mediator.Send(
-            new CreateNotifyCommand
+        var result = await this.Mediator.Send<CreateNotifyCommand, Result<NotifyDTO>>(new CreateNotifyCommand
             {
                 Data = notify,
             }, cancellationToken);
@@ -114,8 +112,7 @@ public class NotifyController : ApiController
     [ProducesResponseType(typeof(Result), 404)]
     public async Task<ActionResult> Update(NotifyDTO notify, CancellationToken cancellationToken = default)
     {
-        var result = await this.Mediator.Send(
-            new UpdateNotifyCommand
+        var result = await this.Mediator.Send<UpdateNotifyCommand, Result<NotifyDTO>>(new UpdateNotifyCommand
             {
                 Data = notify,
             }, cancellationToken);
@@ -136,7 +133,7 @@ public class NotifyController : ApiController
     [ProducesResponseType(typeof(ErrorResult), 400)]
     public async Task<ActionResult> Delete(int id, CancellationToken cancellationToken = default)
     {
-        var result = await this.Mediator.Send(new DeleteNotifyCommand { Id = id }, cancellationToken);
+        var result = await this.Mediator.Send<DeleteNotifyCommand, Result>(new DeleteNotifyCommand { Id = id }, cancellationToken);
         return ResponseHelper.ResponseOutcome(result, this);
     }
 }

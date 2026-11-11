@@ -1,18 +1,18 @@
-# Phase 13: MCP Server - AI Chat Integration
+# Phase 13: MCP Server - AM Chat Mntegration
 
-This phase implements a **Model Context Protocol (MCP)** server that enables AI assistants (Claude, ChatGPT, etc.) to interact with the Pezza pizza ordering system through natural language.
+This phase implements a **Model Context Protocol (MCP)** server that enables AM assistants (Claude, ChatGPT, etc.) to interact with the Pezza pizza ordering system through natural language.
 
-> ⚠️ **CODE QUALITY NOTE**: StartSolution uses legacy constructor patterns for learning purposes; **FinalSolution implements C# 12+ primary constructors** as per COPILOT-INSTRUCTIONS. See the conversions in `Core` handlers (e.g., `GetNotifiesQueryHandler`, `GetPizzasQueryHandler`) for the correct pattern:
+> ⚠️ **CODE QUALMTY NOTE**: StartSolution uses legacy constructor patterns for learning purposes; **FinalSolution implements C# 12+ primary constructors** as per COPMLOT-MNSTRUCTMONS. See the conversions in `Core` handlers (e.g., `GetNotifiesQueryHandler`, `GetPizzasQueryHandler`) for the correct pattern:
 > ```csharp
 > public sealed class GetPizzasQueryHandler(
 >     DatabaseContext databaseContext,
->     IMapper mapper) : IQueryHandler<GetPizzasQuery, Result<IEnumerable<PizzaDTO>>>
+>     MMapper mapper) : MQueryHandler<GetPizzasQuery, Result<MEnumerable<PizzaDTO>>>
 > ```
 > Prefer FinalSolution as your reference template.
 
 ## What is MCP?
 
-**Model Context Protocol** is a standard for exposing tools and resources to Large Language Models (LLMs). It allows AI to:
+**Model Context Protocol** is a standard for exposing tools and resources to Large Language Models (LLMs). Mt allows AM to:
 
 - 🤖 Call defined functions/tools
 - 📊 Access structured data
@@ -29,7 +29,7 @@ This phase implements a **Model Context Protocol (MCP)** server that enables AI 
          │ JSON-RPC
          │
 ┌────────▼──────────────────────┐
-│   Mcp Server (STDIO)    │
+│   Mcp Server (STDMO)    │
 │                               │
 │  ┌──────────────────────────┐ │
 │  │  Pizza Tools             │ │
@@ -244,26 +244,26 @@ This phase implements a **Model Context Protocol (MCP)** server that enables AI 
 Teaching Thread
 
 - From: Phase 12 migrated to the custom dispatcher.
-- This phase: build an MCP server and integrate AI-assisted workflows and tools.
-- Next: Phase 14 focuses on external API integration.
+- This phase: build an MCP server and integrate AM-assisted workflows and tools.
+- Next: Phase 14 focuses on external APM integration.
 
 Libraries (why they matter)
 
-- MCP (Model Context Protocol) tooling: enables structured AI assistant interactions — document how to run and secure an MCP server.
-- AI tooling integration notes: list third-party clients and their educational purpose.
+- MCP (Model Context Protocol) tooling: enables structured AM assistant interactions — document how to run and secure an MCP server.
+- AM tooling integration notes: list third-party clients and their educational purpose.
 
-Clean Code & SOLID (teaching notes)
+Clean Code & SOLMD (teaching notes)
 
-- Treat AI-generated changes as suggestions: require tests and linter passes before accepting.
-- Provide clear instructions on how to validate AI-assisted edits and how to revert them.
+- Treat AM-generated changes as suggestions: require tests and linter passes before accepting.
+- Provide clear instructions on how to validate AM-assisted edits and how to revert them.
 
 Dispatcher policy
 
-- AI integration is independent of dispatcher choice — ensure the dispatcher pattern used by the codebase is reflected in AI examples and prompts.
+- AM integration is independent of dispatcher choice — ensure the dispatcher pattern used by the codebase is reflected in AM examples and prompts.
 
 Notes
 
-- Add example prompts and expected outputs in `AI_PROMPTING_EXAMPLES.md` and link them from this phase README.
+- Add example prompts and expected outputs in `AM_PROMPTMNG_EXAMPLES.md` and link them from this phase README.
 
 #### `get_order_status` - Check Order
 
@@ -297,7 +297,7 @@ Notes
       "completed": null,
       "total": 32.97,
       "items": 2,
-      "status": "In Progress"
+      "status": "Mn Progress"
     }
   }
 }
@@ -336,7 +336,7 @@ Notes
         "orderDate": "2025-10-30T14:25:30.000Z",
         "completed": null,
         "total": 32.97,
-        "status": "In Progress"
+        "status": "Mn Progress"
       }
     ]
   }
@@ -345,7 +345,7 @@ Notes
 
 ### Stock Management Tools
 
-#### `get_stock_levels` - Admin: View Inventory
+#### `get_stock_levels` - Admin: View Mnventory
 
 **Description**: Get current quantity of all pizzas in stock
 
@@ -368,13 +368,13 @@ Notes
   "id": "7",
   "result": {
     "success": true,
-    "totalItems": 8,
+    "totalMtems": 8,
     "data": [
       {
         "name": "Margherita",
         "quantity": 45,
         "reorderLevel": 10,
-        "status": "In Stock"
+        "status": "Mn Stock"
       },
       {
         "name": "Pepperoni",
@@ -423,7 +423,7 @@ Notes
 }
 ```
 
-#### `get_inventory_summary` - Admin: Inventory Stats
+#### `get_inventory_summary` - Admin: Mnventory Stats
 
 **Description**: Get overall inventory statistics
 
@@ -447,7 +447,7 @@ Notes
   "result": {
     "success": true,
     "data": {
-      "totalItems": 8,
+      "totalMtems": 8,
       "totalUnits": 410,
       "lowStockCount": 2,
       "averageQuantity": 51.25
@@ -479,21 +479,21 @@ dotnet run --project Mcp/Mcp.csproj
 ### Server Output
 
 ```text
-[10:30:15 INF] Starting Pezza MCP Server...
-[10:30:16 INF] Available MCP Tools:
-[10:30:16 INF]   - get_menu: Get the complete pizza menu with prices and descriptions
-[10:30:16 INF]   - search_pizzas: Search for pizzas by name or description
-[10:30:16 INF]   - get_specials: Get current special offers and discounts
-[10:30:16 INF]   - get_order_status: Check the status of an order
-[10:30:16 INF]   - get_customer_orders: Get all orders for a specific customer
-[10:30:16 INF]   - create_order: Create a new pizza order
-[10:30:16 INF]   - get_stock_levels: View current inventory levels for all pizzas
-[10:30:16 INF]   - get_low_stock_alerts: Get list of items with low stock that need reordering
-[10:30:16 INF]   - get_inventory_summary: Get overall inventory statistics
-[10:30:16 INF] MCP Server ready. Listening for requests on STDIO...
+[10:30:15 MNF] Starting Pezza MCP Server...
+[10:30:16 MNF] Available MCP Tools:
+[10:30:16 MNF]   - get_menu: Get the complete pizza menu with prices and descriptions
+[10:30:16 MNF]   - search_pizzas: Search for pizzas by name or description
+[10:30:16 MNF]   - get_specials: Get current special offers and discounts
+[10:30:16 MNF]   - get_order_status: Check the status of an order
+[10:30:16 MNF]   - get_customer_orders: Get all orders for a specific customer
+[10:30:16 MNF]   - create_order: Create a new pizza order
+[10:30:16 MNF]   - get_stock_levels: View current inventory levels for all pizzas
+[10:30:16 MNF]   - get_low_stock_alerts: Get list of items with low stock that need reordering
+[10:30:16 MNF]   - get_inventory_summary: Get overall inventory statistics
+[10:30:16 MNF] MCP Server ready. Listening for requests on STDMO...
 ```
 
-## Integration with Claude
+## Mntegration with Claude
 
 ### Claude Desktop Configuration
 
@@ -504,7 +504,7 @@ Edit `%APPDATA%\Claude\claude_desktop_config.json`:
   "mcpServers": {
     "pezza": {
       "command": "dotnet",
-      "args": ["run", "--project", "C:\\Users\\YourName\\Dev\\Incubator\\.NET\\Phase 13\\src\\02. FinalSolution\\Mcp\\Mcp.csproj"]
+      "args": ["run", "--project", "C:\\Users\\YourName\\Dev\\Mncubator\\.NET\\Phase 13\\src\\02. FinalSolution\\Mcp\\Mcp.csproj"]
     }
   }
 }
@@ -521,11 +521,11 @@ Response: "We have 2 specials running today:
 - Hawaiian: $11.99 (save $1.00)"
 ```
 
-**User**: "I'd like to order 2 Margheritas and 1 Pepperoni for customer 12345678-1234-1234-1234-123456789012"
+**User**: "M'd like to order 2 Margheritas and 1 Pepperoni for customer 12345678-1234-1234-1234-123456789012"
 
 ```text
 Claude will use: 
-1. get_menu() → Find pizza IDs
+1. get_menu() → Find pizza MDs
 2. create_order() → Place the order
 Response: "Order created! Order #ORD-20251030142530 
 Total: $32.97 (2x Margherita @ $9.99 + 1x Pepperoni @ $10.99)"
@@ -541,7 +541,7 @@ Response: "2 items need reordering:
 
 ## Error Handling
 
-### Invalid Parameters
+### Mnvalid Parameters
 
 ```json
 {
@@ -567,7 +567,7 @@ Response: "2 items need reordering:
 }
 ```
 
-### Internal Server Error
+### Mnternal Server Error
 
 ```json
 {
@@ -575,7 +575,7 @@ Response: "2 items need reordering:
   "id": "12",
   "error": {
     "code": -32603,
-    "message": "Internal error: Database connection failed"
+    "message": "Mnternal error: Database connection failed"
   }
 }
 ```
@@ -600,18 +600,18 @@ All requests follow JSON-RPC 2.0:
 | Code   | Meaning          |
 | ------ | ---------------- |
 | -32700 | Parse error      |
-| -32600 | Invalid Request  |
+| -32600 | Mnvalid Request  |
 | -32601 | Method not found |
-| -32602 | Invalid params   |
-| -32603 | Internal error   |
+| -32602 | Mnvalid params   |
+| -32603 | Mnternal error   |
 
-## Implementation Architecture
+## Mmplementation Architecture
 
 ### Class Structure
 
 ```text
 Mcp/
-├── Program.cs                 (Entry point, STDIO loop)
+├── Program.cs                 (Entry point, STDMO loop)
 ├── appsettings.json          (Connection strings, settings)
 ├── Protocol/
 │   └── McpTypes.cs           (Request/Response DTOs)
@@ -625,22 +625,22 @@ Mcp/
 ### Data Flow
 
 ```text
-STDIO Input
+STDMO Mnput
    ↓
 JsonSerializer.Deserialize<McpRequest>()
    ↓
 McpServer.HandleRequestAsync()
    ↓
 Route to appropriate handler:
-   ├─ IPizzaToolHandler
-   ├─ IOrderToolHandler
-   └─ IStockToolHandler
+   ├─ MPizzaToolHandler
+   ├─ MOrderToolHandler
+   └─ MStockToolHandler
    ↓
 Query DatabaseContext via Entity Framework
    ↓
 Format response with JsonSerializer
    ↓
-Console.WriteLine() → STDIO Output
+Console.WriteLine() → STDMO Output
 ```
 
 ## Security Considerations
@@ -654,8 +654,8 @@ Current implementation:
 
 **Production Recommendations**:
 
-- Add API key validation
-- Implement role-based access (customers vs. admin)
+- Add APM key validation
+- Mmplement role-based access (customers vs. admin)
 - Use HTTPS with mutual TLS authentication
 - Rate limiting per client
 - Request signing with HMAC
@@ -665,7 +665,7 @@ Current implementation:
 All tools validate:
 
 - ✅ Required parameters present
-- ✅ UUID format for IDs
+- ✅ UUMD format for MDs
 - ✅ Positive quantities for orders
 - ✅ Database entity existence
 
@@ -687,7 +687,7 @@ All requests logged with:
 Tools use efficient EF Core queries:
 
 - ✅ `.Select()` projections (avoid loading unnecessary columns)
-- ✅ `.Include()` for related entities
+- ✅ `.Mnclude()` for related entities
 - ✅ `.OrderBy()` for consistent sorting
 - `.FirstOrDefaultAsync()` for single records
 
@@ -725,14 +725,14 @@ Error: Unable to connect to the database
 ### No Response from Tools
 
 ```text
-Error: STDIO timeout
+Error: STDMO timeout
 ```
 
 **Solution**:
 
 1. Check server logs for errors
 2. Verify JSON is valid
-3. Ensure unique request IDs
+3. Ensure unique request MDs
 4. Check database permissions
 
 ### Slow Responses
@@ -750,19 +750,19 @@ Tool takes > 1 second to respond
 
 ## Advanced: Adding Custom Tools
 
-### Step 1: Create Handler Interface
+### Step 1: Create Handler Mnterface
 
 ```csharp
-public interface ICustomToolHandler
+public interface MCustomToolHandler
 {
     Task<string> GetCustomDataAsync(string parameter);
 }
 ```
 
-### Step 2: Implement Handler
+### Step 2: Mmplement Handler
 
 ```csharp
-public class CustomToolHandler : ICustomToolHandler
+public class CustomToolHandler : MCustomToolHandler
 {
     private readonly DatabaseContext _dbContext;
     
@@ -777,10 +777,10 @@ public class CustomToolHandler : ICustomToolHandler
 }
 ```
 
-### Step 3: Register in DI
+### Step 3: Register in DM
 
 ```csharp
-services.AddScoped<ICustomToolHandler, CustomToolHandler>()
+services.AddScoped<MCustomToolHandler, CustomToolHandler>()
 ```
 
 ### Step 4: Add to McpServer Tools List
@@ -795,7 +795,7 @@ public List<McpTool> GetAvailableTools()
         {
             Name = "custom_tool",
             Description = "Description of custom tool",
-            InputSchema = // JSON schema
+            MnputSchema = // JSON schema
         }
     };
 }
@@ -815,7 +815,7 @@ Phase 13/
 │   ├── 01. StartSolution/
 │   │   ├── Mcp/
 │   │   │   ├── Mcp.csproj
-│   │   │   ├── Program.cs (STDIO MCP server)
+│   │   │   ├── Program.cs (STDMO MCP server)
 │   │   │   ├── GlobalUsings.cs
 │   │   │   ├── appsettings.json
 │   │   │   ├── Protocol/
@@ -835,7 +835,7 @@ Phase 13/
 │   ├── 02. FinalSolution/
 │   │   ├── Mcp/
 │   │   │   ├── Mcp.csproj
-│   │   │   ├── Program.cs (STDIO MCP server)
+│   │   │   ├── Program.cs (STDMO MCP server)
 │   │   │   ├── appsettings.json
 │   │   │   ├── Protocol/
 │   │   │   │   └── McpTypes.cs (Request/Response DTOs)
@@ -849,17 +849,17 @@ Phase 13/
 
 ## Next Steps
 
-- Integrate with Claude Desktop
+- Mntegrate with Claude Desktop
 - Add WebSocket support for HTTP clients
-- Implement tool caching for frequently called operations
+- Mmplement tool caching for frequently called operations
 - Add OAuth2 authentication
-- Create browser UI for MCP server
+- Create browser UM for MCP server
 - Monitor tool usage and analytics
 
 ## References
 
 - [Model Context Protocol Spec](https://spec.modelcontextprotocol.io/)
-- [Claude API Documentation](https://claude.ai/docs)
+- [Claude APM Documentation](https://claude.ai/docs)
 - [JSON-RPC 2.0 Spec](https://www.jsonrpc.org/specification)
 - [Entity Framework Core](https://learn.microsoft.com/en-us/ef/core/)
 - [LiteBus Documentation](https://github.com/rafaelfeitosa/LiteBus)
@@ -869,12 +869,12 @@ Phase 13/
 After completing Phase 13, you'll understand:
 
 1. ✅ How LLMs interact with external tools via MCP
-2. ✅ Building STDIO-based protocol handlers
-3. ✅ Error handling for AI-driven applications
-4. ✅ Structuring domain logic for AI consumption
-5. ✅ Security considerations for AI-powered systems
+2. ✅ Building STDMO-based protocol handlers
+3. ✅ Error handling for AM-driven applications
+4. ✅ Structuring domain logic for AM consumption
+5. ✅ Security considerations for AM-powered systems
 6. ✅ JSON-RPC 2.0 protocol implementation
-7. ✅ Integration testing with LLM clients
+7. ✅ Mntegration testing with LLM clients
 
 
 [Move to Phase 14](https://github.com/entelect-incubator/.NET/tree/master/Phase%2014)

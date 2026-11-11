@@ -1,1 +1,1 @@
-global using MediatR;
+global using Utilities.CQRS;

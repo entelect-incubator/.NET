@@ -27,7 +27,7 @@ public class RestaurantController : ApiController
     [ProducesResponseType(typeof(ErrorResult), 404)]
     public async Task<ActionResult> Get(int id, CancellationToken cancellationToken = default)
     {
-        var result = await this.Mediator.Send(new GetRestaurantQuery { Id = id }, cancellationToken);
+        var result = await this.Mediator.Send<GetRestaurantQuery, Result<RestaurantDTO>>(new GetRestaurantQuery { Id = id }, cancellationToken);
         return ResponseHelper.ResponseOutcome(result, this);
     }
 
@@ -45,8 +45,7 @@ public class RestaurantController : ApiController
     [Route("Search")]
     public async Task<ActionResult> Search(RestaurantDTO dto, CancellationToken cancellationToken = default)
     {
-        var result = await this.Mediator.Send(
-            new GetRestaurantsQuery()
+        var result = await this.Mediator.Send<GetRestaurantsQuery, Result<IEnumerable<RestaurantDTO>>>(new GetRestaurantsQuery()
             {
                 Data = dto,
             }, cancellationToken);
@@ -91,8 +90,7 @@ public class RestaurantController : ApiController
             }
         }
 
-        var result = await this.Mediator.Send(
-            new CreateRestaurantCommand
+        var result = await this.Mediator.Send<CreateRestaurantCommand, Result<RestaurantDTO>>(new CreateRestaurantCommand
             {
                 Data = data,
             }, cancellationToken);
@@ -133,8 +131,7 @@ public class RestaurantController : ApiController
             }
         }
 
-        var result = await this.Mediator.Send(
-            new UpdateRestaurantCommand
+        var result = await this.Mediator.Send<UpdateRestaurantCommand, Result<RestaurantDTO>>(new UpdateRestaurantCommand
             {
                 Data = data,
             }, cancellationToken);
@@ -155,7 +152,7 @@ public class RestaurantController : ApiController
     [ProducesResponseType(typeof(ErrorResult), 400)]
     public async Task<ActionResult> Delete(int id, CancellationToken cancellationToken = default)
     {
-        var result = await this.Mediator.Send(new DeleteRestaurantCommand { Id = id }, cancellationToken);
+        var result = await this.Mediator.Send<DeleteRestaurantCommand, Result>(new DeleteRestaurantCommand { Id = id }, cancellationToken);
         return ResponseHelper.ResponseOutcome(result, this);
     }
 }

@@ -16,9 +16,9 @@ public sealed class CreateCustomerCommandHandler : ICommandHandler<CreateCustome
 {
     private readonly DatabaseContext databaseContext;
 
-    private readonly IMapper mapper;
+    private readonly IObjectMapper mapper;
 
-    public CreateCustomerCommandHandler(DatabaseContext databaseContext, IMapper mapper)
+    public CreateCustomerCommandHandler(DatabaseContext databaseContext, IObjectMapper mapper)
         => (this.databaseContext, this.mapper) = (databaseContext, mapper);
 
     public async Task<Result<CustomerDTO>> Handle(CreateCustomerCommand request, CancellationToken cancellationToken)

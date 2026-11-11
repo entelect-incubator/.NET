@@ -11,7 +11,7 @@ using Core;
 var builder = WebApplication.CreateBuilder(args);
 
 // ============================================================================
-// LITBUS CONFIGURATION - Replace MediatR setup with this
+// APPLICATION CONFIGURATION - Use the repository-owned dispatcher
 // ============================================================================
 
 // Add LiteBus to the dependency injection container
@@ -71,14 +71,8 @@ builder.Services.AddTransient(typeof(ICommandPostHandler<>), typeof(CommandLoggi
 // builder.Services.AddTransient(typeof(IQueryPostHandler<>), typeof(QueryLoggingPostHandler<>));
 
 // ============================================================================
-// REMOVE THIS - Old MediatR Configuration (DELETE THESE LINES)
+// Legacy mediator configuration is intentionally not used.
 // ============================================================================
-
-// DELETE: builder.Services.AddMediatR(cfg => 
-//     cfg.RegisterServicesFromAssembly(typeof(CreatePizzaCommand).Assembly));
-// 
-// DELETE: builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
-// DELETE: builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));
 
 // ============================================================================
 // DATABASE & OTHER SERVICES
@@ -91,8 +85,8 @@ builder.Services.AddScoped<DatabaseContext>();
 builder.Services.AddMemoryCache();
 builder.Services.AddSingleton<IAppCache, AppCache>();
 
-// Add AutoMapper (keep as-is)
-builder.Services.AddAutoMapper(typeof(Program).Assembly);
+// Register the built-in dispatcher, handlers, and application services.
+builder.Services.AddApplication();
 
 // Add other services as needed...
 
@@ -296,7 +290,7 @@ app.Run();
 // [ApiController]
 // [Route("api/[controller]")]
 // public class PizzaController(
-//     ICommandMediator cmdMediator,    // NEW: Replace IMediator with this
+//     Dispatcher dispatcher
 //     IQueryMediator qryMediator)      // NEW: Add this
 //     : ControllerBase
 // {
@@ -357,7 +351,7 @@ app.Run();
 // 2. [ ] In your Command/Query files:
 //        - Change IRequest<T> → ICommand<T> (for commands)
 //        - Change IRequest<T> → IQuery<T> (for queries)
-//        - Update using MediatR; → using LiteBus.Commands.Abstractions;
+//        - Update mediator calls to use Dispatcher
 //
 // 3. [ ] In your Handler files:
 //        - Change IRequestHandler<T, R> → ICommandHandler<T, R>
@@ -366,7 +360,7 @@ app.Run();
 //        - Update namespaces
 //
 // 4. [ ] In your Controller files:
-//        - Replace IMediator with ICommandMediator, IQueryMediator
+//        - Replace mediator calls with Dispatcher
 //        - Change mediator.Send() → cmdMediator.SendAsync()
 //        - Change mediator.Send() → qryMediator.QueryAsync()
 //
@@ -377,10 +371,10 @@ app.Run();
 //
 // 7. [ ] Test: dotnet run - should start without errors
 //
-// 8. [ ] Check for remaining IMediator references: grep -r "IMediator" .
+// 8. [ ] Check for remaining Dispatcher registrations
 //
 // ✅ AFTER deployment:
-// 1. [ ] Remove old MediatR packages
+// 1. [ ] Remove legacy mediator packages
 // 2. [ ] Remove IPipelineBehavior<,> registrations
 // 3. [ ] Remove old ValidationBehavior, PerformanceBehaviour if not converted
 // 4. [ ] Update API documentation/OpenAPI specs

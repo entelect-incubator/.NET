@@ -1,28 +1,28 @@
-using MediatR;
+using Utilities.CQRS;
 
-public interface ICommand<TResponse> : IRequest<TResponse>
+public interface ICommand<TResponse> : Utilities.CQRS.ICommand<TResponse>
 {
 }
 
-public interface IQuery<TResponse> : IRequest<TResponse>
+public interface IQuery<TResponse> : Utilities.CQRS.IQuery<TResponse>
 {
 }
 
-public interface INotification : MediatR.INotification
+public interface INotification : Utilities.CQRS.INotification
 {
 }
 
-public interface ICommandHandler<TCommand, TResponse> : IRequestHandler<TCommand, TResponse>
+public interface ICommandHandler<TCommand, TResponse> : Utilities.CQRS.ICommandHandler<TCommand, TResponse>
     where TCommand : ICommand<TResponse>
 {
 }
 
-public interface IQueryHandler<TQuery, TResponse> : IRequestHandler<TQuery, TResponse>
+public interface IQueryHandler<TQuery, TResponse> : Utilities.CQRS.IQueryHandler<TQuery, TResponse>
     where TQuery : IQuery<TResponse>
 {
 }
 
-public interface INotificationHandler<TNotification> : MediatR.INotificationHandler<TNotification>
+public interface INotificationHandler<TNotification> : Utilities.CQRS.INotificationHandler<TNotification>
     where TNotification : INotification
 {
 }

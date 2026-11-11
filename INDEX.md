@@ -50,7 +50,7 @@ Welcome! This is the definitive guide for developing .NET applications with AI a
 **DEVELOP_WITH_AI.md covers:**
 - Architecture & design before coding
 - Clean architecture principles
-- CQRS and MediatR patterns
+- CQRS and built-in dispatcher patterns
 - Naming conventions (no underscores!)
 - Primary constructors
 - Async/await patterns
@@ -297,7 +297,7 @@ Testing
 
 ### Official Docs
 - [CQRS Pattern](https://martinfowler.com/bliki/CQRS.html)
-- [MediatR GitHub](https://github.com/jbogard/MediatR)
+- Built-in dispatcher in `Utilities/CQRS`
 - [Entity Framework Core](https://docs.microsoft.com/ef/core/)
 - [C# 12 Primary Constructors](https://learn.microsoft.com/dotnet/csharp/whats-new/csharp-12)
 - [Async/Await Best Practices](https://docs.microsoft.com/archive/msdn-magazine/2013/march/async-await-best-practices-in-asynchronous-programming)

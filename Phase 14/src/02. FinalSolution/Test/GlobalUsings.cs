@@ -10,7 +10,6 @@ global using Core.Restaurant.Commands;
 global using Core.Restaurant.Queries;
 global using Core.Stock.Commands;
 global using Core.Stock.Queries;
-global using MediatR;
 
 [assembly: Imposter.Abstractions.GenerateImposter(typeof(global::Core.Delivery.IDeliveryService))]
 [assembly: Imposter.Abstractions.GenerateImposter(typeof(Microsoft.Extensions.Configuration.IConfiguration))]

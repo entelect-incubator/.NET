@@ -12,8 +12,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="FluentValidation" Version="12.1.1" />
-	  <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.3.9" />
+	  <PackageReference Include="FluentValidation" Version="12.2.0" />
+	  <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.3.14" />
 	  <PackageReference Include="Microsoft.Extensions.Logging" Version="11.0.0" />
 	</ItemGroup>
 </Project>

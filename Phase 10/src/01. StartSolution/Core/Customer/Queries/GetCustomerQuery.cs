@@ -15,9 +15,9 @@ public sealed class GetCustomerQueryHandler : IQueryHandler<GetCustomerQuery, Re
 {
     private readonly DatabaseContext databaseContext;
 
-    private readonly IMapper mapper;
+    private readonly IObjectMapper mapper;
 
-    public GetCustomerQueryHandler(DatabaseContext databaseContext, IMapper mapper)
+    public GetCustomerQueryHandler(DatabaseContext databaseContext, IObjectMapper mapper)
         => (this.databaseContext, this.mapper) = (databaseContext, mapper);
 
     public async Task<Result<CustomerDTO>> Handle(GetCustomerQuery request, CancellationToken cancellationToken)

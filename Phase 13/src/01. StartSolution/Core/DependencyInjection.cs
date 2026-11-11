@@ -1,5 +1,7 @@
 namespace Core;
 
+using Utilities.CQRS;
+
 using System.Reflection;
 using Core.Stock.Commands;
 using FluentValidation;
@@ -9,7 +11,7 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
-        services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<CreateStockCommand>());
+        services.AddDispatcher(typeof(CreateStockCommand).Assembly);
 
         AssemblyScanner.FindValidatorsInAssembly(typeof(CreateStockCommand).Assembly)
             .ForEach(item => services.AddScoped(item.InterfaceType, item.ValidatorType));

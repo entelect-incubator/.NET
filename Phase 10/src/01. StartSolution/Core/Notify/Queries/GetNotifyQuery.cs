@@ -15,9 +15,9 @@ public sealed class GetNotifyQueryHandler : IQueryHandler<GetNotifyQuery, Result
 {
     private readonly DatabaseContext databaseContext;
 
-    private readonly IMapper mapper;
+    private readonly IObjectMapper mapper;
 
-    public GetNotifyQueryHandler(DatabaseContext databaseContext, IMapper mapper)
+    public GetNotifyQueryHandler(DatabaseContext databaseContext, IObjectMapper mapper)
         => (this.databaseContext, this.mapper) = (databaseContext, mapper);
 
     public async Task<Result<NotifyDTO>> Handle(GetNotifyQuery request, CancellationToken cancellationToken)

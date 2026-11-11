@@ -10,4 +10,3 @@ global using Core.Restaurant.Commands;
 global using Core.Restaurant.Queries;
 global using Core.Stock.Commands;
 global using Core.Stock.Queries;
-global using MediatR;

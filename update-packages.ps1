@@ -19,11 +19,41 @@ function Ensure-DotNetOutdated {
 }
 
 function Get-SolutionFiles {
-    Get-ChildItem -Path $PSScriptRoot -Recurse -File |
+    $files = Get-ChildItem -Path $PSScriptRoot -Recurse -File |
         Where-Object {
             ($_.Extension -in ".sln", ".slnx") -and
             ($_.FullName -notmatch "\\(bin|obj|\.git|node_modules)\\")
         }
+
+    foreach ($file in $files) {
+        $content = Get-Content $file.FullName -Raw
+        $projectPaths = if ($file.Extension -eq ".slnx") {
+            [regex]::Matches($content, '<Project\s+Path="([^"]+)"') |
+                ForEach-Object { $_.Groups[1].Value }
+        }
+        else {
+            [regex]::Matches($content, 'Project\("[^"]+"\)\s*=\s*"[^"]+",\s*"([^"]+)"') |
+                ForEach-Object { $_.Groups[1].Value }
+        }
+
+        if (-not $projectPaths) {
+            Write-Host "Skipping solution with no projects: $($file.FullName)" -ForegroundColor DarkYellow
+            continue
+        }
+
+        $missingProjects = @(
+            $projectPaths | Where-Object {
+                $projectPath = Join-Path $file.DirectoryName ($_.Replace('/', '\'))
+                -not (Test-Path $projectPath)
+            }
+        )
+        if ($missingProjects) {
+            Write-Host "Skipping solution with missing projects: $($file.FullName)" -ForegroundColor DarkYellow
+            continue
+        }
+
+        $file
+    }
 }
 
 function Get-CsProjFiles {
@@ -35,7 +65,9 @@ function Update-Target([string]$targetPath) {
     $targetDir = Split-Path $targetPath -Parent
     $args = @(
         $targetPath,
-        "--upgrade"
+        "--upgrade",
+        "--exclude",
+        "StyleCop.Analyzers"
     )
     if ($IncludeTransitive) { $args += "--include-transitive" }
     if ($IncludePrerelease) { $args += "--pre-release" }
@@ -44,7 +76,16 @@ function Update-Target([string]$targetPath) {
     Write-Host "Updating packages for: $targetPath" -ForegroundColor Yellow
     Push-Location $targetDir
     try {
+        dotnet restore $targetPath --nologo | Out-Host
+        if ($LASTEXITCODE -ne 0) {
+            throw "dotnet restore failed for $targetPath"
+        }
+
+        $args += "--no-restore"
         dotnet outdated @args | Out-Host
+        if ($LASTEXITCODE -ne 0) {
+            throw "dotnet outdated failed for $targetPath"
+        }
     }
     finally {
         Pop-Location

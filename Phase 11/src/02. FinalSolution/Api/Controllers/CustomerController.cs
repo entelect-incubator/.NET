@@ -28,7 +28,7 @@ public class CustomerController : ApiController
     [ProducesResponseType(typeof(ErrorResult), 404)]
     public async Task<ActionResult> GetCustomer(int id, CancellationToken cancellationToken = default)
     {
-        var result = await this.Mediator.Send(new GetCustomerQuery { Id = id }, cancellationToken);
+        var result = await this.Mediator.Send<GetCustomerQuery, Result<CustomerDTO>>(new GetCustomerQuery { Id = id }, cancellationToken);
         return ResponseHelper.ResponseOutcome(result, this);
     }
 
@@ -47,8 +47,7 @@ public class CustomerController : ApiController
     [Route("Search")]
     public async Task<ActionResult> Search(CustomerDTO dto, CancellationToken cancellationToken = default)
     {
-        var result = await this.Mediator.Send(
-            new GetCustomersQuery
+        var result = await this.Mediator.Send<GetCustomersQuery, Result<IEnumerable<CustomerDTO>>>(new GetCustomersQuery
             {
                 Data = dto,
             }, cancellationToken);
@@ -82,8 +81,7 @@ public class CustomerController : ApiController
     [ProducesResponseType(typeof(ErrorResult), 400)]
     public async Task<ActionResult<CustomerDTO>> Create(CustomerDTO customer, CancellationToken cancellationToken = default)
     {
-        var result = await this.Mediator.Send(
-            new CreateCustomerCommand
+        var result = await this.Mediator.Send<CreateCustomerCommand, Result<CustomerDTO>>(new CreateCustomerCommand
             {
                 Data = customer,
             }, cancellationToken);
@@ -121,8 +119,7 @@ public class CustomerController : ApiController
     [ProducesResponseType(typeof(Result), 404)]
     public async Task<ActionResult> Update(CustomerDTO customer, CancellationToken cancellationToken = default)
     {
-        var result = await this.Mediator.Send(
-            new UpdateCustomerCommand
+        var result = await this.Mediator.Send<UpdateCustomerCommand, Result<CustomerDTO>>(new UpdateCustomerCommand
             {
                 Data = customer,
             }, cancellationToken);
@@ -143,7 +140,7 @@ public class CustomerController : ApiController
     [ProducesResponseType(typeof(ErrorResult), 400)]
     public async Task<ActionResult> Delete(int id, CancellationToken cancellationToken = default)
     {
-        var result = await this.Mediator.Send(new DeleteCustomerCommand { Id = id }, cancellationToken);
+        var result = await this.Mediator.Send<DeleteCustomerCommand, Result>(new DeleteCustomerCommand { Id = id }, cancellationToken);
         return ResponseHelper.ResponseOutcome(result, this);
     }
 }

@@ -27,7 +27,7 @@ public class OrderController : ApiController
     [ProducesResponseType(typeof(ErrorResult), 404)]
     public async Task<ActionResult> Get(int id, CancellationToken cancellationToken = default)
     {
-        var result = await this.Mediator.Send(new GetOrderQuery { Id = id }, cancellationToken);
+        var result = await this.Mediator.Send<GetOrderQuery, Result<OrderDTO>>(new GetOrderQuery { Id = id }, cancellationToken);
         return ResponseHelper.ResponseOutcome(result, this);
     }
 
@@ -45,8 +45,7 @@ public class OrderController : ApiController
     [Route("Search")]
     public async Task<ActionResult> Search(OrderDTO dto, CancellationToken cancellationToken = default)
     {
-        var result = await this.Mediator.Send(
-            new GetOrdersQuery
+        var result = await this.Mediator.Send<GetOrdersQuery, Result<IEnumerable<OrderDTO>>>(new GetOrdersQuery
             {
                 Data = dto,
             }, cancellationToken);
@@ -76,8 +75,7 @@ public class OrderController : ApiController
     public async Task<ActionResult<Order>> Create(OrderDTO data, CancellationToken cancellationToken = default)
     {
         data.Customer = null;
-        var result = await this.Mediator.Send(
-            new CreateOrderCommand
+        var result = await this.Mediator.Send<CreateOrderCommand, Result<OrderDTO>>(new CreateOrderCommand
             {
                 Data = data,
             }, cancellationToken);
@@ -108,8 +106,7 @@ public class OrderController : ApiController
     [ProducesResponseType(typeof(Result), 404)]
     public async Task<ActionResult> Update(OrderDTO data, CancellationToken cancellationToken = default)
     {
-        var result = await this.Mediator.Send(
-            new UpdateOrderCommand
+        var result = await this.Mediator.Send<UpdateOrderCommand, Result<OrderDTO>>(new UpdateOrderCommand
             {
                 Data = data,
             }, cancellationToken);
@@ -130,7 +127,7 @@ public class OrderController : ApiController
     [ProducesResponseType(typeof(ErrorResult), 400)]
     public async Task<ActionResult> Delete(int id, CancellationToken cancellationToken = default)
     {
-        var result = await this.Mediator.Send(new DeleteOrderCommand { Id = id }, cancellationToken);
+        var result = await this.Mediator.Send<DeleteOrderCommand, Result>(new DeleteOrderCommand { Id = id }, cancellationToken);
         return ResponseHelper.ResponseOutcome(result, this);
     }
 }

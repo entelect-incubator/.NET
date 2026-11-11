@@ -16,9 +16,9 @@ public sealed class UpdateOrderCommandHandler : ICommandHandler<UpdateOrderComma
 {
     private readonly DatabaseContext databaseContext;
 
-    private readonly IMapper mapper;
+    private readonly IObjectMapper mapper;
 
-    public UpdateOrderCommandHandler(DatabaseContext databaseContext, IMapper mapper)
+    public UpdateOrderCommandHandler(DatabaseContext databaseContext, IObjectMapper mapper)
         => (this.databaseContext, this.mapper) = (databaseContext, mapper);
 
     public async Task<Result<OrderDTO>> Handle(UpdateOrderCommand request, CancellationToken cancellationToken)

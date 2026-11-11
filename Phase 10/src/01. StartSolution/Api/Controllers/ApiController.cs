@@ -1,6 +1,7 @@
 namespace Api.Controllers;
 
-using MediatR;
+using Utilities.CQRS;
+
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
@@ -8,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 [Produces("application/json")]
 public abstract class ApiController : ControllerBase
 {
-    private IMediator? mediator;
+    private Dispatcher? mediator;
 
-    protected IMediator Mediator => this.mediator ??= this.HttpContext.RequestServices.GetRequiredService<IMediator>();
+    protected Dispatcher Mediator => this.mediator ??= this.HttpContext.RequestServices.GetRequiredService<Dispatcher>();
 }

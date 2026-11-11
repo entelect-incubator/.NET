@@ -16,9 +16,9 @@ public sealed class CreateRestaurantCommandHandler : ICommandHandler<CreateResta
 {
     private readonly DatabaseContext databaseContext;
 
-    private readonly IMapper mapper;
+    private readonly IObjectMapper mapper;
 
-    public CreateRestaurantCommandHandler(DatabaseContext databaseContext, IMapper mapper)
+    public CreateRestaurantCommandHandler(DatabaseContext databaseContext, IObjectMapper mapper)
         => (this.databaseContext, this.mapper) = (databaseContext, mapper);
 
     public async Task<Result<RestaurantDTO>> Handle(CreateRestaurantCommand request, CancellationToken cancellationToken)

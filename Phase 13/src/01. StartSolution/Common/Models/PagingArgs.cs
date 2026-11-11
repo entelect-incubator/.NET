@@ -14,7 +14,10 @@ public class PagingArgs
 
     public int Limit
     {
-        get => this.limit;
+        get
+        {
+            return this.limit;
+        }
 
         set
         {

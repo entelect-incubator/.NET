@@ -16,9 +16,9 @@ public sealed class CreateProductCommandHandler : ICommandHandler<CreateProductC
 {
     private readonly DatabaseContext databaseContext;
 
-    private readonly IMapper mapper;
+    private readonly IObjectMapper mapper;
 
-    public CreateProductCommandHandler(DatabaseContext databaseContext, IMapper mapper)
+    public CreateProductCommandHandler(DatabaseContext databaseContext, IObjectMapper mapper)
         => (this.databaseContext, this.mapper) = (databaseContext, mapper);
 
     public async Task<Result<ProductDTO>> Handle(CreateProductCommand request, CancellationToken cancellationToken)

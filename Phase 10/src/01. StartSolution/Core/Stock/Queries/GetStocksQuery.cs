@@ -20,9 +20,9 @@ public sealed class GetStocksQueryHandler : IQueryHandler<GetStocksQuery, Result
 {
     private readonly DatabaseContext databaseContext;
 
-    private readonly IMapper mapper;
+    private readonly IObjectMapper mapper;
 
-    public GetStocksQueryHandler(DatabaseContext databaseContext, IMapper mapper)
+    public GetStocksQueryHandler(DatabaseContext databaseContext, IObjectMapper mapper)
         => (this.databaseContext, this.mapper) = (databaseContext, mapper);
 
     public async Task<Result<IEnumerable<PizzaModel>>> Handle(GetStocksQuery request, CancellationToken cancellationToken)

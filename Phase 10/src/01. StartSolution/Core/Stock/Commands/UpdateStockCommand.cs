@@ -16,9 +16,9 @@ public sealed class UpdateStockCommandHandler : ICommandHandler<UpdateStockComma
 {
     private readonly DatabaseContext databaseContext;
 
-    private readonly IMapper mapper;
+    private readonly IObjectMapper mapper;
 
-    public UpdateStockCommandHandler(DatabaseContext databaseContext, IMapper mapper)
+    public UpdateStockCommandHandler(DatabaseContext databaseContext, IObjectMapper mapper)
         => (this.databaseContext, this.mapper) = (databaseContext, mapper);
 
     public async Task<Result<PizzaModel>> Handle(UpdateStockCommand request, CancellationToken cancellationToken)

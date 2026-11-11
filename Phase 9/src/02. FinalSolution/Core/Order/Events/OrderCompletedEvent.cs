@@ -46,6 +46,7 @@ public class OrderCompletedEventHandler : INotificationHandler<OrderCompletedEve
                     Sent = send.Succeeded,
                     Retry = 0
                 }
-            }, cancellationToken);
+            },
+            cancellationToken);
     }
 }

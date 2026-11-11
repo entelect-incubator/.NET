@@ -20,9 +20,9 @@ public sealed class GetOrdersQueryHandler : IQueryHandler<GetOrdersQuery, Result
 {
     private readonly DatabaseContext databaseContext;
 
-    private readonly IMapper mapper;
+    private readonly IObjectMapper mapper;
 
-    public GetOrdersQueryHandler(DatabaseContext databaseContext, IMapper mapper)
+    public GetOrdersQueryHandler(DatabaseContext databaseContext, IObjectMapper mapper)
         => (this.databaseContext, this.mapper) = (databaseContext, mapper);
 
     public async Task<Result<IEnumerable<OrderDTO>>> Handle(GetOrdersQuery request, CancellationToken cancellationToken)

@@ -144,7 +144,7 @@ This guide explains how to work effectively with different AI agents (GitHub Cop
 1. **Copy the handler** to ChatGPT (keep context minimal):
    ```
    CONTEXT:
-   - Project uses CQRS with MediatR
+   - Project uses CQRS with the built-in dispatcher
    - All handlers use primary constructors
    - Return Result<T> for all operations
    - All async methods receive CancellationToken
@@ -253,7 +253,7 @@ This guide explains how to work effectively with different AI agents (GitHub Cop
 
 ### Scenario 4: I need to understand CQRS better
 **Recommended:** ChatGPT (or documentation)
-- Ask "Explain CQRS in the context of MediatR"
+- Ask "Explain CQRS in the context of the built-in dispatcher"
 - Get a tutorial-style explanation
 - Ask follow-up questions
 
@@ -284,7 +284,7 @@ This guide explains how to work effectively with different AI agents (GitHub Cop
 **Before asking anything**, provide:
 ```
 PROJECT CONTEXT:
-- Architecture: CQRS with MediatR
+- Architecture: CQRS with the built-in dispatcher
 - Framework: .NET 10
 - Key Pattern: Primary constructors, Result<T>, Entity mapping
 - Team Standard: No underscores in properties

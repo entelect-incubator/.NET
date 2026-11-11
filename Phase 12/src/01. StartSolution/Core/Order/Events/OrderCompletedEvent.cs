@@ -1,4 +1,6 @@
-﻿namespace Core.Order.Events;
+namespace Core.Order.Events;
+
+using Utilities.CQRS;
 
 using System;
 using System.IO;
@@ -7,7 +9,6 @@ using System.Threading.Tasks;
 using Common.DTO;
 using Core.Email;
 using Core.Notify.Commands;
-using MediatR;
 
 public class OrderCompletedEvent : INotification
 {
@@ -16,9 +17,9 @@ public class OrderCompletedEvent : INotification
 
 public class OrderCompletedEventHandler : INotificationHandler<OrderCompletedEvent>
 {
-    private readonly IMediator mediator;
+    private readonly Dispatcher mediator;
 
-    public OrderCompletedEventHandler(IMediator mediator) => this.mediator = mediator;
+    public OrderCompletedEventHandler(Dispatcher mediator) => this.mediator = mediator;
 
     public async Task Handle(OrderCompletedEvent notification, CancellationToken cancellationToken)
     {
@@ -46,6 +47,7 @@ public class OrderCompletedEventHandler : INotificationHandler<OrderCompletedEve
                     Sent = send.Succeeded,
                     Retry = 0
                 }
-            }, cancellationToken);
+            },
+            cancellationToken);
     }
 }

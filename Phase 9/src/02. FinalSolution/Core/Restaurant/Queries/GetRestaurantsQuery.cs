@@ -27,9 +27,9 @@ public sealed class GetRestaurantsQueryHandler : IQueryHandler<GetRestaurantsQue
 
     private readonly DatabaseContext databaseContext;
 
-    private readonly IMapper mapper;
+    private readonly IObjectMapper mapper;
 
-    public GetRestaurantsQueryHandler(DatabaseContext databaseContext, IMapper mapper, IAppCache cache)
+    public GetRestaurantsQueryHandler(DatabaseContext databaseContext, IObjectMapper mapper, IAppCache cache)
         => (this.databaseContext, this.mapper, this.cache) = (databaseContext, mapper, cache);
 
     public async Task<Result<IEnumerable<RestaurantDTO>>> Handle(GetRestaurantsQuery request, CancellationToken cancellationToken)

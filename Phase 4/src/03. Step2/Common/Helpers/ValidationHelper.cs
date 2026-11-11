@@ -7,7 +7,7 @@ using FluentValidation;
 /// Handlers can use this to validate requests before processing business logic.
 /// </summary>
 /// <remarks>
-/// This replaces the old MediatR IPipelineBehavior approach with a more explicit,
+/// This replaces the old pipeline behavior approach with a more explicit,
 /// handler-level validation pattern. Handlers call Validate() and exceptions are
 /// caught by ValidationExceptionHandler in the exception handling pipeline.
 /// </remarks>

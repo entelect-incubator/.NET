@@ -16,9 +16,9 @@ public sealed class UpdateNotifyCommandHandler : ICommandHandler<UpdateNotifyCom
 {
     private readonly DatabaseContext databaseContext;
 
-    private readonly IMapper mapper;
+    private readonly IObjectMapper mapper;
 
-    public UpdateNotifyCommandHandler(DatabaseContext databaseContext, IMapper mapper)
+    public UpdateNotifyCommandHandler(DatabaseContext databaseContext, IObjectMapper mapper)
         => (this.databaseContext, this.mapper) = (databaseContext, mapper);
 
     public async Task<Result<NotifyDTO>> Handle(UpdateNotifyCommand request, CancellationToken cancellationToken)

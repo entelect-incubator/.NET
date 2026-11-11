@@ -1,4 +1,6 @@
-﻿namespace Utilities.CQRS;
+namespace Utilities.CQRS;
+
+using System.Reflection;
 
 using Microsoft.Extensions.DependencyInjection;
 
@@ -60,4 +62,30 @@ public class Dispatcher(IServiceProvider provider)
 		foreach (var handler in handlers)
 			await handler.Handle(notification, ct);
 	}
+}
+
+public static class DispatcherRegistration
+{
+    public static IServiceCollection AddDispatcher(this IServiceCollection services, Assembly assembly)
+    {
+        services.AddScoped<Dispatcher>();
+
+        var handlerDefinitions = new HashSet<Type>
+        {
+            typeof(ICommandHandler<,>),
+            typeof(IQueryHandler<,>),
+            typeof(INotificationHandler<>),
+        };
+
+        foreach (var implementationType in assembly.GetTypes().Where(type => type is { IsAbstract: false, IsInterface: false }))
+        {
+            foreach (var serviceType in implementationType.GetInterfaces()
+                .Where(type => type.IsGenericType && handlerDefinitions.Contains(type.GetGenericTypeDefinition())))
+            {
+                services.AddScoped(serviceType, implementationType);
+            }
+        }
+
+        return services;
+    }
 }
