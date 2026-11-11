@@ -6,7 +6,52 @@
 
 - [ ] Setup your environment - [How to video](https://www.youtube.com/watch?v=G1-Zfr9-3zs&list=PLLWMQd6PeGY2GVsQZ-u3DPXqwwKW8MkiP)
   - [ ] [Visual Studio Community](https://visualstudio.microsoft.com/downloads/) — install the latest stable version
-  - [ ] [.NET SDK (10.x)](https://dotnet.microsoft.com/download) — install .NET 10 SDK (or later)
+  - [ ] Install [`dotnetup`](https://learn.microsoft.com/dotnet/core/tools/dotnetup) to manage .NET SDKs locally
+  - [ ] [.NET SDK (11.x)](https://dotnet.microsoft.com/download) — install .NET 11 SDK (or later)
+
+## Manage SDK versions with dotnetup
+
+The incubator pins its SDK through [`global.json`](./global.json). `dotnetup` can install
+multiple SDK channels side by side and lets you switch the SDK used by this repository
+without changing the machine-wide .NET installation.
+
+Install `dotnetup` from PowerShell:
+
+```powershell
+irm https://aka.ms/dotnetup/get-dotnetup.ps1 | iex
+dotnetup init
+```
+
+Install the SDK channels you want to use:
+
+```powershell
+dotnetup sdk install 11.0
+dotnetup sdk install 10.0
+dotnetup list
+```
+
+To switch the incubator to another installed SDK, change the `sdk.version` value in
+[`global.json`](./global.json), then verify the selected SDK:
+
+```powershell
+dotnet --version
+dotnet --info
+```
+
+For example, use `"version": "10.0.100"` to build with .NET 10, or restore
+`"version": "11.0.100"` to use the current .NET 11 SDK. Keep the repository's
+`global.json` aligned with the target frameworks and package versions before
+committing a version change.
+
+To update tracked SDK installations later:
+
+```powershell
+dotnetup update
+```
+
+See the [dotnetup announcement](https://devblogs.microsoft.com/dotnet/introducing-dotnetup/)
+and [dotnetup documentation](https://learn.microsoft.com/dotnet/core/tools/dotnetup) for
+additional commands and platform-specific installation instructions.
 
 ## Setup Visual Studio
 

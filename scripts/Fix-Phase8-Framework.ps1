@@ -1,6 +1,6 @@
 #!/usr/bin/env pwsh
 
-# Fix Phase 8 net10.0 -> net10.0
+# Fix Phase 8 net10.0 -> net11.0
 $phase8Path = "d:\Dev\Incubator\.NET\Phase 8\src\01. StartSolution"
 
 $csprojFiles = @(
@@ -15,7 +15,7 @@ $csprojFiles = @(
 
 foreach ($file in $csprojFiles) {
     if (Test-Path $file) {
-        (Get-Content $file -Raw) -replace "<TargetFramework>net7\.0</TargetFramework>", "<TargetFramework>net10.0</TargetFramework>" | Set-Content $file
+        (Get-Content $file -Raw) -replace "<TargetFramework>net10\.0</TargetFramework>", "<TargetFramework>net11.0</TargetFramework>" | Set-Content $file
         Write-Host "Updated: $(Split-Path $file -Leaf)" -ForegroundColor Green
     }
 }

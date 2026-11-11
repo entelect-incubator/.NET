@@ -2,10 +2,10 @@ param()
 
 Set-StrictMode -Version Latest
 
-Write-Host "Starting bulk upgrade to .NET 10 on branch upgrade/all-net10"
+Write-Host "Starting bulk upgrade to .NET 11 on branch upgrade/all-net11"
 
 # Create branch
-git checkout -b upgrade/all-net10
+git checkout -b upgrade/all-net11
 
 # Replace TargetFramework in .csproj files (skip files containing TargetFrameworks or netstandard)
 $csprojFiles = Get-ChildItem -Path . -Recurse -Filter *.csproj | Where-Object { -not (Get-Content $_.FullName -Raw) -match '<TargetFrameworks>' }
@@ -13,7 +13,7 @@ $updated = @()
 foreach ($f in $csprojFiles) {
     $text = Get-Content $f.FullName -Raw
     if ($text -match '<TargetFramework>net(?!standard)[0-9\.]+</TargetFramework>') {
-        $new = [regex]::Replace($text, '<TargetFramework>net(?!standard)[0-9\.]+</TargetFramework>', '<TargetFramework>net10.0</TargetFramework>')
+        $new = [regex]::Replace($text, '<TargetFramework>net(?!standard)[0-9\.]+</TargetFramework>', '<TargetFramework>net11.0</TargetFramework>')
         Set-Content -Path $f.FullName -Value $new
         Write-Host "Updated TargetFramework in $($f.FullName)"
         $updated += $f.FullName
@@ -22,7 +22,7 @@ foreach ($f in $csprojFiles) {
 
 if ($updated.Count -gt 0) {
     git add $updated
-    git commit -m "chore: bulk upgrade TargetFramework -> net10.0"
+    git commit -m "chore: bulk upgrade TargetFramework -> net11.0"
 } else {
     Write-Host "No TargetFramework updates found"
 }

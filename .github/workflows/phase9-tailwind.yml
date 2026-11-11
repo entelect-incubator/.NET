@@ -2,7 +2,7 @@ name: Phase 9 - Tailwind build + .NET build
 
 on:
   push:
-    branches: [ main, master, upgrade/all-net10 ]
+    branches: [ main, master, upgrade/all-net11 ]
   pull_request:
     branches: [ main, master ]
 
@@ -88,7 +88,7 @@ jobs:
       - name: Setup .NET 10
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: "10.0.x"
+          dotnet-version: "11.0.x"
 
       - name: Restore & Build Solution
         run: |

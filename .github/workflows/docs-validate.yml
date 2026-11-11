@@ -6,7 +6,7 @@ on:
       - "**/*.md"
       - ".github/workflows/**"
   push:
-    branches: [ "upgrade/all-net10", "main", "master" ]
+    branches: [ "upgrade/all-net11", "main", "master" ]
     paths:
       - "**/*.md"
 
@@ -20,7 +20,7 @@ jobs:
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: "10.0.x"
+          dotnet-version: "11.0.x"
 
       - name: Build all solutions found
         shell: pwsh
@@ -46,7 +46,7 @@ jobs:
         shell: pwsh
         run: |
           # Only run codespell against tracked Markdown files to avoid noise from minified/binary assets
-          $ignore = 'Pezza,Nuget,Net,net10,Entelect'
+          $ignore = 'Pezza,Nuget,Net,net11,Entelect'
           $mds = (git ls-files '*.md') -split "`n" | Where-Object { $_ -ne '' }
           if (-not $mds) { Write-Host "No markdown files to check."; exit 0 }
           Write-Host "Running codespell on markdown files:`n$($mds -join "`n")"

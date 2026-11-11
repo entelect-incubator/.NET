@@ -41,7 +41,9 @@ The projects in this incubator use implicit usings where appropriate. See: https
 
 ## Setup
 
-- Install .NET SDK 10 (or later) — ensure `dotnet --version` reports a 10.x SDK.
+- Install [`dotnetup`](https://learn.microsoft.com/dotnet/core/tools/dotnetup) and use
+  [`global.json`](./global.json) to select the SDK version for the incubator.
+- Install .NET SDK 11 (or later) — ensure `dotnet --version` reports an 11.x SDK.
 - Install Visual Studio 2022/2023 (or VS Code) with .NET workloads if you prefer.
 
 ## Back to Intro
